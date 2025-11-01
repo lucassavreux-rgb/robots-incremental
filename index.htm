@@ -183,7 +183,7 @@
       <div class="card">
         <h3>⭐ Prestige Standard</h3>
         <div class="stat-line"><span>Étoiles Gagnées</span><span class="count" id="prestigeGain">0</span></div>
-        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">1000</span> 💰</div>
+        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">2000</span> 💰</div>
         <div class="progress-bar"><div class="progress-fill" id="prestigeProgress" style="width:0%"></div></div>
         <button id="prestigeBtn" onclick="prestige()" disabled>Prestige +<span id="prestigeGainDisplay">0</span> ⭐</button>
         <button id="prestigeMaxBtn" onclick="prestigeMax()" disabled>MAX</button>
@@ -350,7 +350,7 @@ let state = {
   totalClicks: 0,
   prestigeCount: 0,
   playTime: 0,
-  prestigeCost: 1000,
+  prestigeCost: 2000,
   unlockedFeatures: ["basic"],
   logMessages: [],
   difficulty: "normal",
@@ -362,16 +362,16 @@ let state = {
   maxClickRate: 0,
   
   generators: [
-    {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.15},
-    {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.15},
-    {id:"port", name:"Port", base:4, count:0, price:3500, mult:1.15},
-    {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.15},
-    {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.15},
-    {id:"station", name:"Station", base:500, count:0, price:15e6, mult:1.15},
-    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.15},
-    {id:"blackhole", name:"Trou Noir", base:15000, count:0, price:50e9, mult:1.15, unlock:"advanced"},
-    {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.15, unlock:"advanced"},
-    {id:"quantum", name:"Simulateur Quantique", base:500000, count:0, price:100e12, mult:1.15, unlock:"endgame"}
+    {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.20},
+    {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.20},
+    {id:"port", name:"Port", base:4, count:0, price:3500, mult:1.20},
+    {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.20},
+    {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.20},
+    {id:"station", name:"Station", base:500, count:0, price:15e6, mult:1.20},
+    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.20},
+    {id:"blackhole", name:"Trou Noir", base:15000, count:0, price:50e9, mult:1.20, unlock:"advanced"},
+    {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.20, unlock:"advanced"},
+    {id:"quantum", name:"Simulateur Quantique", base:500000, count:0, price:100e12, mult:1.20, unlock:"endgame"}
   ],
   
   upgrades: [
@@ -568,13 +568,25 @@ function log(txt, type) {
 }
 
 function formatNum(n) {
+  // Handle NaN and Infinity
+  if (!isFinite(n)) return "∞";
+  if (n < 0) return "-" + formatNum(-n);
+  
   if (n < 1000) return n.toFixed(2);
   if (n < 1e6) return (n / 1e3).toFixed(2) + "K";
   if (n < 1e9) return (n / 1e6).toFixed(2) + "M";
   if (n < 1e12) return (n / 1e9).toFixed(2) + "B";
   if (n < 1e15) return (n / 1e12).toFixed(2) + "T";
   if (n < 1e18) return (n / 1e15).toFixed(2) + "Qa";
-  return (n / 1e18).toFixed(2) + "Qi";
+  if (n < 1e21) return (n / 1e18).toFixed(2) + "Qi";
+  if (n < 1e24) return (n / 1e21).toFixed(2) + "Sx";
+  if (n < 1e27) return (n / 1e24).toFixed(2) + "Sp";
+  if (n < 1e30) return (n / 1e27).toFixed(2) + "Oc";
+  
+  // Pour les très gros nombres, utiliser la notation exponentielle
+  let exp = Math.floor(Math.log10(n));
+  let mantissa = n / Math.pow(10, exp);
+  return mantissa.toFixed(2) + "e" + exp;
 }
 
 function isUnlocked(feature) {
@@ -643,7 +655,7 @@ function cps() {
     total += g.count * g.base * eff;
   }
   
-  let star_bonus = Math.pow(1.5, state.stars) * Math.pow(3, state.galaxies);
+  let star_bonus = Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies);
   
   // Apply corruption
   let corruption_mult = 1;
@@ -678,7 +690,7 @@ function clickVal() {
   }
   
   let total = clickMult * starMult * skillMult * milestoneBonus;
-  let star_bonus = Math.pow(1.5, state.stars) * Math.pow(3, state.galaxies);
+  let star_bonus = Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies);
   
   // Apply corruption
   let corruption_mult = 1;
@@ -841,7 +853,8 @@ function prestige() {
   // Besoin d'au MOINS 1000 pièces ACTUELLES en cash pour prestige
   if (state.coins < 1000) return;
   
-  let gain = Math.floor(state.totalCoins / state.prestigeCost);
+  // 1 étoile par 2000 pièces TOTALES gagnées (au lieu de 1000 avant)
+  let gain = Math.floor(state.totalCoins / 2000);
   if (gain < 1) return;
   
   // Tu dépenses tes pièces actuelles
@@ -903,7 +916,7 @@ function prestigeMax() {
   if (state.coins < 1000) return;
   
   let loop_count = 0;
-  while (state.coins >= 1000 && state.totalCoins >= state.prestigeCost && loop_count < 100) {
+  while (state.coins >= 1000 && state.totalCoins >= 2000 && loop_count < 100) {
     prestige();
     loop_count++;
   }
@@ -1114,14 +1127,14 @@ function updateUI() {
   $("skillPoints").textContent = state.skillPoints;
   
   // Prestige display
-  let pGain = Math.floor(state.totalCoins / state.prestigeCost);
+  let pGain = Math.floor(state.totalCoins / 2000);
   $("prestigeGain").textContent = pGain;
   $("prestigeGainDisplay").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
-  $("prestigeCost").textContent = formatNum(state.prestigeCost);
+  $("prestigeCost").textContent = formatNum(2000);
   
-  let pProgress = Math.min(100, (state.totalCoins / state.prestigeCost) * 100);
+  let pProgress = Math.min(100, (state.totalCoins / 2000) * 100);
   $("prestigeProgress").style.width = pProgress + "%";
 
   // Galaxy display
@@ -1151,7 +1164,7 @@ function updateUI() {
     if (m.completed && m.reward.type === "click") click_bonus *= m.reward.mult;
   }
   
-  $("prodBonus").textContent = formatNum(Math.pow(1.5, state.stars) * Math.pow(3, state.galaxies) * prod_bonus);
+  $("prodBonus").textContent = formatNum(Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies) * prod_bonus);
   $("starBonus").textContent = formatNum(star_bonus);
   $("clickBonus").textContent = formatNum(click_bonus);
 
