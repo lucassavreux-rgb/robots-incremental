@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Incremental Trade</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,Arial;background:#111;color:#eee;margin:0;padding:1rem;display:flex;flex-direction:column;align-items:center}
+  button{padding:.6rem 1.2rem;font-size:1.2rem;margin:.3rem;border:none;border-radius:6px;background:#0af;color:#fff;cursor:pointer;transition:all 0.2s}
+  button:hover:not(:disabled){background:#0cf;transform:scale(1.05)}
+  button:disabled{background:#555;cursor:not-allowed;opacity:0.5}
+  .row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:1200px}
+  .card{background:#222;padding:1rem;border-radius:8px;flex:1 1 220px;margin:.5rem;box-shadow:0 4px 6px rgba(0,0,0,0.3)}
+  .card h3{margin-top:0;color:#0af;border-bottom:2px solid #0af;padding-bottom:.5rem}
+  #log{height:120px;overflow-y:auto;background:#000;padding:.5rem;border-radius:6px;font-size:.85rem;margin-top:.5rem}
+  #cpsDisp{font-size:1rem;color:#ffa;margin-bottom:1rem}
+  .gen-item,.up-item{display:flex;justify-content:space-between;align-items:center;margin:.4rem 0;padding:.5rem;background:#333;border-radius:4px}
+  .gen-item:hover,.up-item:hover{background:#444}
+  .achievement{background:#2a2a00;padding:.5rem;margin:.3rem 0;border-left:4px solid #ffa;border-radius:4px;font-size:.9rem}
+  .achievement.unlocked{background:#002a00;border-left-color:#0f0}
+  .stat-line{display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #333}
+  #clickBtn{font-size:1.5rem;padding:1rem 2rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1rem}
+  .price{color:#ffa}
+  .count{color:#0f0;font-weight:bold}
+  .progress-bar{background:#333;height:20px;border-radius:10px;overflow:hidden;margin:.5rem 0}
+  .progress-fill{background:linear-gradient(90deg, #0af, #0cf);height:100%;transition:width 0.3s}
+</style>
+</head>
+<body>
+
+<h1>💰 Pièces : <span id="coins">0</span></h1>
+<div id="cpsDisp">Pièces/sec : <span id="cps">0</span></div>
+<button id="clickBtn">👆 Clic +<span id="clickValue">1</span></button>
+
+<div class="row">
+  <div class="card">
+    <h3>🤖 Générateurs</h3>
+    <div id="gens"></div>
+  </div>
+  
+  <div class="card">
+    <h3>⚡ Upgrades</h3>
+    <div id="ups"></div>
+  </div>
+  
+  <div class="card">
+    <h3>⭐ Prestige</h3>
+    <div class="stat-line">
+      <span>Étoiles</span>
+      <span class="count" id="stars">0</span>
+    </div>
+    <div class="stat-line">
+      <span>Bonus production</span>
+      <span class="count">×<span id="bonus">1</span></span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prestigeProgress" style="width:0%"></div>
+    </div>
+    <button id="prestigeBtn" disabled>Reset pour <span id="prestigeGain">0</span> ⭐</button>
+    <small style="color:#888">Besoin de 1000 💰 totales</small>
+  </div>
+</div>
+
+<div class="row">
+  <div class="card">
+    <h3>📊 Marché du Fer</h3>
+    <div class="stat-line">
+      <span>Fer possédé</span>
+      <span class="count" id="iron">0</span>
+    </div>
+    <div class="stat-line">
+      <span>Cours actuel</span>
+      <span class="price" id="ironPrice">10</span> 💰
+    </div>
+    <div class="stat-line">
+      <span>Moyenne (20 ticks)</span>
+      <span id="ironAvg">10</span> 💰
+    </div>
+    <button onclick="game.buyIron()">Acheter max</button>
+    <button onclick="game.sellIron()">Vendre tout</button><br>
+    <button id="botBtn" onclick="game.toggleBot()">🤖 Bot : OFF</button>
+    <div id="botStatus" style="margin-top:.5rem;color:#0f0;font-size:.9rem"></div>
+    <small style="color:#888">Frais : 5% par transaction</small>
+  </div>
+
+  <div class="card">
+    <h3>🏆 Succès</h3>
+    <div id="achievements" style="max-height:200px;overflow-y:auto"></div>
+  </div>
+
+  <div class="card">
+    <h3>📈 Statistiques</h3>
+    <div class="stat-line">
+      <span>Total gagné</span>
+      <span class="count" id="totalCoins">0</span> 💰
+    </div>
+    <div class="stat-line">
+      <span>Clics effectués</span>
+      <span class="count" id="totalClicks">0</span>
+    </div>
+    <div class="stat-line">
+      <span>Temps de jeu</span>
+      <span class="count" id="playTime">0s</span>
+    </div>
+    <div class="stat-line">
+      <span>Prestiges</span>
+      <span class="count" id="prestigeCount">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="max-width:1200px">
+  <h3>💾 Sauvegarde</h3>
+  <button onclick="game.exportSave()">📤 Exporter</button>
+  <button onclick="game.importSave()">📥 Importer</button>
+  <button onclick="game.resetGame()" style="background:#c33">🗑️ Reset Total</button>
+  <input id="importInput" type="file" accept=".txt" style="display:none">
+  <div id="log"></div>
+</div>
+
+<script>
+const SAVE_KEY = "idleTrade_v2";
+const FPS = 20;
+
+const game = {
+  state: {
+    coins: 0,
+    totalCoins: 0,
+    stars: 0,
+    totalClicks: 0,
+    prestigeCount: 0,
+    playTime: 0,
+    generators: [
+      {id:"robot", name:"Robot", base:0.5, count:0, price:10, mult:1.15},
+      {id:"usine", name:"Usine", base:3, count:0, price:120, mult:1.15},
+      {id:"port", name:"Port", base:15, count:0, price:1300, mult:1.15},
+      {id:"labo", name:"Labo", base:80, count:0, price:12000, mult:1.15},
+      {id:"satellite", name:"Satellite", base:500, count:0, price:140000, mult:1.15},
+      {id:"station", name:"Station spatiale", base:3000, count:0, price:2e6, mult:1.15},
+      {id:"dyson", name:"Sphère de Dyson", base:20000, count:0, price:5e7, mult:1.15}
+    ],
+    upgrades: [
+      {id:"click2", name:"Clic ×2", price:200, effect:2, bought:false, type:"click"},
+      {id:"click5", name:"Clic ×5", price:5000, effect:5, bought:false, type:"click", requires:"click2"},
+      {id:"click10", name:"Clic ×10", price:100000, effect:10, bought:false, type:"click", requires:"click5"},
+      {id:"gen2", name:"Tous les gen ×2", price:5000, effect:2, bought:false, type:"gen"},
+      {id:"gen3", name:"Tous les gen ×3", price:50000, effect:3, bought:false, type:"gen", requires:"gen2"},
+      {id:"gen5", name:"Tous les gen ×5", price:500000, effect:5, bought:false, type:"gen", requires:"gen3"},
+      {id:"robot10", name:"Robot ×10", price:1000, effect:10, bought:false, type:"robot"},
+      {id:"usine10", name:"Usine ×10", price:10000, effect:10, bought:false, type:"usine"},
+      {id:"port10", name:"Port ×10", price:100000, effect:10, bought:false, type:"port"},
+      {id:"autosave", name:"Sauvegarde auto", price:500, bought:false, type:"feature"},
+      {id:"reducefee", name:"Frais réduits (3%)", price:25000, bought:false, type:"feature"}
+    ],
+    achievements: [
+      {id:"first_coin", name:"Première pièce", desc:"Gagner votre première pièce", unlocked:false, check: s => s.totalCoins >= 1},
+      {id:"hundred", name:"Capitaliste", desc:"Avoir 100 pièces", unlocked:false, check: s => s.coins >= 100},
+      {id:"thousand", name:"Millionnaire", desc:"Avoir 1000 pièces", unlocked:false, check: s => s.coins >= 1000},
+      {id:"first_gen", name:"Automatisation", desc:"Acheter votre premier générateur", unlocked:false, check: s => s.generators.some(g => g.count > 0)},
+      {id:"ten_gens", name:"Industriel", desc:"Avoir 10 générateurs au total", unlocked:false, check: s => s.generators.reduce((a,g) => a + g.count, 0) >= 10},
+      {id:"first_prestige", name:"Renaissance", desc:"Faire votre premier prestige", unlocked:false, check: s => s.prestigeCount >= 1},
+      {id:"clicker", name:"Clickeur fou", desc:"Faire 100 clics", unlocked:false, check: s => s.totalClicks >= 100},
+      {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false, check: () => game.trade.iron > 0 || game.trade.totalTrades > 0},
+      {id:"hour_play", name:"Dedication", desc:"Jouer pendant 1 heure", unlocked:false, check: s => s.playTime >= 3600},
+      {id:"all_upgrades", name:"Amélioré", desc:"Acheter toutes les upgrades de base", unlocked:false, check: s => s.upgrades.filter(u => u.price < 10000).every(u => u.bought)}
+    ]
+  },
+  
+  trade: {
+    iron: 0,
+    price: 10,
+    history: [10],
+    fee: 0.05,
+    botActive: false,
+    totalTrades: 0
+  },
+
+  // Fonctions utilitaires
+  $: id => document.getElementById(id),
+  
+  log(txt) {
+    const logEl = this.$("log");
+    logEl.insertAdjacentHTML("beforeend", `<div>[${new Date().toLocaleTimeString()}] ${txt}</div>`);
+    logEl.scrollTop = 1e9;
+  },
+
+  price(gen) {
+    return Math.floor(gen.price * Math.pow(gen.mult, gen.count));
+  },
+
+  cps() {
+    const genMultiplier = this.state.upgrades
+      .filter(u => u.type === "gen" && u.bought)
+      .reduce((acc, u) => acc * u.effect, 1);
+    
+    let total = 0;
+    this.state.generators.forEach(g => {
+      let genEffect = genMultiplier;
+      const specificUpgrade = this.state.upgrades.find(u => u.type === g.id && u.bought);
+      if (specificUpgrade) genEffect *= specificUpgrade.effect;
+      total += g.count * g.base * genEffect;
+    });
+    
+    return total * (1 + this.state.stars * 0.05);
+  },
+
+  clickVal() {
+    const clickMultiplier = this.state.upgrades
+      .filter(u => u.type === "click" && u.bought)
+      .reduce((acc, u) => acc * u.effect, 1);
+    return clickMultiplier * (1 + this.state.stars * 0.05);
+  },
+
+  // Actions du jeu
+  clickBtn() {
+    const val = this.clickVal();
+    this.state.coins += val;
+    this.state.totalCoins += val;
+    this.state.totalClicks++;
+    this.checkAchievements();
+    this.refresh();
+  },
+
+  buyGen(id) {
+    const gen = this.state.generators.find(g => g.id === id);
+    if (!gen) return;
+    
+    const cost = this.price(gen);
+    if (this.state.coins < cost) return;
+    
+    this.state.coins -= cost;
+    gen.count++;
+    this.state.totalCoins += cost * 0.1;
+    this.checkAchievements();
+    this.refresh();
+    this.save();
+  },
+
+  buyUp(id) {
+    const up = this.state.upgrades.find(u => u.id === id);
+    if (!up || up.bought || this.state.coins < up.price) return;
+    
+    if (up.requires) {
+      const required = this.state.upgrades.find(u => u.id === up.requires);
+      if (!required || !required.bought) return;
+    }
+    
+    this.state.coins -= up.price;
+    up.bought = true;
+    
+    if (up.type === "feature" && up.id === "reducefee") {
+      this.trade.fee = 0.03;
+    }
+    
+    this.log(`✅ Upgrade acheté : ${up.name}`);
+    this.checkAchievements();
+    this.refresh();
+    this.save();
+  },
+
+  prestige() {
+    const gain = Math.floor(Math.sqrt(this.state.totalCoins / 1000));
+    if (gain < 1 || this.state.totalCoins < 1000) return;
+    
+    this.state.stars += gain;
+    this.state.prestigeCount++;
+    this.resetCore();
+    this.log(`⭐ Prestige ! +${gain} étoiles (Total: ${this.state.stars})`);
+    this.checkAchievements();
+    this.save();
+  },
+
+  resetCore() {
+    this.state.coins = 0;
+    this.state.totalCoins = 0;
+    this.state.generators.forEach(g => g.count = 0);
+    this.state.upgrades.forEach(u => {
+      if (u.id !== "autosave" && u.id !== "reducefee") {
+        u.bought = false;
+      }
+    });
+    this.trade.iron = 0;
+    this.trade.price = 10;
+    this.trade.history = [10];
+    this.trade.botActive = false;
+    this.refresh();
+  },
+
+  // Trading
+  tickMarket() {
+    const change = (Math.random() - 0.48) * 0.08;
+    this.trade.price = Math.max(2, Math.floor(this.trade.price * (1 + change)));
+    this.trade.history.push(this.trade.price);
+    if (this.trade.history.length > 20) this.trade.history.shift();
+    
+    if (this.trade.botActive) this.botTrade();
+    this.refresh();
+  },
+
+  buyIron() {
+    const fee = this.trade.fee;
+    const priceWithFee = this.trade.price * (1 + fee);
+    const qty = Math.max(1, Math.floor(this.state.coins / priceWithFee));
+    const cost = qty * priceWithFee;
+    
+    if (this.state.coins < cost) return;
+    
+    this.state.coins -= cost;
+    this.trade.iron += qty;
+    this.trade.totalTrades++;
+    this.checkAchievements();
+    this.refresh();
+    this.save();
+  },
+
+  sellIron() {
+    if (this.trade.iron < 1) return;
+    
+    const gain = this.trade.iron * this.trade.price * (1 - this.trade.fee);
+    this.state.coins += gain;
+    this.state.totalCoins += gain * 0.5;
+    this.trade.iron = 0;
+    this.trade.totalTrades++;
+    this.refresh();
+    this.save();
+  },
+
+  toggleBot() {
+    this.trade.botActive = !this.trade.botActive;
+    this.log(this.trade.botActive ? "🤖 Bot activé" : "🤖 Bot désactivé");
+    this.refresh();
+  },
+
+  botTrade() {
+    if (this.trade.history.length < 3) return;
+    
+    const avg = this.trade.history.reduce((a, b) => a + b, 0) / this.trade.history.length;
+    
+    if (this.trade.price < avg * 0.88 && this.state.coins > this.trade.price * 10) {
+      this.buyIron();
+    }
+    
+    if (this.trade.price > avg * 1.18 && this.trade.iron > 0) {
+      this.sellIron();
+    }
+  },
+
+  // Achievements
+  checkAchievements() {
+    this.state.achievements.forEach(ach => {
+      if (!ach.unlocked && ach.check(this.state)) {
+        ach.unlocked = true;
+        this.log(`🏆 Succès débloqué : ${ach.name}`);
+      }
+    });
+  },
+
+  // Sauvegarde
+  save() {
+    try {
+      const saveData = {
+        state: this.state,
+        trade: this.trade,
+        version: 2,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(SAVE_KEY, btoa(JSON.stringify(saveData)));
+    } catch (e) {
+      this.log("❌ Erreur de sauvegarde");
+    }
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) {
+        const data = JSON.parse(atob(raw));
+        
+        // Merge saved state with default state to handle new properties
+        this.state = {...this.state, ...data.state};
+        this.trade = {...this.trade, ...data.trade};
+        
+        // Ensure new generators/upgrades/achievements exist
+        const defaultGens = this.state.generators;
+        data.state.generators.forEach(savedGen => {
+          const gen = this.state.generators.find(g => g.id === savedGen.id);
+          if (gen) Object.assign(gen, savedGen);
+        });
+        
+        this.log("💾 Partie chargée");
+      }
+    } catch (e) {
+      this.log("❌ Sauvegarde corrompue");
+    }
+    this.refresh();
+  },
+
+  exportSave() {
+    try {
+      const saveData = {state: this.state, trade: this.trade, version: 2};
+      const blob = new Blob([btoa(JSON.stringify(saveData))], {type: "text/plain"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `idle_trade_${Date.now()}.txt`;
+      a.click();
+      this.log("📤 Sauvegarde exportée");
+    } catch (e) {
+      this.log("❌ Erreur d'export");
+    }
+  },
+
+  importSave() {
+    this.$("importInput").click();
+  },
+
+  resetGame() {
+    if (confirm("Êtes-vous sûr de vouloir tout réinitialiser ? Cette action est irréversible !")) {
+      localStorage.removeItem(SAVE_KEY);
+      location.reload();
+    }
+  },
+
+  // Affichage
+  refresh() {
+    const formatNum = n => {
+      if (n < 1000) return n.toFixed(2);
+      if (n < 1e6) return (n / 1e3).toFixed(2) + "K";
+      if (n < 1e9) return (n / 1e6).toFixed(2) + "M";
+      return (n / 1e9).toFixed(2) + "B";
+    };
+
+    this.$("coins").textContent = formatNum(this.state.coins);
+    this.$("cps").textContent = formatNum(this.cps());
+    this.$("clickValue").textContent = formatNum(this.clickVal());
+    this.$("bonus").textContent = (1 + this.state.stars * 0.05).toFixed(2);
+    this.$("stars").textContent = this.state.stars;
+    
+    const prestigeGain = Math.floor(Math.sqrt(this.state.totalCoins / 1000));
+    this.$("prestigeGain").textContent = prestigeGain;
+    this.$("prestigeBtn").disabled = prestigeGain < 1 || this.state.totalCoins < 1000;
+    
+    const prestigeProgress = Math.min(100, (this.state.totalCoins / 1000) * 100);
+    this.$("prestigeProgress").style.width = prestigeProgress + "%";
+
+    // Générateurs
+    this.$("gens").innerHTML = this.state.generators.map(g => {
+      const cost = this.price(g);
+      const canBuy = this.state.coins >= cost;
+      return `
+        <div class="gen-item">
+          <div>
+            <strong>${g.name}</strong> <span class="count">×${g.count}</span><br>
+            <small>${formatNum(g.base * g.count * (1 + this.state.stars * 0.05))}/s</small>
+          </div>
+          <button onclick="game.buyGen('${g.id}')" ${!canBuy ? "disabled" : ""}>
+            ${formatNum(cost)} 💰
+          </button>
+        </div>
+      `;
+    }).join("");
+
+    // Upgrades
+    const availableUpgrades = this.state.upgrades.filter(u => {
+      if (u.bought) return false;
+      if (u.requires) {
+        const req = this.state.upgrades.find(r => r.id === u.requires);
+        return req && req.bought;
+      }
+      return true;
+    });
+    
+    this.$("ups").innerHTML = availableUpgrades.length > 0 ? availableUpgrades.map(u => {
+      const canBuy = this.state.coins >= u.price;
+      return `
+        <div class="up-item">
+          <div>
+            <strong>${u.name}</strong><br>
+            <small style="color:#888">${u.type}</small>
+          </div>
+          <button onclick="game.buyUp('${u.id}')" ${!canBuy ? "disabled" : ""}>
+            ${formatNum(u.price)} 💰
+          </button>
+        </div>
+      `;
+    }).join("") : "<div style='color:#888;text-align:center'>Toutes les upgrades achetées !</div>";
+
+    // Trading
+    this.$("iron").textContent = this.trade.iron;
+    this.$("ironPrice").textContent = this.trade.price;
+    const avg = this.trade.history.reduce((a, b) => a + b, 0) / this.trade.history.length;
+    this.$("ironAvg").textContent = avg.toFixed(1);
+    this.$("botBtn").textContent = `🤖 Bot : ${this.trade.botActive ? "ON" : "OFF"}`;
+    this.$("botBtn").style.background = this.trade.botActive ? "#0a0" : "#0af";
+    
+    if (this.trade.botActive) {
+      const signal = this.trade.price < avg * 0.9 ? "📈 ACHAT" : this.trade.price > avg * 1.15 ? "📉 VENTE" : "⏸️ ATTENTE";
+      this.$("botStatus").textContent = `Bot actif - Signal: ${signal}`;
+    } else {
+      this.$("botStatus").textContent = "";
+    }
+
+    // Achievements
+    this.$("achievements").innerHTML = this.state.achievements.map(ach => `
+      <div class="achievement ${ach.unlocked ? 'unlocked' : ''}">
+        ${ach.unlocked ? '✅' : '🔒'} <strong>${ach.name}</strong><br>
+        <small>${ach.desc}</small>
+      </div>
+    `).join("");
+
+    // Stats
+    this.$("totalCoins").textContent = formatNum(this.state.totalCoins);
+    this.$("totalClicks").textContent = this.state.totalClicks;
+    this.$("playTime").textContent = this.state.playTime < 60 ? this.state.playTime + "s" : 
+      this.state.playTime < 3600 ? Math.floor(this.state.playTime / 60) + "m" :
+      (this.state.playTime / 3600).toFixed(1) + "h";
+    this.$("prestigeCount").textContent = this.state.prestigeCount;
+  },
+
+  init() {
+    this.$("clickBtn").addEventListener("click", () => this.clickBtn());
+    this.$("prestigeBtn").addEventListener("click", () => this.prestige());
+    
+    this.$("importInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      file.text().then(txt => {
+        try {
+          const data = JSON.parse(atob(txt));
+          this.state = data.state;
+          this.trade = data.trade;
+          this.save();
+          this.refresh();
+          this.log("📥 Sauvegarde importée");
+        } catch (x) {
+          this.log("❌ Fichier invalide");
+        }
+      });
+    });
+
+    this.load();
+    
+    // Game loop
+    setInterval(() => {
+      const gain = this.cps() / FPS;
+      this.state.coins += gain;
+      this.state.totalCoins += gain;
+      this.checkAchievements();
+      this.refresh();
+    }, 1000 / FPS);
+
+    // Market tick every 30s
+    setInterval(() => this.tickMarket(), 30000);
+
+    // Autosave every 10s if upgrade bought
+    setInterval(() => {
+      if (this.state.upgrades.find(u => u.id === "autosave")?.bought) {
+        this.save();
+      }
+    }, 10000);
+
+    // Play time tracker
+    setInterval(() => {
+      this.state.playTime++;
+    }, 1000);
+
+    // Save on exit
+    window.addEventListener("beforeunload", () => this.save());
+    
+    this.log("🎮 Jeu démarré - Bon courage !");
+  }
+};
+
+// Démarrage
+game.init();
+</script>
+</body>
+</html>
