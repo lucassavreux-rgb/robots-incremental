@@ -145,37 +145,39 @@ let state = {
   playTime: 0,
   prestigeCost: 1000,
   starUpgrades: [
-    {id:"star_prod1", name:"Production ×2", cost:5, bought:false, effect:2, type:"production"},
-    {id:"star_prod2", name:"Production ×5", cost:15, bought:false, effect:5, type:"production", requires:"star_prod1"},
-    {id:"star_prod3", name:"Production ×10", cost:40, bought:false, effect:10, type:"production", requires:"star_prod2"},
-    {id:"star_click1", name:"Clics ×3", cost:8, bought:false, effect:3, type:"starclick"},
-    {id:"star_click2", name:"Clics ×10", cost:25, bought:false, effect:10, type:"starclick", requires:"star_click1"},
-    {id:"star_gen1", name:"Robot ×50", cost:10, bought:false, effect:50, type:"robot"},
-    {id:"star_gen2", name:"Usine ×50", cost:20, bought:false, effect:50, type:"usine"},
-    {id:"star_auto1", name:"Auto-clic (1/s)", cost:30, bought:false, type:"autoclick"},
-    {id:"star_prestige", name:"Prestige garde upgrades", cost:50, bought:false, type:"keepupgrades"}
+    {id:"star_prod1", name:"Production ×2", cost:10, bought:false, effect:2, type:"production"},
+    {id:"star_prod2", name:"Production ×5", cost:35, bought:false, effect:5, type:"production", requires:"star_prod1"},
+    {id:"star_prod3", name:"Production ×10", cost:100, bought:false, effect:10, type:"production", requires:"star_prod2"},
+    {id:"star_click1", name:"Clics ×3", cost:20, bought:false, effect:3, type:"starclick"},
+    {id:"star_click2", name:"Clics ×10", cost:60, bought:false, effect:10, type:"starclick", requires:"star_click1"},
+    {id:"star_gen1", name:"Robot ×50", cost:25, bought:false, effect:50, type:"robot"},
+    {id:"star_gen2", name:"Usine ×50", cost:50, bought:false, effect:50, type:"usine"},
+    {id:"star_gen3", name:"Port ×50", cost:80, bought:false, effect:50, type:"port"},
+    {id:"star_auto1", name:"Auto-clic (1/s)", cost:75, bought:false, type:"autoclick"},
+    {id:"star_prestige", name:"Prestige garde upgrades", cost:150, bought:false, type:"keepupgrades"},
+    {id:"star_market", name:"Marché 2x plus rapide", cost:120, bought:false, type:"fastmarket"}
   ],
   generators: [
-    {id:"robot", name:"Robot", base:0.5, count:0, price:10, mult:1.15},
-    {id:"usine", name:"Usine", base:3, count:0, price:120, mult:1.15},
-    {id:"port", name:"Port", base:15, count:0, price:1300, mult:1.15},
-    {id:"labo", name:"Labo", base:80, count:0, price:12000, mult:1.15},
-    {id:"satellite", name:"Satellite", base:500, count:0, price:140000, mult:1.15},
-    {id:"station", name:"Station spatiale", base:3000, count:0, price:2e6, mult:1.15},
-    {id:"dyson", name:"Sphère de Dyson", base:20000, count:0, price:5e7, mult:1.15}
+    {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.15},
+    {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.15},
+    {id:"port", name:"Port", base:4, count:0, price:3500, mult:1.15},
+    {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.15},
+    {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.15},
+    {id:"station", name:"Station spatiale", base:500, count:0, price:15e6, mult:1.15},
+    {id:"dyson", name:"Sphère de Dyson", base:3000, count:0, price:500e6, mult:1.15}
   ],
   upgrades: [
-    {id:"click2", name:"Clic ×2", price:200, effect:2, bought:false, type:"click"},
-    {id:"click5", name:"Clic ×5", price:5000, effect:5, bought:false, type:"click", requires:"click2"},
-    {id:"click10", name:"Clic ×10", price:100000, effect:10, bought:false, type:"click", requires:"click5"},
-    {id:"gen2", name:"Tous les gen ×2", price:5000, effect:2, bought:false, type:"gen"},
-    {id:"gen3", name:"Tous les gen ×3", price:50000, effect:3, bought:false, type:"gen", requires:"gen2"},
-    {id:"gen5", name:"Tous les gen ×5", price:500000, effect:5, bought:false, type:"gen", requires:"gen3"},
-    {id:"robot10", name:"Robot ×10", price:1000, effect:10, bought:false, type:"robot"},
-    {id:"usine10", name:"Usine ×10", price:10000, effect:10, bought:false, type:"usine"},
-    {id:"port10", name:"Port ×10", price:100000, effect:10, bought:false, type:"port"},
-    {id:"autosave", name:"Sauvegarde auto", price:500, bought:false, type:"feature"},
-    {id:"reducefee", name:"Frais réduits (3%)", price:25000, bought:false, type:"feature"}
+    {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click"},
+    {id:"click5", name:"Clic ×5", price:25000, effect:5, bought:false, type:"click", requires:"click2"},
+    {id:"click10", name:"Clic ×10", price:500000, effect:10, bought:false, type:"click", requires:"click5"},
+    {id:"gen2", name:"Tous les gen ×2", price:15000, effect:2, bought:false, type:"gen"},
+    {id:"gen3", name:"Tous les gen ×3", price:250000, effect:3, bought:false, type:"gen", requires:"gen2"},
+    {id:"gen5", name:"Tous les gen ×5", price:5e6, effect:5, bought:false, type:"gen", requires:"gen3"},
+    {id:"robot10", name:"Robot ×10", price:5000, effect:10, bought:false, type:"robot"},
+    {id:"usine10", name:"Usine ×10", price:75000, effect:10, bought:false, type:"usine"},
+    {id:"port10", name:"Port ×10", price:1e6, effect:10, bought:false, type:"port"},
+    {id:"autosave", name:"Sauvegarde auto", price:2000, bought:false, type:"feature"},
+    {id:"reducefee", name:"Frais réduits (3%)", price:100000, bought:false, type:"feature"}
   ],
   achievements: [
     {id:"first_coin", name:"Première pièce", desc:"Gagner votre première pièce", unlocked:false},
@@ -240,7 +242,8 @@ function cps() {
     total += g.count * g.base * genEffect;
   });
   
-  return total * Math.pow(2.2, state.stars);
+  // Bonus des étoiles réduit : ×1.5 par étoile au lieu de ×2.2
+  return total * Math.pow(1.5, state.stars);
 }
 
 function clickVal() {
@@ -252,7 +255,8 @@ function clickVal() {
     .filter(u => u.type === "starclick" && u.bought)
     .reduce((acc, u) => acc * u.effect, 1);
   
-  return clickMultiplier * starClickMult * Math.pow(2.2, state.stars);
+  // Bonus des étoiles réduit aussi pour les clics
+  return clickMultiplier * starClickMult * Math.pow(1.5, state.stars);
 }
 
 function clickBtn() {
@@ -312,6 +316,11 @@ function buyStarUpgrade(id) {
   state.stars -= up.cost;
   up.bought = true;
   
+  // Si c'est l'upgrade de marché rapide, restart le timer
+  if (up.id === "star_market") {
+    log("📊 Marché accéléré ! Tick toutes les 15s maintenant");
+  }
+  
   log(`✨ Upgrade étoile acheté : ${up.name}`);
   updateUI();
   save();
@@ -323,37 +332,36 @@ function prestige() {
   
   state.stars += gain;
   state.prestigeCount++;
-  state.prestigeCost = Math.floor(state.prestigeCost * 10);
+  state.prestigeCost = 1000; // RESET à 1000 au lieu d'augmenter
   resetCore();
-  log(`⭐ Prestige ! +${gain} étoiles (Total: ${state.stars}) - Prochain: ${formatNum(state.prestigeCost)} 💰`);
+  log(`⭐ Prestige ! +${gain} étoiles (Total: ${state.stars})`);
   checkAchievements();
   updateUI();
   save();
 }
 
 function prestigeMax() {
-  let tempTotal = state.totalCoins;
-  let tempCost = state.prestigeCost;
   let totalGain = 0;
   let prestigesDone = 0;
   
-  while (tempTotal >= tempCost) {
-    const gain = Math.floor(Math.sqrt(tempTotal / tempCost));
+  // Calcul combien de prestiges on peut faire avec totalCoins actuel
+  while (state.totalCoins >= state.prestigeCost) {
+    const gain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
     if (gain < 1) break;
     
     totalGain += gain;
     prestigesDone++;
-    tempCost = Math.floor(tempCost * 10);
-    tempTotal = 0;
+    
+    // Simuler le reset : on perd tout après chaque prestige
+    state.totalCoins = 0;
+    state.coins = 0;
   }
   
   if (totalGain < 1) return;
   
   state.stars += totalGain;
   state.prestigeCount += prestigesDone;
-  for (let i = 0; i < prestigesDone; i++) {
-    state.prestigeCost = Math.floor(state.prestigeCost * 10);
-  }
+  state.prestigeCost = 1000; // Reset à 1000
   resetCore();
   log(`⭐ MULTI PRESTIGE ! +${totalGain} étoiles en ${prestigesDone} prestige${prestigesDone > 1 ? 's' : ''} !`);
   checkAchievements();
@@ -466,7 +474,7 @@ function updateUI() {
   $("coins").textContent = formatNum(state.coins);
   $("cps").textContent = formatNum(cps());
   $("clickValue").textContent = formatNum(clickVal());
-  $("bonus").textContent = formatNum(Math.pow(2.2, state.stars));
+  $("bonus").textContent = formatNum(Math.pow(1.5, state.stars));
   $("stars").textContent = state.stars;
   $("starsAvailable").textContent = state.stars;
   
@@ -487,7 +495,7 @@ function updateUI() {
       <div class="gen-item">
         <div>
           <strong>${g.name}</strong> <span class="count">×${g.count}</span><br>
-          <small>${formatNum(g.base * g.count * Math.pow(2.2, state.stars))}/s</small>
+          <small>${formatNum(g.base * g.count * Math.pow(1.5, state.stars))}/s</small>
         </div>
         <button class="buy-btn" onclick="buyGen('${g.id}')" ${!canBuy ? "disabled" : ""}>
           ${formatNum(cost)} 💰
@@ -696,8 +704,10 @@ function init() {
     }
   }, 1000 / FPS);
 
-  // Market tick every 30s
-  setInterval(() => tickMarket(), 30000);
+  // Market tick - plus rapide si upgrade acheté
+  const hasFastMarket = state.starUpgrades.find(u => u.id === "star_market")?.bought;
+  const marketInterval = hasFastMarket ? 15000 : 30000; // 15s au lieu de 30s
+  setInterval(() => tickMarket(), marketInterval);
 
   // Autosave every 10s if upgrade bought
   setInterval(() => {
