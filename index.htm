@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -7,95 +8,96 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-touch-callout:none;-webkit-text-size-adjust:none}
   body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);color:#eee;display:flex;flex-direction:column;align-items:center;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;padding:1rem;min-height:100vh}
-  
-  button{padding:.6rem 1.2rem;font-size:1rem;margin:.3rem;border:none;border-radius:8px;background:linear-gradient(135deg, #0af 0%, #08d 100%);color:#fff;cursor:pointer;transition:all 0.3s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;font-weight:bold;box-shadow:0 4px 15px rgba(0,170,255,0.3)}
-  button:hover:not(:disabled){background:linear-gradient(135deg, #0cf 0%, #0ad 100%);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,170,255,0.5)}
-  button:disabled{background:linear-gradient(135deg, #444 0%, #333 100%);cursor:not-allowed;opacity:0.5;box-shadow:none}
-  button:active{transform:scale(0.98)}
-  
-  .container{width:100%;max-width:1600px}
-  .tab-nav{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;justify-content:center;background:rgba(0,0,0,0.5);padding:1rem;border-radius:12px;backdrop-filter:blur(10px);border:2px solid rgba(0,170,255,0.2)}
-  .tab-btn{padding:0.7rem 1.2rem;font-size:0.95rem;background:rgba(51,51,51,0.8);color:#aaa;border:2px solid transparent;border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:bold}
-  .tab-btn:hover{background:rgba(51,51,51,0.9);color:#0af}
-  .tab-btn.active{background:linear-gradient(135deg, #0af 0%, #08d 100%);color:#fff;border-color:#0af;box-shadow:0 0 15px rgba(0,170,255,0.4)}
-  .tab-content{display:none}
-  .tab-content.active{display:block;animation:fadeIn 0.3s}
-  
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,170,255,0.7)}50%{box-shadow:0 0 0 10px rgba(0,170,255,0)}}
-  @keyframes glow{0%{text-shadow:0 0 10px rgba(0,170,255,0.5)}50%{text-shadow:0 0 20px rgba(0,170,255,0.8)}100%{text-shadow:0 0 10px rgba(0,170,255,0.5)}}
-  
-  .row{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;width:100%}
-  .card{background:linear-gradient(135deg, rgba(26,26,26,0.9) 0%, rgba(30,15,30,0.9) 100%);padding:1.5rem;border-radius:12px;flex:1 1 300px;margin:.5rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:2px solid rgba(0,170,255,0.2);transition:all 0.3s;backdrop-filter:blur(10px)}
-  .card:hover{border-color:rgba(0,170,255,0.4);box-shadow:0 12px 40px rgba(0,170,255,0.1)}
-  .card h3{margin-top:0;color:#0cf;border-bottom:3px solid;border-image:linear-gradient(90deg, #0af, #08d) 1;padding-bottom:.8rem;margin-bottom:1rem;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px}
-  
-  .header{text-align:center;margin-bottom:2.5rem;animation:glow 3s infinite}
-  .header h1{font-size:2.5rem;background:linear-gradient(135deg, #0af, #0cf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;font-weight:900;letter-spacing:2px}
-  .header-stats{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;font-size:1rem}
-  .stat-block{background:linear-gradient(135deg, rgba(34,34,34,0.8) 0%, rgba(44,24,44,0.8) 100%);padding:1.2rem;border-radius:10px;min-width:140px;text-align:center;border:2px solid rgba(0,170,255,0.2);transition:all 0.3s;backdrop-filter:blur(10px)}
-  .stat-block:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,170,255,0.1)}
-  .stat-value{color:#0f0;font-weight:bold;font-size:1.4rem;text-shadow:0 0 10px rgba(0,255,0,0.3)}
-  .stat-block > div:first-child{color:#aaa;font-size:0.9rem;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px}
-  
-  #log{background:rgba(17,17,17,0.8);padding:1rem;border-radius:10px;margin:1rem 0;max-width:100%;border-left:5px solid #0af;max-height:120px;overflow-y:auto;font-size:0.9rem;backdrop-filter:blur(10px);border:1px solid rgba(0,170,255,0.1)}
-  .log-message{padding:.4rem 0;animation:slideIn 0.3s;font-weight:500}
-  .log-success{color:#0f0}.log-unlock{color:#0af}.log-event{color:#ffa}.log-warning{color:#f55}
-  @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-  
-  .gen-item,.up-item{display:flex;justify-content:space-between;align-items:center;margin:.5rem 0;padding:.6rem;background:linear-gradient(135deg, rgba(34,34,34,0.7) 0%, rgba(30,20,30,0.7) 100%);border-radius:8px;gap:0.5rem;flex-wrap:wrap;border:1px solid rgba(0,170,255,0.1);transition:all 0.2s}
-  .gen-item:hover{border-color:rgba(0,170,255,0.3);background:linear-gradient(135deg, rgba(44,44,44,0.8) 0%, rgba(40,25,40,0.8) 100%)}
-  .stat-line{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(0,170,255,0.1);font-size:0.95rem}
-  
-  #clickBtn{font-size:1.4rem;padding:1.5rem 3rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1.5rem;width:90%;max-width:450px;border-radius:15px;box-shadow:0 10px 40px rgba(0,170,255,0.3);transition:all 0.3s;font-weight:900;letter-spacing:2px;border:3px solid rgba(255,255,255,0.1)}
-  #clickBtn:hover{box-shadow:0 15px 50px rgba(0,170,255,0.5);transform:scale(1.08)}
-  #clickBtn:active{transform:scale(0.95)}
-  
-  .price{color:#ffa;font-weight:bold}.count{color:#0f0;font-weight:bold;font-size:1.1rem}
-  .progress-bar{background:rgba(51,51,51,0.8);height:20px;border-radius:10px;overflow:hidden;margin:.5rem 0;border:1px solid rgba(0,170,255,0.2)}
-  .progress-fill{background:linear-gradient(90deg, #0af, #0cf, #08d);height:100%;transition:width 0.2s;box-shadow:0 0 15px rgba(0,170,255,0.3);position:relative}
-  .progress-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;animation:shimmer 2s infinite}
-  @keyframes shimmer{0%{background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)}100%{background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)}}
-  
-  .buy-btn{padding:.5rem 1rem;font-size:0.9rem;border-radius:6px}
-  
-  .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:1000;border-radius:0;backdrop-filter:blur(5px)}
-  .modal-content{background:linear-gradient(135deg, #1a1a1a 0%, #2a0a2a 100%);padding:2.5rem;border-radius:15px;max-width:600px;max-height:80vh;overflow-y:auto;border:3px solid #0af;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
-  .modal-content h2{color:#0cf;margin-bottom:1.5rem;font-size:2rem;text-transform:uppercase;letter-spacing:1px}
-  .modal-content p{margin:1rem 0;line-height:1.8;font-size:1.05rem}
-  .modal-content button{width:100%;margin-top:1rem;padding:1rem}
-  
-  #upgradeClickSection{position:sticky;top:0;background:linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);padding:1.5rem;margin:-1.5rem -1.5rem 1.5rem -1.5rem;border-bottom:4px solid #0af;border-radius:12px 12px 0 0;backdrop-filter:blur(10px)}
-  
-  .skill-node{background:linear-gradient(135deg, rgba(34,34,34,0.8) 0%, rgba(30,20,30,0.8) 100%);padding:1rem;margin:0.6rem;border-radius:10px;border:3px solid rgba(0,170,255,0.3);text-align:center;cursor:pointer;transition:all 0.3s;min-width:150px}
-  .skill-node:hover{border-color:#0af;box-shadow:0 8px 20px rgba(0,170,255,0.2);transform:translateY(-3px)}
-  .skill-node.unlocked{background:linear-gradient(135deg, rgba(0,68,0,0.8) 0%, rgba(20,40,20,0.8) 100%);border-color:#0f0;box-shadow:0 0 20px rgba(0,255,0,0.2)}
-  .skill-node.locked{opacity:0.5}
-  
-  .trade-item{background:linear-gradient(135deg, rgba(34,34,34,0.8) 0%, rgba(34,25,20,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;border-left:4px solid #f80}
-  
-  .challenge-item{background:linear-gradient(135deg, rgba(42,26,0,0.8) 0%, rgba(40,30,10,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;border-left:4px solid #ffa}
-  .challenge-item.completed{background:linear-gradient(135deg, rgba(26,42,0,0.8) 0%, rgba(30,40,10,0.8) 100%);border-left-color:#0f0}
-  
-  .milestone-item{background:linear-gradient(135deg, rgba(26,26,42,0.8) 0%, rgba(30,20,40,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;border-left:4px solid #a0f}
-  .milestone-item.completed{background:linear-gradient(135deg, rgba(26,42,26,0.8) 0%, rgba(20,40,20,0.8) 100%);border-left-color:#0f0}
-  
-  .corruption-item{background:linear-gradient(135deg, rgba(42,18,0,0.9) 0%, rgba(50,25,10,0.9) 100%);padding:0.8rem;margin:0.5rem 0;border-radius:8px;font-size:0.95rem;display:flex;justify-content:space-between;align-items:center;border:2px solid #f80}
-  
-  .research-item{background:linear-gradient(135deg, rgba(26,42,42,0.8) 0%, rgba(20,40,40,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;border-left:4px solid #0af}
-  .research-item.completed{background:linear-gradient(135deg, rgba(26,42,26,0.8) 0%, rgba(20,40,20,0.8) 100%);border-left-color:#0f0}
-  
-  .achievement-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.8rem}
-  .achievement-item{background:linear-gradient(135deg, rgba(42,42,0,0.8) 0%, rgba(40,40,10,0.8) 100%);padding:0.8rem;border-radius:8px;border:2px solid rgba(255,170,0,0.3);transition:all 0.3s}
-  .achievement-item.unlocked{background:linear-gradient(135deg, rgba(0,68,0,0.8) 0%, rgba(0,100,0,0.8) 100%);border-color:#0f0;box-shadow:0 0 15px rgba(0,255,0,0.2)}
-  
-  .feature-box{background:linear-gradient(135deg, rgba(26,26,42,0.8) 0%, rgba(30,20,40,0.8) 100%);padding:1.2rem;border-radius:10px;margin:0.8rem 0;border:2px solid rgba(0,170,255,0.2);transition:all 0.3s}
-  .feature-box:hover{border-color:rgba(0,170,255,0.4)}
-  
-  .bot-status{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 0.5rem;animation:pulse 2s infinite}
-  .bot-status.active{background:#0f0}
-  .bot-status.inactive{background:#555}
+
+button{padding:.6rem 1.2rem;font-size:1rem;margin:.3rem;border:none;border-radius:8px;background:linear-gradient(135deg, #0af 0%, #08d 100%);color:#fff;cursor:pointer;transition:all 0.3s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;font-weight:bold;box-shadow:0 4px 15px rgba(0,170,255,0.3)}
+button:hover:not(:disabled){background:linear-gradient(135deg, #0cf 0%, #0ad 100%);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,170,255,0.5)}
+button:disabled{background:linear-gradient(135deg, #444 0%, #333 100%);cursor:not-allowed;opacity:0.5;box-shadow:none}
+button:active{transform:scale(0.98)}
+
+.container{width:100%;max-width:1600px}
+.tab-nav{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;justify-content:center;background:rgba(0,0,0,0.5);padding:1rem;border-radius:12px;backdrop-filter:blur(10px);border:2px solid rgba(0,170,255,0.2)}
+.tab-btn{padding:0.7rem 1.2rem;font-size:0.95rem;background:rgba(51,51,51,0.8);color:#aaa;border:2px solid transparent;border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:bold}
+.tab-btn:hover{background:rgba(51,51,51,0.9);color:#0af}
+.tab-btn.active{background:linear-gradient(135deg, #0af 0%, #08d 100%);color:#fff;border-color:#0af;box-shadow:0 0 15px rgba(0,170,255,0.4)}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn 0.3s}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,170,255,0.7)}50%{box-shadow:0 0 0 10px rgba(0,170,255,0)}}
+@keyframes glow{0%{text-shadow:0 0 10px rgba(0,170,255,0.5)}50%{text-shadow:0 0 20px rgba(0,170,255,0.8)}100%{text-shadow:0 0 10px rgba(0,170,255,0.5)}}
+
+.row{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;width:100%}
+.card{background:linear-gradient(135deg, rgba(26,26,26,0.9) 0%, rgba(30,15,30,0.9) 100%);padding:1.5rem;border-radius:12px;flex:1 1 300px;margin:.5rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:2px solid rgba(0,170,255,0.2);transition:all 0.3s;backdrop-filter:blur(10px)}
+.card:hover{border-color:rgba(0,170,255,0.4);box-shadow:0 12px 40px rgba(0,170,255,0.1)}
+.card h3{margin-top:0;color:#0cf;border-bottom:3px solid;border-image:linear-gradient(90deg, #0af, #08d) 1;padding-bottom:.8rem;margin-bottom:1rem;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px}
+
+.header{text-align:center;margin-bottom:2.5rem;animation:glow 3s infinite}
+.header h1{font-size:2.5rem;background:linear-gradient(135deg, #0af, #0cf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;font-weight:900;letter-spacing:2px}
+.header-stats{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;font-size:1rem}
+.stat-block{background:linear-gradient(135deg, rgba(34,34,34,0.8) 0%, rgba(44,24,44,0.8) 100%);padding:1.2rem;border-radius:10px;min-width:140px;text-align:center;border:2px solid rgba(0,170,255,0.2);transition:all 0.3s;backdrop-filter:blur(10px)}
+.stat-block:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,170,255,0.1)}
+.stat-value{color:#0f0;font-weight:bold;font-size:1.4rem;text-shadow:0 0 10px rgba(0,255,0,0.3)}
+.stat-block > div:first-child{color:#aaa;font-size:0.9rem;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px}
+
+#log{background:rgba(17,17,17,0.8);padding:1rem;border-radius:10px;margin:1rem 0;max-width:100%;border-left:5px solid #0af;max-height:120px;overflow-y:auto;font-size:0.9rem;backdrop-filter:blur(10px);border:1px solid rgba(0,170,255,0.1)}
+.log-message{padding:.4rem 0;animation:slideIn 0.3s;font-weight:500}
+.log-success{color:#0f0}.log-unlock{color:#0af}.log-event{color:#ffa}.log-warning{color:#f55}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+.gen-item,.up-item{display:flex;justify-content:space-between;align-items:center;margin:.5rem 0;padding:.6rem;background:linear-gradient(135deg, rgba(34,34,34,0.7) 0%, rgba(30,20,30,0.7) 100%);border-radius:8px;gap:0.5rem;flex-wrap:wrap;border:1px solid rgba(0,170,255,0.1);transition:all 0.2s}
+.gen-item:hover{border-color:rgba(0,170,255,0.3);background:linear-gradient(135deg, rgba(44,44,44,0.8) 0%, rgba(40,25,40,0.8) 100%)}
+.stat-line{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(0,170,255,0.1);font-size:0.95rem}
+
+#clickBtn{font-size:1.4rem;padding:1.5rem 3rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1.5rem;width:90%;max-width:450px;border-radius:15px;box-shadow:0 10px 40px rgba(0,170,255,0.3);transition:all 0.3s;font-weight:900;letter-spacing:2px;border:3px solid rgba(255,255,255,0.1)}
+#clickBtn:hover{box-shadow:0 15px 50px rgba(0,170,255,0.5);transform:scale(1.08)}
+#clickBtn:active{transform:scale(0.95)}
+
+.price{color:#ffa;font-weight:bold}.count{color:#0f0;font-weight:bold;font-size:1.1rem}
+.progress-bar{background:rgba(51,51,51,0.8);height:20px;border-radius:10px;overflow:hidden;margin:.5rem 0;border:1px solid rgba(0,170,255,0.2)}
+.progress-fill{background:linear-gradient(90deg, #0af, #0cf, #08d);height:100%;transition:width 0.2s;box-shadow:0 0 15px rgba(0,170,255,0.3);position:relative}
+.progress-fill::after{content:’’;position:absolute;top:0;left:0;right:0;bottom:0;animation:shimmer 2s infinite}
+@keyframes shimmer{0%{background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)}100%{background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)}}
+
+.buy-btn{padding:.5rem 1rem;font-size:0.9rem;border-radius:6px}
+
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:1000;border-radius:0;backdrop-filter:blur(5px)}
+.modal-content{background:linear-gradient(135deg, #1a1a1a 0%, #2a0a2a 100%);padding:2.5rem;border-radius:15px;max-width:600px;max-height:80vh;overflow-y:auto;border:3px solid #0af;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
+.modal-content h2{color:#0cf;margin-bottom:1.5rem;font-size:2rem;text-transform:uppercase;letter-spacing:1px}
+.modal-content p{margin:1rem 0;line-height:1.8;font-size:1.05rem}
+.modal-content button{width:100%;margin-top:1rem;padding:1rem}
+
+#upgradeClickSection{position:sticky;top:0;background:linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);padding:1.5rem;margin:-1.5rem -1.5rem 1.5rem -1.5rem;border-bottom:4px solid #0af;border-radius:12px 12px 0 0;backdrop-filter:blur(10px)}
+
+.skill-node{background:linear-gradient(135deg, rgba(34,34,34,0.8) 0%, rgba(30,20,30,0.8) 100%);padding:1rem;margin:0.6rem;border-radius:10px;border:3px solid rgba(0,170,255,0.3);text-align:center;cursor:pointer;transition:all 0.3s;min-width:150px}
+.skill-node:hover{border-color:#0af;box-shadow:0 8px 20px rgba(0,170,255,0.2);transform:translateY(-3px)}
+.skill-node.unlocked{background:linear-gradient(135deg, rgba(0,68,0,0.8) 0%, rgba(20,40,20,0.8) 100%);border-color:#0f0;box-shadow:0 0 20px rgba(0,255,0,0.2)}
+.skill-node.locked{opacity:0.5}
+
+.trade-item{background:linear-gradient(135deg, rgba(34,34,34,0.8) 0%, rgba(34,25,20,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;border-left:4px solid #f80}
+
+.challenge-item{background:linear-gradient(135deg, rgba(42,26,0,0.8) 0%, rgba(40,30,10,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;border-left:4px solid #ffa}
+.challenge-item.completed{background:linear-gradient(135deg, rgba(26,42,0,0.8) 0%, rgba(30,40,10,0.8) 100%);border-left-color:#0f0}
+
+.milestone-item{background:linear-gradient(135deg, rgba(26,26,42,0.8) 0%, rgba(30,20,40,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;border-left:4px solid #a0f}
+.milestone-item.completed{background:linear-gradient(135deg, rgba(26,42,26,0.8) 0%, rgba(20,40,20,0.8) 100%);border-left-color:#0f0}
+
+.corruption-item{background:linear-gradient(135deg, rgba(42,18,0,0.9) 0%, rgba(50,25,10,0.9) 100%);padding:0.8rem;margin:0.5rem 0;border-radius:8px;font-size:0.95rem;display:flex;justify-content:space-between;align-items:center;border:2px solid #f80}
+
+.research-item{background:linear-gradient(135deg, rgba(26,42,42,0.8) 0%, rgba(20,40,40,0.8) 100%);padding:1rem;margin:0.6rem 0;border-radius:10px;border-left:4px solid #0af}
+.research-item.completed{background:linear-gradient(135deg, rgba(26,42,26,0.8) 0%, rgba(20,40,20,0.8) 100%);border-left-color:#0f0}
+
+.achievement-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.8rem}
+.achievement-item{background:linear-gradient(135deg, rgba(42,42,0,0.8) 0%, rgba(40,40,10,0.8) 100%);padding:0.8rem;border-radius:8px;border:2px solid rgba(255,170,0,0.3);transition:all 0.3s}
+.achievement-item.unlocked{background:linear-gradient(135deg, rgba(0,68,0,0.8) 0%, rgba(0,100,0,0.8) 100%);border-color:#0f0;box-shadow:0 0 15px rgba(0,255,0,0.2)}
+
+.feature-box{background:linear-gradient(135deg, rgba(26,26,42,0.8) 0%, rgba(30,20,40,0.8) 100%);padding:1.2rem;border-radius:10px;margin:0.8rem 0;border:2px solid rgba(0,170,255,0.2);transition:all 0.3s}
+.feature-box:hover{border-color:rgba(0,170,255,0.4)}
+
+.bot-status{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 0.5rem;animation:pulse 2s infinite}
+.bot-status.active{background:#0f0}
+.bot-status.inactive{background:#555}
 </style>
+
 </head>
 <body>
 
@@ -127,54 +129,63 @@
   </div>
 
   <!-- MAIN TAB -->
+
   <div id="main" class="tab-content active">
     <button id="clickBtn">👆 CLIC +<span id="clickValue">1</span></button>
-    
-    <div id="upgradeClickSection" class="card">
-      <h3>⚡ Upgrades de Clics (Toujours Visible)</h3>
-      <div id="clickUpgrades"></div>
-    </div>
 
-    <div class="row">
-      <div class="card">
-        <h3>🤖 Générateurs</h3>
-        <div id="gens"></div>
-      </div>
-      
-      <div class="card">
-        <h3>⚡ Autres Upgrades</h3>
-        <div id="ups"></div>
-      </div>
-      
-      <div class="card">
-        <h3>✨ Shop Étoiles</h3>
-        <div class="stat-line"><span>Étoiles Disponibles</span><span class="count" id="starsAvailable">0</span> ⭐</div>
-        <div id="starShop"></div>
-      </div>
-    </div>
+```
+<div id="upgradeClickSection" class="card">
+  <h3>⚡ Upgrades de Clics (Toujours Visible)</h3>
+  <div id="clickUpgrades"></div>
+</div>
+
+<div class="row">
+  <div class="card">
+    <h3>🤖 Générateurs</h3>
+    <div id="gens"></div>
+  </div>
+  
+  <div class="card">
+    <h3>⚡ Autres Upgrades</h3>
+    <div id="ups"></div>
+  </div>
+  
+  <div class="card">
+    <h3>✨ Shop Étoiles</h3>
+    <div class="stat-line"><span>Étoiles Disponibles</span><span class="count" id="starsAvailable">0</span> ⭐</div>
+    <div id="starShop"></div>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- PRESTIGE TAB -->
+
   <div id="prestige" class="tab-content">
     <div class="row">
       <div class="card">
         <h3>⭐ Prestige Standard</h3>
         <div class="stat-line"><span>Étoiles Gagnées</span><span class="count" id="prestigeGain">0</span></div>
-        <div class="stat-line"><span>Coût</span><span class="price">10,000</span> 💰</div>
+        <div class="stat-line"><span>Coût</span><span class="price">5,000</span> 💰</div>
         <div class="progress-bar"><div class="progress-fill" id="prestigeProgress" style="width:0%"></div></div>
         <button onclick="prestige()" id="prestigeBtn" disabled style="width:100%;margin-top:0.5rem">Prestige +<span id="prestigeGainDisplay">0</span> ⭐</button>
         <button onclick="prestigeMax()" id="prestigeMaxBtn" disabled style="width:100%;margin-top:0.5rem">MAX</button>
       </div>
 
-      <div class="card">
-        <h3>🌀 Super Prestige (Galaxies)</h3>
-        <div id="galaxyInfo"></div>
-        <button onclick="superPrestige()" id="superPrestigeBtn" disabled style="width:100%;margin-top:1rem">Super Prestige</button>
-      </div>
-    </div>
+```
+  <div class="card">
+    <h3>🌀 Super Prestige (Galaxies)</h3>
+    <div id="galaxyInfo"></div>
+    <button onclick="superPrestige()" id="superPrestigeBtn" disabled style="width:100%;margin-top:1rem">Super Prestige</button>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- TRADING TAB -->
+
   <div id="trading" class="tab-content">
     <div class="row">
       <div class="card" style="flex:1 1 100%">
@@ -185,6 +196,7 @@
   </div>
 
   <!-- MILESTONES TAB -->
+
   <div id="milestones" class="tab-content">
     <div class="row">
       <div class="card" style="flex:1 1 100%">
@@ -195,6 +207,7 @@
   </div>
 
   <!-- CHALLENGES TAB -->
+
   <div id="challenges" class="tab-content">
     <div class="row">
       <div class="card" style="flex:1 1 100%">
@@ -206,6 +219,7 @@
   </div>
 
   <!-- SKILLS TAB -->
+
   <div id="skills" class="tab-content">
     <div class="row">
       <div class="card" style="flex:1 1 100%">
@@ -217,6 +231,7 @@
   </div>
 
   <!-- RESEARCH TAB -->
+
   <div id="research" class="tab-content">
     <div class="row">
       <div class="card" style="flex:1 1 100%">
@@ -227,6 +242,7 @@
   </div>
 
   <!-- CORRUPTION TAB -->
+
   <div id="corruption" class="tab-content">
     <div class="row">
       <div class="card" style="flex:1 1 100%">
@@ -239,6 +255,7 @@
   </div>
 
   <!-- STATS TAB -->
+
   <div id="stats" class="tab-content">
     <div class="row">
       <div class="card">
@@ -251,17 +268,21 @@
         <div class="stat-line"><span>Max Pièces</span><span class="count" id="maxCoinsDisplay">0</span></div>
       </div>
 
-      <div class="card">
-        <h3>🏆 Achievements</h3>
-        <div style="font-size:0.95rem;margin-bottom:1rem;font-weight:bold">
-          <span class="count" id="achievementCount">0</span> / <span id="achievementTotal">0</span>
-        </div>
-        <div id="achievements" class="achievement-grid"></div>
-      </div>
+```
+  <div class="card">
+    <h3>🏆 Achievements</h3>
+    <div style="font-size:0.95rem;margin-bottom:1rem;font-weight:bold">
+      <span class="count" id="achievementCount">0</span> / <span id="achievementTotal">0</span>
     </div>
+    <div id="achievements" class="achievement-grid"></div>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- SETTINGS TAB -->
+
   <div id="settings" class="tab-content">
     <div class="row">
       <div class="card">
@@ -272,16 +293,20 @@
         <input id="importInput" type="file" accept=".txt" style="display:none">
       </div>
 
-      <div class="card">
-        <h3>📖 Aide & Tutoriel</h3>
-        <button onclick="showTutorial()" style="width:100%">📖 Afficher le Tutoriel</button>
-        <button onclick="showHelp()" style="width:100%;margin:0.5rem 0">❓ Comment Jouer</button>
-      </div>
-    </div>
+```
+  <div class="card">
+    <h3>📖 Aide & Tutoriel</h3>
+    <button onclick="showTutorial()" style="width:100%">📖 Afficher le Tutoriel</button>
+    <button onclick="showHelp()" style="width:100%;margin:0.5rem 0">❓ Comment Jouer</button>
+  </div>
+</div>
+```
+
   </div>
 </div>
 
 <!-- TUTORIAL MODAL -->
+
 <div id="tutorialModal" class="modal" style="display:none">
   <div class="modal-content">
     <h2>🎮 Bienvenue dans Incremental Trade!</h2>
@@ -337,7 +362,7 @@ let state = {
     {id:"ten_coins", name:"Économe", desc:"10 pièces", unlocked:false},
     {id:"hundred", name:"Capitaliste", desc:"100 pièces", unlocked:false},
     {id:"thousand", name:"Millionnaire", desc:"1,000 pièces", unlocked:false},
-    {id:"tenk", name:"Richissime", desc:"10,000 pièces", unlocked:false},
+    {id:"fivek", name:"Riche", desc:"5,000 pièces", unlocked:false},
     {id:"million", name:"Ultra-Millionnaire", desc:"1,000,000 pièces", unlocked:false},
     {id:"first_gen", name:"Automatisation", desc:"Acheter 1er générateur", unlocked:false},
     {id:"five_gens", name:"Industrialiste", desc:"5 générateurs", unlocked:false},
@@ -389,7 +414,7 @@ let state = {
     {id:"m1", name:"Première Pièce", desc:"Gagner 1 pièce", reward:5, completed:false},
     {id:"m2", name:"Cent Pièces", desc:"100 pièces en poche", reward:10, completed:false},
     {id:"m3", name:"Millier", desc:"1,000 pièces", reward:20, completed:false},
-    {id:"m4", name:"Dizaine de Milliers", desc:"10,000 pièces", reward:30, completed:false},
+    {id:"m4", name:"Cinq Mille", desc:"5,000 pièces", reward:30, completed:false},
     {id:"m5", name:"Million", desc:"1,000,000 pièces", reward:50, completed:false},
     {id:"m6", name:"Automatisation", desc:"Acheter 1er générateur", reward:15, completed:false},
     {id:"m7", name:"Cinq Générateurs", desc:"5 générateurs achetés", reward:20, completed:false},
@@ -593,8 +618,8 @@ function unlockSkill(skillId) {
 }
 
 function prestige() {
-  if (state.coins < 1000 || state.prestigeProgress < 10000) return;
-  let gain = Math.floor(state.prestigeProgress / 10000);
+  if (state.coins < 1000 || state.prestigeProgress < 5000) return;
+  let gain = Math.floor(state.prestigeProgress / 5000);
   let skillMult = 1;
   for (let s of state.skillTree) {
     if (s.unlocked && s.effect.type === "prestige") skillMult *= s.effect.val;
@@ -779,7 +804,7 @@ function checkMilestones() {
     m1: () => state.totalCoins >= 1,
     m2: () => state.coins >= 100,
     m3: () => state.coins >= 1000,
-    m4: () => state.coins >= 10000,
+    m4: () => state.coins >= 5000,
     m5: () => state.coins >= 1000000,
     m6: () => state.generators.some(g => g.count > 0),
     m7: () => state.generators.reduce((a,g) => a + g.count, 0) >= 5,
@@ -811,7 +836,7 @@ function checkAchievements() {
     ten_coins: () => state.coins >= 10,
     hundred: () => state.coins >= 100,
     thousand: () => state.coins >= 1000,
-    tenk: () => state.coins >= 10000,
+    fivek: () => state.coins >= 5000,
     million: () => state.coins >= 1e6,
     first_gen: () => state.generators.some(g => g.count > 0),
     five_gens: () => state.generators.reduce((a,g) => a + g.count, 0) >= 5,
@@ -972,15 +997,15 @@ function showTutorial() {
     <p>💡 <strong>IMPORTANT:</strong> Les upgrades ne s'achètent qu'UNE FOIS mais restent PERMANENTS même après prestige!</p>
     
     <h4 style="color:#0af;margin-top:1.5rem">4️⃣ PRESTIGE - LES ⭐ ÉTOILES</h4>
-    <p>Quand tu atteins <strong>10,000 pièces AU TOTAL</strong>, tu peux faire un <strong>PRESTIGE</strong>!</p>
+    <p>Quand tu atteins <strong>5,000 pièces AU TOTAL</strong>, tu peux faire un <strong>PRESTIGE</strong>!</p>
     <p>Le prestige:</p>
     <ul style="margin-left:2rem">
       <li>🔄 Reset tous tes générateurs à 0</li>
       <li>🔄 Reset tes pièces actuelles</li>
-      <li>⭐ Te donne des ÉTOILES (formule: total coins ÷ 10,000)</li>
+      <li>⭐ Te donne des ÉTOILES (formule: total coins ÷ 5,000)</li>
       <li>📊 La barre de progression repart de 0!</li>
     </ul>
-    <p>Exemple: Si tu as 50,000 pièces au total → tu gains 5 ⭐</p>
+    <p>Exemple: Si tu as 25,000 pièces au total → tu gains 5 ⭐</p>
     
     <h4 style="color:#0af;margin-top:1.5rem">5️⃣ ÉTOILES - POWER-UPS PERMANENTS</h4>
     <p>Avec tes ⭐ étoiles, tu peux acheter des upgrades SUPER puissants dans le SHOP ÉTOILES:</p>
@@ -1057,7 +1082,7 @@ function showTutorial() {
     
     <h4 style="color:#ffa;margin-top:1.5rem">💡 STRATÉGIE GAGNANTE</h4>
     <ol style="margin-left:2rem">
-      <li><strong>Clique jusqu'à 10K</strong> pour le 1er prestige</li>
+      <li><strong>Clique jusqu'à 5K</strong> pour le 1er prestige</li>
       <li><strong>Achète upgrades de clics</strong> en priorité (permanent!)</li>
       <li><strong>Fais prestige régulièrement</strong> pour accumules ⭐</li>
       <li><strong>Achète étoile-upgrades</strong> - elles sont TRÈS puissantes</li>
@@ -1131,12 +1156,12 @@ function updateUI(updateLog = true) {
   $("skillPoints").textContent = state.skillPoints;
   
   // Prestige display
-  let pGain = Math.floor(state.prestigeProgress / 10000);
+  let pGain = Math.floor(state.prestigeProgress / 5000);
   $("prestigeGain").textContent = pGain;
   $("prestigeGainDisplay").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
-  $("prestigeProgress").style.width = Math.min(100, (state.prestigeProgress / 10000) * 100) + "%";
+  $("prestigeProgress").style.width = Math.min(100, (state.prestigeProgress / 5000) * 100) + "%";
   
   // Galaxy
   let galaxyCost = state.galaxies === 0 ? 100 : 100 * Math.pow(10, state.galaxies);
@@ -1370,5 +1395,6 @@ function init() {
 
 init();
 </script>
+
 </body>
 </html>
