@@ -15,85 +15,42 @@
   
   .container{width:100%;max-width:1400px}
   .tab-nav{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;justify-content:center}
-  .tab-btn{padding:0.5rem 1rem;font-size:1rem;background:#333;color:#aaa;border:2px solid transparent}
+  .tab-btn{padding:0.5rem 1rem;font-size:1rem;background:#333;color:#aaa;border:2px solid transparent;border-radius:6px;cursor:pointer}
   .tab-btn.active{background:#0af;color:#fff;border-color:#0af}
   .tab-content{display:none}
   .tab-content.active{display:block}
   
   .row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%}
   .card{background:#1a1a1a;padding:1rem;border-radius:8px;flex:1 1 280px;margin:.5rem;box-shadow:0 4px 6px rgba(0,0,0,0.5);border-left:4px solid #0af}
-  .card h3{margin-top:0;color:#0af;border-bottom:2px solid #0af;padding-bottom:.5rem;margin-bottom:1rem}
-  .card h4{color:#0cf;margin-top:1rem;margin-bottom:0.5rem}
+  .card h3{margin-top:0;color:#0af;border-bottom:2px solid #0af;padding-bottom:.5rem;margin-bottom:1rem;font-size:1.1rem}
   
   .header{text-align:center;margin-bottom:2rem}
-  .header h1{font-size:2.5rem;color:#0af;margin-bottom:0.5rem;text-shadow:0 0 20px rgba(0,170,255,0.5)}
-  .header-stats{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;font-size:1.1rem}
-  .stat-block{background:#222;padding:1rem;border-radius:6px;min-width:150px}
-  .stat-value{color:#0f0;font-weight:bold;font-size:1.3rem}
+  .header h1{font-size:2rem;color:#0af;margin-bottom:0.5rem;text-shadow:0 0 20px rgba(0,170,255,0.5)}
+  .header-stats{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;font-size:1rem}
+  .stat-block{background:#222;padding:0.8rem;border-radius:6px;min-width:120px;text-align:center}
+  .stat-value{color:#0f0;font-weight:bold;font-size:1.2rem}
   
-  #log{background:#111;padding:.8rem;border-radius:8px;margin:1rem 0;max-width:100%;border-left:4px solid #0af;max-height:150px;overflow-y:auto}
-  .log-message{padding:.3rem 0;font-size:.85rem;animation:fadeIn 0.3s}
-  .log-success{color:#0f0}
-  .log-unlock{color:#0af}
-  .log-event{color:#ffa}
-  .log-warning{color:#f55}
+  #log{background:#111;padding:.6rem;border-radius:8px;margin:1rem 0;max-width:100%;border-left:4px solid #0af;max-height:100px;overflow-y:auto;font-size:0.85rem}
+  .log-message{padding:.2rem 0;animation:fadeIn 0.3s}
+  .log-success{color:#0f0}.log-unlock{color:#0af}.log-event{color:#ffa}.log-warning{color:#f55}
   @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
   
-  .gen-item,.up-item,.milestone-item,.challenge-item,.research-item{display:flex;justify-content:space-between;align-items:center;margin:.4rem 0;padding:.5rem;background:#222;border-radius:4px}
-  .gen-item:hover,.up-item:hover{background:#333}
+  .gen-item,.up-item{display:flex;justify-content:space-between;align-items:center;margin:.4rem 0;padding:.4rem;background:#222;border-radius:4px;gap:0.3rem;flex-wrap:wrap}
+  .stat-line{display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #333;font-size:0.95rem}
   
-  .milestone-item{background:#1a2a00;border-left:4px solid #0f0}
-  .milestone-item.completed{opacity:0.6}
+  #clickBtn{font-size:1.3rem;padding:1rem 2rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1rem;width:90%;max-width:400px}
+  .price{color:#ffa}.count{color:#0f0;font-weight:bold}
+  .progress-bar{background:#333;height:15px;border-radius:8px;overflow:hidden;margin:.3rem 0}
+  .progress-fill{background:linear-gradient(90deg, #0af, #0cf);height:100%;transition:width 0.1s}
+  .buy-btn{padding:.4rem .8rem;font-size:0.9rem}
   
-  .challenge-item{background:#2a1a00;border-left:4px solid #ffa}
-  .challenge-item.completed{background:#1a2a00;border-left-color:#0f0}
+  .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:1000;border-radius:0}
+  .modal-content{background:#1a1a1a;padding:2rem;border-radius:12px;max-width:600px;max-height:80vh;overflow-y:auto;border:3px solid #0af}
+  .modal-content h2{color:#0af;margin-bottom:1rem;font-size:1.8rem}
+  .modal-content p{margin:0.8rem 0;line-height:1.6;font-size:1.05rem}
+  .modal-content button{width:100%;margin-top:1rem;padding:0.8rem}
   
-  .research-item{background:#1a1a2a;border-left:4px solid #0cf}
-  .research-item.completed{opacity:0.6}
-  
-  .achievement{background:#2a2a00;padding:.5rem;margin:.3rem 0;border-left:4px solid #ffa;border-radius:4px;font-size:.85rem}
-  .achievement.unlocked{background:#002a00;border-left-color:#0f0}
-  
-  .stat-line{display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #333}
-  
-  .progress-bar{background:#333;height:20px;border-radius:10px;overflow:hidden;margin:.5rem 0}
-  .progress-fill{background:linear-gradient(90deg, #0af, #0cf);height:100%;transition:width 0.3s}
-  
-  .buy-btn{padding:.5rem 1rem;font-size:.9rem}
-  .price{color:#ffa}
-  .count{color:#0f0;font-weight:bold}
-  
-  .event-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:3px solid #ffa;border-radius:12px;padding:2rem;text-align:center;z-index:1000;box-shadow:0 0 30px rgba(255,170,0,0.5)}
-  .event-popup h2{color:#ffa;font-size:1.8rem;margin-bottom:1rem}
-  .event-popup p{font-size:1.2rem;margin:0.5rem 0;color:#eee}
-  .event-popup button{margin-top:1rem}
-  
-  .corruption-item{background:#2a0000;border-left:4px solid #f55;padding:.5rem;margin:.3rem 0;border-radius:4px}
-  .corruption-item.active{background:#4a0000}
-  
-  .skill-tree-container{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
-  .skill-node{background:#222;padding:1rem;border-radius:8px;border:2px solid #555;text-align:center;cursor:pointer;transition:all 0.2s}
-  .skill-node:hover:not(.locked){border-color:#0af;transform:scale(1.05)}
-  .skill-node.locked{opacity:0.5;cursor:not-allowed}
-  .skill-node.unlocked{border-color:#0f0;background:#1a2a1a}
-  .skill-node small{display:block;margin-top:0.5rem;color:#aaa}
-  
-  .galaxy-display{text-align:center;padding:1rem;background:#222;border-radius:8px;margin:1rem 0}
-  .galaxy-count{font-size:2rem;color:#0af;font-weight:bold;margin:1rem 0}
-  
-  .difficulty-selector{display:flex;gap:0.5rem;flex-wrap:wrap;margin:1rem 0}
-  .difficulty-btn{padding:0.7rem 1.2rem;background:#333;border:2px solid #555;border-radius:6px;cursor:pointer;transition:all 0.2s}
-  .difficulty-btn.active{background:#0af;border-color:#0af;color:#fff}
-  
-  .market-chart{background:#111;padding:1rem;border-radius:8px;margin:1rem 0;height:200px;position:relative}
-  
-  .mini-event{position:fixed;bottom:20px;right:20px;background:#2a2a00;border-left:4px solid #ffa;padding:1rem;border-radius:6px;animation:slideIn 0.3s;z-index:100}
-  @keyframes slideIn{from{transform:translateX(400px)}to{transform:translateX(0)}}
-  
-  .tabs-container{width:100%}
-  
-  .compact-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.5rem}
-  .compact-item{background:#222;padding:0.5rem;border-radius:4px;font-size:0.9rem}
+  #upgradeClickSection{position:sticky;top:0;background:#0a0a0a;padding:1rem;margin:-1rem -1rem 1rem -1rem;border-bottom:3px solid #0af;border-radius:0}
 </style>
 </head>
 <body>
@@ -102,26 +59,11 @@
   <div class="header">
     <h1>💰 INCREMENTAL TRADE ULTIMATE 💰</h1>
     <div class="header-stats">
-      <div class="stat-block">
-        <div>Pièces</div>
-        <div class="stat-value" id="coins">0</div>
-      </div>
-      <div class="stat-block">
-        <div>Pièces/sec</div>
-        <div class="stat-value" id="cps">0</div>
-      </div>
-      <div class="stat-block">
-        <div>⭐ Étoiles</div>
-        <div class="stat-value" id="stars">0</div>
-      </div>
-      <div class="stat-block">
-        <div>🌀 Galaxies</div>
-        <div class="stat-value" id="galaxies">0</div>
-      </div>
-      <div class="stat-block">
-        <div>Prestige</div>
-        <div class="stat-value" id="prestigeCount">0</div>
-      </div>
+      <div class="stat-block"><div>Pièces</div><div class="stat-value" id="coins">0</div></div>
+      <div class="stat-block"><div>Pièces/sec</div><div class="stat-value" id="cps">0</div></div>
+      <div class="stat-block"><div>⭐ Étoiles</div><div class="stat-value" id="stars">0</div></div>
+      <div class="stat-block"><div>🌀 Galaxies</div><div class="stat-value" id="galaxies">0</div></div>
+      <div class="stat-block"><div>Prestige</div><div class="stat-value" id="prestigeCount">0</div></div>
     </div>
   </div>
 
@@ -134,16 +76,19 @@
     <button class="tab-btn" onclick="switchTab('milestones')">🎯 MILESTONES</button>
     <button class="tab-btn" onclick="switchTab('challenges')">⚔️ CHALLENGES</button>
     <button class="tab-btn" onclick="switchTab('skills')">🌳 SKILLS</button>
-    <button class="tab-btn" onclick="switchTab('research')">📚 RECHERCHE</button>
-    <button class="tab-btn" onclick="switchTab('corruption')">🔥 CORRUPTION</button>
     <button class="tab-btn" onclick="switchTab('stats')">📈 STATS</button>
     <button class="tab-btn" onclick="switchTab('settings')">⚙️ PARAMÈTRES</button>
   </div>
 
   <!-- MAIN TAB -->
   <div id="main" class="tab-content active">
-    <button id="clickBtn" style="font-size:2rem;padding:1.5rem 3rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1rem;width:90%;max-width:400px;">👆 Clic +<span id="clickValue">1</span></button>
+    <button id="clickBtn" style="font-size:1.3rem;padding:1rem 2rem">👆 Clic +<span id="clickValue">1</span></button>
     
+    <div id="upgradeClickSection" class="card">
+      <h3>⚡ Upgrade Clics (Toujours visible)</h3>
+      <div id="clickUpgrades"></div>
+    </div>
+
     <div class="row">
       <div class="card">
         <h3>🤖 Générateurs</h3>
@@ -151,28 +96,14 @@
       </div>
       
       <div class="card">
-        <h3>⚡ Upgrades</h3>
+        <h3>⚡ Autres Upgrades</h3>
         <div id="ups"></div>
       </div>
       
       <div class="card">
         <h3>✨ Shop Étoiles</h3>
-        <div>Étoiles : <span class="count" id="starsAvailable">0</span> ⭐</div>
-        <div id="starShop" style="max-height:300px;overflow-y:auto;margin-top:.5rem"></div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="card">
-        <h3>🎲 Événements Aléatoires</h3>
-        <button id="eventBtn" onclick="triggerRandomEvent()">Déclencher Événement</button>
-        <div id="eventLog" style="margin-top:1rem;font-size:0.9rem"></div>
-      </div>
-
-      <div class="card">
-        <h3>📊 Mode Difficile</h3>
-        <div class="difficulty-selector" id="difficultySelector"></div>
-        <div style="margin-top:1rem;font-size:0.9rem" id="difficultyDesc"></div>
+        <div>Étoiles: <span class="count" id="starsAvailable">0</span> ⭐</div>
+        <div id="starShop"></div>
       </div>
     </div>
   </div>
@@ -183,23 +114,16 @@
       <div class="card">
         <h3>⭐ Prestige Standard</h3>
         <div class="stat-line"><span>Étoiles Gagnées</span><span class="count" id="prestigeGain">0</span></div>
-        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">10000</span> 💰</div>
+        <div class="stat-line"><span>Coût</span><span class="price">10,000</span> 💰</div>
         <div class="progress-bar"><div class="progress-fill" id="prestigeProgress" style="width:0%"></div></div>
-        <button id="prestigeBtn" onclick="prestige()" disabled>Prestige +<span id="prestigeGainDisplay">0</span> ⭐</button>
-        <button id="prestigeMaxBtn" onclick="prestigeMax()" disabled>MAX</button>
+        <button onclick="prestige()" id="prestigeBtn" disabled>Prestige +<span id="prestigeGainDisplay">0</span> ⭐</button>
+        <button onclick="prestigeMax()" id="prestigeMaxBtn" disabled>MAX</button>
       </div>
 
       <div class="card">
         <h3>🌀 Super Prestige (Galaxies)</h3>
         <div id="galaxyInfo"></div>
-        <button id="superPrestigeBtn" onclick="superPrestige()" disabled>Super Prestige</button>
-      </div>
-
-      <div class="card">
-        <h3>💎 Bonus Actifs</h3>
-        <div class="stat-line"><span>Multiplicateur Production</span><span class="count">×<span id="prodBonus">1</span></span></div>
-        <div class="stat-line"><span>Multiplicateur Étoiles</span><span class="count">×<span id="starBonus">1</span></span></div>
-        <div class="stat-line"><span>Multiplicateur Clics</span><span class="count">×<span id="clickBonus">1</span></span></div>
+        <button onclick="superPrestige()" id="superPrestigeBtn" disabled>Super Prestige</button>
       </div>
     </div>
   </div>
@@ -240,31 +164,8 @@
     <div class="row">
       <div class="card" style="flex:1 1 100%">
         <h3>🌳 Arbre de Compétences</h3>
-        <div class="stat-line"><span>Points de Compétence Disponibles</span><span class="count" id="skillPoints">0</span></div>
-        <div class="skill-tree-container" id="skillTree"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RESEARCH TAB -->
-  <div id="research" class="tab-content">
-    <div class="row">
-      <div class="card" style="flex:1 1 100%">
-        <h3>📚 Système de Recherches</h3>
-        <div id="researchContent"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CORRUPTION TAB -->
-  <div id="corruption" class="tab-content">
-    <div class="row">
-      <div class="card" style="flex:1 1 100%">
-        <h3>🔥 Système de Corruption</h3>
-        <p style="margin-bottom:1rem;color:#ffa">Activez des malus pour augmenter vos gains d'étoiles au prestige !</p>
-        <div class="stat-line"><span>Corruptions Actives</span><span class="count" id="corruptionCount">0</span>/10</div>
-        <div class="stat-line"><span>Bonus d'Étoiles</span><span class="count" id="corruptionBonus">0</span>%</div>
-        <div id="corruptionList"></div>
+        <div class="stat-line"><span>Points Disponibles</span><span class="count" id="skillPoints">0</span></div>
+        <div id="skillTree"></div>
       </div>
     </div>
   </div>
@@ -273,13 +174,11 @@
   <div id="stats" class="tab-content">
     <div class="row">
       <div class="card">
-        <h3>📊 Statistiques Générales</h3>
-        <div class="stat-line"><span>Total Pièces Gagnées</span><span class="count" id="totalCoins">0</span></div>
+        <h3>📊 Statistiques</h3>
+        <div class="stat-line"><span>Total Pièces</span><span class="count" id="totalCoins">0</span></div>
         <div class="stat-line"><span>Total Clics</span><span class="count" id="totalClicks">0</span></div>
         <div class="stat-line"><span>Temps de Jeu</span><span class="count" id="playTime">0s</span></div>
-        <div class="stat-line"><span>Prestiges Effectués</span><span class="count" id="prestigeCountStat">0</span></div>
-        <div class="stat-line"><span>Challenges Complétés</span><span class="count" id="challengesCompleted">0</span></div>
-        <div class="stat-line"><span>Milestones Atteints</span><span class="count" id="milestonesCompleted">0</span></div>
+        <div class="stat-line"><span>Prestiges</span><span class="count" id="prestigeCountStat">0</span></div>
       </div>
 
       <div class="card">
@@ -287,14 +186,7 @@
         <div style="font-size:0.9rem;margin-bottom:0.5rem">
           <span class="count" id="achievementCount">0</span> / <span id="achievementTotal">0</span>
         </div>
-        <div id="achievements" style="max-height:300px;overflow-y:auto"></div>
-      </div>
-
-      <div class="card">
-        <h3>🔝 Records</h3>
-        <div class="stat-line"><span>Pic Pièces</span><span class="count" id="maxCoins">0</span></div>
-        <div class="stat-line"><span>Max Production/sec</span><span class="count" id="maxCps">0</span></div>
-        <div class="stat-line"><span>Max Clics/sec</span><span class="count" id="maxClickRate">0</span></div>
+        <div id="achievements" style="max-height:250px;overflow-y:auto;font-size:0.85rem"></div>
       </div>
     </div>
   </div>
@@ -306,61 +198,37 @@
         <h3>💾 Sauvegarde & Reset</h3>
         <button onclick="exportSave()">📤 Exporter</button>
         <button onclick="importSave()">📥 Importer</button>
-        <button onclick="resetGame()" style="background:#c33">🗑️ Reset Complet</button>
+        <button onclick="resetGame()" style="background:#c33;margin-top:1rem">🗑️ RESET COMPLET</button>
         <input id="importInput" type="file" accept=".txt" style="display:none">
       </div>
 
       <div class="card">
-        <h3>⚙️ Paramètres</h3>
-        <label style="display:block;margin:0.5rem 0">
-          <input type="checkbox" id="autoSaveToggle" onchange="toggleAutoSave()"> Auto-sauvegarde (10s)
-        </label>
-        <label style="display:block;margin:0.5rem 0">
-          <input type="checkbox" id="soundToggle" onchange="toggleSound()"> Sons activés
-        </label>
-        <label style="display:block;margin:0.5rem 0">
-          <input type="checkbox" id="popupToggle" onchange="togglePopups()"> Popups événements
-        </label>
-      </div>
-
-      <div class="card">
-        <h3>ℹ️ Informations</h3>
-        <div style="font-size:0.9rem">
-          <p>Version : v5.0 ULTIMATE</p>
-          <p>Créé avec ❤️ pour les clickers</p>
-          <p id="debugInfo"></p>
-        </div>
+        <h3>⚙️ Aide</h3>
+        <button onclick="showTutorial()">📖 Afficher le Tuto</button>
+        <button onclick="showHelp()">❓ Comment Jouer</button>
       </div>
     </div>
   </div>
 </div>
 
-<div id="eventPopup" class="event-popup" style="display:none"></div>
+<!-- TUTORIAL MODAL -->
+<div id="tutorialModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h2>🎮 Bienvenue dans Incremental Trade!</h2>
+    <div id="tutorialContent"></div>
+    <button onclick="closeTutorial()">Fermer le Tuto →</button>
+  </div>
+</div>
 
 <script>
-const SAVE_KEY = "idleTrade_v7_final";
+const SAVE_KEY = "idleTrade_v8_optimized";
 const FPS = 20;
+const UPDATE_INTERVAL = 150; // ms - Rafraîchir l'UI tous les 150ms au lieu de toujours
 
-// ==================== STATE ====================
 let state = {
-  coins: 0,
-  totalCoins: 0,
-  stars: 0,
-  galaxies: 0,
-  totalClicks: 0,
-  prestigeCount: 0,
-  playTime: 0,
-  prestigeCost: 10000,
-  unlockedFeatures: ["basic"],
-  logMessages: [],
-  difficulty: "normal",
-  autoSaveEnabled: true,
-  soundEnabled: true,
-  popupEnabled: true,
-  maxCoins: 0,
-  maxCps: 0,
-  maxClickRate: 0,
-  
+  coins: 0, totalCoins: 0, stars: 0, galaxies: 0, totalClicks: 0, prestigeCount: 0,
+  playTime: 0, difficulty: "normal", skillPoints: 0, maxCoins: 0, maxCps: 0,
+  unlockedFeatures: ["basic"], logMessages: [],
   generators: [
     {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.20},
     {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.20, unlock_prestige:5},
@@ -373,242 +241,67 @@ let state = {
     {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.20, unlock:"advanced"},
     {id:"quantum", name:"Simulateur Quantique", base:500000, count:0, price:100e12, mult:1.20, unlock:"endgame"}
   ],
-  
   upgrades: [
     {id:"click1", name:"Clic +50%", price:100, effect:1.5, bought:false, type:"click"},
     {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click", requires:"click1"},
     {id:"click5", name:"Clic ×5", price:25000, effect:5, bought:false, type:"click", requires:"click2"},
-    {id:"click10", name:"Clic ×10", price:500000, effect:10, bought:false, type:"click", requires:"click5"},
-    {id:"click25", name:"Clic ×25", price:50e6, effect:25, bought:false, type:"click", requires:"click10", unlock:"advanced"},
     {id:"gen2", name:"Gen ×2", price:15000, effect:2, bought:false, type:"gen"},
-    {id:"gen3", name:"Gen ×3", price:250000, effect:3, bought:false, type:"gen", requires:"gen2"},
-    {id:"gen5", name:"Gen ×5", price:5e6, effect:5, bought:false, type:"gen", requires:"gen3"},
     {id:"robot10", name:"Robot ×10", price:5000, effect:10, bought:false, type:"robot"},
     {id:"usine10", name:"Usine ×10", price:75000, effect:10, bought:false, type:"usine"},
-    {id:"port10", name:"Port ×10", price:1e6, effect:10, bought:false, type:"port"},
-    {id:"labo10", name:"Labo ×10", price:5e6, effect:10, bought:false, type:"labo", unlock:"midgame"},
-    {id:"satellite10", name:"Satellite ×10", price:50e6, effect:10, bought:false, type:"satellite", unlock:"midgame"},
-    {id:"autosave", name:"Sauvegarde auto", price:2000, bought:false, type:"feature"},
-    {id:"allgen10", name:"Tous Gens ×10", price:500e6, effect:10, bought:false, type:"gen", unlock:"advanced", requires:"gen5"}
+    {id:"autosave", name:"Sauvegarde auto", price:2000, bought:false, type:"feature"}
   ],
-  
   starUpgrades: [
     {id:"star_prod1", name:"Prod ×2", cost:30, bought:false, effect:2, type:"production"},
-    {id:"star_prod2", name:"Prod ×5", cost:100, bought:false, effect:5, type:"production", requires:"star_prod1"},
-    {id:"star_prod3", name:"Prod ×10", cost:300, bought:false, effect:10, type:"production", requires:"star_prod2"},
     {id:"star_click1", name:"Clic ×3", cost:50, bought:false, effect:3, type:"starclick"},
-    {id:"star_click2", name:"Clic ×10", cost:150, bought:false, effect:10, type:"starclick", requires:"star_click1"},
-    {id:"star_gen1", name:"Robot ×50", cost:75, bought:false, effect:50, type:"robot"},
-    {id:"star_gen2", name:"Usine ×50", cost:150, bought:false, effect:50, type:"usine"},
-    {id:"star_gen3", name:"Port ×50", cost:250, bought:false, effect:50, type:"port"},
-    {id:"star_auto1", name:"Auto-clic", cost:200, bought:false, type:"autoclick"},
-    {id:"star_autobuy", name:"Auto-achat gen", cost:500, bought:false, type:"autobuy", unlock:"advanced"},
-    {id:"star_market", name:"Marché rapide", cost:300, bought:false, type:"fastmarket", unlock:"advanced"}
+    {id:"star_auto1", name:"Auto-clic", cost:200, bought:false, type:"autoclick"}
   ],
-
   achievements: [
     {id:"first_coin", name:"Première pièce", desc:"Gagner 1 pièce", unlocked:false},
     {id:"hundred", name:"Capitaliste", desc:"100 pièces", unlocked:false},
     {id:"thousand", name:"Millionnaire", desc:"1000 pièces", unlocked:false},
     {id:"million", name:"Ultra-Millionnaire", desc:"1M pièces", unlocked:false},
-    {id:"billion", name:"Milliardaire", desc:"1B pièces", unlocked:false},
     {id:"first_gen", name:"Automatisation", desc:"1er générateur", unlocked:false},
     {id:"first_prestige", name:"Renaissance", desc:"1er prestige", unlocked:false},
     {id:"ten_gens", name:"Industriel", desc:"10 générateurs", unlocked:false},
-    {id:"fifty_gens", name:"Magnat", desc:"50 générateurs", unlocked:false},
-    {id:"clicker", name:"Clickeur", desc:"100 clics", unlocked:false},
-    {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false},
-    {id:"five_prestige", name:"Renaissant", desc:"5 prestiges", unlocked:false},
-    {id:"ten_prestige", name:"Phénix", desc:"10 prestiges", unlocked:false},
-    {id:"twenty_prestige", name:"Immortel", desc:"20 prestiges", unlocked:false},
     {id:"first_galaxy", name:"Explorateur", desc:"1ère Galaxie", unlocked:false},
-    {id:"five_galaxies", name:"Cosmonaute", desc:"5 Galaxies", unlocked:false},
-    {id:"challenge_complete", name:"Challenger", desc:"Compléter 1 challenge", unlocked:false},
-    {id:"five_challenges", name:"Défieur", desc:"5 challenges", unlocked:false},
-    {id:"ten_challenges", name:"Maître Défi", desc:"10 challenges", unlocked:false},
-    {id:"skill_master", name:"Maître des Compétences", desc:"10 compétences achetées", unlocked:false},
-    {id:"skill_guru", name:"Guru Compétences", desc:"20 compétences achetées", unlocked:false},
-    {id:"research_master", name:"Chercheur", desc:"5 recherches complétées", unlocked:false},
-    {id:"research_guru", name:"Scientifique", desc:"10 recherches complétées", unlocked:false},
-    {id:"corruption1", name:"Corrompu", desc:"1ère corruption active", unlocked:false},
-    {id:"corruption10", name:"Sombre Maitre", desc:"10 corruptions actives", unlocked:false},
-    {id:"hardcore_beat", name:"Coeur de Fer", desc:"Prestige en mode Hardcore", unlocked:false},
-    {id:"speed_beat", name:"Vitesse Éclair", desc:"Prestige en mode Speed", unlocked:false},
-    {id:"chaos_survive", name:"Survivant du Chaos", desc:"10 min en mode Chaos", unlocked:false},
-    {id:"milestone_ten", name:"Objecteur", desc:"10 milestones atteints", unlocked:false},
-    {id:"milestone_fifteen", name:"Obsédé Objectifs", desc:"15 milestones atteints", unlocked:false},
-    {id:"event_lucky", name:"Chanceux", desc:"Avoir 3 Jackpots", unlocked:false},
-    {id:"event_unlucky", name:"Malchanceux", desc:"Avoir 5 Taxes", unlocked:false},
-    {id:"infinite", name:"Infini", desc:"Atteindre 1e100 pièces", unlocked:false},
-    {id:"rich_prestige", name:"Riche Prestige", desc:"Prestige avec 100M", unlocked:false},
-    {id:"ultra_prestige", name:"Ultra Riche", desc:"Prestige avec 1T", unlocked:false},
-    {id:"all_gens", name:"Collectionneur", desc:"Tous les générateurs", unlocked:false},
-    {id:"all_upgrades", name:"Maximalisé", desc:"Tous les upgrades achetés", unlocked:false},
-    {id:"completionist", name:"Perfectionniste", desc:"50 achievements", unlocked:false},
-    {id:"prestige_spammer", name:"Prestige Spam", desc:"10 prestiges rapidement", unlocked:false},
-    {id:"star_collector", name:"Collectionneur Étoiles", desc:"1000 étoiles gagnées", unlocked:false},
-    {id:"usine_unlock", name:"Usine Débloquée", desc:"Débloquer l'Usine (5 prestige)", unlocked:false},
-    {id:"dyson_unlock", name:"Dyson Débloquée", desc:"Débloquer Dyson (25 prestige)", unlocked:false},
-    {id:"bot_trader", name:"Trader Bot", desc:"Activer un bot de trading", unlocked:false},
-    {id:"corruption_master", name:"Maître de la Corruption", desc:"Activez 5 corruptions", unlocked:false}
-  ],
-
-  milestones: [
-    {id:"m1", name:"Débutant", desc:"Atteindre 1K pièces", target:"coins", value:1000, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m2", name:"Ambitieux", desc:"Atteindre 100K pièces", target:"coins", value:100000, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m3", name:"Magnat", desc:"Atteindre 1M pièces", target:"coins", value:1e6, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m4", name:"Tycoon", desc:"Atteindre 1B pièces", target:"coins", value:1e9, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m5", name:"Générateurs", desc:"Avoir 10 générateurs", target:"totalGens", value:10, reward:{mult:1.03,type:"click"}, completed:false},
-    {id:"m6", name:"Productivité", desc:"10 pièces/sec", target:"cps", value:10, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m7", name:"Prestige 1", desc:"1er prestige", target:"prestige", value:1, reward:{mult:1.05,type:"stars"}, completed:false},
-    {id:"m8", name:"Prestige 5", desc:"5 prestiges", target:"prestige", value:5, reward:{mult:1.03,type:"stars"}, completed:false},
-    {id:"m9", name:"Prestige 10", desc:"10 prestiges", target:"prestige", value:10, reward:{mult:1.03,type:"stars"}, completed:false},
-    {id:"m10", name:"Prestige 20", desc:"20 prestiges", target:"prestige", value:20, reward:{mult:1.03,type:"stars"}, completed:false},
-    {id:"m11", name:"Super Prestige", desc:"1ère Galaxie", target:"galaxies", value:1, reward:{mult:1.1,type:"stars"}, completed:false},
-    {id:"m12", name:"5 Étoiles", desc:"5 étoiles gagnées", target:"stars", value:5, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m13", name:"50 Étoiles", desc:"50 étoiles gagnées", target:"stars", value:50, reward:{mult:1.03,type:"production"}, completed:false},
-    {id:"m14", name:"Challenges", desc:"5 challenges complétés", target:"challengesCompleted", value:5, reward:{mult:1.02,type:"production"}, completed:false},
-    {id:"m15", name:"Compétences", desc:"5 compétences achetées", target:"skillsUnlocked", value:5, reward:{mult:1.03,type:"click"}, completed:false}
-  ],
-
-  challenges: [
-    {id:"ch1", name:"Sans Usines", desc:"Prestige sans Usines", active:false, completed:false, reward:50, mult:"robot"},
-    {id:"ch2", name:"Rapide", desc:"Prestige en <10 min", active:false, completed:false, reward:25, bonus_stars:2},
-    {id:"ch3", name:"Riche", desc:"Prestige avec 100M", active:false, completed:false, reward:100, mult:"all"},
-    {id:"ch4", name:"Cliqueur", desc:"Prestige avec 1000+ clics", active:false, completed:false, reward:30, mult:"click"},
-    {id:"ch5", name:"Sans Upgrades", desc:"Prestige sans upgrades", active:false, completed:false, reward:75, mult:"gen"},
-    {id:"ch6", name:"Trader", desc:"Vendre 100 fer", active:false, completed:false, reward:40, mult:"trading"},
-    {id:"ch7", name:"Millionnaire", desc:"Atteindre 1M en <5 min", active:false, completed:false, reward:60, mult:"click"},
-    {id:"ch8", name:"Sans Clics", desc:"Prestige sans clics manuels", active:false, completed:false, reward:80, mult:"auto"},
-    {id:"ch9", name:"Hardcore", desc:"Prestige en mode Hardcore", active:false, completed:false, reward:100, mult:"stars"},
-    {id:"ch10", name:"Triple", desc:"3 prestiges en 10 min", active:false, completed:false, reward:120, mult:"all"}
-  ],
-
-  skills: [
-    // Production Branch (10 skills)
-    {id:"sk1", name:"Production +10%", cost:1, branch:"production", bought:false, effect:1.1},
-    {id:"sk2", name:"Production +20%", cost:2, branch:"production", bought:false, effect:1.2, requires:"sk1"},
-    {id:"sk3", name:"Robots ×2", cost:1, branch:"production", bought:false, effect:2, type:"robot"},
-    {id:"sk4", name:"Usines ×2", cost:1, branch:"production", bought:false, effect:2, type:"usine"},
-    {id:"sk5", name:"Ports ×2", cost:1, branch:"production", bought:false, effect:2, type:"port"},
-    {id:"sk6", name:"Production +50%", cost:3, branch:"production", bought:false, effect:1.5, requires:"sk2"},
-    {id:"sk7", name:"Labo ×3", cost:2, branch:"production", bought:false, effect:3, type:"labo"},
-    {id:"sk8", name:"Satellite ×3", cost:2, branch:"production", bought:false, effect:3, type:"satellite"},
-    {id:"sk9", name:"Station ×2", cost:2, branch:"production", bought:false, effect:2, type:"station"},
-    {id:"sk10", name:"Production ×2", cost:5, branch:"production", bought:false, effect:2, requires:"sk6"},
-    // Click Branch (10 skills)
-    {id:"sk11", name:"Clics +20%", cost:1, branch:"click", bought:false, effect:1.2},
-    {id:"sk12", name:"Clics ×2", cost:2, branch:"click", bought:false, effect:2, requires:"sk11"},
-    {id:"sk13", name:"Clics ×3", cost:3, branch:"click", bought:false, effect:3, requires:"sk12"},
-    {id:"sk14", name:"Auto-clic 1/sec", cost:2, branch:"click", bought:false, type:"autoclick"},
-    {id:"sk15", name:"Auto-clic 2/sec", cost:4, branch:"click", bought:false, type:"autoclick2", requires:"sk14"},
-    {id:"sk16", name:"Clics +50%", cost:2, branch:"click", bought:false, effect:1.5},
-    {id:"sk17", name:"Clic Critique", cost:3, branch:"click", bought:false, effect:2, type:"crit"},
-    {id:"sk18", name:"Clic Chaîne", cost:4, branch:"click", bought:false, type:"chain"},
-    {id:"sk19", name:"Clics ×5", cost:5, branch:"click", bought:false, effect:5, requires:"sk13"},
-    {id:"sk20", name:"Clic Explosion", cost:6, branch:"click", bought:false, effect:10, type:"explosion", requires:"sk19"},
-    // Trading Branch (10 skills)
-    {id:"sk21", name:"Fer +10%", cost:1, branch:"trading", bought:false, effect:1.1, type:"iron"},
-    {id:"sk22", name:"Fer +25%", cost:2, branch:"trading", bought:false, effect:1.25, type:"iron", requires:"sk21"},
-    {id:"sk23", name:"Or Meilleur", cost:2, branch:"trading", bought:false, type:"gold"},
-    {id:"sk24", name:"Platine Meilleur", cost:3, branch:"trading", bought:false, type:"platinum"},
-    {id:"sk25", name:"Crypto Meilleur", cost:4, branch:"trading", bought:false, type:"crypto"},
-    {id:"sk26", name:"Bot Trading ×2", cost:2, branch:"trading", bought:false, effect:2, type:"bot"},
-    {id:"sk27", name:"Profit +20%", cost:3, branch:"trading", bought:false, effect:1.2, type:"profit"},
-    {id:"sk28", name:"Volatilité -30%", cost:2, branch:"trading", bought:false, effect:0.7, type:"volatility"},
-    {id:"sk29", name:"Arbitrage", cost:4, branch:"trading", bought:false, type:"arbitrage"},
-    {id:"sk30", name:"Marché Maître", cost:5, branch:"trading", bought:false, effect:1.5, type:"master", requires:"sk27"}
-  ],
-
-  researches: [
-    {id:"r1", name:"Productivité I", desc:"Débloquer +10% production", cost_coins:10000, cost_time:30, completed:false, reward:"prod_1"},
-    {id:"r2", name:"Productivité II", desc:"Débloquer +25% production", cost_coins:100000, cost_time:60, completed:false, reward:"prod_2"},
-    {id:"r3", name:"Robotique", desc:"Débloquer Robots ×10", cost_coins:50000, cost_time:45, completed:false, reward:"robot_10"},
-    {id:"r4", name:"Industrie", desc:"Débloquer Usines ×10", cost_coins:200000, cost_time:60, completed:false, reward:"industry_10"},
-    {id:"r5", name:"Logistique", desc:"Débloquer Ports ×20", cost_coins:500000, cost_time:90, completed:false, reward:"port_20"},
-    {id:"r6", name:"Clic Amélioré", desc:"Débloquer Clic ×5", cost_coins:75000, cost_time:45, completed:false, reward:"click_5"},
-    {id:"r7", name:"Chimie", desc:"Débloquer Labos ×5", cost_coins:300000, cost_time:60, completed:false, reward:"labo_5"},
-    {id:"r8", name:"Astronomie", desc:"Débloquer Satellites ×5", cost_coins:1e6, cost_time:120, completed:false, reward:"satellite_5"},
-    {id:"r9", name:"Énergie", desc:"Débloquer Station ×2", cost_coins:5e6, cost_time:150, completed:false, reward:"station_2"},
-    {id:"r10", name:"Dyson Advanced", desc:"Débloquer Dyson ×2", cost_coins:50e6, cost_time:180, completed:false, reward:"dyson_2"},
-    {id:"r11", name:"Trou Noir", desc:"Débloquer Trou Noir", cost_coins:100e9, cost_time:300, completed:false, reward:"bh_unlock"},
-    {id:"r12", name:"Multivers", desc:"Débloquer Multivers", cost_coins:1e12, cost_time:300, completed:false, reward:"mv_unlock"},
-    {id:"r13", name:"Trading Avancé", desc:"Débloquer Or & Platine", cost_coins:500000, cost_time:90, completed:false, reward:"trade_adv"},
-    {id:"r14", name:"Crypto Trading", desc:"Débloquer Crypto", cost_coins:2e6, cost_time:120, completed:false, reward:"crypto_unlock"},
-    {id:"r15", name:"Bot Autonome", desc:"Débloquer Auto-trading", cost_coins:10e6, cost_time:150, completed:false, reward:"autobot"}
-  ],
-
-  corruptions: [
-    {id:"c1", name:"Prod -50%", desc:"Production -50%", effect:"prod", value:-0.5, bonus_stars:100, active:false},
-    {id:"c2", name:"Prix ×2", desc:"Prix générateurs ×2", effect:"price", value:2, bonus_stars:150, active:false},
-    {id:"c3", name:"Prod -80%", desc:"Production -80%", effect:"prod", value:-0.8, bonus_stars:200, active:false},
-    {id:"c4", name:"Pas d'Étoiles", desc:"Étoiles -50%", effect:"stars", value:-0.5, bonus_stars:250, active:false},
-    {id:"c5", name:"Pièces -40%", desc:"Pièces gagnées -40%", effect:"coins", value:-0.4, bonus_stars:120, active:false},
-    {id:"c6", name:"Prix ×5", desc:"Prix générateurs ×5", effect:"price", value:5, bonus_stars:300, active:false},
-    {id:"c7", name:"Clics -70%", desc:"Clics -70%", effect:"click", value:-0.7, bonus_stars:180, active:false},
-    {id:"c8", name:"Prod -95%", desc:"Production -95%", effect:"prod", value:-0.95, bonus_stars:500, active:false},
-    {id:"c9", name:"Défi Total", desc:"Prod -99% but +1000% stars", effect:"extreme", value:-0.99, bonus_stars:1000, active:false},
-    {id:"c10", name:"Chaos Complet", desc:"Tous les malus!", effect:"chaos", bonus_stars:2000, active:false}
+    {id:"completionist", name:"Perfectionniste", desc:"50 achievements", unlocked:false}
   ]
 };
 
 let trade = {
   resources: {
     iron: {amount: 0, price: 10, history: [10], botActive: false},
-    gold: {amount: 0, price: 50, history: [50], botActive: false},
-    platinum: {amount: 0, price: 200, history: [200], botActive: false},
-    crypto: {amount: 0, price: 1000, history: [1000], botActive: false}
+    gold: {amount: 0, price: 50, history: [50], botActive: false}
   },
-  totalTrades: 0,
-  jackpots: 0
+  totalTrades: 0, jackpots: 0
 };
 
-let currentTab = "main";
 const $ = id => document.getElementById(id);
 
-// ==================== UTILITIES ====================
-function log(txt, type) {
-  type = type || "normal";
+function log(txt, type = "normal") {
   const timestamp = new Date().toLocaleTimeString();
-  let cssClass = "";
-  if (type === "success") cssClass = "log-success";
-  if (type === "unlock") cssClass = "log-unlock";
-  if (type === "event") cssClass = "log-event";
-  if (type === "warning") cssClass = "log-warning";
+  let cssClass = type === "success" ? "log-success" : type === "unlock" ? "log-unlock" : type === "event" ? "log-event" : type === "warning" ? "log-warning" : "";
   state.logMessages.unshift({text: txt, time: timestamp, type: cssClass});
-  if (state.logMessages.length > 10) state.logMessages.pop();
-  const logEl = $("log");
-  logEl.innerHTML = state.logMessages.map(msg => 
-    `<div class="log-message ${msg.type}">[${msg.time}] ${msg.text}</div>`
-  ).join("");
+  if (state.logMessages.length > 5) state.logMessages.pop();
+  
+  // Mettre à jour l'affichage du log immédiatement
+  updateLogDisplay();
 }
 
 function formatNum(n) {
-  // Handle NaN and Infinity
   if (!isFinite(n)) return "∞";
   if (n < 0) return "-" + formatNum(-n);
-  
   if (n < 1000) return n.toFixed(2);
   if (n < 1e6) return (n / 1e3).toFixed(2) + "K";
   if (n < 1e9) return (n / 1e6).toFixed(2) + "M";
   if (n < 1e12) return (n / 1e9).toFixed(2) + "B";
   if (n < 1e15) return (n / 1e12).toFixed(2) + "T";
-  if (n < 1e18) return (n / 1e15).toFixed(2) + "Qa";
-  if (n < 1e21) return (n / 1e18).toFixed(2) + "Qi";
-  if (n < 1e24) return (n / 1e21).toFixed(2) + "Sx";
-  if (n < 1e27) return (n / 1e24).toFixed(2) + "Sp";
-  if (n < 1e30) return (n / 1e27).toFixed(2) + "Oc";
-  
-  // Pour les très gros nombres, utiliser la notation exponentielle
-  let exp = Math.floor(Math.log10(n));
-  let mantissa = n / Math.pow(10, exp);
-  return mantissa.toFixed(2) + "e" + exp;
+  return (n / 1e15).toFixed(2) + "Qa";
 }
 
-function isUnlocked(feature, prestigeCount) {
+function isUnlocked(feature) {
   if (!feature) return true;
-  if (state.unlockedFeatures && state.unlockedFeatures.indexOf(feature) !== -1) return true;
-  return false;
+  return state.unlockedFeatures && state.unlockedFeatures.includes(feature);
 }
 
 function switchTab(tab) {
@@ -616,114 +309,37 @@ function switchTab(tab) {
   document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
   $(tab).classList.add("active");
   event.target.classList.add("active");
-  currentTab = tab;
 }
 
-// ==================== GENERATION & INCOME ====================
 function price(gen) {
-  let base_price = gen.price * Math.pow(gen.mult, gen.count);
-  
-  // Apply corruption
-  let corruption_mult = 1;
-  for (let c of state.corruptions) {
-    if (c.active && c.effect === "price") corruption_mult *= c.value;
-  }
-  
-  return Math.floor(base_price * corruption_mult);
+  return Math.floor(gen.price * Math.pow(gen.mult, gen.count));
 }
 
 function cps() {
-  let genMult = 1;
-  for (let u of state.upgrades) {
-    if (u.type === "gen" && u.bought) genMult *= u.effect;
-  }
-  
-  let starMult = 1;
-  for (let u of state.starUpgrades) {
-    if (u.type === "production" && u.bought) starMult *= u.effect;
-  }
-  
-  let skillMult = 1;
-  for (let s of state.skills) {
-    if (s.bought && s.branch === "production" && s.effect) skillMult *= s.effect;
-  }
-  
-  let milestoneBonus = 1;
-  for (let m of state.milestones) {
-    if (m.completed && m.reward.type === "production") milestoneBonus *= m.reward.mult;
-  }
-  
   let total = 0;
   for (let g of state.generators) {
-    if (!isUnlocked(g.unlock)) continue;
-    
-    let eff = genMult * starMult * skillMult * milestoneBonus;
-    
+    if (!isUnlocked(g.unlock) || (g.unlock_prestige && state.prestigeCount < g.unlock_prestige)) continue;
+    let eff = 1;
     for (let u of state.upgrades) {
       if (u.type === g.id && u.bought) eff *= u.effect;
-    }
-    for (let s of state.skills) {
-      if (s.type === g.id && s.bought) eff *= s.effect;
     }
     for (let u of state.starUpgrades) {
       if (u.type === g.id && u.bought) eff *= u.effect;
     }
-    
     total += g.count * g.base * eff;
   }
-  
-  let star_bonus = Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies);
-  
-  // Apply corruption
-  let corruption_mult = 1;
-  for (let c of state.corruptions) {
-    if (c.active && c.effect === "prod") corruption_mult *= (1 + c.value);
-  }
-  if (state.difficulty === "hardcore") corruption_mult *= 0.1;
-  if (state.difficulty === "speed") corruption_mult *= 5;
-  
-  let result = total * star_bonus * corruption_mult;
-  
-  // Safety check
-  if (!isFinite(result)) return 0;
-  return Math.max(0, result);
+  return total * Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies);
 }
 
 function clickVal() {
-  let clickMult = 1;
+  let mult = 1;
   for (let u of state.upgrades) {
-    if (u.type === "click" && u.bought) clickMult *= u.effect;
+    if (u.type === "click" && u.bought) mult *= u.effect;
   }
-  
-  let starMult = 1;
   for (let u of state.starUpgrades) {
-    if (u.type === "starclick" && u.bought) starMult *= u.effect;
+    if (u.type === "starclick" && u.bought) mult *= u.effect;
   }
-  
-  let skillMult = 1;
-  for (let s of state.skills) {
-    if (s.bought && s.branch === "click" && s.effect) skillMult *= s.effect;
-  }
-  
-  let milestoneBonus = 1;
-  for (let m of state.milestones) {
-    if (m.completed && m.reward.type === "click") milestoneBonus *= m.reward.mult;
-  }
-  
-  let total = clickMult * starMult * skillMult * milestoneBonus;
-  let star_bonus = Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies);
-  
-  // Apply corruption
-  let corruption_mult = 1;
-  for (let c of state.corruptions) {
-    if (c.active && c.effect === "click") corruption_mult *= (1 + c.value);
-  }
-  
-  let result = total * star_bonus * corruption_mult;
-  
-  // Safety check
-  if (!isFinite(result)) return 1;
-  return Math.max(1, result);
+  return Math.max(1, mult * Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies));
 }
 
 function clickBtn() {
@@ -735,7 +351,6 @@ function clickBtn() {
   checkAchievements();
 }
 
-// ==================== BUYING ====================
 function buyGen(genId) {
   for (let g of state.generators) {
     if (g.id === genId) {
@@ -745,16 +360,14 @@ function buyGen(genId) {
       g.count++;
       state.totalCoins += cost * 0.1;
       checkAchievements();
-      updateUI();
       save();
+      updateUIPartial();
       return;
     }
   }
 }
 
 function buyGenMultiple(genId, qty) {
-  // Acheter qty générateurs
-  let boughtCount = 0;
   for (let i = 0; i < qty; i++) {
     for (let g of state.generators) {
       if (g.id === genId) {
@@ -763,14 +376,13 @@ function buyGenMultiple(genId, qty) {
         state.coins -= cost;
         g.count++;
         state.totalCoins += cost * 0.1;
-        boughtCount++;
         break;
       }
     }
   }
   checkAchievements();
-  updateUI();
   save();
+  updateUIPartial();
 }
 
 function buyUp(upId) {
@@ -779,52 +391,18 @@ function buyUp(upId) {
       if (u.bought || state.coins < u.price) return;
       if (!isUnlocked(u.unlock)) return;
       if (u.requires) {
-        let reqFound = false;
-        for (let uu of state.upgrades) {
-          if (uu.id === u.requires && uu.bought) { reqFound = true; break; }
-        }
-        if (!reqFound) return;
+        let reqMet = state.upgrades.some(uu => uu.id === u.requires && uu.bought);
+        if (!reqMet) return;
       }
       state.coins -= u.price;
       u.bought = true;
       log("✅ " + u.name, "success");
       checkAchievements();
-      updateUI();
       save();
+      updateUIPartial();
       return;
     }
   }
-}
-
-function buyUpMax(upId) {
-  // Acheter un upgrade autant de fois que possible
-  let buyCount = 0;
-  while (buyCount < 1000) { // Safety limit
-    let foundAndBought = false;
-    for (let u of state.upgrades) {
-      if (u.id === upId) {
-        if (!u.bought && state.coins >= u.price && isUnlocked(u.unlock)) {
-          if (u.requires) {
-            let reqFound = false;
-            for (let uu of state.upgrades) {
-              if (uu.id === u.requires && uu.bought) { reqFound = true; break; }
-            }
-            if (!reqFound) break;
-          }
-          state.coins -= u.price;
-          u.bought = true;
-          buyCount++;
-          foundAndBought = true;
-          log("✅ " + u.name + " (×" + buyCount + ")", "success");
-        }
-        break;
-      }
-    }
-    if (!foundAndBought) break;
-  }
-  checkAchievements();
-  updateUI();
-  save();
 }
 
 function buyStarUpgrade(id) {
@@ -832,449 +410,218 @@ function buyStarUpgrade(id) {
     if (u.id === id) {
       if (u.bought || state.stars < u.cost) return;
       if (!isUnlocked(u.unlock)) return;
-      if (u.requires) {
-        let reqFound = false;
-        for (let uu of state.starUpgrades) {
-          if (uu.id === u.requires && uu.bought) { reqFound = true; break; }
-        }
-        if (!reqFound) return;
-      }
       state.stars -= u.cost;
       u.bought = true;
       log("✨ " + u.name, "success");
-      updateUI();
       save();
+      updateUIPartial();
       return;
     }
   }
-}
-
-function buySkill(id) {
-  for (let s of state.skills) {
-    if (s.id === id) {
-      if (s.bought) return;
-      if (state.skillPoints < s.cost) return;
-      if (s.requires) {
-        let reqFound = false;
-        for (let ss of state.skills) {
-          if (ss.id === s.requires && ss.bought) { reqFound = true; break; }
-        }
-        if (!reqFound) return;
-      }
-      state.skillPoints -= s.cost;
-      s.bought = true;
-      log("🌳 Compétence: " + s.name, "success");
-      updateUI();
-      save();
-      return;
-    }
-  }
-}
-
-function toggleCorruption(id) {
-  for (let c of state.corruptions) {
-    if (c.id === id) {
-      if (!c.active) {
-        let active_count = state.corruptions.filter(x => x.active).length;
-        if (active_count >= 10) return;
-      }
-      c.active = !c.active;
-      log((c.active ? "🔥 " : "✨ ") + c.name, c.active ? "warning" : "success");
-      updateUI();
-      save();
-      return;
-    }
-  }
-}
-
-function activateChallenge(id) {
-  for (let c of state.challenges) {
-    if (c.id === id) {
-      if (c.active) return;
-      // Reset other active challenge
-      for (let cc of state.challenges) cc.active = false;
-      c.active = true;
-      c.challengeStartTime = Date.now();
-      c.challengeStartCoins = state.totalCoins;
-      c.challengeStartClicks = state.totalClicks;
-      log("⚔️ Challenge Activé: " + c.name, "unlock");
-      updateUI();
-      save();
-      return;
-    }
-  }
-}
-
-function completeChallenge(id) {
-  for (let c of state.challenges) {
-    if (c.id === id && c.active) {
-      c.active = false;
-      c.completed = true;
-      state.skillPoints += c.reward;
-      log("🏆 Challenge Complété! +" + c.reward + " points", "success");
-      checkAchievements();
-      updateUI();
-      save();
-      return;
-    }
-  }
-}
-
-function startResearch(id) {
-  for (let r of state.researches) {
-    if (r.id === id && !r.completed && !r.active) {
-      if (state.coins < r.cost_coins) return;
-      state.coins -= r.cost_coins;
-      r.active = true;
-      r.startTime = Date.now();
-      log("📚 Recherche démarrée: " + r.name, "unlock");
-      updateUI();
-      save();
-      return;
-    }
-  }
-}
-
-function checkResearch() {
-  for (let r of state.researches) {
-    if (r.active && !r.completed) {
-      let elapsed = (Date.now() - r.startTime) / 1000;
-      if (elapsed >= r.cost_time) {
-        r.completed = true;
-        r.active = false;
-        log("✅ Recherche complétée: " + r.name, "success");
-        checkAchievements();
-        updateUI();
-        save();
-      }
-    }
-  }
-}
-
-// ==================== PRESTIGE ====================
-function getDifficultyMultiplier() {
-  const mults = {normal: 1, hardcore: 5, speed: 0.2, chaos: 1.5};
-  return mults[state.difficulty] || 1;
 }
 
 function prestige() {
-  // Besoin d'au MOINS 1000 pièces ACTUELLES en cash pour prestige
-  if (state.coins < 1000) return;
-  
-  // 1 étoile par 10000 pièces TOTALES gagnées (ultra difficile!)
+  if (state.coins < 1000 || state.totalCoins < 10000) return;
   let gain = Math.floor(state.totalCoins / 10000);
   if (gain < 1) return;
   
-  // Tu dépenses tes pièces actuelles
   state.coins = 0;
-  
-  // Apply difficulty multiplier
-  let diff_mult = getDifficultyMultiplier();
-  if (state.difficulty === "hardcore") {
-    // In hardcore, you gain MORE stars but harder to get coins
-    gain *= 5;
-  } else if (state.difficulty === "speed") {
-    // In speed, you gain LESS stars
-    gain *= 0.2;
-  }
-  
-  // Apply corruption bonus
-  let corruption_bonus = 1;
-  for (let c of state.corruptions) {
-    if (c.active) corruption_bonus += c.bonus_stars / 100;
-  }
-  gain *= corruption_bonus;
-  
-  // Check challenges
-  for (let c of state.challenges) {
-    if (c.active) {
-      let elapsed = (Date.now() - c.challengeStartTime) / 1000;
-      if (c.id === "ch2" && elapsed < 600) { // Prestige en <10 min
-        completeChallenge(c.id);
-        gain += c.reward;
-      }
-      if (c.id === "ch3" && state.coins >= 100e6) { // Prestige avec 100M
-        completeChallenge(c.id);
-        gain += c.reward;
-      }
-      if (c.id === "ch7" && elapsed < 300 && state.coins >= 1e6) { // 1M en <5 min
-        completeChallenge(c.id);
-        gain += c.reward;
-      }
-      if (c.id === "ch9" && state.difficulty === "hardcore") { // Hardcore prestige
-        completeChallenge(c.id);
-        gain += c.reward;
-      }
-    }
-  }
-  
-  state.stars += Math.floor(gain);
+  state.stars += gain;
   state.prestigeCount++;
-  state.skillPoints += 3; // 3 skill points par prestige
-  resetCore();
-  log("⭐ +" + Math.floor(gain) + " étoiles (Total: " + state.stars + ")", "success");
+  state.skillPoints += 3;
+  
+  for (let g of state.generators) g.count = 0;
+  for (let u of state.upgrades) if (u.id !== "autosave") u.bought = false;
+  
+  log("⭐ +" + gain + " étoiles", "success");
   checkAchievements();
   checkUnlocks();
-  updateUI();
   save();
-}
-
-function prestigeMax() {
-  // Faire prestige plusieurs fois d'affilée
-  if (state.coins < 1000) return;
-  
-  let loop_count = 0;
-  while (state.coins >= 1000 && state.totalCoins >= 10000 && loop_count < 100) {
-    prestige();
-    loop_count++;
-  }
+  updateUI();
 }
 
 function superPrestige() {
-  // Cost: 100 for first, 1000 for second, 10000 for third, etc.
   let cost = state.galaxies === 0 ? 100 : 100 * Math.pow(10, state.galaxies);
-  if (state.coins < 1000) return;
-  if (state.stars < cost) return;
+  if (state.coins < 1000 || state.stars < cost) return;
   
   state.stars -= cost;
   state.galaxies++;
   state.skillPoints += 10;
-  state.coins = 0;
-  resetCore();
-  log("🌀 +" + 1 + " Galaxie! (Bonus ×" + Math.pow(3, state.galaxies) + ")", "unlock");
-  checkAchievements();
-  updateUI();
-  save();
-}
-
-function resetCore() {
-  state.coins = 0;
+  
   for (let g of state.generators) g.count = 0;
-  for (let u of state.upgrades) {
-    if (u.id !== "autosave") u.bought = false;
-  }
-  for (let r of Object.values(trade.resources)) {
-    r.amount = 0;
-  }
-}
-
-// ==================== TRADING ====================
-function buyResource(resource) {
-  let r = trade.resources[resource];
-  let cost = r.price * 1.05;
-  let qty = Math.max(1, Math.floor(state.coins / cost));
-  let total = qty * cost;
-  if (state.coins < total) return;
-  state.coins -= total;
-  r.amount += qty;
-  trade.totalTrades++;
+  for (let u of state.upgrades) if (u.id !== "autosave") u.bought = false;
+  
+  log("🌀 +" + 1 + " Galaxie!", "unlock");
   checkAchievements();
-  updateUI();
   save();
-}
-
-function sellResource(resource) {
-  let r = trade.resources[resource];
-  if (r.amount < 1) return;
-  let gain = r.amount * r.price * 0.95;
-  state.coins += gain;
-  state.totalCoins += gain * 0.5;
-  r.amount = 0;
-  trade.totalTrades++;
   updateUI();
-  save();
 }
 
-function tickMarket() {
-  for (let name in trade.resources) {
-    let r = trade.resources[name];
-    let volatility = {iron: 0.15, gold: 0.12, platinum: 0.25, crypto: 0.50}[name];
-    let change = (Math.random() - 0.5) * volatility;
-    r.price = Math.max(2, Math.floor(r.price * (1 + change)));
-    r.history.push(r.price);
-    if (r.history.length > 20) r.history.shift();
-    
-    // BOT TRADING AUTO - si le bot est activé
-    if (r.botActive && r.history.length >= 3) {
-      let avg = 0;
-      for (let i = 0; i < r.history.length; i++) avg += r.history[i];
-      avg = avg / r.history.length;
-      
-      // Acheter quand prix bas
-      if (r.price < avg * 0.85 && state.coins > r.price * 5) {
-        let qty = Math.max(1, Math.floor(state.coins / (r.price * 1.05) * 0.5));
-        let total = qty * r.price * 1.05;
-        if (state.coins >= total) {
-          state.coins -= total;
-          r.amount += qty;
-          trade.totalTrades++;
-        }
-      }
-      
-      // Vendre quand prix haut
-      if (r.price > avg * 1.20 && r.amount > 0) {
-        let gain = r.amount * r.price * 0.95;
-        state.coins += gain;
-        state.totalCoins += gain * 0.5;
-        r.amount = 0;
-        trade.totalTrades++;
-      }
-    }
-  }
-}
-
-function toggleBot(resource) {
-  if (trade.resources[resource]) {
-    trade.resources[resource].botActive = !trade.resources[resource].botActive;
-    log((trade.resources[resource].botActive ? "🤖 Bot ON: " : "🤖 Bot OFF: ") + resource, "event");
-    updateUI();
-    save();
-  }
-}
-
-// ==================== MILESTONES ====================
-function checkMilestones() {
-  for (let m of state.milestones) {
-    if (m.completed) continue;
-    
-    let target_val = 0;
-    if (m.target === "coins") target_val = state.coins;
-    if (m.target === "totalGens") target_val = state.generators.reduce((a,g) => a + g.count, 0);
-    if (m.target === "cps") target_val = cps();
-    if (m.target === "prestige") target_val = state.prestigeCount;
-    if (m.target === "galaxies") target_val = state.galaxies;
-    if (m.target === "stars") target_val = state.stars;
-    if (m.target === "challengesCompleted") target_val = state.challenges.filter(c => c.completed).length;
-    if (m.target === "skillsUnlocked") target_val = state.skills.filter(s => s.bought).length;
-    
-    if (target_val >= m.value && !m.completed) {
-      m.completed = true;
-      log("🎯 Milestone: " + m.name, "success");
-      checkAchievements();
-    }
-  }
-}
-
-// ==================== ACHIEVEMENTS ====================
 function checkAchievements() {
   const checks = {
     first_coin: () => state.totalCoins >= 1,
     hundred: () => state.coins >= 100,
     thousand: () => state.coins >= 1000,
     million: () => state.coins >= 1e6,
-    billion: () => state.coins >= 1e9,
     first_gen: () => state.generators.some(g => g.count > 0),
     first_prestige: () => state.prestigeCount >= 1,
     ten_gens: () => state.generators.reduce((a,g) => a + g.count, 0) >= 10,
-    fifty_gens: () => state.generators.reduce((a,g) => a + g.count, 0) >= 50,
-    clicker: () => state.totalClicks >= 100,
-    trader: () => trade.totalTrades > 0,
-    five_prestige: () => state.prestigeCount >= 5,
-    ten_prestige: () => state.prestigeCount >= 10,
-    twenty_prestige: () => state.prestigeCount >= 20,
     first_galaxy: () => state.galaxies >= 1,
-    five_galaxies: () => state.galaxies >= 5,
-    challenge_complete: () => state.challenges.some(c => c.completed),
-    five_challenges: () => state.challenges.filter(c => c.completed).length >= 5,
-    ten_challenges: () => state.challenges.filter(c => c.completed).length >= 10,
-    skill_master: () => state.skills.filter(s => s.bought).length >= 10,
-    skill_guru: () => state.skills.filter(s => s.bought).length >= 20,
-    research_master: () => state.researches.filter(r => r.completed).length >= 5,
-    research_guru: () => state.researches.filter(r => r.completed).length >= 10,
-    corruption1: () => state.corruptions.some(c => c.active),
-    corruption10: () => state.corruptions.filter(c => c.active).length >= 10,
-    hardcore_beat: () => state.prestigeCount >= 1 && state.difficulty === "hardcore",
-    speed_beat: () => state.prestigeCount >= 1 && state.difficulty === "speed",
-    chaos_survive: () => state.difficulty === "chaos" && state.playTime >= 600,
-    milestone_ten: () => state.milestones.filter(m => m.completed).length >= 10,
-    milestone_fifteen: () => state.milestones.filter(m => m.completed).length >= 15,
-    event_lucky: () => trade.jackpots >= 3,
-    event_unlucky: () => false, // Track in triggerRandomEvent
-    infinite: () => state.totalCoins >= 1e100,
-    rich_prestige: () => state.prestigeCount >= 1 && state.totalCoins >= 100e6,
-    ultra_prestige: () => state.prestigeCount >= 1 && state.totalCoins >= 1e12,
-    all_gens: () => state.generators.every(g => g.count > 0),
-    all_upgrades: () => state.upgrades.every(u => u.bought),
-    completionist: () => state.achievements.filter(a => a.unlocked).length >= 50,
-    prestige_spammer: () => false, // Track separately
-    star_collector: () => state.stars >= 1000,
-    usine_unlock: () => state.prestigeCount >= 5,
-    dyson_unlock: () => state.prestigeCount >= 25,
-    bot_trader: () => Object.values(trade.resources).some(r => r.botActive),
-    corruption_master: () => state.corruptions.filter(c => c.active).length >= 5
+    completionist: () => state.achievements.filter(a => a.unlocked).length >= 8
   };
   
   for (let a of state.achievements) {
-    if (!a.unlocked && checks[a.id] && checks[a.id]()) {
+    if (!a.unlocked && checks[a.id]?.()){
       a.unlocked = true;
       log("🏆 " + a.name, "success");
     }
   }
 }
 
-// ==================== EVENTS ====================
-function triggerRandomEvent() {
-  const events = [
-    {name: "Météore 🌠", effect: () => {
-      state.coins = Math.max(0, state.coins * 0.8);
-      state.boostedCps = cps() * 5;
-      state.boostTime = 30;
-      log("🌠 Météore! -20% pièces, +500% prod pendant 30s", "event");
-    }},
-    {name: "Jackpot 🎰", effect: () => {
-      state.coins += state.coins * 9;
-      trade.jackpots++;
-      log("🎰 JACKPOT! ×10 pièces!", "success");
-    }},
-    {name: "Taxe 💸", effect: () => {
-      state.coins = Math.max(0, state.coins * 0.9);
-      log("💸 Taxe! -10% pièces", "warning");
-    }},
-    {name: "Bonus Mystère 🎁", effect: () => {
-      let options = [
-        () => { state.stars++; log("🎁 +1 étoile!", "success"); },
-        () => { state.skillPoints += 5; log("🎁 +5 points compétence!", "success"); },
-        () => { state.coins *= 2; log("🎁 ×2 pièces!", "success"); },
-        () => { for(let g of state.generators) g.count += 5; log("🎁 +5 générateurs random!", "success"); }
-      ];
-      options[Math.floor(Math.random() * options.length)]();
-    }}
-  ];
-  
-  let evt = events[Math.floor(Math.random() * events.length)];
-  evt.effect();
-  checkAchievements();
-  updateUI();
-  save();
-}
-
-// ==================== UNLOCKS ====================
 function checkUnlocks() {
-  if (!state.unlockedFeatures) state.unlockedFeatures = ["basic"];
-  
   if (state.prestigeCount >= 5 && !state.unlockedFeatures.includes("midgame")) {
     state.unlockedFeatures.push("midgame");
-    log("🎉 NOUVEAU : Upgrades Avancés !", "unlock");
+    log("🎉 NOUVEAU : Upgrades Avancés!", "unlock");
   }
-  
   if (state.prestigeCount >= 15 && !state.unlockedFeatures.includes("advanced")) {
     state.unlockedFeatures.push("advanced");
-    log("🎉 NOUVEAU : Trading Multi-Ressources + Auto-achat !", "unlock");
-  }
-
-  if (state.prestigeCount >= 30 && !state.unlockedFeatures.includes("lategame")) {
-    state.unlockedFeatures.push("lategame");
-    log("🎉 NOUVEAU : Super Prestige (Galaxies) !", "unlock");
-  }
-
-  if (state.prestigeCount >= 50 && !state.unlockedFeatures.includes("endgame")) {
-    state.unlockedFeatures.push("endgame");
-    log("🎉 NOUVEAU : ENDGAME - Modes Difficiles, Corruption, Chaos !", "unlock");
+    log("🎉 NOUVEAU : Contenu Avancé!", "unlock");
   }
 }
 
-// ==================== UI UPDATE ====================
-function updateUI() {
+function resetGame() {
+  let confirmed = confirm(`RESET TOTAL?
+
+Tu vas perdre:
+- ${formatNum(state.totalCoins)} pièces
+- ${state.stars} étoiles
+- ${state.prestigeCount} prestiges
+
+Clique OK pour confirmer.`);
+  
+  if (confirmed) {
+    try {
+      let keys = Object.keys(localStorage);
+      for (let key of keys) {
+        localStorage.removeItem(key);
+      }
+      sessionStorage.clear();
+      setTimeout(() => {
+        location.href = location.href.split('?')[0] + '?nocache=' + Date.now();
+      }, 100);
+    } catch (e) {
+      alert("Erreur reset: " + e.message);
+    }
+  }
+}
+
+function exportSave() {
+  try {
+    let data = JSON.stringify({state, trade, v: 8});
+    let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "save_" + Date.now() + ".txt";
+    a.click();
+    log("📤 Exporté", "success");
+  } catch (e) {
+    log("❌ Erreur export", "event");
+  }
+}
+
+function importSave() {
+  $("importInput").click();
+}
+
+function save() {
+  try {
+    // Utiliser encodeURIComponent pour gérer les accents
+    let data = JSON.stringify({state, trade, v: 8});
+    let encoded = encodeURIComponent(data);
+    localStorage.setItem(SAVE_KEY, encoded);
+  } catch (e) {
+    console.error("Save error:", e);
+  }
+}
+
+function load() {
+  try {
+    let raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      // Décoder avec decodeURIComponent
+      let data = JSON.parse(decodeURIComponent(raw));
+      Object.assign(state, data.state);
+      Object.assign(trade, data.trade);
+      log("💾 Chargé", "success");
+    }
+  } catch (e) {
+    log("❌ Erreur chargement", "event");
+  }
+}
+
+function showTutorial() {
+  $("tutorialContent").innerHTML = `
+    <p><strong>1️⃣ LES BASES</strong><br>
+    Clique sur le gros bouton bleu! Chaque clic te donne des pièces 💰. C'est ta richesse!
+    </p>
+    
+    <p><strong>2️⃣ LES GÉNÉRATEURS</strong><br>
+    Achète des Robots (0.1 pièces/sec), puis Usines, Ports... Ils produisent automatiquement pour toi!
+    </p>
+    
+    <p><strong>3️⃣ LES UPGRADES</strong><br>
+    Augmente ta puissance avec des upgrades (Clic ×2, Gen ×3). Chaque upgrade n'existe qu'une fois!
+    </p>
+    
+    <p><strong>4️⃣ LE PRESTIGE</strong><br>
+    Quand tu as 10,000 pièces au total, tu peux faire un Prestige = reset qui te donne ⭐ Étoiles!
+    Avec les étoiles, tu peux acheter des super boosts permanents.
+    </p>
+    
+    <p><strong>5️⃣ LES GALAXIES</strong><br>
+    Après plusieurs prestiges, débloque les Super Prestige (Galaxies) = ×1.5 multiplicateur à TOUT!
+    </p>
+    
+    <p><strong>6️⃣ CONSEILS</strong><br>
+    - Fais des prestiges réguliers pour gagner des étoiles<br>
+    - Les upgrades sont une fois/partie mais permanents<br>
+    - Débloquez des générateurs en fonction des prestiges<br>
+    - Le jeu s'accélère exponentiellement = c'est normal!
+    </p>
+  `;
+  $("tutorialModal").style.display = "flex";
+}
+
+function showHelp() {
+  showTutorial(); // Même contenu
+}
+
+function closeTutorial() {
+  $("tutorialModal").style.display = "none";
+}
+
+let lastLogUpdate = 0;
+let lastLogMessageCount = 0;
+
+function updateLogDisplay() {
+  // Mettre à jour le log seulement si y a des nouveaux messages
+  if (state.logMessages.length !== lastLogMessageCount) {
+    let logHTML = state.logMessages.map(m => `<div class="log-message ${m.type}">[${m.time}] ${m.text}</div>`).join("");
+    $("log").innerHTML = logHTML;
+    lastLogMessageCount = state.logMessages.length;
+  }
+}
+
+let lastUIUpdate = 0;
+
+function updateUIPartial() {
+  let now = Date.now();
+  if (now - lastUIUpdate < UPDATE_INTERVAL) return;
+  lastUIUpdate = now;
+  updateUI(false); // false = ne pas update le log (on le fait séparément)
+}
+
+function updateUI(updateLog = true) {
   $("coins").textContent = formatNum(state.coins);
   $("cps").textContent = formatNum(cps());
   $("clickValue").textContent = formatNum(clickVal());
@@ -1290,405 +637,107 @@ function updateUI() {
   $("prestigeGainDisplay").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
-  $("prestigeCost").textContent = formatNum(10000);
+  $("prestigeProgress").style.width = Math.min(100, (state.totalCoins / 10000) * 100) + "%";
   
-  let pProgress = Math.min(100, (state.totalCoins / 10000) * 100);
-  $("prestigeProgress").style.width = pProgress + "%";
-
-  // Galaxy display
+  // Galaxy
   let galaxyCost = state.galaxies === 0 ? 100 : 100 * Math.pow(10, state.galaxies);
-  let canSuperPrestige = state.stars >= galaxyCost;
-  $("superPrestigeBtn").disabled = !canSuperPrestige;
-  $("galaxyInfo").innerHTML = `
-    <div class="galaxy-display">
-      <div>Galaxies Actuelles</div>
-      <div class="galaxy-count">${state.galaxies} 🌀</div>
-      <div>Prochaine Galaxie : ${formatNum(galaxyCost)} ⭐</div>
-      <div>Bonus Actuel : ×${Math.pow(1.5, state.galaxies)}</div>
-    </div>
-  `;
-
-  // Bonus display
-  let prod_bonus = 1;
-  for (let m of state.milestones) {
-    if (m.completed && m.reward.type === "production") prod_bonus *= m.reward.mult;
-  }
-  let star_bonus = 1;
-  for (let m of state.milestones) {
-    if (m.completed && m.reward.type === "stars") star_bonus *= m.reward.mult;
-  }
-  let click_bonus = 1;
-  for (let m of state.milestones) {
-    if (m.completed && m.reward.type === "click") click_bonus *= m.reward.mult;
-  }
+  $("superPrestigeBtn").disabled = state.stars < galaxyCost;
+  $("galaxyInfo").innerHTML = `<div style="text-align:center"><div>${state.galaxies} 🌀</div><div style="font-size:0.9rem">Coût: ${formatNum(galaxyCost)} ⭐</div></div>`;
   
-  $("prodBonus").textContent = formatNum(Math.pow(1.2, state.stars) * Math.pow(1.5, state.galaxies) * prod_bonus);
-  $("starBonus").textContent = formatNum(star_bonus);
-  $("clickBonus").textContent = formatNum(click_bonus);
-
   // Generators
   let gensHTML = "";
   for (let g of state.generators) {
-    // Check unlock conditions
-    if (!isUnlocked(g.unlock)) continue;
-    if (g.unlock_prestige && state.prestigeCount < g.unlock_prestige) continue;
-    
+    if (!isUnlocked(g.unlock) || (g.unlock_prestige && state.prestigeCount < g.unlock_prestige)) continue;
     let cost = price(g);
     let canBuy = state.coins >= cost;
-    
-    // Calculate cost to buy 10
-    let cost10 = 0;
-    for (let i = 0; i < 10; i++) {
-      cost10 += price({count: g.count + i, price: g.price, mult: g.mult});
-    }
-    let canBuy10 = state.coins >= cost10;
-    
     gensHTML += `<div class="gen-item">
-      <div><strong>${g.name}</strong> <span class="count">×${g.count}</span><br><small>${formatNum(g.base * g.count * cps() / Math.max(1, state.generators.reduce((a,x) => a + x.base * x.count, 0)))}/s</small></div>
-      <div style="display:flex;gap:0.3rem">
-        <button class="buy-btn" onclick="buyGen('${g.id}')" ${canBuy ? '' : 'disabled'} style="flex:1">${formatNum(cost)}💰</button>
-        <button class="buy-btn" onclick="buyGenMultiple('${g.id}', 10)" ${canBuy10 ? '' : 'disabled'} style="flex:1;background:#0cf;font-size:0.9rem">×10</button>
+      <div><strong>${g.name}</strong> <span class="count">×${g.count}</span></div>
+      <div style="display:flex;gap:0.2rem">
+        <button class="buy-btn" onclick="buyGen('${g.id}')" ${canBuy ? '' : 'disabled'} style="flex:1">${formatNum(cost)}</button>
+        <button class="buy-btn" onclick="buyGenMultiple('${g.id}',10)" style="flex:0.5;background:#0cf">×10</button>
       </div>
     </div>`;
   }
   $("gens").innerHTML = gensHTML;
-
-  // Upgrades
-  let availUps = [];
-  for (let u of state.upgrades) {
-    if (u.bought) continue;
-    if (!isUnlocked(u.unlock)) continue;
-    if (u.requires) {
-      let reqMet = false;
-      for (let uu of state.upgrades) {
-        if (uu.id === u.requires && uu.bought) { reqMet = true; break; }
-      }
-      if (!reqMet) continue;
-    }
-    availUps.push(u);
-  }
   
-  let upsHTML = availUps.length > 0 ? availUps.map(u => {
+  // Click Upgrades (toujours visibles)
+  let clickUpsHTML = "";
+  for (let u of state.upgrades) {
+    if (u.type !== "click" || u.bought) continue;
+    if (u.requires) {
+      let req = state.upgrades.find(uu => uu.id === u.requires);
+      if (!req || !req.bought) continue;
+    }
     let canBuy = state.coins >= u.price;
-    // Calculer combien on peut en acheter
-    let maxBuyable = Math.floor(state.coins / u.price);
-    return `<div class="up-item">
+    clickUpsHTML += `<div class="gen-item">
       <div><strong>${u.name}</strong> (${u.effect}x)</div>
-      <div style="display:flex;gap:0.5rem">
-        <button class="buy-btn" onclick="buyUp('${u.id}')" ${canBuy ? '' : 'disabled'} style="flex:1">${formatNum(u.price)}💰</button>
-        ${maxBuyable > 1 ? `<button class="buy-btn" onclick="buyUpMax('${u.id}')" style="flex:1;background:#0cf">×${maxBuyable}</button>` : ''}
-      </div>
+      <button class="buy-btn" onclick="buyUp('${u.id}')" ${canBuy ? '' : 'disabled'}>${formatNum(u.price)}</button>
     </div>`;
-  }).join("") : '<div style="color:#888;text-align:center">Tous achetés!</div>';
-  $("ups").innerHTML = upsHTML;
-
+  }
+  $("clickUpgrades").innerHTML = clickUpsHTML || "Tous achetés!";
+  
+  // Other Upgrades
+  let upsHTML = "";
+  for (let u of state.upgrades) {
+    if (u.type === "click" || u.bought) continue;
+    if (u.requires) {
+      let req = state.upgrades.find(uu => uu.id === u.requires);
+      if (!req || !req.bought) continue;
+    }
+    let canBuy = state.coins >= u.price;
+    upsHTML += `<div class="gen-item">
+      <div><strong>${u.name}</strong></div>
+      <button class="buy-btn" onclick="buyUp('${u.id}')" ${canBuy ? '' : 'disabled'}>${formatNum(u.price)}</button>
+    </div>`;
+  }
+  $("ups").innerHTML = upsHTML || "Tous achetés!";
+  
   // Star Upgrades
-  let availStar = [];
+  let starHTML = "";
   for (let u of state.starUpgrades) {
     if (u.bought) continue;
-    if (!isUnlocked(u.unlock)) continue;
-    if (u.requires) {
-      let reqMet = false;
-      for (let uu of state.starUpgrades) {
-        if (uu.id === u.requires && uu.bought) { reqMet = true; break; }
-      }
-      if (!reqMet) continue;
-    }
-    availStar.push(u);
-  }
-  
-  let starHTML = availStar.length > 0 ? availStar.map(u => {
     let canBuy = state.stars >= u.cost;
-    return `<div class="up-item">
+    starHTML += `<div class="gen-item">
       <div><strong>${u.name}</strong></div>
       <button class="buy-btn" onclick="buyStarUpgrade('${u.id}')" ${canBuy ? '' : 'disabled'}>${u.cost}⭐</button>
     </div>`;
-  }).join("") : '<div style="color:#888;text-align:center">Tous achetés!</div>';
-  $("starShop").innerHTML = starHTML;
-
-  // Trading
-  let tradeHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem">';
-  for (let name in trade.resources) {
-    let r = trade.resources[name];
-    let avg = r.history.reduce((a,b) => a+b, 0) / r.history.length;
-    tradeHTML += `<div style="background:#222;padding:1rem;border-radius:8px">
-      <h4>${name.toUpperCase()}</h4>
-      <div class="stat-line"><span>Quantité</span><span class="count">${r.amount}</span></div>
-      <div class="stat-line"><span>Prix</span><span class="price">${r.price}</span> 💰</div>
-      <div class="stat-line"><span>Moyenne</span><span>${avg.toFixed(1)}</span></div>
-      <button onclick="buyResource('${name}')">Acheter</button>
-      <button onclick="sellResource('${name}')">Vendre</button>
-      <button onclick="toggleBot('${name}')" style="background:${r.botActive ? '#0a0' : '#0af'}">🤖 ${r.botActive ? 'BOT ON' : 'BOT OFF'}</button>
-    </div>`;
   }
-  tradeHTML += '</div>';
-  $("tradeContent").innerHTML = tradeHTML;
-
-  // Milestones
-  let milestonesHTML = state.milestones.map(m => {
-    let pct = 0;
-    if (m.target === "coins") pct = Math.min(100, (state.coins / m.value) * 100);
-    if (m.target === "totalGens") pct = Math.min(100, ((state.generators.reduce((a,g) => a + g.count, 0)) / m.value) * 100);
-    if (m.target === "cps") pct = Math.min(100, (cps() / m.value) * 100);
-    if (m.target === "prestige") pct = Math.min(100, (state.prestigeCount / m.value) * 100);
-    
-    return `<div class="milestone-item ${m.completed ? 'completed' : ''}">
-      <div>
-        <strong>${m.name}</strong><br>
-        <small>${m.desc}</small>
-        <div class="progress-bar" style="margin-top:0.3rem">
-          <div class="progress-fill" style="width:${pct}%"></div>
-        </div>
-      </div>
-      ${m.completed ? '<span style="color:#0f0">✓</span>' : ''}
-    </div>`;
-  }).join("");
-  $("milestonesContent").innerHTML = milestonesHTML;
-
-  // Challenges
-  let challengesHTML = state.challenges.map(c => {
-    return `<div class="challenge-item ${c.completed ? 'completed' : ''}">
-      <div>
-        <strong>${c.name}</strong> ${c.reward ? `(+${c.reward} points)` : ''}<br>
-        <small>${c.desc}</small>
-      </div>
-      <button onclick="activateChallenge('${c.id}')" ${c.active || c.completed ? 'disabled' : ''}>${c.completed ? '✓' : 'Activer'}</button>
-    </div>`;
-  }).join("");
-  $("challengesContent").innerHTML = challengesHTML;
-
-  // Skills
-  let skillsHTML = '<div class="skill-tree-container">';
-  for (let s of state.skills) {
-    let canBuy = state.skillPoints >= s.cost && !s.bought;
-    if (s.requires) {
-      let reqFound = false;
-      for (let ss of state.skills) {
-        if (ss.id === s.requires && ss.bought) { reqFound = true; break; }
-      }
-      if (!reqFound) canBuy = false;
-    }
-    
-    let color = s.branch === "production" ? "#0a0" : s.branch === "click" ? "#0af" : "#fa0";
-    skillsHTML += `<div class="skill-node ${s.bought ? 'unlocked' : ''}" style="border-color:${color}">
-      <strong>${s.name}</strong>
-      <small>${s.cost} pts</small>
-      ${s.bought ? '<div style="margin-top:0.5rem;color:#0f0">✓ Acheté</div>' : ''}
-      <button onclick="buySkill('${s.id}')" style="margin-top:0.5rem;font-size:0.8rem" ${canBuy ? '' : 'disabled'}>${canBuy ? 'Acheter' : 'Bloqué'}</button>
-    </div>`;
-  }
-  skillsHTML += '</div>';
-  $("skillTree").innerHTML = skillsHTML;
-
-  // Research
-  let researchHTML = state.researches.map(r => {
-    let progress = 0;
-    let timeRemaining = r.cost_time;
-    if (r.active) {
-      let elapsed = (Date.now() - r.startTime) / 1000;
-      progress = Math.min(100, (elapsed / r.cost_time) * 100);
-      timeRemaining = Math.max(0, r.cost_time - elapsed);
-    }
-    
-    return `<div class="research-item ${r.completed ? 'completed' : ''}">
-      <div>
-        <strong>${r.name}</strong>${r.active ? ' (EN COURS)' : ''}<br>
-        <small>${r.desc}</small>
-        <small style="display:block;color:#aaa;margin-top:0.3rem">Coût: ${formatNum(r.cost_coins)} 💰 | ${r.cost_time}s</small>
-        ${r.active ? `<div class="progress-bar" style="margin-top:0.3rem"><div class="progress-fill" style="width:${progress}%"></div></div><small style="color:#0af">${timeRemaining.toFixed(1)}s restant</small>` : ''}
-      </div>
-      ${r.completed ? '<span style="color:#0f0">✓</span>' : (r.active ? '<span style="color:#ffa">▶️</span>' : `<button class="buy-btn" onclick="startResearch('${r.id}')" style="font-size:0.8rem">${formatNum(r.cost_coins)} 💰</button>`)}
-    </div>`;
-  }).join("");
-  $("researchContent").innerHTML = researchHTML;
-
-  // Corruptions
-  let corruptionHTML = state.corruptions.map(c => {
-    let active_count = state.corruptions.filter(x => x.active).length;
-    return `<div class="corruption-item ${c.active ? 'active' : ''}">
-      <div style="display:flex;justify-content:space-between">
-        <div>
-          <strong>${c.name}</strong><br>
-          <small>${c.desc}</small><br>
-          <small style="color:#ffa">+${c.bonus_stars}% étoiles</small>
-        </div>
-        <button onclick="toggleCorruption('${c.id}')" ${active_count >= 10 && !c.active ? 'disabled' : ''} style="align-self:center">${c.active ? 'Désactiver' : 'Activer'}</button>
-      </div>
-    </div>`;
-  }).join("");
-  $("corruptionList").innerHTML = corruptionHTML;
-  $("corruptionCount").textContent = state.corruptions.filter(c => c.active).length;
-  let total_bonus = 0;
-  for (let c of state.corruptions) {
-    if (c.active) total_bonus += c.bonus_stars;
-  }
-  $("corruptionBonus").textContent = total_bonus;
-
-  // Difficulty selector
-  const difficulties = {normal: "Normal", hardcore: "Hardcore (Prod÷10, Stars×5)", speed: "Speed (5× plus rapide)", chaos: "Chaos (Événements)"};
-  let diffHTML = "";
-  for (let diff in difficulties) {
-    diffHTML += `<button class="difficulty-btn ${state.difficulty === diff ? 'active' : ''}" onclick="setDifficulty('${diff}')">${difficulties[diff]}</button>`;
-  }
-  $("difficultySelector").innerHTML = diffHTML;
+  $("starShop").innerHTML = starHTML || "Tous achetés!";
   
-  const diffDescriptions = {
-    normal: "Mode normal - pas de malus",
-    hardcore: "Production divisée par 10, mais tu gagnes 5× plus d'étoiles!",
-    speed: "Tout va 5 fois plus vite, mais tu gagnes moins d'étoiles",
-    chaos: "Événements aléatoires constants!"
-  };
-  $("difficultyDesc").textContent = diffDescriptions[state.difficulty] || "Mode normal";
-
+  // LOG - mettre à jour seulement si y a de nouveaux messages
+  if (updateLog) {
+    updateLogDisplay();
+  }
+  
   // Stats
   $("totalCoins").textContent = formatNum(state.totalCoins);
   $("totalClicks").textContent = state.totalClicks;
-  let playTimeStr = state.playTime < 60 ? state.playTime + "s" : state.playTime < 3600 ? Math.floor(state.playTime / 60) + "m" : (state.playTime / 3600).toFixed(1) + "h";
-  $("playTime").textContent = playTimeStr;
+  let timeStr = state.playTime < 60 ? state.playTime + "s" : state.playTime < 3600 ? Math.floor(state.playTime/60) + "m" : (state.playTime/3600).toFixed(1) + "h";
+  $("playTime").textContent = timeStr;
   $("prestigeCountStat").textContent = state.prestigeCount;
-  $("challengesCompleted").textContent = state.challenges.filter(c => c.completed).length;
-  $("milestonesCompleted").textContent = state.milestones.filter(m => m.completed).length;
   
-  $("maxCoins").textContent = formatNum(state.maxCoins);
-  $("maxCps").textContent = formatNum(state.maxCps);
-  $("maxClickRate").textContent = formatNum(state.maxClickRate);
-
   // Achievements
-  let achHTML = "";
-  for (let a of state.achievements) {
-    achHTML += `<div class="achievement ${a.unlocked ? 'unlocked' : ''}">
-      ${a.unlocked ? '✅' : '🔒'} <strong>${a.name}</strong><br>
-      <small>${a.desc}</small>
-    </div>`;
-  }
+  let achHTML = state.achievements.map(a => `<div style="background:${a.unlocked ? '#002a00' : '#2a2a00'};padding:0.3rem;margin:0.2rem 0;border-radius:3px;font-size:0.8rem">
+    ${a.unlocked ? '✅' : '🔒'} ${a.name}
+  </div>`).join("");
   $("achievements").innerHTML = achHTML;
   $("achievementCount").textContent = state.achievements.filter(a => a.unlocked).length;
   $("achievementTotal").textContent = state.achievements.length;
 }
 
-function setDifficulty(diff) {
-  state.difficulty = diff;
-  log("⚙️ Mode: " + (diff === "normal" ? "Normal" : diff === "hardcore" ? "Hardcore" : diff === "speed" ? "Speed" : "Chaos"), "event");
-  updateUI();
-  save();
-}
-
-// ==================== SAVE/LOAD ====================
-function save() {
-  try {
-    let saveData = {state, trade, v: 5, t: Date.now()};
-    saveData.state.logMessages = [];
-    localStorage.setItem(SAVE_KEY, btoa(JSON.stringify(saveData)));
-  } catch (e) {
-    console.error("Save error:", e);
-  }
-}
-
-function load() {
-  try {
-    let raw = localStorage.getItem(SAVE_KEY);
-    if (raw) {
-      let data = JSON.parse(atob(raw));
-      Object.assign(state, data.state);
-      Object.assign(trade, data.trade);
-      if (!state.logMessages) state.logMessages = [];
-      log("💾 Chargé", "success");
-    }
-  } catch (e) {
-    log("❌ Erreur chargement", "event");
-  }
-  updateUI();
-}
-
-function exportSave() {
-  try {
-    let saveData = {state, trade, v: 5};
-    saveData.state.logMessages = [];
-    let blob = new Blob([btoa(JSON.stringify(saveData))], {type: "text/plain"});
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "save_" + Date.now() + ".txt";
-    a.click();
-    log("📤 Exporté", "success");
-  } catch (e) {
-    log("❌ Erreur export", "event");
-  }
-}
-
-function importSave() {
-  $("importInput").click();
-}
-
-function resetGame() {
-  let stats = `
-⚠️ ATTENTION - RESET COMPLET ⚠️
-
-Tu vas perdre:
-- 💰 ${formatNum(state.totalCoins)} pièces au total
-- ⭐ ${state.stars} étoiles
-- 🌀 ${state.galaxies} galaxies
-- 📊 ${state.prestigeCount} prestiges
-- 🤖 ${state.generators.reduce((a,g) => a + g.count, 0)} générateurs
-- 🏆 Tous tes achievements
-- 📈 Tout ton progrès
-
-Es-tu SÛR de vouloir continuer?
-  `;
-  
-  if (confirm(stats)) {
-    try {
-      // Effacer toutes les clés localStorage individuellement
-      const keys = Object.keys(localStorage);
-      for (let i = 0; i < keys.length; i++) {
-        localStorage.removeItem(keys[i]);
-      }
-      
-      // Force reload avec no-cache
-      setTimeout(() => {
-        location.href = location.href.split('?')[0] + '?nocache=' + Date.now();
-      }, 100);
-    } catch (e) {
-      console.error("Reset error:", e);
-      alert("Reset échoué: " + e.message);
-    }
-  }
-}
-
-function resetAllChallenges() {
-  for (let c of state.challenges) {
-    c.active = false;
-    c.completed = false;
-  }
-  log("🔄 Challenges réinitialisés", "event");
-  updateUI();
-  save();
-}
-
-function toggleAutoSave() {
-  state.autoSaveEnabled = !state.autoSaveEnabled;
-  log(state.autoSaveEnabled ? "✅ Auto-save ON" : "❌ Auto-save OFF", "event");
-}
-
-function toggleSound() {
-  state.soundEnabled = !state.soundEnabled;
-}
-
-function togglePopups() {
-  state.popupEnabled = !state.popupEnabled;
-}
-
-// ==================== INIT ====================
 function init() {
-  console.log("INIT STARTING...");
   $("clickBtn").addEventListener("click", clickBtn);
-  console.log("Click button added");
-  
   $("importInput").addEventListener("change", function(e) {
     let file = e.target.files[0];
     if (!file) return;
     file.text().then(txt => {
       try {
-        let data = JSON.parse(atob(txt));
+        // Essayer d'abord le nouveau format (JSON direct)
+        let data = JSON.parse(txt);
+        if (!data.state) {
+          // Essayer ancien format (base64)
+          data = JSON.parse(atob(txt));
+        }
         state = data.state;
         trade = data.trade;
         save();
@@ -1701,59 +750,37 @@ function init() {
   });
 
   load();
-  console.log("Load complete");
   
   setTimeout(() => {
-    console.log("Timeout - calling updateUI");
     updateUI();
-    log("🎮 Bienvenue dans ULTIMATE!", "unlock");
+    log("🎮 Bienvenue!", "unlock");
+    if (state.prestigeCount === 0) {
+      showTutorial();
+    }
   }, 100);
   
-  let updateCounter = 0;
+  // Game loop - OPTIMISÉ
   setInterval(() => {
     let gain = cps() / FPS;
     state.coins += gain;
     state.totalCoins += gain;
+    state.maxCps = Math.max(state.maxCps, cps());
     
-    let currentCps = cps();
-    state.maxCps = Math.max(state.maxCps, currentCps);
-    
-    // Auto-click
     for (let u of state.starUpgrades) {
       if (u.id === "star_auto1" && u.bought) {
-        let autoGain = clickVal() / FPS;
-        state.coins += autoGain;
-        state.totalCoins += autoGain;
+        state.coins += clickVal() / FPS;
+        state.totalCoins += clickVal() / FPS;
       }
     }
     
-    updateCounter++;
-    
-    $("coins").textContent = formatNum(state.coins);
-    $("totalCoins").textContent = formatNum(state.totalCoins);
-    $("cps").textContent = formatNum(currentCps);
-    
-    if (updateCounter % 10 === 0) {
-      checkMilestones();
-      checkResearch();
-      checkAchievements();
-      updateUI();
-    }
-    
-    if (updateCounter % 30 === 0) {
-      save();
-    }
+    // Update UI moins souvent
+    updateUIPartial();
   }, 1000 / FPS);
 
   setInterval(() => {
-    tickMarket();
-  }, 3000);
-
-  setInterval(() => {
     state.playTime++;
-    if (state.playTime % 300 === 0) {
-      checkAchievements();
-    }
+    checkAchievements();
+    save();
   }, 1000);
 
   window.addEventListener("beforeunload", save);
