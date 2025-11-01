@@ -113,6 +113,7 @@ let state = {
   prestigeCount: 0,
   playTime: 0,
   prestigeCost: 1000,
+  unlockedFeatures: ["basic"],
   logMessages: [],
   generators: [
     {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.15},
@@ -121,39 +122,59 @@ let state = {
     {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.15},
     {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.15},
     {id:"station", name:"Station", base:500, count:0, price:15e6, mult:1.15},
-    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.15}
+    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.15},
+    {id:"blackhole", name:"Trou Noir", base:15000, count:0, price:50e9, mult:1.15, unlock:"advanced"},
+    {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.15, unlock:"advanced"}
   ],
   upgrades: [
     {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click"},
     {id:"click5", name:"Clic ×5", price:25000, effect:5, bought:false, type:"click", requires:"click2"},
+    {id:"click10", name:"Clic ×10", price:500000, effect:10, bought:false, type:"click", requires:"click5"},
     {id:"gen2", name:"Gen ×2", price:15000, effect:2, bought:false, type:"gen"},
     {id:"gen3", name:"Gen ×3", price:250000, effect:3, bought:false, type:"gen", requires:"gen2"},
+    {id:"gen5", name:"Gen ×5", price:5e6, effect:5, bought:false, type:"gen", requires:"gen3"},
     {id:"robot10", name:"Robot ×10", price:5000, effect:10, bought:false, type:"robot"},
     {id:"usine10", name:"Usine ×10", price:75000, effect:10, bought:false, type:"usine"},
+    {id:"port10", name:"Port ×10", price:1e6, effect:10, bought:false, type:"port"},
+    {id:"labo10", name:"Labo ×10", price:5e6, effect:10, bought:false, type:"labo", unlock:"midgame"},
+    {id:"satellite10", name:"Satellite ×10", price:50e6, effect:10, bought:false, type:"satellite", unlock:"midgame"},
     {id:"autosave", name:"Sauvegarde auto", price:2000, bought:false, type:"feature"}
   ],
   starUpgrades: [
     {id:"star_prod1", name:"Prod ×2", cost:10, bought:false, effect:2, type:"production"},
     {id:"star_prod2", name:"Prod ×5", cost:35, bought:false, effect:5, type:"production", requires:"star_prod1"},
+    {id:"star_prod3", name:"Prod ×10", cost:100, bought:false, effect:10, type:"production", requires:"star_prod2"},
     {id:"star_click1", name:"Clic ×3", cost:20, bought:false, effect:3, type:"starclick"},
+    {id:"star_click2", name:"Clic ×10", cost:60, bought:false, effect:10, type:"starclick", requires:"star_click1"},
     {id:"star_gen1", name:"Robot ×50", cost:25, bought:false, effect:50, type:"robot"},
-    {id:"star_auto1", name:"Auto-clic", cost:75, bought:false, type:"autoclick"}
+    {id:"star_gen2", name:"Usine ×50", cost:50, bought:false, effect:50, type:"usine"},
+    {id:"star_gen3", name:"Port ×50", cost:80, bought:false, effect:50, type:"port"},
+    {id:"star_auto1", name:"Auto-clic", cost:75, bought:false, type:"autoclick"},
+    {id:"star_autobuy", name:"Auto-achat gen", cost:200, bought:false, type:"autobuy", unlock:"advanced"},
+    {id:"star_market", name:"Marché rapide", cost:120, bought:false, type:"fastmarket", unlock:"advanced"}
   ],
   achievements: [
     {id:"first_coin", name:"Première pièce", desc:"Gagner 1 pièce", unlocked:false},
     {id:"hundred", name:"Capitaliste", desc:"100 pièces", unlocked:false},
     {id:"thousand", name:"Millionnaire", desc:"1000 pièces", unlocked:false},
     {id:"first_gen", name:"Automatisation", desc:"1er générateur", unlocked:false},
-    {id:"first_prestige", name:"Renaissance", desc:"1er prestige", unlocked:false}
+    {id:"first_prestige", name:"Renaissance", desc:"1er prestige", unlocked:false},
+    {id:"ten_gens", name:"Industriel", desc:"10 générateurs", unlocked:false},
+    {id:"clicker", name:"Clickeur", desc:"100 clics", unlocked:false},
+    {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false}
   ]
 };
 
 let trade = {
   iron: 0,
-  price: 10,
-  history: [10],
-  botActive: false,
-  totalTrades: 0
+  gold: 0,
+  platinum: 0,
+  crypto: 0,
+  prices: {iron: 10, gold: 50, platinum: 200, crypto: 1000},
+  history: {iron: [10], gold: [50], platinum: [200], crypto: [1000]},
+  botActive: {iron: false, gold: false, platinum: false, crypto: false},
+  totalTrades: 0,
+  currentTab: "iron"
 };
 
 const $ = id => document.getElementById(id);
@@ -197,6 +218,7 @@ function cps() {
   var total = 0;
   for (var i = 0; i < state.generators.length; i++) {
     var g = state.generators[i];
+    if (!isUnlocked(g.unlock)) continue;
     var eff = genMult * starMult;
     for (var j = 0; j < state.upgrades.length; j++) {
       if (state.upgrades[j].type === g.id && state.upgrades[j].bought) eff *= state.upgrades[j].effect;
@@ -251,6 +273,7 @@ function buyUp(upId) {
     if (state.upgrades[i].id === upId) {
       var up = state.upgrades[i];
       if (up.bought || state.coins < up.price) return;
+      if (!isUnlocked(up.unlock)) return;
       if (up.requires) {
         var reqFound = false;
         for (var j = 0; j < state.upgrades.length; j++) {
@@ -277,6 +300,7 @@ function buyStarUpgrade(id) {
     if (state.starUpgrades[i].id === id) {
       var up = state.starUpgrades[i];
       if (up.bought || state.stars < up.cost) return;
+      if (!isUnlocked(up.unlock)) return;
       if (up.requires) {
         var reqFound = false;
         for (var j = 0; j < state.starUpgrades.length; j++) {
@@ -297,30 +321,60 @@ function buyStarUpgrade(id) {
   }
 }
 
+function isUnlocked(feature) {
+  if (!feature) return true;
+  return state.unlockedFeatures && state.unlockedFeatures.indexOf(feature) !== -1;
+}
+
+function checkUnlocks() {
+  if (!state.unlockedFeatures) state.unlockedFeatures = ["basic"];
+  var p = state.prestigeCount;
+  
+  if (p >= 5 && state.unlockedFeatures.indexOf("midgame") === -1) {
+    state.unlockedFeatures.push("midgame");
+    log("🎉 NOUVEAU : Upgrades avancés !", "unlock");
+  }
+  
+  if (p >= 15 && state.unlockedFeatures.indexOf("advanced") === -1) {
+    state.unlockedFeatures.push("advanced");
+    log("🎉 NOUVEAU : Trading multi-ressources + Auto-achat !", "unlock");
+  }
+}
+
 function prestige() {
-  var gain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
-  if (gain < 1 || state.totalCoins < state.prestigeCost) return;
+  // Nouvelle formule : il faut vraiment 1000 pièces minimum
+  if (state.totalCoins < state.prestigeCost) return;
+  
+  // Gain = 1 étoile par tranche de 1000 pièces
+  var gain = Math.floor(state.totalCoins / state.prestigeCost);
+  if (gain < 1) return;
+  
   state.stars += gain;
   state.prestigeCount++;
   state.prestigeCost = 1000;
   resetCore();
   log("⭐ +" + gain + " étoiles (Total: " + state.stars + ")", "success");
   checkAchievements();
+  checkUnlocks();
   updateUI();
   save();
 }
 
 function prestigeMax() {
+  if (state.totalCoins < state.prestigeCost) return;
+  
   var totalGain = 0;
   var done = 0;
   var tempCoins = state.totalCoins;
+  
   while (tempCoins >= state.prestigeCost) {
-    var gain = Math.floor(Math.sqrt(tempCoins / state.prestigeCost));
+    var gain = Math.floor(tempCoins / state.prestigeCost);
     if (gain < 1) break;
     totalGain += gain;
     done++;
     tempCoins = 0;
   }
+  
   if (totalGain < 1) return;
   state.stars += totalGain;
   state.prestigeCount += done;
@@ -328,6 +382,7 @@ function prestigeMax() {
   resetCore();
   log("⭐ MULTI ! +" + totalGain + " étoiles", "success");
   checkAchievements();
+  checkUnlocks();
   updateUI();
   save();
 }
@@ -406,7 +461,16 @@ function checkAchievements() {
       }
       return false;
     },
-    first_prestige: function(s) { return s.prestigeCount >= 1; }
+    first_prestige: function(s) { return s.prestigeCount >= 1; },
+    ten_gens: function(s) {
+      var total = 0;
+      for (var i = 0; i < s.generators.length; i++) {
+        total += s.generators[i].count;
+      }
+      return total >= 10;
+    },
+    clicker: function(s) { return s.totalClicks >= 100; },
+    trader: function() { return trade.totalTrades > 0; }
   };
   
   for (var i = 0; i < state.achievements.length; i++) {
@@ -416,6 +480,8 @@ function checkAchievements() {
       log("🏆 " + ach.name, "success");
     }
   }
+  
+  checkUnlocks();
 }
 
 function updateUI() {
