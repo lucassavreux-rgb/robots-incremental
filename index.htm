@@ -47,7 +47,7 @@
   .gen-item:hover{border-color:rgba(0,170,255,0.3);background:linear-gradient(135deg, rgba(44,44,44,0.8) 0%, rgba(40,25,40,0.8) 100%)}
   .stat-line{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(0,170,255,0.1);font-size:0.95rem}
   
-  #clickBtn{font-size:1.4rem;padding:1.5rem 3rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1.5rem;width:90%;max-width:450px;border-radius:15px;box-shadow:0 10px 40px rgba(0,170,255,0.3);transition:all 0.3s;font-weight:900;letter-spacing:2px;border:3px solid rgba(255,255,255,0.1);animation:pulse 2s infinite}
+  #clickBtn{font-size:1.4rem;padding:1.5rem 3rem;background:linear-gradient(135deg, #0af 0%, #08d 100%);margin:1.5rem;width:90%;max-width:450px;border-radius:15px;box-shadow:0 10px 40px rgba(0,170,255,0.3);transition:all 0.3s;font-weight:900;letter-spacing:2px;border:3px solid rgba(255,255,255,0.1)}
   #clickBtn:hover{box-shadow:0 15px 50px rgba(0,170,255,0.5);transform:scale(1.08)}
   #clickBtn:active{transform:scale(0.95)}
   
@@ -292,8 +292,8 @@
 
 <script>
 const SAVE_KEY = "idleTrade_v10_complete";
-const FPS = 20;
-const UPDATE_INTERVAL = 150;
+const FPS = 10;
+const UPDATE_INTERVAL = 400;
 
 let state = {
   coins: 0, totalCoins: 0, stars: 0, galaxies: 0, totalClicks: 0, prestigeCount: 0,
@@ -510,7 +510,14 @@ function clickBtn() {
   state.totalCoins += val;
   state.totalClicks++;
   state.maxCoins = Math.max(state.maxCoins, state.coins);
+  
+  // Update display immediately pour un feedback rapide
+  $("coins").textContent = formatNum(state.coins);
+  $("cps").textContent = formatNum(cps());
+  $("clickValue").textContent = formatNum(clickVal());
+  
   checkAchievements();
+  updateUIPartial(); // Refresh complet mais throttled
 }
 
 function buyGen(genId) {
@@ -1150,7 +1157,7 @@ function init() {
     }
   }, 100);
   
-  // Game loop
+  // Game loop - MOINS FRÉQUENT
   setInterval(() => {
     let gain = cps() / FPS;
     state.coins += gain;
