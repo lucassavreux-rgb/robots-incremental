@@ -857,14 +857,26 @@ function resetGame() {
   if (!confirm("VRAIMENT SÛRE? C'est irréversible!")) return;
   
   try {
-    localStorage.removeItem(SAVE_KEY);
+    // Étape 1: Vider localStorage complètement
+    localStorage.clear();
+    
+    // Étape 2: Aussi vider sessionStorage
     sessionStorage.clear();
-    log("🗑️ Réinitialisation...", "warning");
+    
+    // Étape 3: Réinitialiser state en mémoire
+    state = null;
+    trade = null;
+    
+    log("🗑️ Réinitialisation complète...", "warning");
+    
+    // Étape 4: Hard refresh avec délai
     setTimeout(() => {
-      location.reload();
-    }, 500);
+      // Force un hard refresh (Ctrl+F5 equivalent)
+      window.location.href = window.location.href + '?v=' + Math.random();
+    }, 800);
   } catch (e) {
-    alert("Erreur: " + e.message);
+    console.error("Reset error:", e);
+    alert("Erreur reset: " + e.message);
   }
 }
 
@@ -889,39 +901,193 @@ function importSave() {
 function save() {
   try {
     let data = JSON.stringify({state, trade, v: 10});
-    let encoded = encodeURIComponent(data);
-    localStorage.setItem(SAVE_KEY, encoded);
+    localStorage.setItem(SAVE_KEY, data);
   } catch (e) {
     console.error("Save error:", e);
+    // Essayer avec encoding si erreur
+    try {
+      let data = JSON.stringify({state, trade, v: 10});
+      let encoded = encodeURIComponent(data);
+      localStorage.setItem(SAVE_KEY, encoded);
+    } catch (e2) {
+      console.error("Save error (encoded):", e2);
+    }
   }
 }
 
 function load() {
   try {
     let raw = localStorage.getItem(SAVE_KEY);
-    if (raw) {
-      let data = JSON.parse(decodeURIComponent(raw));
-      Object.assign(state, data.state);
-      Object.assign(trade, data.trade);
-      log("💾 Sauvegarde chargée!", "success");
+    if (!raw) return;
+    
+    let data;
+    try {
+      // Essayer d'abord le format non-encodé
+      data = JSON.parse(raw);
+    } catch (e1) {
+      try {
+        // Sinon essayer encodé
+        data = JSON.parse(decodeURIComponent(raw));
+      } catch (e2) {
+        console.error("Load parse errors:", e1, e2);
+        return;
+      }
     }
+    
+    if (data && data.state) {
+      Object.assign(state, data.state);
+    }
+    if (data && data.trade) {
+      Object.assign(trade, data.trade);
+    }
+    log("💾 Sauvegarde chargée!", "success");
   } catch (e) {
-    log("❌ Erreur chargement", "event");
+    console.error("Load error:", e);
   }
 }
 
 function showTutorial() {
   $("tutorialContent").innerHTML = `
-    <p><strong>🎮 1 - LES BASES</strong><br>Clique sur le gros bouton bleu! Chaque clic = des pièces 💰</p>
-    <p><strong>🤖 2 - GÉNÉRATEURS</strong><br>Achète des générateurs (Robot, Usine, etc). Ils produisent auto!</p>
-    <p><strong>⚡ 3 - UPGRADES</strong><br>Améliore ton puissance avec Clic×2, Gen×2, etc. Permanent!</p>
-    <p><strong>⭐ 4 - PRESTIGE</strong><br>Reset = gagne des étoiles! Plus tu as de total coins, plus tu gains d'étoiles!</p>
-    <p><strong>🌀 5 - GALAXIES</strong><br>Après plusieurs prestiges, fais des Super Prestige pour les galaxies. ×1.6 partout!</p>
-    <p><strong>💹 6 - TRADING</strong><br>Achète/vends ressources. Prix fluctuent. Active les bots pour gagner auto!</p>
-    <p><strong>🌳 7 - SKILLS</strong><br>Dépense tes skill points pour débloquer des compétences permanentes!</p>
-    <p><strong>⚔️ 8 - CHALLENGES</strong><br>Relève des défis pour gagner des skill points!</p>
-    <p><strong>🔥 9 - CORRUPTION</strong><br>Ajoute des malédictions pour te challenger. Supprime-les si c'est trop!</p>
-    <p><strong>💡 TIPS</strong><br>• Prestige régulièrement<br>• Upgrades = permanent<br>• Trading = extra coins<br>• Skills = super puissants<br>• Le jeu accélère exponentiellement!</p>
+    <h3 style="color:#0cf;margin:1rem 0">🎮 BIENVENUE DANS INCREMENTAL TRADE ULTIMATE!</h3>
+    
+    <p style="background:#222;padding:1rem;border-radius:8px;border-left:4px solid #0af"><strong>💡 Tip:</strong> Ce jeu s'accélère EXPONENTIELLEMENT - c'est normal si les nombres explosent! 🚀</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">1️⃣ LES BASES - CLIC = ARGENT</h4>
+    <p>Clique sur le gros bouton bleu <strong>"CLIC"</strong>! Chaque clic te donne des <strong>pièces 💰</strong></p>
+    <p>Plus tu cliques, plus tu gagnes. Simple! Commence par accumuler tes premières pièces.</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">2️⃣ GÉNÉRATEURS - PRODUCTION AUTOMATIQUE</h4>
+    <p>Une fois que tu as assez de pièces, achète des <strong>générateurs</strong>:</p>
+    <ul style="margin-left:2rem">
+      <li><strong>Robot</strong> (0.1/sec) - 15 💰 - Le premier!</li>
+      <li><strong>Usine</strong> (0.5/sec) - 100 💰</li>
+      <li><strong>Port</strong> (2/sec) - 1100 💰</li>
+      <li>... et bien d'autres!</li>
+    </ul>
+    <p>Ils produisent automatiquement sans que tu cliques. Plus tu en achètes, plus tu gagnes!</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">3️⃣ UPGRADES - DEVIENS SUPER PUISSANT</h4>
+    <p><strong>Clic Upgrades:</strong> Augmente la valeur de chaque clic (Clic ×2, ×5, ×10)</p>
+    <p><strong>Gen Upgrades:</strong> Boost ta production (Générateurs ×2, ×5)</p>
+    <p>💡 <strong>IMPORTANT:</strong> Les upgrades ne s'achètent qu'UNE FOIS mais restent PERMANENTS même après prestige!</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">4️⃣ PRESTIGE - LES ⭐ ÉTOILES</h4>
+    <p>Quand tu atteins <strong>10,000 pièces AU TOTAL</strong>, tu peux faire un <strong>PRESTIGE</strong>!</p>
+    <p>Le prestige:</p>
+    <ul style="margin-left:2rem">
+      <li>🔄 Reset tous tes générateurs à 0</li>
+      <li>🔄 Reset tes pièces actuelles</li>
+      <li>⭐ Te donne des ÉTOILES (formule: total coins ÷ 10,000)</li>
+      <li>📊 La barre de progression repart de 0!</li>
+    </ul>
+    <p>Exemple: Si tu as 50,000 pièces au total → tu gains 5 ⭐</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">5️⃣ ÉTOILES - POWER-UPS PERMANENTS</h4>
+    <p>Avec tes ⭐ étoiles, tu peux acheter des upgrades SUPER puissants dans le SHOP ÉTOILES:</p>
+    <ul style="margin-left:2rem">
+      <li><strong>Production ×2</strong> (30 ⭐) - Double ta production PARTOUT!</li>
+      <li><strong>Clic ×3</strong> (50 ⭐) - Triple tes clics!</li>
+      <li><strong>Auto-clic</strong> (200 ⭐) - Le jeu clique pour toi!</li>
+    </ul>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">6️⃣ GALAXIES - LE SUPER PRESTIGE</h4>
+    <p>Après plusieurs prestiges, tu peux débloquer les <strong>GALAXIES 🌀</strong>!</p>
+    <p>Coût: 100 ⭐ (première), puis 1000, 10000, etc.</p>
+    <p>Effet: <strong>×1.6 multiplicateur SUR TOUT!</strong> (production, clics, étoiles...)</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">7️⃣ SKILLS - ARBRE DE COMPÉTENCES</h4>
+    <p>Gagne des <strong>SKILL POINTS</strong> quand tu fais prestige (+3 par prestige)</p>
+    <p>Débloque des compétences permanentes:</p>
+    <ul style="margin-left:2rem">
+      <li>🔥 <strong>Frappe Renforcée:</strong> +50% clics</li>
+      <li>⚙️ <strong>Usine Optimisée:</strong> +25% production</li>
+      <li>💫 <strong>Métamorphose:</strong> +15% étoiles au prestige</li>
+      <li>🎲 <strong>Chance:</strong> +20% bonus au trading</li>
+    </ul>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">8️⃣ TRADING - COMMERCE & SPÉCULATION</h4>
+    <p>Achète/vends des ressources (Iron, Copper, Gold, Platinum)</p>
+    <p>Les prix fluctuent aléatoirement!</p>
+    <ul style="margin-left:2rem">
+      <li>📈 <strong>Achète bas, vends haut</strong> = PROFIT!</li>
+      <li>🤖 <strong>Active les bots</strong> pour trader automatiquement</li>
+      <li>💰 5% de chance de <strong>JACKPOT</strong> = ×2 le prix!</li>
+    </ul>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">9️⃣ CHALLENGES - DÉFIS ÉPIQUES</h4>
+    <p>Relève des défis pour gagner des skill points:</p>
+    <ul style="margin-left:2rem">
+      <li>⚔️ <strong>Ascète:</strong> Prestige sans cliquer (200pts)</li>
+      <li>⚡ <strong>Éclair:</strong> Prestige en 30 secondes (500pts)</li>
+      <li>🧠 <strong>Minimaliste:</strong> Max 3 générateurs (300pts)</li>
+    </ul>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">🔟 RECHERCHE - TECHNOLOGIES</h4>
+    <p>Achète des technologies pour débloquer des bonus:</p>
+    <ul style="margin-left:2rem">
+      <li>📚 <strong>Tech de Base</strong> (5K 💰) - Débloque générateurs</li>
+      <li>⚡ <strong>Énergie Stellaire</strong> (50K 💰) - +1 étoile par prestige</li>
+      <li>💹 <strong>Trading Avancé</strong> (200K 💰) - Prix +30% mieux!</li>
+    </ul>
+    
+    <h4 style="color:#f80;margin-top:1.5rem">🔥 CORRUPTION - LE MODE HARDCORE</h4>
+    <p><strong>ATTENTION:</strong> Les corruptions rendent le jeu PLUS DUR!</p>
+    <p>Elles peuvent:</p>
+    <ul style="margin-left:2rem">
+      <li>❌ Diviser ta production par 2</li>
+      <li>💸 Prendre 33% de tes pièces</li>
+      <li>⚠️ Rendre le prestige 2x plus cher</li>
+    </ul>
+    <p>Tu peux les activer pour un défi... mais tu peux aussi les supprimer! 😅</p>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">📊 OBJECTIFS - MILESTONES</h4>
+    <p>Complète 18+ objectifs pour débloquer des récompenses!</p>
+    <p>Exemples:</p>
+    <ul style="margin-left:2rem">
+      <li>100 pièces, 1000 pièces, 1M pièces</li>
+      <li>1er générateur, 10 générateurs, 50 générateurs</li>
+      <li>1er prestige, 10 prestiges</li>
+      <li>1ère galaxie, 100 trades</li>
+    </ul>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">🏆 ACHIEVEMENTS - BADGES</h4>
+    <p>Gagne 20+ achievements en jouant!</p>
+    <p>Plus tu progresses, plus tu en débloques.</p>
+    <p>Le dernier: <strong>SPEEDRUNNER</strong> - Prestige en moins de 5min!</p>
+    
+    <h4 style="color:#ffa;margin-top:1.5rem">💡 STRATÉGIE GAGNANTE</h4>
+    <ol style="margin-left:2rem">
+      <li><strong>Clique jusqu'à 10K</strong> pour le 1er prestige</li>
+      <li><strong>Achète upgrades de clics</strong> en priorité (permanent!)</li>
+      <li><strong>Fais prestige régulièrement</strong> pour accumules ⭐</li>
+      <li><strong>Achète étoile-upgrades</strong> - elles sont TRÈS puissantes</li>
+      <li><strong>Débloque skills</strong> progressivement (en arbre)</li>
+      <li><strong>Trade un peu</strong> pour extra-coins</li>
+      <li><strong>Augmente les galaxies</strong> = ×1.6 PARTOUT!</li>
+    </ol>
+    
+    <h4 style="color:#0cf;margin-top:1.5rem">⚙️ MÉCANIQUES CLÉS</h4>
+    <ul style="margin-left:2rem">
+      <li>✅ <strong>Clics permanents</strong> - Les upgrades restent après prestige</li>
+      <li>✅ <strong>Upgrades générateurs permanents</strong> aussi!</li>
+      <li>✅ <strong>Barre de progression</strong> repart à 0 à chaque prestige</li>
+      <li>✅ <strong>Production exponentielle</strong> = ça explose très vite 📈</li>
+      <li>✅ <strong>Galaxies = ×1.6</strong> - C'est ÉNORME!</li>
+    </ul>
+    
+    <h4 style="color:#0af;margin-top:1.5rem">🎯 OBJECTIF FINAL</h4>
+    <p><strong>Il n'y a pas vraiment de FIN!</strong> 🌌</p>
+    <p>Le jeu continue indéfiniment - ton but c'est:</p>
+    <ul style="margin-left:2rem">
+      <li>Atteindre les plus hauts nombres possibles</li>
+      <li>Débloquer tous les achievements</li>
+      <li>Maximiser tes multiplicateurs</li>
+      <li>Te détendre et regarder les nombres augmenter 😎</li>
+    </ul>
+    
+    <p style="background:#2a1a00;padding:1rem;border-radius:8px;border-left:4px solid #ffa;margin-top:1.5rem">
+      <strong>🚀 BON JEU!</strong> Amuse-toi bien et profite de l'expérience! Les nombres vont exploser, c'est normal! 💥
+    </p>
   `;
   $("tutorialModal").style.display = "flex";
 }
