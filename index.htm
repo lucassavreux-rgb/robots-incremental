@@ -363,12 +363,12 @@ let state = {
   
   generators: [
     {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.20},
-    {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.20},
-    {id:"port", name:"Port", base:4, count:0, price:3500, mult:1.20},
-    {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.20},
-    {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.20},
-    {id:"station", name:"Station", base:500, count:0, price:15e6, mult:1.20},
-    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.20},
+    {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.20, unlock_prestige:5},
+    {id:"port", name:"Port", base:1.5, count:0, price:3500, mult:1.20, unlock_prestige:6},
+    {id:"labo", name:"Labo", base:5, count:0, price:50000, mult:1.20, unlock_prestige:10},
+    {id:"satellite", name:"Satellite", base:20, count:0, price:750000, mult:1.20, unlock_prestige:15},
+    {id:"station", name:"Station", base:80, count:0, price:15e6, mult:1.20, unlock_prestige:20},
+    {id:"dyson", name:"Dyson", base:300, count:0, price:500e6, mult:1.20, unlock_prestige:25},
     {id:"blackhole", name:"Trou Noir", base:15000, count:0, price:50e9, mult:1.20, unlock:"advanced"},
     {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.20, unlock:"advanced"},
     {id:"quantum", name:"Simulateur Quantique", base:500000, count:0, price:100e12, mult:1.20, unlock:"endgame"}
@@ -589,9 +589,10 @@ function formatNum(n) {
   return mantissa.toFixed(2) + "e" + exp;
 }
 
-function isUnlocked(feature) {
+function isUnlocked(feature, prestigeCount) {
   if (!feature) return true;
-  return state.unlockedFeatures && state.unlockedFeatures.indexOf(feature) !== -1;
+  if (state.unlockedFeatures && state.unlockedFeatures.indexOf(feature) !== -1) return true;
+  return false;
 }
 
 function switchTab(tab) {
@@ -931,10 +932,9 @@ function prestigeMax() {
 }
 
 function superPrestige() {
-  // Need 100 stars for first galaxy, 1000 for second, etc.
-  // Et faut avoir 1000 pièces actuelles
+  // Cost: 100 for first, 1000 for second, 10000 for third, etc.
+  let cost = state.galaxies === 0 ? 100 : 100 * Math.pow(10, state.galaxies);
   if (state.coins < 1000) return;
-  let cost = 100 * Math.pow(10, state.galaxies);
   if (state.stars < cost) return;
   
   state.stars -= cost;
@@ -989,8 +989,8 @@ function sellResource(resource) {
 function tickMarket() {
   for (let name in trade.resources) {
     let r = trade.resources[name];
-    let volatility = {iron: 0.08, gold: 0.05, platinum: 0.15, crypto: 0.30}[name];
-    let change = (Math.random() - 0.48) * volatility;
+    let volatility = {iron: 0.15, gold: 0.12, platinum: 0.25, crypto: 0.50}[name];
+    let change = (Math.random() - 0.5) * volatility;
     r.price = Math.max(2, Math.floor(r.price * (1 + change)));
     r.history.push(r.price);
     if (r.history.length > 20) r.history.shift();
@@ -1182,7 +1182,7 @@ function updateUI() {
   $("prestigeProgress").style.width = pProgress + "%";
 
   // Galaxy display
-  let galaxyCost = 100 * Math.pow(10, state.galaxies);
+  let galaxyCost = state.galaxies === 0 ? 100 : 100 * Math.pow(10, state.galaxies);
   let canSuperPrestige = state.stars >= galaxyCost;
   $("superPrestigeBtn").disabled = !canSuperPrestige;
   $("galaxyInfo").innerHTML = `
@@ -1190,7 +1190,7 @@ function updateUI() {
       <div>Galaxies Actuelles</div>
       <div class="galaxy-count">${state.galaxies} 🌀</div>
       <div>Prochaine Galaxie : ${formatNum(galaxyCost)} ⭐</div>
-      <div>Bonus Actuel : ×${Math.pow(3, state.galaxies)}</div>
+      <div>Bonus Actuel : ×${Math.pow(1.5, state.galaxies)}</div>
     </div>
   `;
 
@@ -1215,11 +1215,14 @@ function updateUI() {
   // Generators
   let gensHTML = "";
   for (let g of state.generators) {
+    // Check unlock conditions
     if (!isUnlocked(g.unlock)) continue;
+    if (g.unlock_prestige && state.prestigeCount < g.unlock_prestige) continue;
+    
     let cost = price(g);
     let canBuy = state.coins >= cost;
     gensHTML += `<div class="gen-item">
-      <div><strong>${g.name}</strong> <span class="count">×${g.count}</span><br><small>${formatNum(g.base * g.count * cps() / state.generators.reduce((a,x) => a + x.base * x.count, 0))}/s</small></div>
+      <div><strong>${g.name}</strong> <span class="count">×${g.count}</span><br><small>${formatNum(g.base * g.count * cps() / Math.max(1, state.generators.reduce((a,x) => a + x.base * x.count, 0)))}/s</small></div>
       <button class="buy-btn" onclick="buyGen('${g.id}')" ${canBuy ? '' : 'disabled'}>${formatNum(cost)}💰</button>
     </div>`;
   }
@@ -1576,7 +1579,7 @@ function init() {
 
   setInterval(() => {
     tickMarket();
-  }, 10000);
+  }, 3000);
 
   setInterval(() => {
     state.playTime++;
