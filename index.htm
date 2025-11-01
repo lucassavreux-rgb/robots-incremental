@@ -338,7 +338,7 @@
 <div id="eventPopup" class="event-popup" style="display:none"></div>
 
 <script>
-const SAVE_KEY = "idleTrade_v6_ultimate_fix";
+const SAVE_KEY = "idleTrade_v7_final";
 const FPS = 20;
 
 // ==================== STATE ====================
@@ -410,6 +410,7 @@ let state = {
     {id:"hundred", name:"Capitaliste", desc:"100 pièces", unlocked:false},
     {id:"thousand", name:"Millionnaire", desc:"1000 pièces", unlocked:false},
     {id:"million", name:"Ultra-Millionnaire", desc:"1M pièces", unlocked:false},
+    {id:"billion", name:"Milliardaire", desc:"1B pièces", unlocked:false},
     {id:"first_gen", name:"Automatisation", desc:"1er générateur", unlocked:false},
     {id:"first_prestige", name:"Renaissance", desc:"1er prestige", unlocked:false},
     {id:"ten_gens", name:"Industriel", desc:"10 générateurs", unlocked:false},
@@ -418,23 +419,37 @@ let state = {
     {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false},
     {id:"five_prestige", name:"Renaissant", desc:"5 prestiges", unlocked:false},
     {id:"ten_prestige", name:"Phénix", desc:"10 prestiges", unlocked:false},
+    {id:"twenty_prestige", name:"Immortel", desc:"20 prestiges", unlocked:false},
     {id:"first_galaxy", name:"Explorateur", desc:"1ère Galaxie", unlocked:false},
-    {id:"challenge_complete", name:"Challenger", desc:"Compléter un challenge", unlocked:false},
+    {id:"five_galaxies", name:"Cosmonaute", desc:"5 Galaxies", unlocked:false},
+    {id:"challenge_complete", name:"Challenger", desc:"Compléter 1 challenge", unlocked:false},
     {id:"five_challenges", name:"Défieur", desc:"5 challenges", unlocked:false},
+    {id:"ten_challenges", name:"Maître Défi", desc:"10 challenges", unlocked:false},
     {id:"skill_master", name:"Maître des Compétences", desc:"10 compétences achetées", unlocked:false},
+    {id:"skill_guru", name:"Guru Compétences", desc:"20 compétences achetées", unlocked:false},
     {id:"research_master", name:"Chercheur", desc:"5 recherches complétées", unlocked:false},
-    {id:"corruption1", name:"Corrompu", desc:"1ère corruption", unlocked:false},
+    {id:"research_guru", name:"Scientifique", desc:"10 recherches complétées", unlocked:false},
+    {id:"corruption1", name:"Corrompu", desc:"1ère corruption active", unlocked:false},
     {id:"corruption10", name:"Sombre Maitre", desc:"10 corruptions actives", unlocked:false},
     {id:"hardcore_beat", name:"Coeur de Fer", desc:"Prestige en mode Hardcore", unlocked:false},
     {id:"speed_beat", name:"Vitesse Éclair", desc:"Prestige en mode Speed", unlocked:false},
     {id:"chaos_survive", name:"Survivant du Chaos", desc:"10 min en mode Chaos", unlocked:false},
     {id:"milestone_ten", name:"Objecteur", desc:"10 milestones atteints", unlocked:false},
+    {id:"milestone_fifteen", name:"Obsédé Objectifs", desc:"15 milestones atteints", unlocked:false},
     {id:"event_lucky", name:"Chanceux", desc:"Avoir 3 Jackpots", unlocked:false},
+    {id:"event_unlucky", name:"Malchanceux", desc:"Avoir 5 Taxes", unlocked:false},
     {id:"infinite", name:"Infini", desc:"Atteindre 1e100 pièces", unlocked:false},
     {id:"rich_prestige", name:"Riche Prestige", desc:"Prestige avec 100M", unlocked:false},
-    {id:"fast_prestige", name:"Prestige Rapide", desc:"3 prestiges en 5 min", unlocked:false},
+    {id:"ultra_prestige", name:"Ultra Riche", desc:"Prestige avec 1T", unlocked:false},
     {id:"all_gens", name:"Collectionneur", desc:"Tous les générateurs", unlocked:false},
-    {id:"completionist", name:"Perfectionniste", desc:"30 achievements", unlocked:false}
+    {id:"all_upgrades", name:"Maximalisé", desc:"Tous les upgrades achetés", unlocked:false},
+    {id:"completionist", name:"Perfectionniste", desc:"50 achievements", unlocked:false},
+    {id:"prestige_spammer", name:"Prestige Spam", desc:"10 prestiges rapidement", unlocked:false},
+    {id:"star_collector", name:"Collectionneur Étoiles", desc:"1000 étoiles gagnées", unlocked:false},
+    {id:"usine_unlock", name:"Usine Débloquée", desc:"Débloquer l'Usine (5 prestige)", unlocked:false},
+    {id:"dyson_unlock", name:"Dyson Débloquée", desc:"Débloquer Dyson (25 prestige)", unlocked:false},
+    {id:"bot_trader", name:"Trader Bot", desc:"Activer un bot de trading", unlocked:false},
+    {id:"corruption_master", name:"Maître de la Corruption", desc:"Activez 5 corruptions", unlocked:false}
   ],
 
   milestones: [
@@ -852,6 +867,37 @@ function completeChallenge(id) {
   }
 }
 
+function startResearch(id) {
+  for (let r of state.researches) {
+    if (r.id === id && !r.completed && !r.active) {
+      if (state.coins < r.cost_coins) return;
+      state.coins -= r.cost_coins;
+      r.active = true;
+      r.startTime = Date.now();
+      log("📚 Recherche démarrée: " + r.name, "unlock");
+      updateUI();
+      save();
+      return;
+    }
+  }
+}
+
+function checkResearch() {
+  for (let r of state.researches) {
+    if (r.active && !r.completed) {
+      let elapsed = (Date.now() - r.startTime) / 1000;
+      if (elapsed >= r.cost_time) {
+        r.completed = true;
+        r.active = false;
+        log("✅ Recherche complétée: " + r.name, "success");
+        checkAchievements();
+        updateUI();
+        save();
+      }
+    }
+  }
+}
+
 // ==================== PRESTIGE ====================
 function getDifficultyMultiplier() {
   const mults = {normal: 1, hardcore: 5, speed: 0.2, chaos: 1.5};
@@ -1063,6 +1109,7 @@ function checkAchievements() {
     hundred: () => state.coins >= 100,
     thousand: () => state.coins >= 1000,
     million: () => state.coins >= 1e6,
+    billion: () => state.coins >= 1e9,
     first_gen: () => state.generators.some(g => g.count > 0),
     first_prestige: () => state.prestigeCount >= 1,
     ten_gens: () => state.generators.reduce((a,g) => a + g.count, 0) >= 10,
@@ -1071,23 +1118,37 @@ function checkAchievements() {
     trader: () => trade.totalTrades > 0,
     five_prestige: () => state.prestigeCount >= 5,
     ten_prestige: () => state.prestigeCount >= 10,
+    twenty_prestige: () => state.prestigeCount >= 20,
     first_galaxy: () => state.galaxies >= 1,
+    five_galaxies: () => state.galaxies >= 5,
     challenge_complete: () => state.challenges.some(c => c.completed),
     five_challenges: () => state.challenges.filter(c => c.completed).length >= 5,
+    ten_challenges: () => state.challenges.filter(c => c.completed).length >= 10,
     skill_master: () => state.skills.filter(s => s.bought).length >= 10,
+    skill_guru: () => state.skills.filter(s => s.bought).length >= 20,
     research_master: () => state.researches.filter(r => r.completed).length >= 5,
+    research_guru: () => state.researches.filter(r => r.completed).length >= 10,
     corruption1: () => state.corruptions.some(c => c.active),
     corruption10: () => state.corruptions.filter(c => c.active).length >= 10,
     hardcore_beat: () => state.prestigeCount >= 1 && state.difficulty === "hardcore",
     speed_beat: () => state.prestigeCount >= 1 && state.difficulty === "speed",
     chaos_survive: () => state.difficulty === "chaos" && state.playTime >= 600,
     milestone_ten: () => state.milestones.filter(m => m.completed).length >= 10,
+    milestone_fifteen: () => state.milestones.filter(m => m.completed).length >= 15,
     event_lucky: () => trade.jackpots >= 3,
+    event_unlucky: () => false, // Track in triggerRandomEvent
     infinite: () => state.totalCoins >= 1e100,
-    rich_prestige: () => state.prestigeCount >= 1 && state.coins >= 100e6,
-    fast_prestige: () => false, // Special check needed
+    rich_prestige: () => state.prestigeCount >= 1 && state.totalCoins >= 100e6,
+    ultra_prestige: () => state.prestigeCount >= 1 && state.totalCoins >= 1e12,
     all_gens: () => state.generators.every(g => g.count > 0),
-    completionist: () => state.achievements.filter(a => a.unlocked).length >= 30
+    all_upgrades: () => state.upgrades.every(u => u.bought),
+    completionist: () => state.achievements.filter(a => a.unlocked).length >= 50,
+    prestige_spammer: () => false, // Track separately
+    star_collector: () => state.stars >= 1000,
+    usine_unlock: () => state.prestigeCount >= 5,
+    dyson_unlock: () => state.prestigeCount >= 25,
+    bot_trader: () => Object.values(trade.resources).some(r => r.botActive),
+    corruption_master: () => state.corruptions.filter(c => c.active).length >= 5
   };
   
   for (let a of state.achievements) {
@@ -1352,13 +1413,22 @@ function updateUI() {
 
   // Research
   let researchHTML = state.researches.map(r => {
+    let progress = 0;
+    let timeRemaining = r.cost_time;
+    if (r.active) {
+      let elapsed = (Date.now() - r.startTime) / 1000;
+      progress = Math.min(100, (elapsed / r.cost_time) * 100);
+      timeRemaining = Math.max(0, r.cost_time - elapsed);
+    }
+    
     return `<div class="research-item ${r.completed ? 'completed' : ''}">
       <div>
-        <strong>${r.name}</strong><br>
+        <strong>${r.name}</strong>${r.active ? ' (EN COURS)' : ''}<br>
         <small>${r.desc}</small>
         <small style="display:block;color:#aaa;margin-top:0.3rem">Coût: ${formatNum(r.cost_coins)} 💰 | ${r.cost_time}s</small>
+        ${r.active ? `<div class="progress-bar" style="margin-top:0.3rem"><div class="progress-fill" style="width:${progress}%"></div></div><small style="color:#0af">${timeRemaining.toFixed(1)}s restant</small>` : ''}
       </div>
-      ${r.completed ? '<span style="color:#0f0">✓</span>' : '<span style="color:#aaa">Bientôt</span>'}
+      ${r.completed ? '<span style="color:#0f0">✓</span>' : (r.active ? '<span style="color:#ffa">▶️</span>' : `<button class="buy-btn" onclick="startResearch('${r.id}')" style="font-size:0.8rem">${formatNum(r.cost_coins)} 💰</button>`)}
     </div>`;
   }).join("");
   $("researchContent").innerHTML = researchHTML;
@@ -1481,7 +1551,22 @@ function importSave() {
 }
 
 function resetGame() {
-  if (confirm("Reset TOTAL? Tu perdras TOUT!")) {
+  let stats = `
+⚠️ ATTENTION - RESET COMPLET ⚠️
+
+Tu vas perdre:
+- 💰 ${formatNum(state.totalCoins)} pièces au total
+- ⭐ ${state.stars} étoiles
+- 🌀 ${state.galaxies} galaxies
+- 📊 ${state.prestigeCount} prestiges
+- 🤖 ${state.generators.reduce((a,g) => a + g.count, 0)} générateurs
+- 🏆 Tous tes achievements
+- 📈 Tout ton progrès
+
+Es-tu SÛR de vouloir continuer?
+  `;
+  
+  if (confirm(stats)) {
     localStorage.removeItem(SAVE_KEY);
     location.reload();
   }
@@ -1568,6 +1653,7 @@ function init() {
     
     if (updateCounter % 10 === 0) {
       checkMilestones();
+      checkResearch();
       checkAchievements();
       updateUI();
     }
