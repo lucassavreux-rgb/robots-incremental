@@ -1464,7 +1464,9 @@ function togglePopups() {
 
 // ==================== INIT ====================
 function init() {
+  console.log("INIT STARTING...");
   $("clickBtn").addEventListener("click", clickBtn);
+  console.log("Click button added");
   
   $("importInput").addEventListener("change", function(e) {
     let file = e.target.files[0];
@@ -1484,8 +1486,10 @@ function init() {
   });
 
   load();
+  console.log("Load complete");
   
   setTimeout(() => {
+    console.log("Timeout - calling updateUI");
     updateUI();
     log("🎮 Bienvenue dans ULTIMATE!", "unlock");
   }, 100);
