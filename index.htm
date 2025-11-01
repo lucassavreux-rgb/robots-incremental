@@ -296,7 +296,7 @@ const FPS = 10;
 const UPDATE_INTERVAL = 400;
 
 let state = {
-  coins: 0, totalCoins: 0, stars: 0, galaxies: 0, totalClicks: 0, prestigeCount: 0,
+  coins: 0, totalCoins: 0, prestigeProgress: 0, stars: 0, galaxies: 0, totalClicks: 0, prestigeCount: 0,
   playTime: 0, difficulty: "normal", skillPoints: 0, maxCoins: 0, maxCps: 0,
   unlockedFeatures: ["basic"], logMessages: [],
   generators: [
@@ -528,6 +528,7 @@ function buyGen(genId) {
       state.coins -= cost;
       g.count++;
       state.totalCoins += cost * 0.1;
+      state.prestigeProgress += cost * 0.1;
       checkAchievements();
       checkMilestones();
       save();
@@ -592,8 +593,8 @@ function unlockSkill(skillId) {
 }
 
 function prestige() {
-  if (state.coins < 1000 || state.totalCoins < 10000) return;
-  let gain = Math.floor(state.totalCoins / 10000);
+  if (state.coins < 1000 || state.prestigeProgress < 10000) return;
+  let gain = Math.floor(state.prestigeProgress / 10000);
   let skillMult = 1;
   for (let s of state.skillTree) {
     if (s.unlocked && s.effect.type === "prestige") skillMult *= s.effect.val;
@@ -602,6 +603,7 @@ function prestige() {
   if (gain < 1) return;
   
   state.coins = 0;
+  state.prestigeProgress = 0;
   state.stars += gain;
   state.prestigeCount++;
   state.skillPoints += 3;
@@ -624,6 +626,7 @@ function superPrestige() {
   
   state.stars -= cost;
   state.galaxies++;
+  state.prestigeProgress = 0;
   state.skillPoints += 10;
   
   for (let g of state.generators) g.count = 0;
@@ -962,12 +965,12 @@ function updateUI(updateLog = true) {
   $("skillPoints").textContent = state.skillPoints;
   
   // Prestige display
-  let pGain = Math.floor(state.totalCoins / 10000);
+  let pGain = Math.floor(state.prestigeProgress / 10000);
   $("prestigeGain").textContent = pGain;
   $("prestigeGainDisplay").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
-  $("prestigeProgress").style.width = Math.min(100, (state.totalCoins / 10000) * 100) + "%";
+  $("prestigeProgress").style.width = Math.min(100, (state.prestigeProgress / 10000) * 100) + "%";
   
   // Galaxy
   let galaxyCost = state.galaxies === 0 ? 100 : 100 * Math.pow(10, state.galaxies);
@@ -1162,12 +1165,14 @@ function init() {
     let gain = cps() / FPS;
     state.coins += gain;
     state.totalCoins += gain;
+    state.prestigeProgress += gain;
     state.maxCps = Math.max(state.maxCps, cps());
     
     for (let u of state.starUpgrades) {
       if (u.id.includes("auto") && u.bought) {
         state.coins += clickVal() / FPS;
         state.totalCoins += clickVal() / FPS;
+        state.prestigeProgress += clickVal() / FPS;
       }
     }
     
