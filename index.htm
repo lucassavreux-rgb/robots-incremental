@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -41,6 +42,7 @@
 <div id="cpsDisp">Pièces/sec : <span id="cps">0</span></div>
 
 <!-- LOG EN HAUT -->
+
 <div id="log"></div>
 
 <button id="clickBtn">👆 Clic +<span id="clickValue">1</span></button>
@@ -50,12 +52,12 @@
     <h3>🤖 Générateurs</h3>
     <div id="gens"></div>
   </div>
-  
+
   <div class="card">
     <h3>⚡ Upgrades</h3>
     <div id="ups"></div>
   </div>
-  
+
   <div class="card">
     <h3>✨ Shop Étoiles</h3>
     <div>Étoiles disponibles : <span class="count" id="starsAvailable">0</span> ⭐</div>
@@ -579,6 +581,10 @@ function updateUI() {
     return true;
   });
   
+  // DEBUG: Afficher les upgrades débloquées
+  console.log("Upgrades disponibles:", availableUpgrades.map(u => u.name));
+  console.log("Features débloquées:", state.unlockedFeatures);
+  
   $("ups").innerHTML = availableUpgrades.length > 0 ? availableUpgrades.map(u => {
     const canBuy = state.coins >= u.price;
     const isNew = u.unlock && state.unlockedFeatures.includes(u.unlock) && !u.bought;
@@ -830,5 +836,6 @@ function init() {
 // DÉMARRAGE DU JEU
 init();
 </script>
+
 </body>
 </html>
