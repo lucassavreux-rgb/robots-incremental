@@ -857,25 +857,25 @@ function resetGame() {
   if (!confirm("VRAIMENT SÛRE? C'est irréversible!")) return;
   
   try {
-    // Étape 1: Vider localStorage complètement
+    // Étape 1: Vider localStorage
     localStorage.clear();
     
-    // Étape 2: Aussi vider sessionStorage
+    // Étape 2: Vider sessionStorage  
     sessionStorage.clear();
     
-    // Étape 3: Réinitialiser state en mémoire
-    state = null;
-    trade = null;
+    // Étape 3: Vider tous les cookies aussi
+    document.cookie.split(";").forEach(function(c) { 
+      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
     
-    log("🗑️ Réinitialisation complète...", "warning");
+    log("🗑️ Réinitialisation...", "warning");
     
-    // Étape 4: Hard refresh avec délai
+    // Étape 4: HARD REFRESH - Change l'URL pour forcer le cache à se vider
     setTimeout(() => {
-      // Force un hard refresh (Ctrl+F5 equivalent)
-      window.location.href = window.location.href + '?v=' + Math.random();
-    }, 800);
+      let url = window.location.href.split('?')[0];
+      window.location.href = url + '?reset=' + Date.now();
+    }, 500);
   } catch (e) {
-    console.error("Reset error:", e);
     alert("Erreur reset: " + e.message);
   }
 }
