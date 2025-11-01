@@ -752,6 +752,27 @@ function buyGen(genId) {
   }
 }
 
+function buyGenMultiple(genId, qty) {
+  // Acheter qty générateurs
+  let boughtCount = 0;
+  for (let i = 0; i < qty; i++) {
+    for (let g of state.generators) {
+      if (g.id === genId) {
+        let cost = price(g);
+        if (state.coins < cost) return;
+        state.coins -= cost;
+        g.count++;
+        state.totalCoins += cost * 0.1;
+        boughtCount++;
+        break;
+      }
+    }
+  }
+  checkAchievements();
+  updateUI();
+  save();
+}
+
 function buyUp(upId) {
   for (let u of state.upgrades) {
     if (u.id === upId) {
@@ -773,6 +794,37 @@ function buyUp(upId) {
       return;
     }
   }
+}
+
+function buyUpMax(upId) {
+  // Acheter un upgrade autant de fois que possible
+  let buyCount = 0;
+  while (buyCount < 1000) { // Safety limit
+    let foundAndBought = false;
+    for (let u of state.upgrades) {
+      if (u.id === upId) {
+        if (!u.bought && state.coins >= u.price && isUnlocked(u.unlock)) {
+          if (u.requires) {
+            let reqFound = false;
+            for (let uu of state.upgrades) {
+              if (uu.id === u.requires && uu.bought) { reqFound = true; break; }
+            }
+            if (!reqFound) break;
+          }
+          state.coins -= u.price;
+          u.bought = true;
+          buyCount++;
+          foundAndBought = true;
+          log("✅ " + u.name + " (×" + buyCount + ")", "success");
+        }
+        break;
+      }
+    }
+    if (!foundAndBought) break;
+  }
+  checkAchievements();
+  updateUI();
+  save();
 }
 
 function buyStarUpgrade(id) {
@@ -1283,9 +1335,20 @@ function updateUI() {
     
     let cost = price(g);
     let canBuy = state.coins >= cost;
+    
+    // Calculate cost to buy 10
+    let cost10 = 0;
+    for (let i = 0; i < 10; i++) {
+      cost10 += price({count: g.count + i, price: g.price, mult: g.mult});
+    }
+    let canBuy10 = state.coins >= cost10;
+    
     gensHTML += `<div class="gen-item">
       <div><strong>${g.name}</strong> <span class="count">×${g.count}</span><br><small>${formatNum(g.base * g.count * cps() / Math.max(1, state.generators.reduce((a,x) => a + x.base * x.count, 0)))}/s</small></div>
-      <button class="buy-btn" onclick="buyGen('${g.id}')" ${canBuy ? '' : 'disabled'}>${formatNum(cost)}💰</button>
+      <div style="display:flex;gap:0.3rem">
+        <button class="buy-btn" onclick="buyGen('${g.id}')" ${canBuy ? '' : 'disabled'} style="flex:1">${formatNum(cost)}💰</button>
+        <button class="buy-btn" onclick="buyGenMultiple('${g.id}', 10)" ${canBuy10 ? '' : 'disabled'} style="flex:1;background:#0cf;font-size:0.9rem">×10</button>
+      </div>
     </div>`;
   }
   $("gens").innerHTML = gensHTML;
@@ -1307,9 +1370,14 @@ function updateUI() {
   
   let upsHTML = availUps.length > 0 ? availUps.map(u => {
     let canBuy = state.coins >= u.price;
+    // Calculer combien on peut en acheter
+    let maxBuyable = Math.floor(state.coins / u.price);
     return `<div class="up-item">
-      <div><strong>${u.name}</strong></div>
-      <button class="buy-btn" onclick="buyUp('${u.id}')" ${canBuy ? '' : 'disabled'}>${formatNum(u.price)}💰</button>
+      <div><strong>${u.name}</strong> (${u.effect}x)</div>
+      <div style="display:flex;gap:0.5rem">
+        <button class="buy-btn" onclick="buyUp('${u.id}')" ${canBuy ? '' : 'disabled'} style="flex:1">${formatNum(u.price)}💰</button>
+        ${maxBuyable > 1 ? `<button class="buy-btn" onclick="buyUpMax('${u.id}')" style="flex:1;background:#0cf">×${maxBuyable}</button>` : ''}
+      </div>
     </div>`;
   }).join("") : '<div style="color:#888;text-align:center">Tous achetés!</div>';
   $("ups").innerHTML = upsHTML;
@@ -1568,16 +1636,21 @@ Es-tu SÛR de vouloir continuer?
   `;
   
   if (confirm(stats)) {
-    // Clear ALL localStorage
-    localStorage.clear();
-    // Clear all keys with our save key
-    for (let key in localStorage) {
-      if (key.includes('idleTrade')) {
-        localStorage.removeItem(key);
+    try {
+      // Effacer toutes les clés localStorage individuellement
+      const keys = Object.keys(localStorage);
+      for (let i = 0; i < keys.length; i++) {
+        localStorage.removeItem(keys[i]);
       }
+      
+      // Force reload avec no-cache
+      setTimeout(() => {
+        location.href = location.href.split('?')[0] + '?nocache=' + Date.now();
+      }, 100);
+    } catch (e) {
+      console.error("Reset error:", e);
+      alert("Reset échoué: " + e.message);
     }
-    // Reinitialize state to defaults
-    location.reload();
   }
 }
 
