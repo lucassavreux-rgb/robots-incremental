@@ -12,7 +12,12 @@
   .row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:1200px}
   .card{background:#222;padding:1rem;border-radius:8px;flex:1 1 220px;margin:.5rem;box-shadow:0 4px 6px rgba(0,0,0,0.3)}
   .card h3{margin-top:0;color:#0af;border-bottom:2px solid #0af;padding-bottom:.5rem}
-  #log{height:120px;overflow-y:auto;background:#000;padding:.5rem;border-radius:6px;font-size:.85rem;margin-top:.5rem}
+  #log{background:#1a1a1a;padding:.8rem;border-radius:8px;margin:.5rem 0;max-width:1200px;width:100%;border-left:4px solid #0af}
+  .log-message{padding:.3rem 0;font-size:.9rem;animation:fadeIn 0.3s}
+  .log-success{color:#0f0}
+  .log-unlock{color:#0af}
+  .log-event{color:#ffa}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
   #cpsDisp{font-size:1rem;color:#ffa;margin-bottom:1rem}
   .gen-item,.up-item{display:flex;justify-content:space-between;align-items:center;margin:.4rem 0;padding:.5rem;background:#333;border-radius:4px}
   .gen-item:hover,.up-item:hover{background:#444}
@@ -25,12 +30,19 @@
   .progress-bar{background:#333;height:20px;border-radius:10px;overflow:hidden;margin:.5rem 0}
   .progress-fill{background:linear-gradient(90deg, #0af, #0cf);height:100%;transition:width 0.3s}
   .buy-btn{padding:.5rem 1rem;font-size:1rem}
+  .locked{opacity:0.5;filter:grayscale(1)}
+  .new-content{animation:glow 1s infinite}
+  @keyframes glow{0%,100%{box-shadow:0 0 5px #0af}50%{box-shadow:0 0 20px #0af}}
 </style>
 </head>
 <body>
 
 <h1>💰 Pièces : <span id="coins">0</span></h1>
 <div id="cpsDisp">Pièces/sec : <span id="cps">0</span></div>
+
+<!-- LOG EN HAUT -->
+<div id="log"></div>
+
 <button id="clickBtn">👆 Clic +<span id="clickValue">1</span></button>
 
 <div class="row">
@@ -129,7 +141,6 @@
   <button id="importBtn">📥 Importer</button>
   <button id="resetBtn" style="background:#c33">🗑️ Reset Total</button>
   <input id="importInput" type="file" accept=".txt" style="display:none">
-  <div id="log"></div>
 </div>
 
 <script>
@@ -144,6 +155,8 @@ let state = {
   prestigeCount: 0,
   playTime: 0,
   prestigeCost: 1000,
+  unlockedFeatures: ["basic"], // Système de déblocage
+  logMessages: [], // Historique des logs
   starUpgrades: [
     {id:"star_prod1", name:"Production ×2", cost:10, bought:false, effect:2, type:"production"},
     {id:"star_prod2", name:"Production ×5", cost:35, bought:false, effect:5, type:"production", requires:"star_prod1"},
@@ -164,18 +177,25 @@ let state = {
     {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.15},
     {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.15},
     {id:"station", name:"Station spatiale", base:500, count:0, price:15e6, mult:1.15},
-    {id:"dyson", name:"Sphère de Dyson", base:3000, count:0, price:500e6, mult:1.15}
+    {id:"dyson", name:"Sphère de Dyson", base:3000, count:0, price:500e6, mult:1.15},
+    {id:"blackhole", name:"Trou Noir", base:15000, count:0, price:50e9, mult:1.15, unlock:"advanced"},
+    {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.15, unlock:"advanced"},
+    {id:"quantum", name:"Simulateur Quantique", base:750000, count:0, price:1e15, mult:1.15, unlock:"endgame"}
   ],
   upgrades: [
     {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click"},
     {id:"click5", name:"Clic ×5", price:25000, effect:5, bought:false, type:"click", requires:"click2"},
     {id:"click10", name:"Clic ×10", price:500000, effect:10, bought:false, type:"click", requires:"click5"},
+    {id:"click25", name:"Clic ×25", price:50e6, effect:25, bought:false, type:"click", requires:"click10", unlock:"advanced"},
     {id:"gen2", name:"Tous les gen ×2", price:15000, effect:2, bought:false, type:"gen"},
     {id:"gen3", name:"Tous les gen ×3", price:250000, effect:3, bought:false, type:"gen", requires:"gen2"},
     {id:"gen5", name:"Tous les gen ×5", price:5e6, effect:5, bought:false, type:"gen", requires:"gen3"},
+    {id:"gen10", name:"Tous les gen ×10", price:500e6, effect:10, bought:false, type:"gen", requires:"gen5", unlock:"advanced"},
     {id:"robot10", name:"Robot ×10", price:5000, effect:10, bought:false, type:"robot"},
     {id:"usine10", name:"Usine ×10", price:75000, effect:10, bought:false, type:"usine"},
     {id:"port10", name:"Port ×10", price:1e6, effect:10, bought:false, type:"port"},
+    {id:"labo10", name:"Labo ×10", price:5e6, effect:10, bought:false, type:"labo", unlock:"midgame"},
+    {id:"satellite10", name:"Satellite ×10", price:50e6, effect:10, bought:false, type:"satellite", unlock:"midgame"},
     {id:"autosave", name:"Sauvegarde auto", price:2000, bought:false, type:"feature"},
     {id:"reducefee", name:"Frais réduits (3%)", price:100000, bought:false, type:"feature"}
   ],
@@ -204,10 +224,21 @@ let trade = {
 
 const $ = id => document.getElementById(id);
 
-function log(txt) {
-  const logEl = $("log");
-  logEl.insertAdjacentHTML("beforeend", `<div>[${new Date().toLocaleTimeString()}] ${txt}</div>`);
-  logEl.scrollTop = 1e9;
+function log(txt, type = "normal") {
+  const timestamp = new Date().toLocaleTimeString();
+  const logEl = document.getElementById("log");
+  
+  let cssClass = "";
+  if (type === "success") cssClass = "log-success";
+  if (type === "unlock") cssClass = "log-unlock";
+  if (type === "event") cssClass = "log-event";
+  
+  state.logMessages.unshift({text: txt, time: timestamp, type: cssClass});
+  if (state.logMessages.length > 5) state.logMessages.pop(); // Garde que 5 messages
+  
+  logEl.innerHTML = state.logMessages.map(msg => 
+    `<div class="log-message ${msg.type}">[${msg.time}] ${msg.text}</div>`
+  ).join("");
 }
 
 function formatNum(n) {
@@ -298,7 +329,7 @@ function buyUp(upId) {
     trade.fee = 0.03;
   }
   
-  log(`✅ Upgrade acheté : ${up.name}`);
+  log(`✅ ${up.name}`, "success");
   checkAchievements();
   updateUI();
   save();
@@ -318,10 +349,10 @@ function buyStarUpgrade(id) {
   
   // Si c'est l'upgrade de marché rapide, restart le timer
   if (up.id === "star_market") {
-    log("📊 Marché accéléré ! Tick toutes les 15s maintenant");
+    log("📊 Marché accéléré activé !", "event");
   }
   
-  log(`✨ Upgrade étoile acheté : ${up.name}`);
+  log(`✨ ${up.name}`, "success");
   updateUI();
   save();
 }
@@ -334,7 +365,7 @@ function prestige() {
   state.prestigeCount++;
   state.prestigeCost = 1000; // RESET à 1000 au lieu d'augmenter
   resetCore();
-  log(`⭐ Prestige ! +${gain} étoiles (Total: ${state.stars})`);
+  log(`⭐ Prestige ! +${gain} étoiles (Total: ${state.stars})`, "success");
   checkAchievements();
   updateUI();
   save();
@@ -363,7 +394,7 @@ function prestigeMax() {
   state.prestigeCount += prestigesDone;
   state.prestigeCost = 1000; // Reset à 1000
   resetCore();
-  log(`⭐ MULTI PRESTIGE ! +${totalGain} étoiles en ${prestigesDone} prestige${prestigesDone > 1 ? 's' : ''} !`);
+  log(`⭐ MULTI PRESTIGE ! +${totalGain} étoiles en ${prestigesDone} prestige${prestigesDone > 1 ? 's' : ''} !`, "success");
   checkAchievements();
   updateUI();
   save();
@@ -448,6 +479,35 @@ function tickMarket() {
   updateUI();
 }
 
+function checkUnlocks() {
+  const prestiges = state.prestigeCount;
+  
+  // Déblocage progressif selon les prestiges
+  if (prestiges >= 5 && !state.unlockedFeatures.includes("midgame")) {
+    state.unlockedFeatures.push("midgame");
+    log("🎉 NOUVEAU CONTENU DÉBLOQUÉ : Générateurs avancés & Milestones !", "unlock");
+  }
+  
+  if (prestiges >= 15 && !state.unlockedFeatures.includes("advanced")) {
+    state.unlockedFeatures.push("advanced");
+    log("🎉 NOUVEAU CONTENU DÉBLOQUÉ : Trading multi-ressources & Auto-achat !", "unlock");
+  }
+  
+  if (prestiges >= 30 && !state.unlockedFeatures.includes("lategame")) {
+    state.unlockedFeatures.push("lategame");
+    log("🎉 NOUVEAU CONTENU DÉBLOQUÉ : Super Prestige (Galaxies) !", "unlock");
+  }
+  
+  if (prestiges >= 50 && !state.unlockedFeatures.includes("endgame")) {
+    state.unlockedFeatures.push("endgame");
+    log("🎉 NOUVEAU CONTENU DÉBLOQUÉ : Modes difficiles & Corruption !", "unlock");
+  }
+}
+
+function isUnlocked(feature) {
+  if (!feature) return true; // Pas de requirement = débloqué
+  return state.unlockedFeatures.includes(feature);
+}
 function checkAchievements() {
   const achievementChecks = {
     first_coin: s => s.totalCoins >= 1,
@@ -465,9 +525,11 @@ function checkAchievements() {
   state.achievements.forEach(ach => {
     if (!ach.unlocked && achievementChecks[ach.id] && achievementChecks[ach.id](state)) {
       ach.unlocked = true;
-      log(`🏆 Succès débloqué : ${ach.name}`);
+      log(`🏆 Succès débloqué : ${ach.name}`, "success");
     }
   });
+  
+  checkUnlocks(); // Vérifier les déblocages après achievements
 }
 
 function updateUI() {
@@ -487,14 +549,16 @@ function updateUI() {
   const prestigeProgress = Math.min(100, (state.totalCoins / state.prestigeCost) * 100);
   $("prestigeProgress").style.width = prestigeProgress + "%";
 
-  // Générateurs
-  $("gens").innerHTML = state.generators.map(g => {
+  // Générateurs (filtrer par déblocage)
+  const availableGens = state.generators.filter(g => isUnlocked(g.unlock));
+  $("gens").innerHTML = availableGens.map(g => {
     const cost = price(g);
     const canBuy = state.coins >= cost;
+    const isNew = g.unlock && state.unlockedFeatures.includes(g.unlock) && g.count === 0;
     return `
-      <div class="gen-item">
+      <div class="gen-item ${isNew ? 'new-content' : ''}">
         <div>
-          <strong>${g.name}</strong> <span class="count">×${g.count}</span><br>
+          <strong>${g.name}</strong> ${isNew ? '✨' : ''} <span class="count">×${g.count}</span><br>
           <small>${formatNum(g.base * g.count * Math.pow(1.5, state.stars))}/s</small>
         </div>
         <button class="buy-btn" onclick="buyGen('${g.id}')" ${!canBuy ? "disabled" : ""}>
@@ -504,9 +568,10 @@ function updateUI() {
     `;
   }).join("");
 
-  // Upgrades
+  // Upgrades (filtrer par déblocage)
   const availableUpgrades = state.upgrades.filter(u => {
     if (u.bought) return false;
+    if (!isUnlocked(u.unlock)) return false;
     if (u.requires) {
       const req = state.upgrades.find(r => r.id === u.requires);
       return req && req.bought;
@@ -516,10 +581,11 @@ function updateUI() {
   
   $("ups").innerHTML = availableUpgrades.length > 0 ? availableUpgrades.map(u => {
     const canBuy = state.coins >= u.price;
+    const isNew = u.unlock && state.unlockedFeatures.includes(u.unlock) && !u.bought;
     return `
-      <div class="up-item">
+      <div class="up-item ${isNew ? 'new-content' : ''}">
         <div>
-          <strong>${u.name}</strong><br>
+          <strong>${u.name}</strong> ${isNew ? '✨' : ''}<br>
           <small style="color:#888">${u.type}</small>
         </div>
         <button class="buy-btn" onclick="buyUp('${u.id}')" ${!canBuy ? "disabled" : ""}>
@@ -589,14 +655,17 @@ function updateUI() {
 function save() {
   try {
     const saveData = {
-      state: state,
+      state: {
+        ...state,
+        logMessages: [] // Ne pas sauvegarder les logs
+      },
       trade: trade,
       version: 2,
       timestamp: Date.now()
     };
     localStorage.setItem(SAVE_KEY, btoa(JSON.stringify(saveData)));
   } catch (e) {
-    log("❌ Erreur de sauvegarde");
+    console.error("Save error:", e);
   }
 }
 
@@ -609,7 +678,30 @@ function load() {
       state = {...state, ...data.state};
       trade = {...trade, ...data.trade};
       
-      log("💾 Partie chargée");
+      // IMPORTANT: Vérifier tous les déblocages au chargement pour les anciennes sauvegardes
+      if (!state.unlockedFeatures) state.unlockedFeatures = ["basic"];
+      if (!state.logMessages) state.logMessages = [];
+      
+      // Forcer la vérification de tous les déblocages selon les prestiges actuels
+      const prestiges = state.prestigeCount;
+      if (prestiges >= 5 && !state.unlockedFeatures.includes("midgame")) {
+        state.unlockedFeatures.push("midgame");
+        log("🎉 Contenu midgame débloqué !", "unlock");
+      }
+      if (prestiges >= 15 && !state.unlockedFeatures.includes("advanced")) {
+        state.unlockedFeatures.push("advanced");
+        log("🎉 Contenu advanced débloqué !", "unlock");
+      }
+      if (prestiges >= 30 && !state.unlockedFeatures.includes("lategame")) {
+        state.unlockedFeatures.push("lategame");
+        log("🎉 Contenu lategame débloqué !", "unlock");
+      }
+      if (prestiges >= 50 && !state.unlockedFeatures.includes("endgame")) {
+        state.unlockedFeatures.push("endgame");
+        log("🎉 Contenu endgame débloqué !", "unlock");
+      }
+      
+      log("💾 Partie chargée", "success");
     }
   } catch (e) {
     log("❌ Sauvegarde corrompue");
@@ -619,13 +711,20 @@ function load() {
 
 function exportSave() {
   try {
-    const saveData = {state: state, trade: trade, version: 2};
+    const saveData = {
+      state: {
+        ...state,
+        logMessages: [] // Ne pas sauvegarder les logs
+      },
+      trade: trade,
+      version: 2
+    };
     const blob = new Blob([btoa(JSON.stringify(saveData))], {type: "text/plain"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `idle_trade_${Date.now()}.txt`;
     a.click();
-    log("📤 Sauvegarde exportée");
+    log("📤 Sauvegarde exportée", "success");
   } catch (e) {
     log("❌ Erreur d'export");
   }
@@ -639,7 +738,7 @@ function resetGame() {
   if (confirm("⚠️ ATTENTION ! Êtes-vous VRAIMENT sûr de vouloir tout réinitialiser ?\n\nVous perdrez :\n- Toutes vos pièces\n- Tous vos générateurs\n- Toutes vos étoiles\n- Tous vos upgrades\n- Toute votre progression\n\nCette action est IRRÉVERSIBLE !")) {
     if (confirm("Dernière confirmation : voulez-vous vraiment TOUT supprimer ?")) {
       localStorage.removeItem(SAVE_KEY);
-      log("🗑️ Partie complètement réinitialisée !");
+      log("🗑️ Partie réinitialisée", "event");
       setTimeout(() => location.reload(), 1000);
     }
   }
@@ -667,7 +766,7 @@ function init() {
         trade = data.trade;
         save();
         updateUI();
-        log("📥 Sauvegarde importée");
+        log("📥 Sauvegarde importée", "success");
       } catch (x) {
         log("❌ Fichier invalide");
       }
@@ -724,7 +823,8 @@ function init() {
   // Save on exit
   window.addEventListener("beforeunload", save);
   
-  log("🎮 Jeu démarré - Bon courage !");
+  log("🎮 Bienvenue dans Incremental Trade !", "unlock");
+  log("💡 Cliquez et achetez des générateurs pour progresser", "event");
 }
 
 // DÉMARRAGE DU JEU
