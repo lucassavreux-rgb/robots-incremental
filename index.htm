@@ -838,10 +838,14 @@ function getDifficultyMultiplier() {
 }
 
 function prestige() {
-  if (state.totalCoins < state.prestigeCost) return;
+  // Besoin d'au MOINS 1000 pièces ACTUELLES en cash pour prestige
+  if (state.coins < 1000) return;
   
   let gain = Math.floor(state.totalCoins / state.prestigeCost);
   if (gain < 1) return;
+  
+  // Tu dépenses tes pièces actuelles
+  state.coins = 0;
   
   // Apply difficulty multiplier
   let diff_mult = getDifficultyMultiplier();
@@ -894,14 +898,28 @@ function prestige() {
   save();
 }
 
+function prestigeMax() {
+  // Faire prestige plusieurs fois d'affilée
+  if (state.coins < 1000) return;
+  
+  let loop_count = 0;
+  while (state.coins >= 1000 && state.totalCoins >= state.prestigeCost && loop_count < 100) {
+    prestige();
+    loop_count++;
+  }
+}
+
 function superPrestige() {
   // Need 100 stars for first galaxy, 1000 for second, etc.
+  // Et faut avoir 1000 pièces actuelles
+  if (state.coins < 1000) return;
   let cost = 100 * Math.pow(10, state.galaxies);
   if (state.stars < cost) return;
   
   state.stars -= cost;
   state.galaxies++;
   state.skillPoints += 10;
+  state.coins = 0;
   resetCore();
   log("🌀 +" + 1 + " Galaxie! (Bonus ×" + Math.pow(3, state.galaxies) + ")", "unlock");
   checkAchievements();
@@ -1099,8 +1117,8 @@ function updateUI() {
   let pGain = Math.floor(state.totalCoins / state.prestigeCost);
   $("prestigeGain").textContent = pGain;
   $("prestigeGainDisplay").textContent = pGain;
-  $("prestigeBtn").disabled = pGain < 1 || state.totalCoins < state.prestigeCost;
-  $("prestigeMaxBtn").disabled = pGain < 1 || state.totalCoins < state.prestigeCost;
+  $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
+  $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeCost").textContent = formatNum(state.prestigeCost);
   
   let pProgress = Math.min(100, (state.totalCoins / state.prestigeCost) * 100);
