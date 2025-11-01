@@ -31,7 +31,6 @@
   .progress-bar{background:#333;height:20px;border-radius:10px;overflow:hidden;margin:.5rem 0}
   .progress-fill{background:linear-gradient(90deg, #0af, #0cf);height:100%;transition:width 0.3s}
   .buy-btn{padding:.5rem 1rem;font-size:1rem}
-  .locked{opacity:0.5;filter:grayscale(1)}
   .new-content{animation:glow 1s infinite}
   @keyframes glow{0%,100%{box-shadow:0 0 5px #0af}50%{box-shadow:0 0 20px #0af}}
   *{-webkit-touch-callout:none;-webkit-text-size-adjust:none}
@@ -41,9 +40,7 @@
 
 <h1>💰 Pièces : <span id="coins">0</span></h1>
 <div id="cpsDisp">Pièces/sec : <span id="cps">0</span></div>
-
 <div id="log"></div>
-
 <button id="clickBtn">👆 Clic +<span id="clickValue">1</span></button>
 
 <div class="row">
@@ -67,42 +64,16 @@
 <div class="row">
   <div class="card">
     <h3>⭐ Prestige</h3>
-    <div class="stat-line">
-      <span>Étoiles</span>
-      <span class="count" id="stars">0</span>
-    </div>
-    <div class="stat-line" id="galaxyLine" style="display:none">
-      <span>Galaxies 🌀</span>
-      <span class="count" id="galaxies">0</span>
-    </div>
-    <div class="stat-line">
-      <span>Bonus</span>
-      <span class="count">×<span id="bonus">1</span></span>
-    </div>
-    <div class="stat-line">
-      <span>Coût</span>
-      <span class="price" id="prestigeCost">1000</span> 💰
-    </div>
-    <div class="stat-line" id="skillLine" style="display:none">
-      <span>Points compétence</span>
-      <span class="count" id="skillPoints">0</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="prestigeProgress" style="width:0%"></div>
-    </div>
+    <div class="stat-line"><span>Étoiles</span><span class="count" id="stars">0</span></div>
+    <div class="stat-line"><span>Bonus</span><span class="count">×<span id="bonus">1</span></span></div>
+    <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">1000</span> 💰</div>
+    <div class="progress-bar"><div class="progress-fill" id="prestigeProgress" style="width:0%"></div></div>
     <button id="prestigeBtn" disabled>Prestige +<span id="prestigeGain">0</span> ⭐</button>
     <button id="prestigeMaxBtn" disabled>MAX</button>
-    <button id="superPrestigeBtn" style="display:none;background:#f0a">Super Prestige</button>
   </div>
 
   <div class="card">
     <h3>📊 Trading</h3>
-    <div id="tradeTabs" style="display:flex;gap:.3rem;margin-bottom:.5rem">
-      <button onclick="switchTab('iron')" id="tab-iron" class="buy-btn" style="flex:1;font-size:.9rem">Fer</button>
-      <button onclick="switchTab('gold')" id="tab-gold" class="buy-btn" style="flex:1;font-size:.9rem;display:none">Or</button>
-      <button onclick="switchTab('platinum')" id="tab-platinum" class="buy-btn" style="flex:1;font-size:.9rem;display:none">Platine</button>
-      <button onclick="switchTab('crypto')" id="tab-crypto" class="buy-btn" style="flex:1;font-size:.9rem;display:none">Crypto</button>
-    </div>
     <div id="tradeContent"></div>
   </div>
 
@@ -112,55 +83,13 @@
   </div>
 </div>
 
-<!-- MILESTONES -->
-<div class="row" id="milestonesSection" style="display:none">
-  <div class="card" style="flex:1 1 100%">
-    <h3>🎯 Milestones</h3>
-    <div id="milestones"></div>
-  </div>
-</div>
-
-<!-- SKILLS -->
-<div class="row" id="skillsSection" style="display:none">
-  <div class="card" style="flex:1 1 100%">
-    <h3>🌳 Compétences</h3>
-    <div>Points : <span class="count" id="skillPointsDisp">0</span></div>
-    <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">
-        <h4 style="color:#0f0">Production</h4>
-        <div id="skillsProd"></div>
-      </div>
-      <div style="flex:1;min-width:200px">
-        <h4 style="color:#f0a">Clics</h4>
-        <div id="skillsClick"></div>
-      </div>
-      <div style="flex:1;min-width:200px">
-        <h4 style="color:#0af">Trading</h4>
-        <div id="skillsTrade"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="row">
   <div class="card">
     <h3>📈 Stats</h3>
-    <div class="stat-line">
-      <span>Total</span>
-      <span class="count" id="totalCoins">0</span>
-    </div>
-    <div class="stat-line">
-      <span>Clics</span>
-      <span class="count" id="totalClicks">0</span>
-    </div>
-    <div class="stat-line">
-      <span>Temps</span>
-      <span class="count" id="playTime">0s</span>
-    </div>
-    <div class="stat-line">
-      <span>Prestiges</span>
-      <span class="count" id="prestigeCount">0</span>
-    </div>
+    <div class="stat-line"><span>Total</span><span class="count" id="totalCoins">0</span></div>
+    <div class="stat-line"><span>Clics</span><span class="count" id="totalClicks">0</span></div>
+    <div class="stat-line"><span>Temps</span><span class="count" id="playTime">0s</span></div>
+    <div class="stat-line"><span>Prestiges</span><span class="count" id="prestigeCount">0</span></div>
   </div>
 </div>
 
@@ -173,28 +102,18 @@
 </div>
 
 <script>
-const SAVE_KEY = "idleTrade_v3";
+const SAVE_KEY = "idleTrade_v4";
 const FPS = 20;
 
 let state = {
   coins: 0,
   totalCoins: 0,
   stars: 0,
-  galaxies: 0,
   totalClicks: 0,
   prestigeCount: 0,
   playTime: 0,
   prestigeCost: 1000,
-  skillPoints: 0,
-  unlockedFeatures: ["basic"],
   logMessages: [],
-  milestones: [
-    {id:"m1", name:"Premier Million", goal:1e6, type:"totalCoins", reward:"×1.5 prod", unlocked:false, claimed:false},
-    {id:"m2", name:"10 Générateurs", goal:10, type:"genTotal", reward:"×2 clics", unlocked:false, claimed:false},
-    {id:"m3", name:"Trader Pro", goal:100, type:"trades", reward:"-2% frais", unlocked:false, claimed:false},
-    {id:"m4", name:"10 Millions", goal:10e6, type:"totalCoins", reward:"×2 prod", unlocked:false, claimed:false},
-    {id:"m5", name:"50 Générateurs", goal:50, type:"genTotal", reward:"×3 prod", unlocked:false, claimed:false}
-  ],
   generators: [
     {id:"robot", name:"Robot", base:0.1, count:0, price:15, mult:1.15},
     {id:"usine", name:"Usine", base:0.8, count:0, price:250, mult:1.15},
@@ -202,99 +121,56 @@ let state = {
     {id:"labo", name:"Labo", base:20, count:0, price:50000, mult:1.15},
     {id:"satellite", name:"Satellite", base:100, count:0, price:750000, mult:1.15},
     {id:"station", name:"Station", base:500, count:0, price:15e6, mult:1.15},
-    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.15},
-    {id:"blackhole", name:"Trou Noir", base:15000, count:0, price:50e9, mult:1.15, unlock:"advanced"},
-    {id:"multiverse", name:"Multivers", base:100000, count:0, price:5e12, mult:1.15, unlock:"advanced"}
+    {id:"dyson", name:"Dyson", base:3000, count:0, price:500e6, mult:1.15}
   ],
   upgrades: [
     {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click"},
     {id:"click5", name:"Clic ×5", price:25000, effect:5, bought:false, type:"click", requires:"click2"},
-    {id:"click10", name:"Clic ×10", price:500000, effect:10, bought:false, type:"click", requires:"click5"},
     {id:"gen2", name:"Gen ×2", price:15000, effect:2, bought:false, type:"gen"},
     {id:"gen3", name:"Gen ×3", price:250000, effect:3, bought:false, type:"gen", requires:"gen2"},
-    {id:"gen5", name:"Gen ×5", price:5e6, effect:5, bought:false, type:"gen", requires:"gen3"},
     {id:"robot10", name:"Robot ×10", price:5000, effect:10, bought:false, type:"robot"},
     {id:"usine10", name:"Usine ×10", price:75000, effect:10, bought:false, type:"usine"},
-    {id:"port10", name:"Port ×10", price:1e6, effect:10, bought:false, type:"port"},
-    {id:"labo10", name:"Labo ×10", price:5e6, effect:10, bought:false, type:"labo", unlock:"midgame"},
     {id:"autosave", name:"Sauvegarde auto", price:2000, bought:false, type:"feature"}
   ],
   starUpgrades: [
     {id:"star_prod1", name:"Prod ×2", cost:10, bought:false, effect:2, type:"production"},
     {id:"star_prod2", name:"Prod ×5", cost:35, bought:false, effect:5, type:"production", requires:"star_prod1"},
-    {id:"star_prod3", name:"Prod ×10", cost:100, bought:false, effect:10, type:"production", requires:"star_prod2"},
     {id:"star_click1", name:"Clic ×3", cost:20, bought:false, effect:3, type:"starclick"},
-    {id:"star_click2", name:"Clic ×10", cost:60, bought:false, effect:10, type:"starclick", requires:"star_click1"},
     {id:"star_gen1", name:"Robot ×50", cost:25, bought:false, effect:50, type:"robot"},
-    {id:"star_gen2", name:"Usine ×50", cost:50, bought:false, effect:50, type:"usine"},
-    {id:"star_auto1", name:"Auto-clic", cost:75, bought:false, type:"autoclick"},
-    {id:"star_autobuy", name:"Auto-achat gen", cost:200, bought:false, type:"autobuy", unlock:"advanced"},
-    {id:"star_market", name:"Marché rapide", cost:120, bought:false, type:"fastmarket", unlock:"advanced"}
+    {id:"star_auto1", name:"Auto-clic", cost:75, bought:false, type:"autoclick"}
   ],
-  skills: {
-    production: [
-      {id:"prod1", name:"Efficacité I", cost:1, bought:false, effect:1.5, desc:"×1.5 prod"},
-      {id:"prod2", name:"Efficacité II", cost:3, bought:false, effect:2, desc:"×2 prod", requires:"prod1"},
-      {id:"prod3", name:"Efficacité III", cost:5, bought:false, effect:3, desc:"×3 prod", requires:"prod2"}
-    ],
-    clicks: [
-      {id:"click1", name:"Doigts I", cost:1, bought:false, effect:2, desc:"×2 clics"},
-      {id:"click2", name:"Doigts II", cost:3, bought:false, effect:5, desc:"×5 clics", requires:"click1"}
-    ],
-    trading: [
-      {id:"trade1", name:"Trader I", cost:2, bought:false, effect:0.02, desc:"-2% frais"},
-      {id:"trade2", name:"Trader II", cost:4, bought:false, effect:0.04, desc:"-4% frais", requires:"trade1"}
-    ]
-  },
-  autoSettings: {
-    autoBuyGens: false
-  },
   achievements: [
     {id:"first_coin", name:"Première pièce", desc:"Gagner 1 pièce", unlocked:false},
     {id:"hundred", name:"Capitaliste", desc:"100 pièces", unlocked:false},
     {id:"thousand", name:"Millionnaire", desc:"1000 pièces", unlocked:false},
     {id:"first_gen", name:"Automatisation", desc:"1er générateur", unlocked:false},
-    {id:"first_prestige", name:"Renaissance", desc:"1er prestige", unlocked:false},
-    {id:"ten_gens", name:"Industriel", desc:"10 générateurs", unlocked:false},
-    {id:"clicker", name:"Clickeur", desc:"100 clics", unlocked:false},
-    {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false}
+    {id:"first_prestige", name:"Renaissance", desc:"1er prestige", unlocked:false}
   ]
 };
 
 let trade = {
   iron: 0,
-  gold: 0,
-  platinum: 0,
-  crypto: 0,
-  prices: {iron: 10, gold: 50, platinum: 200, crypto: 1000},
-  history: {
-    iron: [10],
-    gold: [50],
-    platinum: [200],
-    crypto: [1000]
-  },
-  botActive: {iron: false, gold: false, platinum: false, crypto: false},
-  totalTrades: 0,
-  currentTab: 'iron'
+  price: 10,
+  history: [10],
+  botActive: false,
+  totalTrades: 0
 };
 
 const $ = id => document.getElementById(id);
 
-function log(txt, type = "normal") {
+function log(txt, type) {
+  type = type || "normal";
   const timestamp = new Date().toLocaleTimeString();
   const logEl = $("log");
-  
   let cssClass = "";
   if (type === "success") cssClass = "log-success";
   if (type === "unlock") cssClass = "log-unlock";
   if (type === "event") cssClass = "log-event";
-  
   state.logMessages.unshift({text: txt, time: timestamp, type: cssClass});
   if (state.logMessages.length > 5) state.logMessages.pop();
-  
-  logEl.innerHTML = state.logMessages.map(msg => 
-    `<div class="log-message ${msg.type}">[${msg.time}] ${msg.text}</div>`
-  ).join("");
+  logEl.innerHTML = state.logMessages.map(function(msg) {
+    return '<div class="log-message ' + msg.type + '">[' + msg.time + '] ' + msg.text + '</div>';
+  }).join("");
 }
 
 function formatNum(n) {
@@ -310,43 +186,43 @@ function price(gen) {
 }
 
 function cps() {
-  const genMult = state.upgrades.filter(u => u.type === "gen" && u.bought).reduce((a, u) => a * u.effect, 1);
-  const starMult = state.starUpgrades.filter(u => u.type === "production" && u.bought).reduce((a, u) => a * u.effect, 1);
-  const skillMult = state.skills.production.filter(s => s.bought).reduce((a, s) => a * s.effect, 1);
-  const milestoneMult = state.milestones.filter(m => m.claimed && m.reward.includes("prod")).reduce((a, m) => {
-    const match = m.reward.match(/×(\d+\.?\d*)/);
-    return match ? a * parseFloat(match[1]) : a;
-  }, 1);
-  
-  let total = 0;
-  state.generators.forEach(g => {
-    if (!isUnlocked(g.unlock)) return;
-    let eff = genMult * starMult * skillMult * milestoneMult;
-    const spec = state.upgrades.find(u => u.type === g.id && u.bought);
-    if (spec) eff *= spec.effect;
-    const star = state.starUpgrades.find(u => u.type === g.id && u.bought);
-    if (star) eff *= star.effect;
+  var genMult = 1;
+  for (var i = 0; i < state.upgrades.length; i++) {
+    if (state.upgrades[i].type === "gen" && state.upgrades[i].bought) genMult *= state.upgrades[i].effect;
+  }
+  var starMult = 1;
+  for (var i = 0; i < state.starUpgrades.length; i++) {
+    if (state.starUpgrades[i].type === "production" && state.starUpgrades[i].bought) starMult *= state.starUpgrades[i].effect;
+  }
+  var total = 0;
+  for (var i = 0; i < state.generators.length; i++) {
+    var g = state.generators[i];
+    var eff = genMult * starMult;
+    for (var j = 0; j < state.upgrades.length; j++) {
+      if (state.upgrades[j].type === g.id && state.upgrades[j].bought) eff *= state.upgrades[j].effect;
+    }
+    for (var j = 0; j < state.starUpgrades.length; j++) {
+      if (state.starUpgrades[j].type === g.id && state.starUpgrades[j].bought) eff *= state.starUpgrades[j].effect;
+    }
     total += g.count * g.base * eff;
-  });
-  
-  const galaxyMult = Math.pow(3, state.galaxies);
-  return total * Math.pow(1.5, state.stars) * galaxyMult;
+  }
+  return total * Math.pow(1.5, state.stars);
 }
 
 function clickVal() {
-  const clickMult = state.upgrades.filter(u => u.type === "click" && u.bought).reduce((a, u) => a * u.effect, 1);
-  const starMult = state.starUpgrades.filter(u => u.type === "starclick" && u.bought).reduce((a, u) => a * u.effect, 1);
-  const skillMult = state.skills.clicks.filter(s => s.bought).reduce((a, s) => a * s.effect, 1);
-  const milestoneMult = state.milestones.filter(m => m.claimed && m.reward.includes("clic")).reduce((a, m) => {
-    const match = m.reward.match(/×(\d+)/);
-    return match ? a * parseFloat(match[1]) : a;
-  }, 1);
-  const galaxyMult = Math.pow(3, state.galaxies);
-  return clickMult * starMult * skillMult * milestoneMult * Math.pow(1.5, state.stars) * galaxyMult;
+  var clickMult = 1;
+  for (var i = 0; i < state.upgrades.length; i++) {
+    if (state.upgrades[i].type === "click" && state.upgrades[i].bought) clickMult *= state.upgrades[i].effect;
+  }
+  var starMult = 1;
+  for (var i = 0; i < state.starUpgrades.length; i++) {
+    if (state.starUpgrades[i].type === "starclick" && state.starUpgrades[i].bought) starMult *= state.starUpgrades[i].effect;
+  }
+  return clickMult * starMult * Math.pow(1.5, state.stars);
 }
 
 function clickBtn() {
-  const val = clickVal();
+  var val = clickVal();
   state.coins += val;
   state.totalCoins += val;
   state.totalClicks++;
@@ -354,85 +230,103 @@ function clickBtn() {
 }
 
 function buyGen(genId) {
-  const gen = state.generators.find(g => g.id === genId);
-  if (!gen) return;
-  const cost = price(gen);
-  if (state.coins < cost) return;
-  state.coins -= cost;
-  gen.count++;
-  state.totalCoins += cost * 0.1;
-  checkAchievements();
-  updateUI();
-  save();
+  for (var i = 0; i < state.generators.length; i++) {
+    if (state.generators[i].id === genId) {
+      var gen = state.generators[i];
+      var cost = price(gen);
+      if (state.coins < cost) return;
+      state.coins -= cost;
+      gen.count++;
+      state.totalCoins += cost * 0.1;
+      checkAchievements();
+      updateUI();
+      save();
+      return;
+    }
+  }
 }
 
 function buyUp(upId) {
-  const up = state.upgrades.find(u => u.id === upId);
-  if (!up || up.bought || state.coins < up.price) return;
-  if (up.requires) {
-    const req = state.upgrades.find(u => u.id === up.requires);
-    if (!req || !req.bought) return;
+  for (var i = 0; i < state.upgrades.length; i++) {
+    if (state.upgrades[i].id === upId) {
+      var up = state.upgrades[i];
+      if (up.bought || state.coins < up.price) return;
+      if (up.requires) {
+        var reqFound = false;
+        for (var j = 0; j < state.upgrades.length; j++) {
+          if (state.upgrades[j].id === up.requires && state.upgrades[j].bought) {
+            reqFound = true;
+            break;
+          }
+        }
+        if (!reqFound) return;
+      }
+      state.coins -= up.price;
+      up.bought = true;
+      log("✅ " + up.name, "success");
+      checkAchievements();
+      updateUI();
+      save();
+      return;
+    }
   }
-  state.coins -= up.price;
-  up.bought = true;
-  log(`✅ ${up.name}`, "success");
-  checkAchievements();
-  updateUI();
-  save();
 }
 
 function buyStarUpgrade(id) {
-  const up = state.starUpgrades.find(u => u.id === id);
-  if (!up || up.bought || state.stars < up.cost) return;
-  if (!isUnlocked(up.unlock)) return;
-  if (up.requires) {
-    const req = state.starUpgrades.find(u => u.id === up.requires);
-    if (!req || !req.bought) return;
+  for (var i = 0; i < state.starUpgrades.length; i++) {
+    if (state.starUpgrades[i].id === id) {
+      var up = state.starUpgrades[i];
+      if (up.bought || state.stars < up.cost) return;
+      if (up.requires) {
+        var reqFound = false;
+        for (var j = 0; j < state.starUpgrades.length; j++) {
+          if (state.starUpgrades[j].id === up.requires && state.starUpgrades[j].bought) {
+            reqFound = true;
+            break;
+          }
+        }
+        if (!reqFound) return;
+      }
+      state.stars -= up.cost;
+      up.bought = true;
+      log("✨ " + up.name, "success");
+      updateUI();
+      save();
+      return;
+    }
   }
-  state.stars -= up.cost;
-  up.bought = true;
-  
-  if (up.id === "star_autobuy") {
-    state.autoSettings.autoBuyGens = true;
-    log("🤖 Auto-achat activé !", "event");
-  }
-  
-  log(`✨ ${up.name}`, "success");
-  updateUI();
-  save();
 }
 
 function prestige() {
-  const gain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
+  var gain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
   if (gain < 1 || state.totalCoins < state.prestigeCost) return;
   state.stars += gain;
   state.prestigeCount++;
-  state.skillPoints += 1;
   state.prestigeCost = 1000;
   resetCore();
-  log(`⭐ +${gain} étoiles (Total: ${state.stars}) +1 pt compétence`, "success");
+  log("⭐ +" + gain + " étoiles (Total: " + state.stars + ")", "success");
   checkAchievements();
   updateUI();
   save();
 }
 
 function prestigeMax() {
-  let totalGain = 0;
-  let done = 0;
-  while (state.totalCoins >= state.prestigeCost) {
-    const gain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
+  var totalGain = 0;
+  var done = 0;
+  var tempCoins = state.totalCoins;
+  while (tempCoins >= state.prestigeCost) {
+    var gain = Math.floor(Math.sqrt(tempCoins / state.prestigeCost));
     if (gain < 1) break;
     totalGain += gain;
     done++;
-    state.totalCoins = 0;
-    state.coins = 0;
+    tempCoins = 0;
   }
   if (totalGain < 1) return;
   state.stars += totalGain;
   state.prestigeCount += done;
   state.prestigeCost = 1000;
   resetCore();
-  log(`⭐ MULTI ! +${totalGain} étoiles`, "success");
+  log("⭐ MULTI ! +" + totalGain + " étoiles", "success");
   checkAchievements();
   updateUI();
   save();
@@ -441,10 +335,12 @@ function prestigeMax() {
 function resetCore() {
   state.coins = 0;
   state.totalCoins = 0;
-  state.generators.forEach(g => g.count = 0);
-  state.upgrades.forEach(u => {
-    if (u.id !== "autosave") u.bought = false;
-  });
+  for (var i = 0; i < state.generators.length; i++) {
+    state.generators[i].count = 0;
+  }
+  for (var i = 0; i < state.upgrades.length; i++) {
+    if (state.upgrades[i].id !== "autosave") state.upgrades[i].bought = false;
+  }
   trade.iron = 0;
   trade.price = 10;
   trade.history = [10];
@@ -452,457 +348,222 @@ function resetCore() {
 }
 
 function buyIron() {
-  buyResource('iron');
-}
-
-function sellIron() {
-  sellResource('iron');
-}
-
-function toggleBot() {
-  toggleBotResource(trade.currentTab);
-}
-
-function buyResource(resource) {
-  let feeReduction = 0;
-  feeReduction += state.skills.trading.filter(s => s.bought && s.effect < 1).reduce((a, s) => a + s.effect, 0);
-  const finalFee = Math.max(0.01, 0.05 - feeReduction);
-  
-  const cost = trade.prices[resource] * (1 + finalFee);
-  const qty = Math.max(1, Math.floor(state.coins / cost));
-  const total = qty * cost;
+  var cost = trade.price * 1.05;
+  var qty = Math.max(1, Math.floor(state.coins / cost));
+  var total = qty * cost;
   if (state.coins < total) return;
   state.coins -= total;
-  trade[resource] += qty;
+  trade.iron += qty;
   trade.totalTrades++;
   checkAchievements();
   updateUI();
   save();
 }
 
-function sellResource(resource) {
-  if (trade[resource] < 1) return;
-  let feeReduction = 0;
-  feeReduction += state.skills.trading.filter(s => s.bought && s.effect < 1).reduce((a, s) => a + s.effect, 0);
-  const finalFee = Math.max(0.01, 0.05 - feeReduction);
-  
-  const gain = trade[resource] * trade.prices[resource] * (1 - finalFee);
+function sellIron() {
+  if (trade.iron < 1) return;
+  var gain = trade.iron * trade.price * 0.95;
   state.coins += gain;
   state.totalCoins += gain * 0.5;
-  trade[resource] = 0;
+  trade.iron = 0;
   trade.totalTrades++;
   updateUI();
   save();
 }
 
-function toggleBotResource(resource) {
-  trade.botActive[resource] = !trade.botActive[resource];
-  log(trade.botActive[resource] ? `🤖 Bot ${resource} ON` : `🤖 Bot ${resource} OFF`, "event");
+function toggleBot() {
+  trade.botActive = !trade.botActive;
+  log(trade.botActive ? "🤖 Bot ON" : "🤖 Bot OFF", "event");
   updateUI();
 }
 
-function botTrade(resource) {
-  if (trade.history[resource].length < 3) return;
-  const avg = trade.history[resource].reduce((a, b) => a + b, 0) / trade.history[resource].length;
-  if (trade.prices[resource] < avg * 0.88 && state.coins > trade.prices[resource] * 10) buyResource(resource);
-  if (trade.prices[resource] > avg * 1.18 && trade[resource] > 0) sellResource(resource);
+function botTrade() {
+  if (trade.history.length < 3) return;
+  var avg = 0;
+  for (var i = 0; i < trade.history.length; i++) avg += trade.history[i];
+  avg = avg / trade.history.length;
+  if (trade.price < avg * 0.88 && state.coins > trade.price * 10) buyIron();
+  if (trade.price > avg * 1.18 && trade.iron > 0) sellIron();
 }
 
 function tickMarket() {
-  // Iron
-  const ironChange = (Math.random() - 0.48) * 0.08;
-  trade.prices.iron = Math.max(2, Math.floor(trade.prices.iron * (1 + ironChange)));
-  trade.history.iron.push(trade.prices.iron);
-  if (trade.history.iron.length > 20) trade.history.iron.shift();
-  if (trade.botActive.iron) botTrade('iron');
-  
-  // Advanced trading
-  if (isUnlocked("advanced")) {
-    const goldChange = (Math.random() - 0.49) * 0.04;
-    trade.prices.gold = Math.max(10, Math.floor(trade.prices.gold * (1 + goldChange)));
-    trade.history.gold.push(trade.prices.gold);
-    if (trade.history.gold.length > 20) trade.history.gold.shift();
-    if (trade.botActive.gold) botTrade('gold');
-    
-    const platChange = (Math.random() - 0.47) * 0.15;
-    trade.prices.platinum = Math.max(50, Math.floor(trade.prices.platinum * (1 + platChange)));
-    trade.history.platinum.push(trade.prices.platinum);
-    if (trade.history.platinum.length > 20) trade.history.platinum.shift();
-    if (trade.botActive.platinum) botTrade('platinum');
-    
-    const cryptoChange = (Math.random() - 0.46) * 0.25;
-    trade.prices.crypto = Math.max(100, Math.floor(trade.prices.crypto * (1 + cryptoChange)));
-    trade.history.crypto.push(trade.prices.crypto);
-    if (trade.history.crypto.length > 20) trade.history.crypto.shift();
-    if (trade.botActive.crypto) botTrade('crypto');
-  }
-  
+  var change = (Math.random() - 0.48) * 0.08;
+  trade.price = Math.max(2, Math.floor(trade.price * (1 + change)));
+  trade.history.push(trade.price);
+  if (trade.history.length > 20) trade.history.shift();
+  if (trade.botActive) botTrade();
   updateUI();
 }
 
-function isUnlocked(feature) {
-  if (!feature) return true;
-  return state.unlockedFeatures.includes(feature);
-}
-
-function checkUnlocks() {
-  const p = state.prestigeCount;
-  
-  if (p >= 5 && !state.unlockedFeatures.includes("midgame")) {
-    state.unlockedFeatures.push("midgame");
-    log("🎉 NOUVEAU : Milestones débloqués !", "unlock");
-  }
-  
-  if (p >= 15 && !state.unlockedFeatures.includes("advanced")) {
-    state.unlockedFeatures.push("advanced");
-    log("🎉 NOUVEAU : Trading avancé + Auto-achat !", "unlock");
-  }
-  
-  if (p >= 30 && !state.unlockedFeatures.includes("lategame")) {
-    state.unlockedFeatures.push("lategame");
-    log("🎉 NOUVEAU : Super Prestige (Galaxies) !", "unlock");
-  }
-}
-
-function checkMilestones() {
-  if (!isUnlocked("midgame")) return;
-  
-  state.milestones.forEach(m => {
-    if (m.unlocked) return;
-    
-    let current = 0;
-    if (m.type === "totalCoins") current = state.totalCoins;
-    if (m.type === "genTotal") current = state.generators.reduce((a, g) => a + g.count, 0);
-    if (m.type === "trades") current = trade.totalTrades;
-    
-    if (current >= m.goal) {
-      m.unlocked = true;
-      log(`🎯 Milestone : ${m.name}`, "unlock");
-    }
-  });
-}
-
-function claimMilestone(id) {
-  const m = state.milestones.find(x => x.id === id);
-  if (!m || !m.unlocked || m.claimed) return;
-  m.claimed = true;
-  log(`✅ Récompense : ${m.reward}`, "success");
-  updateUI();
-  save();
-}
-
-function buySkill(tree, skillId) {
-  const skill = state.skills[tree].find(s => s.id === skillId);
-  if (!skill || skill.bought || state.skillPoints < skill.cost) return;
-  
-  if (skill.requires) {
-    const req = state.skills[tree].find(s => s.id === skill.requires);
-    if (!req || !req.bought) return;
-  }
-  
-  state.skillPoints -= skill.cost;
-  skill.bought = true;
-  log(`🌳 Compétence : ${skill.name}`, "success");
-  updateUI();
-  save();
-}
-
-function superPrestige() {
-  const cost = Math.floor(100 * Math.pow(10, state.galaxies));
-  if (state.stars < cost) return;
-  
-  if (!confirm(`Super Prestige ?\n\nCoût: ${cost} ⭐\nRESET tout (même étoiles)\nGain: 1 Galaxie (×3 à TOUT)`)) return;
-  
-  state.galaxies++;
-  state.stars = 0;
-  state.prestigeCount = 0;
-  state.skillPoints = 0;
-  state.prestigeCost = 1000;
-  
-  Object.values(state.skills).forEach(tree => tree.forEach(s => s.bought = false));
-  state.starUpgrades.forEach(u => u.bought = false);
-  
-  resetCore();
-  log(`🌀 GALAXIE ${state.galaxies} ! (×${Math.pow(3, state.galaxies)} TOTAL)`, "unlock");
-  updateUI();
-  save();
-}
-  const checks = {
-    first_coin: s => s.totalCoins >= 1,
-    hundred: s => s.coins >= 100,
-    thousand: s => s.coins >= 1000,
-    first_gen: s => s.generators.some(g => g.count > 0),
-    first_prestige: s => s.prestigeCount >= 1
+function checkAchievements() {
+  var checks = {
+    first_coin: function(s) { return s.totalCoins >= 1; },
+    hundred: function(s) { return s.coins >= 100; },
+    thousand: function(s) { return s.coins >= 1000; },
+    first_gen: function(s) { 
+      for (var i = 0; i < s.generators.length; i++) {
+        if (s.generators[i].count > 0) return true;
+      }
+      return false;
+    },
+    first_prestige: function(s) { return s.prestigeCount >= 1; }
   };
   
-  state.achievements.forEach(ach => {
+  for (var i = 0; i < state.achievements.length; i++) {
+    var ach = state.achievements[i];
     if (!ach.unlocked && checks[ach.id] && checks[ach.id](state)) {
       ach.unlocked = true;
-      log(`🏆 ${ach.name}`, "success");
+      log("🏆 " + ach.name, "success");
     }
-  });
+  }
 }
 
 function updateUI() {
   $("coins").textContent = formatNum(state.coins);
   $("cps").textContent = formatNum(cps());
   $("clickValue").textContent = formatNum(clickVal());
-  
-  const totalBonus = Math.pow(1.5, state.stars) * Math.pow(3, state.galaxies);
-  $("bonus").textContent = formatNum(totalBonus);
+  $("bonus").textContent = formatNum(Math.pow(1.5, state.stars));
   $("stars").textContent = state.stars;
   $("starsAvailable").textContent = state.stars;
   
-  // Show/hide sections
-  if (state.galaxies > 0 || isUnlocked("lategame")) {
-    $("galaxyLine").style.display = "";
-    $("galaxies").textContent = state.galaxies;
-    $("superPrestigeBtn").style.display = "";
-  }
-  
-  if (isUnlocked("lategame")) {
-    $("skillLine").style.display = "";
-    $("skillPoints").textContent = state.skillPoints;
-    $("skillPointsDisp").textContent = state.skillPoints;
-    $("skillsSection").style.display = "";
-  } else {
-    $("skillsSection").style.display = "none";
-  }
-  
-  $("milestonesSection").style.display = isUnlocked("midgame") ? "" : "none";
-  
-  // Advanced trading tabs
-  if (isUnlocked("advanced")) {
-    $("tab-gold").style.display = "";
-    $("tab-platinum").style.display = "";
-    $("tab-crypto").style.display = "";
-  }
-  
-  // Tab highlighting
-  ['iron', 'gold', 'platinum', 'crypto'].forEach(r => {
-    const tab = $(`tab-${r}`);
-    if (tab) tab.style.opacity = r === trade.currentTab ? "1" : "0.5";
-  });
-  
-  const pGain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
+  var pGain = Math.floor(Math.sqrt(state.totalCoins / state.prestigeCost));
   $("prestigeGain").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.totalCoins < state.prestigeCost;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.totalCoins < state.prestigeCost;
   $("prestigeCost").textContent = formatNum(state.prestigeCost);
   
-  const pProgress = Math.min(100, (state.totalCoins / state.prestigeCost) * 100);
+  var pProgress = Math.min(100, (state.totalCoins / state.prestigeCost) * 100);
   $("prestigeProgress").style.width = pProgress + "%";
 
-  // Milestones
-  if (isUnlocked("midgame")) {
-    $("milestones").innerHTML = state.milestones.map(m => {
-      let current = 0;
-      if (m.type === "totalCoins") current = state.totalCoins;
-      if (m.type === "genTotal") current = state.generators.reduce((a, g) => a + g.count, 0);
-      if (m.type === "trades") current = trade.totalTrades;
-      const progress = Math.min(100, (current / m.goal) * 100);
-      const status = m.claimed ? "✅" : m.unlocked ? "🎁" : "🔒";
-      return `
-        <div class="up-item ${m.unlocked && !m.claimed ? 'new-content' : ''}" style="opacity:${m.claimed ? 0.5 : 1}">
-          <div>
-            <strong>${status} ${m.name}</strong><br>
-            <small>${formatNum(current)}/${formatNum(m.goal)}</small>
-            <div class="progress-bar" style="margin:.2rem 0"><div class="progress-fill" style="width:${progress}%"></div></div>
-            <small style="color:#0f0">${m.reward}</small>
-          </div>
-          ${m.unlocked && !m.claimed ? `<button class="buy-btn" onclick="claimMilestone('${m.id}')">Réclamer</button>` : ''}
-        </div>
-      `;
-    }).join("");
+  var gensHTML = "";
+  for (var i = 0; i < state.generators.length; i++) {
+    var g = state.generators[i];
+    var cost = price(g);
+    var canBuy = state.coins >= cost;
+    gensHTML += '<div class="gen-item"><div><strong>' + g.name + '</strong> <span class="count">×' + g.count + '</span><br><small>' + formatNum(g.base * g.count * Math.pow(1.5, state.stars)) + '/s</small></div><button class="buy-btn" onclick="buyGen(\'' + g.id + '\')" ' + (canBuy ? '' : 'disabled') + '>' + formatNum(cost) + '💰</button></div>';
+  }
+  $("gens").innerHTML = gensHTML;
+
+  var availUps = [];
+  for (var i = 0; i < state.upgrades.length; i++) {
+    var u = state.upgrades[i];
+    if (u.bought) continue;
+    if (u.requires) {
+      var reqMet = false;
+      for (var j = 0; j < state.upgrades.length; j++) {
+        if (state.upgrades[j].id === u.requires && state.upgrades[j].bought) {
+          reqMet = true;
+          break;
+        }
+      }
+      if (!reqMet) continue;
+    }
+    availUps.push(u);
   }
   
-  // Skills
-  if (isUnlocked("lategame")) {
-    ['production', 'clicks', 'trading'].forEach(tree => {
-      const el = tree === 'production' ? 'skillsProd' : tree === 'clicks' ? 'skillsClick' : 'skillsTrade';
-      $(el).innerHTML = state.skills[tree].map(s => {
-        const canBuy = state.skillPoints >= s.cost && !s.bought;
-        const reqMet = !s.requires || state.skills[tree].find(x => x.id === s.requires)?.bought;
-        return `
-          <div class="up-item" style="opacity:${s.bought ? 0.5 : 1}">
-            <div>
-              <strong>${s.bought ? '✅' : '🌳'} ${s.name}</strong><br>
-              <small>${s.desc}</small>
-            </div>
-            ${!s.bought && reqMet ? `<button class="buy-btn" onclick="buySkill('${tree}','${s.id}')" ${!canBuy ? 'disabled' : ''}>${s.cost} pts</button>` : ''}
-          </div>
-        `;
-      }).join("");
-    });
+  var upsHTML = "";
+  if (availUps.length > 0) {
+    for (var i = 0; i < availUps.length; i++) {
+      var u = availUps[i];
+      var canBuy = state.coins >= u.price;
+      upsHTML += '<div class="up-item"><div><strong>' + u.name + '</strong></div><button class="buy-btn" onclick="buyUp(\'' + u.id + '\')" ' + (canBuy ? '' : 'disabled') + '>' + formatNum(u.price) + '💰</button></div>';
+    }
+  } else {
+    upsHTML = '<div style="color:#888;text-align:center">Tout acheté!</div>';
   }
+  $("ups").innerHTML = upsHTML;
 
-  // Gens
-  $("gens").innerHTML = state.generators.filter(g => isUnlocked(g.unlock)).map(g => {
-    const cost = price(g);
-    const canBuy = state.coins >= cost;
-    const isNew = g.unlock && state.unlockedFeatures.includes(g.unlock) && g.count === 0;
-    return `
-      <div class="gen-item ${isNew ? 'new-content' : ''}">
-        <div>
-          <strong>${g.name}</strong> ${isNew ? '✨' : ''} <span class="count">×${g.count}</span><br>
-          <small>${formatNum(g.base * g.count * totalBonus)}/s</small>
-        </div>
-        <button class="buy-btn" onclick="buyGen('${g.id}')" ${!canBuy ? "disabled" : ""}>
-          ${formatNum(cost)}💰
-        </button>
-      </div>
-    `;
-  }).join("");
-
-  // Ups
-  const availUps = state.upgrades.filter(u => {
-    if (u.bought) return false;
-    if (!isUnlocked(u.unlock)) return false;
+  var availStar = [];
+  for (var i = 0; i < state.starUpgrades.length; i++) {
+    var u = state.starUpgrades[i];
+    if (u.bought) continue;
     if (u.requires) {
-      const req = state.upgrades.find(r => r.id === u.requires);
-      return req && req.bought;
+      var reqMet = false;
+      for (var j = 0; j < state.starUpgrades.length; j++) {
+        if (state.starUpgrades[j].id === u.requires && state.starUpgrades[j].bought) {
+          reqMet = true;
+          break;
+        }
+      }
+      if (!reqMet) continue;
     }
-    return true;
-  });
+    availStar.push(u);
+  }
   
-  $("ups").innerHTML = availUps.length > 0 ? availUps.map(u => {
-    const canBuy = state.coins >= u.price;
-    const isNew = u.unlock && state.unlockedFeatures.includes(u.unlock);
-    return `
-      <div class="up-item ${isNew ? 'new-content' : ''}">
-        <div><strong>${u.name}</strong> ${isNew ? '✨' : ''}</div>
-        <button class="buy-btn" onclick="buyUp('${u.id}')" ${!canBuy ? "disabled" : ""}>
-          ${formatNum(u.price)}💰
-        </button>
-      </div>
-    `;
-  }).join("") : "<div style='color:#888;text-align:center'>Tout acheté!</div>";
-
-  // Star ups
-  const availStar = state.starUpgrades.filter(u => {
-    if (u.bought) return false;
-    if (!isUnlocked(u.unlock)) return false;
-    if (u.requires) {
-      const req = state.starUpgrades.find(r => r.id === u.requires);
-      return req && req.bought;
+  var starHTML = "";
+  if (availStar.length > 0) {
+    for (var i = 0; i < availStar.length; i++) {
+      var u = availStar[i];
+      var canBuy = state.stars >= u.cost;
+      starHTML += '<div class="up-item"><div><strong>' + u.name + '</strong></div><button class="buy-btn" onclick="buyStarUpgrade(\'' + u.id + '\')" ' + (canBuy ? '' : 'disabled') + '>' + u.cost + '⭐</button></div>';
     }
-    return true;
-  });
+  } else {
+    starHTML = '<div style="color:#888;text-align:center">Tout acheté!</div>';
+  }
+  $("starShop").innerHTML = starHTML;
+
+  var avg = 0;
+  for (var i = 0; i < trade.history.length; i++) avg += trade.history[i];
+  avg = avg / trade.history.length;
   
-  $("starShop").innerHTML = availStar.length > 0 ? availStar.map(u => {
-    const canBuy = state.stars >= u.cost;
-    const isNew = u.unlock && state.unlockedFeatures.includes(u.unlock);
-    return `
-      <div class="up-item ${isNew ? 'new-content' : ''}">
-        <div><strong>${u.name}</strong> ${isNew ? '✨' : ''}</div>
-        <button class="buy-btn" onclick="buyStarUpgrade('${u.id}')" ${!canBuy ? "disabled" : ""}>
-          ${u.cost}⭐
-        </button>
-      </div>
-    `;
-  }).join("") : "<div style='color:#888;text-align:center'>Tout acheté!</div>";
+  $("tradeContent").innerHTML = '<div class="stat-line"><span>Fer</span><span class="count">' + trade.iron + '</span></div><div class="stat-line"><span>Prix</span><span class="price">' + trade.price + '</span> 💰</div><div class="stat-line"><span>Moyenne</span><span>' + avg.toFixed(1) + '</span></div><button onclick="buyIron()">Acheter</button><button onclick="sellIron()">Vendre</button><button onclick="toggleBot()" style="background:' + (trade.botActive ? '#0a0' : '#0af') + '">🤖 ' + (trade.botActive ? 'ON' : 'OFF') + '</button>';
 
-  // Trading
-  const res = trade.currentTab;
-  const avg = trade.history[res].reduce((a, b) => a + b, 0) / trade.history[res].length;
-  $("tradeContent").innerHTML = `
-    <div class="stat-line">
-      <span>${res.charAt(0).toUpperCase() + res.slice(1)}</span>
-      <span class="count">${trade[res]}</span>
-    </div>
-    <div class="stat-line">
-      <span>Prix</span>
-      <span class="price">${trade.prices[res]}</span> 💰
-    </div>
-    <div class="stat-line">
-      <span>Moyenne</span>
-      <span>${avg.toFixed(1)}</span>
-    </div>
-    <button onclick="buyResource('${res}')">Acheter</button>
-    <button onclick="sellResource('${res}')">Vendre</button>
-    <button onclick="toggleBotResource('${res}')" style="background:${trade.botActive[res] ? '#0a0' : '#0af'}">
-      🤖 ${trade.botActive[res] ? 'ON' : 'OFF'}
-    </button>
-  `;
+  var achHTML = "";
+  for (var i = 0; i < state.achievements.length; i++) {
+    var ach = state.achievements[i];
+    achHTML += '<div class="achievement ' + (ach.unlocked ? 'unlocked' : '') + '">' + (ach.unlocked ? '✅' : '🔒') + ' <strong>' + ach.name + '</strong><br><small>' + ach.desc + '</small></div>';
+  }
+  $("achievements").innerHTML = achHTML;
 
-  // Achievements
-  $("achievements").innerHTML = state.achievements.map(ach => `
-    <div class="achievement ${ach.unlocked ? 'unlocked' : ''}">
-      ${ach.unlocked ? '✅' : '🔒'} <strong>${ach.name}</strong><br>
-      <small>${ach.desc}</small>
-    </div>
-  `).join("");
-
-  // Stats
   $("totalCoins").textContent = formatNum(state.totalCoins);
   $("totalClicks").textContent = state.totalClicks;
-  $("playTime").textContent = state.playTime < 60 ? state.playTime + "s" : 
-    state.playTime < 3600 ? Math.floor(state.playTime / 60) + "m" :
-    (state.playTime / 3600).toFixed(1) + "h";
+  var playTimeStr = state.playTime < 60 ? state.playTime + "s" : state.playTime < 3600 ? Math.floor(state.playTime / 60) + "m" : (state.playTime / 3600).toFixed(1) + "h";
+  $("playTime").textContent = playTimeStr;
   $("prestigeCount").textContent = state.prestigeCount;
 }
 
 function save() {
   try {
-    const saveData = {state: {...state, logMessages: []}, trade: trade, v: 3, t: Date.now()};
+    var saveData = {state: state, trade: trade, v: 4, t: Date.now()};
+    saveData.state.logMessages = [];
     localStorage.setItem(SAVE_KEY, btoa(JSON.stringify(saveData)));
   } catch (e) {
     console.error("Save error:", e);
   }
 }
 
-function switchTab(resource) {
-  trade.currentTab = resource;
-  updateUI();
-}
-
 function load() {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
+    var raw = localStorage.getItem(SAVE_KEY);
     if (raw) {
-      const data = JSON.parse(atob(raw));
-      state = {...state, ...data.state};
-      trade = {...trade, ...data.trade};
+      var data = JSON.parse(atob(raw));
+      for (var key in data.state) {
+        if (key !== "logMessages") state[key] = data.state[key];
+      }
+      for (var key in data.trade) {
+        trade[key] = data.trade[key];
+      }
       if (!state.logMessages) state.logMessages = [];
-      if (!state.unlockedFeatures) state.unlockedFeatures = ["basic"];
-      if (!state.skillPoints) state.skillPoints = 0;
-      if (!state.galaxies) state.galaxies = 0;
-      if (!trade.currentTab) trade.currentTab = 'iron';
-      
-      // Force unlock check
-      const p = state.prestigeCount;
-      if (p >= 5 && !state.unlockedFeatures.includes("midgame")) {
-        state.unlockedFeatures.push("midgame");
-        log("🎉 Milestones débloqués !", "unlock");
-      }
-      if (p >= 15 && !state.unlockedFeatures.includes("advanced")) {
-        state.unlockedFeatures.push("advanced");
-        log("🎉 Trading avancé débloqué !", "unlock");
-      }
-      if (p >= 30 && !state.unlockedFeatures.includes("lategame")) {
-        state.unlockedFeatures.push("lategame");
-        log("🎉 Super Prestige débloqué !", "unlock");
-      }
-      
       log("💾 Chargé", "success");
     }
   } catch (e) {
-    log("❌ Erreur chargement");
+    log("❌ Erreur chargement", "event");
   }
   updateUI();
 }
 
 function exportSave() {
   try {
-    const saveData = {state: {...state, logMessages: []}, trade: trade, v: 3};
-    const blob = new Blob([btoa(JSON.stringify(saveData))], {type: "text/plain"});
-    const a = document.createElement("a");
+    var saveData = {state: state, trade: trade, v: 4};
+    saveData.state.logMessages = [];
+    var blob = new Blob([btoa(JSON.stringify(saveData))], {type: "text/plain"});
+    var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `save_${Date.now()}.txt`;
+    a.download = "save_" + Date.now() + ".txt";
     a.click();
     log("📤 Exporté", "success");
   } catch (e) {
-    log("❌ Erreur export");
+    log("❌ Erreur export", "event");
   }
 }
 
@@ -912,95 +573,4 @@ function importSave() {
 
 function resetGame() {
   if (confirm("Reset total ?")) {
-    localStorage.removeItem(SAVE_KEY);
-    location.reload();
-  }
-}
-
-function init() {
-  $("clickBtn").addEventListener("click", clickBtn);
-  $("prestigeBtn").addEventListener("click", prestige);
-  $("prestigeMaxBtn").addEventListener("click", prestigeMax);
-  $("superPrestigeBtn").addEventListener("click", superPrestige);
-  $("buyIronBtn").addEventListener("click", buyIron);
-  $("sellIronBtn").addEventListener("click", sellIron);
-  $("botBtn").addEventListener("click", toggleBot);
-  $("exportBtn").addEventListener("click", exportSave);
-  $("importBtn").addEventListener("click", importSave);
-  $("resetBtn").addEventListener("click", resetGame);
-  
-  $("importInput").addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    file.text().then(txt => {
-      try {
-        const data = JSON.parse(atob(txt));
-        state = data.state;
-        trade = data.trade;
-        save();
-        updateUI();
-        log("📥 Importé", "success");
-      } catch (x) {
-        log("❌ Fichier invalide");
-      }
-    });
-  });
-
-  load();
-  
-  let updateCounter = 0;
-  setInterval(() => {
-    const gain = cps() / FPS;
-    state.coins += gain;
-    state.totalCoins += gain;
-    
-    const autoClick = state.starUpgrades.find(u => u.id === "star_auto1");
-    if (autoClick && autoClick.bought) {
-      const autoGain = clickVal() / FPS;
-      state.coins += autoGain;
-      state.totalCoins += autoGain;
-    }
-    
-    // Auto-buy
-    if (state.autoSettings.autoBuyGens && isUnlocked("advanced")) {
-      state.generators.forEach(g => {
-        if (isUnlocked(g.unlock) && state.coins >= price(g)) {
-          const cost = price(g);
-          state.coins -= cost;
-          g.count++;
-        }
-      });
-    }
-    
-    updateCounter++;
-    
-    $("coins").textContent = formatNum(state.coins);
-    $("totalCoins").textContent = formatNum(state.totalCoins);
-    
-    if (updateCounter % 10 === 0) {
-      checkAchievements();
-      updateUI();
-    }
-  }, 1000 / FPS);
-
-  setInterval(() => tickMarket(), 30000);
-
-  setInterval(() => {
-    if (state.upgrades.find(u => u.id === "autosave")?.bought) {
-      save();
-    }
-  }, 10000);
-
-  setInterval(() => {
-    state.playTime++;
-  }, 1000);
-
-  window.addEventListener("beforeunload", save);
-  
-  log("🎮 Bienvenue !", "unlock");
-}
-
-init();
-</script>
-</body>
-</html>
+    localStorage.removeItem(SAVE_KEY
