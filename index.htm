@@ -16,7 +16,7 @@ function buyUp(upId) {
   
   log(`✅ Upgrade acheté : ${up.name}`);
   checkAchievements();
-  refresh();
+  refreshFull(); // Utilise refreshFull
   save();
 }
 
@@ -33,7 +33,7 @@ function buyStarUpgrade(id) {
   up.bought = true;
   
   log(`✨ Upgrade étoile acheté : ${up.name}`);
-  refresh();
+  refreshFull(); // Utilise refreshFull
   save();
 }<!doctype html>
 <html lang="fr">
@@ -345,6 +345,7 @@ function prestige() {
   resetCore();
   log(`⭐ Prestige ! +${gain} étoiles (Total: ${state.stars}) - Prochain prestige: ${formatNum(state.prestigeCost)} 💰`);
   checkAchievements();
+  refreshFull();
   save();
 }
 
@@ -375,6 +376,7 @@ function prestigeMax() {
   resetCore();
   log(`⭐ MULTI PRESTIGE ! +${totalGain} étoiles en ${prestigesDone} prestige${prestigesDone > 1 ? 's' : ''} ! (Total: ${state.stars})`);
   checkAchievements();
+  refreshFull();
   save();
 }
 
@@ -398,7 +400,7 @@ function resetCore() {
   trade.price = 10;
   trade.history = [10];
   trade.botActive = false;
-  refresh();
+  refreshFull();
 }
 
 function tickMarket() {
@@ -408,7 +410,7 @@ function tickMarket() {
   if (trade.history.length > 20) trade.history.shift();
   
   if (trade.botActive) botTrade();
-  refresh();
+  refresh(); // Refresh complet pour mettre à jour le trading
 }
 
 function buyIron() {
@@ -423,7 +425,7 @@ function buyIron() {
   trade.iron += qty;
   trade.totalTrades++;
   checkAchievements();
-  refreshFast();
+  refreshFull(); // Utilise refreshFull
   save();
 }
 
@@ -435,14 +437,14 @@ function sellIron() {
   state.totalCoins += gain * 0.5;
   trade.iron = 0;
   trade.totalTrades++;
-  refreshFast();
+  refreshFull(); // Utilise refreshFull
   save();
 }
 
 function toggleBot() {
   trade.botActive = !trade.botActive;
   log(trade.botActive ? "🤖 Bot activé" : "🤖 Bot désactivé");
-  refresh();
+  refreshFull();
 }
 
 function botTrade() {
@@ -510,7 +512,7 @@ function load() {
   } catch (e) {
     log("❌ Sauvegarde corrompue");
   }
-  refresh();
+  refreshFull();
 }
 
 function exportSave() {
@@ -741,7 +743,7 @@ function init() {
         state = data.state;
         trade = data.trade;
         save();
-        refresh();
+        refreshFull();
         log("📥 Sauvegarde importée");
       } catch (x) {
         log("❌ Fichier invalide");
