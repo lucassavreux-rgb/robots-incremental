@@ -183,7 +183,7 @@
       <div class="card">
         <h3>⭐ Prestige Standard</h3>
         <div class="stat-line"><span>Étoiles Gagnées</span><span class="count" id="prestigeGain">0</span></div>
-        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">2000</span> 💰</div>
+        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">3000</span> 💰</div>
         <div class="progress-bar"><div class="progress-fill" id="prestigeProgress" style="width:0%"></div></div>
         <button id="prestigeBtn" onclick="prestige()" disabled>Prestige +<span id="prestigeGainDisplay">0</span> ⭐</button>
         <button id="prestigeMaxBtn" onclick="prestigeMax()" disabled>MAX</button>
@@ -350,7 +350,7 @@ let state = {
   totalClicks: 0,
   prestigeCount: 0,
   playTime: 0,
-  prestigeCost: 2000,
+  prestigeCost: 3000,
   unlockedFeatures: ["basic"],
   logMessages: [],
   difficulty: "normal",
@@ -392,17 +392,17 @@ let state = {
   ],
   
   starUpgrades: [
-    {id:"star_prod1", name:"Prod ×2", cost:10, bought:false, effect:2, type:"production"},
-    {id:"star_prod2", name:"Prod ×5", cost:35, bought:false, effect:5, type:"production", requires:"star_prod1"},
-    {id:"star_prod3", name:"Prod ×10", cost:100, bought:false, effect:10, type:"production", requires:"star_prod2"},
-    {id:"star_click1", name:"Clic ×3", cost:20, bought:false, effect:3, type:"starclick"},
-    {id:"star_click2", name:"Clic ×10", cost:60, bought:false, effect:10, type:"starclick", requires:"star_click1"},
-    {id:"star_gen1", name:"Robot ×50", cost:25, bought:false, effect:50, type:"robot"},
-    {id:"star_gen2", name:"Usine ×50", cost:50, bought:false, effect:50, type:"usine"},
-    {id:"star_gen3", name:"Port ×50", cost:80, bought:false, effect:50, type:"port"},
-    {id:"star_auto1", name:"Auto-clic", cost:75, bought:false, type:"autoclick"},
-    {id:"star_autobuy", name:"Auto-achat gen", cost:200, bought:false, type:"autobuy", unlock:"advanced"},
-    {id:"star_market", name:"Marché rapide", cost:120, bought:false, type:"fastmarket", unlock:"advanced"}
+    {id:"star_prod1", name:"Prod ×2", cost:30, bought:false, effect:2, type:"production"},
+    {id:"star_prod2", name:"Prod ×5", cost:100, bought:false, effect:5, type:"production", requires:"star_prod1"},
+    {id:"star_prod3", name:"Prod ×10", cost:300, bought:false, effect:10, type:"production", requires:"star_prod2"},
+    {id:"star_click1", name:"Clic ×3", cost:50, bought:false, effect:3, type:"starclick"},
+    {id:"star_click2", name:"Clic ×10", cost:150, bought:false, effect:10, type:"starclick", requires:"star_click1"},
+    {id:"star_gen1", name:"Robot ×50", cost:75, bought:false, effect:50, type:"robot"},
+    {id:"star_gen2", name:"Usine ×50", cost:150, bought:false, effect:50, type:"usine"},
+    {id:"star_gen3", name:"Port ×50", cost:250, bought:false, effect:50, type:"port"},
+    {id:"star_auto1", name:"Auto-clic", cost:200, bought:false, type:"autoclick"},
+    {id:"star_autobuy", name:"Auto-achat gen", cost:500, bought:false, type:"autobuy", unlock:"advanced"},
+    {id:"star_market", name:"Marché rapide", cost:300, bought:false, type:"fastmarket", unlock:"advanced"}
   ],
 
   achievements: [
@@ -665,7 +665,11 @@ function cps() {
   if (state.difficulty === "hardcore") corruption_mult *= 0.1;
   if (state.difficulty === "speed") corruption_mult *= 5;
   
-  return total * star_bonus * corruption_mult;
+  let result = total * star_bonus * corruption_mult;
+  
+  // Safety check
+  if (!isFinite(result)) return 0;
+  return Math.max(0, result);
 }
 
 function clickVal() {
@@ -698,7 +702,11 @@ function clickVal() {
     if (c.active && c.effect === "click") corruption_mult *= (1 + c.value);
   }
   
-  return total * star_bonus * corruption_mult;
+  let result = total * star_bonus * corruption_mult;
+  
+  // Safety check
+  if (!isFinite(result)) return 1;
+  return Math.max(1, result);
 }
 
 function clickBtn() {
@@ -853,8 +861,8 @@ function prestige() {
   // Besoin d'au MOINS 1000 pièces ACTUELLES en cash pour prestige
   if (state.coins < 1000) return;
   
-  // 1 étoile par 2000 pièces TOTALES gagnées (au lieu de 1000 avant)
-  let gain = Math.floor(state.totalCoins / 2000);
+  // 1 étoile par 3000 pièces TOTALES gagnées (très difficile!)
+  let gain = Math.floor(state.totalCoins / 3000);
   if (gain < 1) return;
   
   // Tu dépenses tes pièces actuelles
@@ -916,7 +924,7 @@ function prestigeMax() {
   if (state.coins < 1000) return;
   
   let loop_count = 0;
-  while (state.coins >= 1000 && state.totalCoins >= 2000 && loop_count < 100) {
+  while (state.coins >= 1000 && state.totalCoins >= 3000 && loop_count < 100) {
     prestige();
     loop_count++;
   }
@@ -986,6 +994,42 @@ function tickMarket() {
     r.price = Math.max(2, Math.floor(r.price * (1 + change)));
     r.history.push(r.price);
     if (r.history.length > 20) r.history.shift();
+    
+    // BOT TRADING AUTO - si le bot est activé
+    if (r.botActive && r.history.length >= 3) {
+      let avg = 0;
+      for (let i = 0; i < r.history.length; i++) avg += r.history[i];
+      avg = avg / r.history.length;
+      
+      // Acheter quand prix bas
+      if (r.price < avg * 0.85 && state.coins > r.price * 5) {
+        let qty = Math.max(1, Math.floor(state.coins / (r.price * 1.05) * 0.5));
+        let total = qty * r.price * 1.05;
+        if (state.coins >= total) {
+          state.coins -= total;
+          r.amount += qty;
+          trade.totalTrades++;
+        }
+      }
+      
+      // Vendre quand prix haut
+      if (r.price > avg * 1.20 && r.amount > 0) {
+        let gain = r.amount * r.price * 0.95;
+        state.coins += gain;
+        state.totalCoins += gain * 0.5;
+        r.amount = 0;
+        trade.totalTrades++;
+      }
+    }
+  }
+}
+
+function toggleBot(resource) {
+  if (trade.resources[resource]) {
+    trade.resources[resource].botActive = !trade.resources[resource].botActive;
+    log((trade.resources[resource].botActive ? "🤖 Bot ON: " : "🤖 Bot OFF: ") + resource, "event");
+    updateUI();
+    save();
   }
 }
 
@@ -1127,14 +1171,14 @@ function updateUI() {
   $("skillPoints").textContent = state.skillPoints;
   
   // Prestige display
-  let pGain = Math.floor(state.totalCoins / 2000);
+  let pGain = Math.floor(state.totalCoins / 3000);
   $("prestigeGain").textContent = pGain;
   $("prestigeGainDisplay").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
-  $("prestigeCost").textContent = formatNum(2000);
+  $("prestigeCost").textContent = formatNum(3000);
   
-  let pProgress = Math.min(100, (state.totalCoins / 2000) * 100);
+  let pProgress = Math.min(100, (state.totalCoins / 3000) * 100);
   $("prestigeProgress").style.width = pProgress + "%";
 
   // Galaxy display
@@ -1241,6 +1285,7 @@ function updateUI() {
       <div class="stat-line"><span>Moyenne</span><span>${avg.toFixed(1)}</span></div>
       <button onclick="buyResource('${name}')">Acheter</button>
       <button onclick="sellResource('${name}')">Vendre</button>
+      <button onclick="toggleBot('${name}')" style="background:${r.botActive ? '#0a0' : '#0af'}">🤖 ${r.botActive ? 'BOT ON' : 'BOT OFF'}</button>
     </div>`;
   }
   tradeHTML += '</div>';
@@ -1531,7 +1576,7 @@ function init() {
 
   setInterval(() => {
     tickMarket();
-  }, 30000);
+  }, 10000);
 
   setInterval(() => {
     state.playTime++;
