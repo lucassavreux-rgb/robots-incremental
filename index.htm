@@ -153,16 +153,16 @@ let state = {
     {id:"reducefee", name:"Frais réduits (3%)", price:25000, bought:false, type:"feature"}
   ],
   achievements: [
-    {id:"first_coin", name:"Première pièce", desc:"Gagner votre première pièce", unlocked:false, check: s => s.totalCoins >= 1},
-    {id:"hundred", name:"Capitaliste", desc:"Avoir 100 pièces", unlocked:false, check: s => s.coins >= 100},
-    {id:"thousand", name:"Millionnaire", desc:"Avoir 1000 pièces", unlocked:false, check: s => s.coins >= 1000},
-    {id:"first_gen", name:"Automatisation", desc:"Acheter votre premier générateur", unlocked:false, check: s => s.generators.some(g => g.count > 0)},
-    {id:"ten_gens", name:"Industriel", desc:"Avoir 10 générateurs au total", unlocked:false, check: s => s.generators.reduce((a,g) => a + g.count, 0) >= 10},
-    {id:"first_prestige", name:"Renaissance", desc:"Faire votre premier prestige", unlocked:false, check: s => s.prestigeCount >= 1},
-    {id:"clicker", name:"Clickeur fou", desc:"Faire 100 clics", unlocked:false, check: s => s.totalClicks >= 100},
-    {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false, check: () => trade.iron > 0 || trade.totalTrades > 0},
-    {id:"hour_play", name:"Dedication", desc:"Jouer pendant 1 heure", unlocked:false, check: s => s.playTime >= 3600},
-    {id:"all_upgrades", name:"Amélioré", desc:"Acheter toutes les upgrades de base", unlocked:false, check: s => s.upgrades.filter(u => u.price < 10000).every(u => u.bought)}
+    {id:"first_coin", name:"Première pièce", desc:"Gagner votre première pièce", unlocked:false},
+    {id:"hundred", name:"Capitaliste", desc:"Avoir 100 pièces", unlocked:false},
+    {id:"thousand", name:"Millionnaire", desc:"Avoir 1000 pièces", unlocked:false},
+    {id:"first_gen", name:"Automatisation", desc:"Acheter votre premier générateur", unlocked:false},
+    {id:"ten_gens", name:"Industriel", desc:"Avoir 10 générateurs au total", unlocked:false},
+    {id:"first_prestige", name:"Renaissance", desc:"Faire votre premier prestige", unlocked:false},
+    {id:"clicker", name:"Clickeur fou", desc:"Faire 100 clics", unlocked:false},
+    {id:"trader", name:"Trader", desc:"Acheter du fer", unlocked:false},
+    {id:"hour_play", name:"Dedication", desc:"Jouer pendant 1 heure", unlocked:false},
+    {id:"all_upgrades", name:"Amélioré", desc:"Acheter toutes les upgrades de base", unlocked:false}
   ]
 };
 
@@ -350,8 +350,22 @@ function botTrade() {
 }
 
 function checkAchievements() {
+  // Définir les conditions ici (pas dans state car on peut pas sauvegarder des fonctions)
+  const achievementChecks = {
+    first_coin: s => s.totalCoins >= 1,
+    hundred: s => s.coins >= 100,
+    thousand: s => s.coins >= 1000,
+    first_gen: s => s.generators.some(g => g.count > 0),
+    ten_gens: s => s.generators.reduce((a,g) => a + g.count, 0) >= 10,
+    first_prestige: s => s.prestigeCount >= 1,
+    clicker: s => s.totalClicks >= 100,
+    trader: () => trade.iron > 0 || trade.totalTrades > 0,
+    hour_play: s => s.playTime >= 3600,
+    all_upgrades: s => s.upgrades.filter(u => u.price < 10000).every(u => u.bought)
+  };
+  
   state.achievements.forEach(ach => {
-    if (!ach.unlocked && ach.check(state)) {
+    if (!ach.unlocked && achievementChecks[ach.id] && achievementChecks[ach.id](state)) {
       ach.unlocked = true;
       log(`🏆 Succès débloqué : ${ach.name}`);
     }
@@ -576,13 +590,24 @@ function init() {
 
   load();
   
-  // Game loop - utilise refreshFast() pour les mises à jour rapides
+  // Game loop optimisé
+  let updateCounter = 0;
   setInterval(() => {
     const gain = cps() / FPS;
     state.coins += gain;
     state.totalCoins += gain;
-    checkAchievements();
-    refreshFast(); // Utilise la version rapide !
+    
+    updateCounter++;
+    
+    // Mise à jour rapide des chiffres toutes les frames
+    $("coins").textContent = formatNum(state.coins);
+    $("totalCoins").textContent = formatNum(state.totalCoins);
+    
+    // Refresh complet toutes les 10 frames (2 fois par seconde)
+    if (updateCounter % 10 === 0) {
+      checkAchievements();
+      refreshFast();
+    }
   }, 1000 / FPS);
 
   // Market tick every 30s
