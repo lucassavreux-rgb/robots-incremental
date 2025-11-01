@@ -573,4 +573,98 @@ function importSave() {
 
 function resetGame() {
   if (confirm("Reset total ?")) {
-    localStorage.removeItem(SAVE_KEY
+    localStorage.removeItem(SAVE_KEY);
+    location.reload();
+  }
+}
+
+function init() {
+  $("clickBtn").addEventListener("click", clickBtn);
+  $("prestigeBtn").addEventListener("click", prestige);
+  $("prestigeMaxBtn").addEventListener("click", prestigeMax);
+  $("exportBtn").addEventListener("click", exportSave);
+  $("importBtn").addEventListener("click", importSave);
+  $("resetBtn").addEventListener("click", resetGame);
+  
+  $("importInput").addEventListener("change", function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    file.text().then(function(txt) {
+      try {
+        var data = JSON.parse(atob(txt));
+        state = data.state;
+        trade = data.trade;
+        save();
+        updateUI();
+        log("📥 Importé", "success");
+      } catch (x) {
+        log("❌ Fichier invalide", "event");
+      }
+    });
+  });
+
+  load();
+  
+  // IMPORTANT: Force un premier affichage
+  setTimeout(function() {
+    updateUI();
+    log("🎮 Bienvenue !", "unlock");
+  }, 100);
+  
+  var updateCounter = 0;
+  setInterval(function() {
+    var gain = cps() / FPS;
+    state.coins += gain;
+    state.totalCoins += gain;
+    
+    var autoClickUp = null;
+    for (var i = 0; i < state.starUpgrades.length; i++) {
+      if (state.starUpgrades[i].id === "star_auto1" && state.starUpgrades[i].bought) {
+        autoClickUp = state.starUpgrades[i];
+        break;
+      }
+    }
+    
+    if (autoClickUp) {
+      var autoGain = clickVal() / FPS;
+      state.coins += autoGain;
+      state.totalCoins += autoGain;
+    }
+    
+    updateCounter++;
+    
+    $("coins").textContent = formatNum(state.coins);
+    $("totalCoins").textContent = formatNum(state.totalCoins);
+    
+    if (updateCounter % 10 === 0) {
+      checkAchievements();
+      updateUI();
+    }
+  }, 1000 / FPS);
+
+  setInterval(function() {
+    tickMarket();
+  }, 30000);
+
+  setInterval(function() {
+    var autosaveUp = null;
+    for (var i = 0; i < state.upgrades.length; i++) {
+      if (state.upgrades[i].id === "autosave" && state.upgrades[i].bought) {
+        autosaveUp = state.upgrades[i];
+        break;
+      }
+    }
+    if (autosaveUp) save();
+  }, 10000);
+
+  setInterval(function() {
+    state.playTime++;
+  }, 1000);
+
+  window.addEventListener("beforeunload", save);
+}
+
+init();
+</script>
+</body>
+</html>
