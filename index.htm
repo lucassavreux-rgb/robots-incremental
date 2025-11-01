@@ -223,7 +223,7 @@ function clickBtn() {
   state.totalCoins += val;
   state.totalClicks++;
   checkAchievements();
-  refresh();
+  refreshFast();
 }
 
 function buyGen(genId) {
@@ -313,7 +313,7 @@ function buyIron() {
   trade.iron += qty;
   trade.totalTrades++;
   checkAchievements();
-  refresh();
+  refreshFast();
   save();
 }
 
@@ -325,7 +325,7 @@ function sellIron() {
   state.totalCoins += gain * 0.5;
   trade.iron = 0;
   trade.totalTrades++;
-  refresh();
+  refreshFast();
   save();
 }
 
@@ -414,7 +414,8 @@ function resetGame() {
   }
 }
 
-function refresh() {
+// Fonction pour rafraîchir seulement les chiffres (rapide)
+function refreshFast() {
   $("coins").textContent = formatNum(state.coins);
   $("cps").textContent = formatNum(cps());
   $("clickValue").textContent = formatNum(clickVal());
@@ -428,6 +429,41 @@ function refresh() {
   const prestigeProgress = Math.min(100, (state.totalCoins / 1000) * 100);
   $("prestigeProgress").style.width = prestigeProgress + "%";
 
+  // Update seulement les textes des générateurs (pas le HTML complet)
+  state.generators.forEach(g => {
+    const cost = price(g);
+    const btn = document.querySelector(`[data-gen-id="${g.id}"]`);
+    if (btn) {
+      btn.disabled = state.coins < cost;
+      btn.textContent = formatNum(cost) + " 💰";
+    }
+    const countEl = document.querySelector(`#gen-count-${g.id}`);
+    const prodEl = document.querySelector(`#gen-prod-${g.id}`);
+    if (countEl) countEl.textContent = "×" + g.count;
+    if (prodEl) prodEl.textContent = formatNum(g.base * g.count * (1 + state.stars * 0.05)) + "/s";
+  });
+
+  // Update les upgrades
+  state.upgrades.forEach(u => {
+    const btn = document.querySelector(`[data-up-id="${u.id}"]`);
+    if (btn) {
+      btn.disabled = state.coins < u.price;
+    }
+  });
+
+  // Stats
+  $("totalCoins").textContent = formatNum(state.totalCoins);
+  $("totalClicks").textContent = state.totalClicks;
+  $("playTime").textContent = state.playTime < 60 ? state.playTime + "s" : 
+    state.playTime < 3600 ? Math.floor(state.playTime / 60) + "m" :
+    (state.playTime / 3600).toFixed(1) + "h";
+  $("prestigeCount").textContent = state.prestigeCount;
+}
+
+// Fonction complète pour reconstruire toute l'interface (lent)
+function refresh() {
+  refreshFast();
+  
   // Générateurs - ON AJOUTE DES EVENT LISTENERS
   $("gens").innerHTML = state.generators.map(g => {
     const cost = price(g);
@@ -435,8 +471,8 @@ function refresh() {
     return `
       <div class="gen-item">
         <div>
-          <strong>${g.name}</strong> <span class="count">×${g.count}</span><br>
-          <small>${formatNum(g.base * g.count * (1 + state.stars * 0.05))}/s</small>
+          <strong>${g.name}</strong> <span class="count" id="gen-count-${g.id}">×${g.count}</span><br>
+          <small id="gen-prod-${g.id}">${formatNum(g.base * g.count * (1 + state.stars * 0.05))}/s</small>
         </div>
         <button class="buy-btn gen-buy-btn" data-gen-id="${g.id}" ${!canBuy ? "disabled" : ""}>
           ${formatNum(cost)} 💰
@@ -508,14 +544,6 @@ function refresh() {
       <small>${ach.desc}</small>
     </div>
   `).join("");
-
-  // Stats
-  $("totalCoins").textContent = formatNum(state.totalCoins);
-  $("totalClicks").textContent = state.totalClicks;
-  $("playTime").textContent = state.playTime < 60 ? state.playTime + "s" : 
-    state.playTime < 3600 ? Math.floor(state.playTime / 60) + "m" :
-    (state.playTime / 3600).toFixed(1) + "h";
-  $("prestigeCount").textContent = state.prestigeCount;
 }
 
 // INITIALISATION
@@ -548,13 +576,13 @@ function init() {
 
   load();
   
-  // Game loop
+  // Game loop - utilise refreshFast() pour les mises à jour rapides
   setInterval(() => {
     const gain = cps() / FPS;
     state.coins += gain;
     state.totalCoins += gain;
     checkAchievements();
-    refresh();
+    refreshFast(); // Utilise la version rapide !
   }, 1000 / FPS);
 
   // Market tick every 30s
