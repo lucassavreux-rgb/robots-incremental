@@ -183,7 +183,7 @@
       <div class="card">
         <h3>⭐ Prestige Standard</h3>
         <div class="stat-line"><span>Étoiles Gagnées</span><span class="count" id="prestigeGain">0</span></div>
-        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">3000</span> 💰</div>
+        <div class="stat-line"><span>Coût</span><span class="price" id="prestigeCost">10000</span> 💰</div>
         <div class="progress-bar"><div class="progress-fill" id="prestigeProgress" style="width:0%"></div></div>
         <button id="prestigeBtn" onclick="prestige()" disabled>Prestige +<span id="prestigeGainDisplay">0</span> ⭐</button>
         <button id="prestigeMaxBtn" onclick="prestigeMax()" disabled>MAX</button>
@@ -350,7 +350,7 @@ let state = {
   totalClicks: 0,
   prestigeCount: 0,
   playTime: 0,
-  prestigeCost: 3000,
+  prestigeCost: 10000,
   unlockedFeatures: ["basic"],
   logMessages: [],
   difficulty: "normal",
@@ -375,7 +375,8 @@ let state = {
   ],
   
   upgrades: [
-    {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click"},
+    {id:"click1", name:"Clic +50%", price:100, effect:1.5, bought:false, type:"click"},
+    {id:"click2", name:"Clic ×2", price:500, effect:2, bought:false, type:"click", requires:"click1"},
     {id:"click5", name:"Clic ×5", price:25000, effect:5, bought:false, type:"click", requires:"click2"},
     {id:"click10", name:"Clic ×10", price:500000, effect:10, bought:false, type:"click", requires:"click5"},
     {id:"click25", name:"Clic ×25", price:50e6, effect:25, bought:false, type:"click", requires:"click10", unlock:"advanced"},
@@ -453,21 +454,21 @@ let state = {
   ],
 
   milestones: [
-    {id:"m1", name:"Débutant", desc:"Atteindre 1K pièces", target:"coins", value:1000, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m2", name:"Ambitieux", desc:"Atteindre 100K pièces", target:"coins", value:100000, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m3", name:"Magnat", desc:"Atteindre 1M pièces", target:"coins", value:1e6, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m4", name:"Tycoon", desc:"Atteindre 1B pièces", target:"coins", value:1e9, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m5", name:"Générateurs", desc:"Avoir 10 générateurs", target:"totalGens", value:10, reward:{mult:1.1,type:"click"}, completed:false},
-    {id:"m6", name:"Productivité", desc:"10 pièces/sec", target:"cps", value:10, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m7", name:"Prestige 1", desc:"1er prestige", target:"prestige", value:1, reward:{mult:1.2,type:"stars"}, completed:false},
-    {id:"m8", name:"Prestige 5", desc:"5 prestiges", target:"prestige", value:5, reward:{mult:1.1,type:"stars"}, completed:false},
-    {id:"m9", name:"Prestige 10", desc:"10 prestiges", target:"prestige", value:10, reward:{mult:1.1,type:"stars"}, completed:false},
-    {id:"m10", name:"Prestige 20", desc:"20 prestiges", target:"prestige", value:20, reward:{mult:1.1,type:"stars"}, completed:false},
-    {id:"m11", name:"Super Prestige", desc:"1ère Galaxie", target:"galaxies", value:1, reward:{mult:1.3,type:"stars"}, completed:false},
-    {id:"m12", name:"5 Étoiles", desc:"5 étoiles gagnées", target:"stars", value:5, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m13", name:"50 Étoiles", desc:"50 étoiles gagnées", target:"stars", value:50, reward:{mult:1.1,type:"production"}, completed:false},
-    {id:"m14", name:"Challenges", desc:"5 challenges complétés", target:"challengesCompleted", value:5, reward:{mult:1.05,type:"production"}, completed:false},
-    {id:"m15", name:"Compétences", desc:"5 compétences achetées", target:"skillsUnlocked", value:5, reward:{mult:1.1,type:"click"}, completed:false}
+    {id:"m1", name:"Débutant", desc:"Atteindre 1K pièces", target:"coins", value:1000, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m2", name:"Ambitieux", desc:"Atteindre 100K pièces", target:"coins", value:100000, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m3", name:"Magnat", desc:"Atteindre 1M pièces", target:"coins", value:1e6, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m4", name:"Tycoon", desc:"Atteindre 1B pièces", target:"coins", value:1e9, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m5", name:"Générateurs", desc:"Avoir 10 générateurs", target:"totalGens", value:10, reward:{mult:1.03,type:"click"}, completed:false},
+    {id:"m6", name:"Productivité", desc:"10 pièces/sec", target:"cps", value:10, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m7", name:"Prestige 1", desc:"1er prestige", target:"prestige", value:1, reward:{mult:1.05,type:"stars"}, completed:false},
+    {id:"m8", name:"Prestige 5", desc:"5 prestiges", target:"prestige", value:5, reward:{mult:1.03,type:"stars"}, completed:false},
+    {id:"m9", name:"Prestige 10", desc:"10 prestiges", target:"prestige", value:10, reward:{mult:1.03,type:"stars"}, completed:false},
+    {id:"m10", name:"Prestige 20", desc:"20 prestiges", target:"prestige", value:20, reward:{mult:1.03,type:"stars"}, completed:false},
+    {id:"m11", name:"Super Prestige", desc:"1ère Galaxie", target:"galaxies", value:1, reward:{mult:1.1,type:"stars"}, completed:false},
+    {id:"m12", name:"5 Étoiles", desc:"5 étoiles gagnées", target:"stars", value:5, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m13", name:"50 Étoiles", desc:"50 étoiles gagnées", target:"stars", value:50, reward:{mult:1.03,type:"production"}, completed:false},
+    {id:"m14", name:"Challenges", desc:"5 challenges complétés", target:"challengesCompleted", value:5, reward:{mult:1.02,type:"production"}, completed:false},
+    {id:"m15", name:"Compétences", desc:"5 compétences achetées", target:"skillsUnlocked", value:5, reward:{mult:1.03,type:"click"}, completed:false}
   ],
 
   challenges: [
@@ -908,8 +909,8 @@ function prestige() {
   // Besoin d'au MOINS 1000 pièces ACTUELLES en cash pour prestige
   if (state.coins < 1000) return;
   
-  // 1 étoile par 3000 pièces TOTALES gagnées (très difficile!)
-  let gain = Math.floor(state.totalCoins / 3000);
+  // 1 étoile par 10000 pièces TOTALES gagnées (ultra difficile!)
+  let gain = Math.floor(state.totalCoins / 10000);
   if (gain < 1) return;
   
   // Tu dépenses tes pièces actuelles
@@ -971,7 +972,7 @@ function prestigeMax() {
   if (state.coins < 1000) return;
   
   let loop_count = 0;
-  while (state.coins >= 1000 && state.totalCoins >= 3000 && loop_count < 100) {
+  while (state.coins >= 1000 && state.totalCoins >= 10000 && loop_count < 100) {
     prestige();
     loop_count++;
   }
@@ -1232,14 +1233,14 @@ function updateUI() {
   $("skillPoints").textContent = state.skillPoints;
   
   // Prestige display
-  let pGain = Math.floor(state.totalCoins / 3000);
+  let pGain = Math.floor(state.totalCoins / 10000);
   $("prestigeGain").textContent = pGain;
   $("prestigeGainDisplay").textContent = pGain;
   $("prestigeBtn").disabled = pGain < 1 || state.coins < 1000;
   $("prestigeMaxBtn").disabled = pGain < 1 || state.coins < 1000;
-  $("prestigeCost").textContent = formatNum(3000);
+  $("prestigeCost").textContent = formatNum(10000);
   
-  let pProgress = Math.min(100, (state.totalCoins / 3000) * 100);
+  let pProgress = Math.min(100, (state.totalCoins / 10000) * 100);
   $("prestigeProgress").style.width = pProgress + "%";
 
   // Galaxy display
@@ -1567,7 +1568,15 @@ Es-tu SÛR de vouloir continuer?
   `;
   
   if (confirm(stats)) {
-    localStorage.removeItem(SAVE_KEY);
+    // Clear ALL localStorage
+    localStorage.clear();
+    // Clear all keys with our save key
+    for (let key in localStorage) {
+      if (key.includes('idleTrade')) {
+        localStorage.removeItem(key);
+      }
+    }
+    // Reinitialize state to defaults
     location.reload();
   }
 }
