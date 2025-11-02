@@ -345,6 +345,18 @@
       <div>💸 Trade Bloqué</div>
       <div class="stat-val" id="tradeBlocked">0</div>
     </div>
+    <div class="stat">
+      <div>🚀 Ascension</div>
+      <div class="stat-val" id="ascension">0</div>
+    </div>
+    <div class="stat">
+      <div>🏆 Achievements</div>
+      <div class="stat-val" id="achievementCount">0</div>
+    </div>
+    <div class="stat">
+      <div>🏦 Banque</div>
+      <div class="stat-val" id="bankAmount">0</div>
+    </div>
   </div>
 
   <!-- TABS NAVIGATION -->
@@ -353,6 +365,10 @@
     <button class="tab-btn" data-tab="gens">🤖 GÉNÉRATEURS</button>
     <button class="tab-btn" data-tab="ups">⚡ UPGRADES</button>
     <button class="tab-btn" data-tab="trade">💸 TRADING</button>
+    <button class="tab-btn" data-tab="bank">🏦 BANQUE</button>
+    <button class="tab-btn" data-tab="lottery">🎰 LOTTERIE</button>
+    <button class="tab-btn" data-tab="ascension">🚀 ASCENSION</button>
+    <button class="tab-btn" data-tab="achievements">🏆 ACHIEVEMENTS</button>
     <button class="tab-btn" data-tab="feat">✨ FEATURES</button>
     <button class="tab-btn" data-tab="stats">📊 STATS</button>
     <button class="tab-btn" data-tab="params">⚙️ PARAMÈTRES</button>
@@ -501,6 +517,129 @@
         <div id="tradeLog" style="max-height: 200px; overflow-y: auto;">
           <div class="trade-log-event">En attente...</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: BANQUE -->
+  <div id="bank" class="content">
+    <div class="card">
+      <h3>🏦 BANQUE - INVESTISSEMENTS</h3>
+      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.1% par sec!</p>
+      
+      <div class="trade-stats">
+        <div class="trade-stat">
+          <div>💰 Investi</div>
+          <div class="trade-stat-val" id="bankInvested">0</div>
+        </div>
+        <div class="trade-stat">
+          <div>⚡ +/sec</div>
+          <div class="trade-stat-val" id="bankGains">0</div>
+        </div>
+      </div>
+
+      <div class="trade-input-group">
+        <input type="number" class="trade-input" id="bankInput" placeholder="Montant à déposer" min="0">
+        <button class="btn" onclick="depositBank()">📤 DÉPOSER</button>
+        <button class="btn danger-btn" onclick="withdrawBank()">📥 RETIRER</button>
+      </div>
+
+      <div class="card" style="background:#0a0a0a;margin-top:1rem">
+        <h4>📊 Info Banque</h4>
+        <p style="color:#aaa;font-size:0.9rem">
+          Total généré: <span id="bankGenerated">0</span> 💰
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: LOTTERIE -->
+  <div id="lottery" class="content">
+    <div class="card">
+      <h3>🎰 LOTTERIE - TENTEZ VOTRE CHANCE!</h3>
+      <p style="color: #aaa; margin-bottom: 1rem;">Achetez des tickets et tentez votre chance!</p>
+      
+      <div class="trade-stats">
+        <div class="trade-stat">
+          <div>🎟️ Tickets</div>
+          <div class="trade-stat-val" id="lotteryTickets">0</div>
+        </div>
+        <div class="trade-stat">
+          <div>💰 Coût</div>
+          <div class="trade-stat-val">100</div>
+        </div>
+      </div>
+
+      <div class="trade-input-group">
+        <button class="btn" onclick="buyLotteryTicket(1)">🎟️ 1 Ticket (100)</button>
+        <button class="btn" onclick="buyLotteryTicket(10)">🎟️ 10 Tickets (1K)</button>
+        <button class="btn" onclick="buyLotteryTicket(100)">🎟️ 100 Tickets (10K)</button>
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <button class="btn big-btn" onclick="playLottery()" style="max-width: 100%; width: 100%;">🎰 JOUER!</button>
+      </div>
+
+      <div class="card" style="background:#0a0a0a;margin-top:1rem">
+        <h4>🎲 Résultats</h4>
+        <div id="lotteryLog" style="max-height: 200px; overflow-y: auto;">
+          <div style="color:#aaa;font-size:0.9rem">En attente...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ASCENSION -->
+  <div id="ascension" class="content">
+    <div class="card">
+      <h3>🚀 ASCENSION - META PRESTIGE</h3>
+      <p style="color: #fa0; margin-bottom: 1rem;">Réinitialise TOUT mais donne des bonus permanents énormes!</p>
+      
+      <div class="trade-stats">
+        <div class="trade-stat">
+          <div>🚀 Points</div>
+          <div class="trade-stat-val" id="ascensionPoints">0</div>
+        </div>
+        <div class="trade-stat">
+          <div>⚡ Bonus</div>
+          <div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div>
+        </div>
+        <div class="trade-stat">
+          <div>🌀 Coût</div>
+          <div class="trade-stat-val" id="ascensionCost">100</div>
+        </div>
+      </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
+        <p style="color:#fa0;margin:0.5rem 0"><strong>⚠️ ATTENTION!</strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">L'Ascension va:</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les générateurs</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les upgrades</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser les étoiles et prestige</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✅ Garder les Galaxies</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✅ Garder les points d'Ascension</p>
+      </div>
+
+      <button class="btn big-btn danger-btn" onclick="doAscension()" style="max-width: 100%; width: 100%;">🚀 ASCENSIONNER!</button>
+
+      <div class="card" style="background:#0a0a0a;margin-top:1rem">
+        <h4>📊 Info Ascension</h4>
+        <p style="color:#aaa;font-size:0.9rem">
+          Galaxies nécessaires: <span id="ascensionRequired">100</span><br>
+          Galaxies actuelles: <span id="ascensionCurrent">0</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ACHIEVEMENTS -->
+  <div id="achievements" class="content">
+    <div class="card">
+      <h3>🏆 ACHIEVEMENTS & BADGES</h3>
+      <p style="color: #0f0; margin-bottom: 1rem;">Débloque des badges et gagne des récompenses!</p>
+      
+      <div id="achievementsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <!-- Les achievements s'affichent ici -->
       </div>
     </div>
   </div>
@@ -831,7 +970,35 @@ let game = {
     min: { amount: 0, totalGains: 0, totalLosses: 0 },
     mid: { amount: 0, totalGains: 0, totalLosses: 0 },
     high: { amount: 0, totalGains: 0, totalLosses: 0 }
-  }
+  },
+
+  // ASCENSION SYSTEM
+  ascension: 0,
+  ascensionCount: 0,
+
+  // BANQUE SYSTEM
+  bankInvested: 0,
+  bankGenerated: 0,
+
+  // LOTTERIE SYSTEM
+  lotteryTickets: 0,
+  lotteryLog: [],
+
+  // ACHIEVEMENTS
+  achievements: [
+    { id: "click5", name: "🖱️ Débutant", desc: "Faire 5 clics", check: () => game.totalClicks >= 5, reward: 0, unlocked: false },
+    { id: "coins1m", name: "💰 Millionnaire", desc: "1M coins totaux", check: () => game.totalCoins >= 1e6, reward: 1000, unlocked: false },
+    { id: "gen10", name: "🤖 Automatisé", desc: "10 générateurs", check: () => game.generators.reduce((a, g) => a + g.c, 0) >= 10, reward: 10000, unlocked: false },
+    { id: "stars10", name: "⭐ Star", desc: "10 Étoiles", check: () => game.stars >= 10, reward: 5000, unlocked: false },
+    { id: "stars100", name: "⭐ Supernova", desc: "100 Étoiles", check: () => game.stars >= 100, reward: 50000, unlocked: false },
+    { id: "galaxy1", name: "🌀 Cosmique", desc: "1ère Galaxie", check: () => game.galaxies >= 1, reward: 25000, unlocked: false },
+    { id: "galaxy5", name: "🌀 Univers", desc: "5 Galaxies", check: () => game.galaxies >= 5, reward: 100000, unlocked: false },
+    { id: "prestige5", name: "⚡ Prestigieux", desc: "5 Prestige", check: () => game.prestige >= 5, reward: 50000, unlocked: false },
+    { id: "prestige20", name: "⚡ Légende", desc: "20 Prestige", check: () => game.prestige >= 20, reward: 200000, unlocked: false },
+    { id: "trading1m", name: "💸 Trader Pro", desc: "1M en Trading", check: () => (game.trades.min.totalGains + game.trades.mid.totalGains + game.trades.high.totalGains) >= 1e6, reward: 100000, unlocked: false },
+    { id: "lottery10", name: "🎰 Chanceux", desc: "10 tirages lotterie", check: () => game.lotteryTickets >= 10, reward: 50000, unlocked: false },
+    { id: "darkm5", name: "🌙 Ombre", desc: "5 Dark Matter", check: () => game.darkMatter >= 5, reward: 75000, unlocked: false },
+  ]
 };
 
 // =========== UNLOCK SYSTEM ===========
@@ -1029,12 +1196,13 @@ function getProd() {
 
   let starsMultiplier = Math.pow(1.03, game.stars);
   let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
+  let ascensionMultiplier = 1 + (game.ascension * 0.05);
 
   // Protection contre Infinity
   if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
   if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
 
-  return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
+  return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
 }
 
 function clickBtn() {
@@ -1287,7 +1455,49 @@ function updateUI() {
   $("playTime").textContent = game.playTime + "s";
   $("presCount").textContent = game.prestige;
 
-  // Update trades UI
+  // Ascension
+  $("ascension").textContent = game.ascension;
+  $("ascensionBonus").textContent = game.ascension * 5;
+  $("ascensionCost").textContent = fmt(100 * Math.pow(2, game.ascension));
+  $("ascensionRequired").textContent = 100 * Math.pow(2, game.ascension);
+  $("ascensionCurrent").textContent = game.galaxies;
+
+  // Banque
+  $("bankAmount").textContent = fmt(game.bankInvested);
+  $("bankInvested").textContent = fmt(game.bankInvested);
+  let bankGains = (game.bankInvested * 0.001) / FPS;
+  $("bankGains").textContent = fmt(bankGains);
+  $("bankGenerated").textContent = fmt(game.bankGenerated);
+
+  // Lotterie
+  $("lotteryTickets").textContent = game.lotteryTickets;
+  let lotteryHtml = "";
+  for (let log of game.lotteryLog) {
+    lotteryHtml += `<div style="padding:0.3rem;color:#aaa">${log}</div>`;
+  }
+  if ($("lotteryLog")) $("lotteryLog").innerHTML = lotteryHtml || "<div style='color:#aaa'>En attente...</div>";
+
+  // Achievements
+  let achCount = game.achievements.filter(a => a.unlocked).length;
+  $("achievementCount").textContent = achCount;
+  let achHtml = "";
+  for (let ach of game.achievements) {
+    let achDiv = ach.unlocked ? 
+      `<div style="background:#0a0a2a;padding:1rem;border-radius:4px;border-left:3px solid #0f0">
+        <div style="color:#0f0;font-weight:bold">${ach.name}</div>
+        <div style="color:#aaa;font-size:0.9rem">${ach.desc}</div>
+        <div style="color:#fa0;font-size:0.9rem">+${ach.reward} 💰</div>
+      </div>` :
+      `<div style="background:#0a0a0a;padding:1rem;border-radius:4px;border-left:3px solid #666;opacity:0.5">
+        <div style="color:#aaa;font-weight:bold">${ach.name}</div>
+        <div style="color:#666;font-size:0.9rem">${ach.desc}</div>
+      </div>`;
+    achHtml += achDiv;
+  }
+  if ($("achievementsList")) $("achievementsList").innerHTML = achHtml;
+
+  // Check achievements
+  checkAchievements();
   for (let type of ["min", "mid", "high"]) {
     let trade = game.trades[type];
     let config = getTradeConfig(type);
@@ -1523,6 +1733,127 @@ document.addEventListener("click", e => {
   if (e.target.classList.contains("up-buy")) buyUp(e.target.dataset.id);
 });
 
+// =========== ASCENSION SYSTEM ===========
+function doAscension() {
+  let cost = 100 * Math.pow(2, game.ascension);
+  if (game.galaxies < cost) {
+    alert("❌ Tu as besoin de " + cost + " Galaxies!");
+    return;
+  }
+
+  if (!confirm("🚀 Ascensionner? Tout se réinitialise sauf les Galaxies!")) return;
+
+  game.galaxies -= cost;
+  game.ascension++;
+  game.ascensionCount++;
+
+  // Reset TOUT
+  game.coins = 0;
+  game.stars = 0;
+  game.prestige = 0;
+  game.darkMatter = 0;
+  game.trades.min = { amount: 0, totalGains: 0, totalLosses: 0 };
+  game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
+  game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
+
+  for (let gen of game.generators) gen.c = 0;
+  for (let u of game.upgrades) u.b = 0;
+
+  log("🚀 ASCENSION! Nouveaux bonus: +" + (game.ascension * 5) + "%");
+  save();
+  updateUI();
+}
+
+// =========== BANQUE SYSTEM ===========
+function depositBank() {
+  let amount = parseFloat($("bankInput").value);
+  if (!amount || amount <= 0 || game.coins < amount) {
+    alert("❌ Montant invalide!");
+    return;
+  }
+
+  game.coins -= amount;
+  game.bankInvested += amount;
+  $("bankInput").value = "";
+  log("🏦 Dépôt banque: +" + fmt(amount));
+  save();
+  updateUI();
+}
+
+function withdrawBank() {
+  if (game.bankInvested <= 0) {
+    alert("❌ Rien à retirer!");
+    return;
+  }
+
+  game.coins += game.bankInvested;
+  game.totalCoins += game.bankInvested;
+  log("🏦 Retrait banque: +" + fmt(game.bankInvested));
+  game.bankInvested = 0;
+  game.bankGenerated = 0;
+  save();
+  updateUI();
+}
+
+// =========== LOTTERIE SYSTEM ===========
+function buyLotteryTicket(count) {
+  let cost = 100 * count;
+  if (game.coins < cost) {
+    alert("❌ Pas assez de pièces!");
+    return;
+  }
+
+  game.coins -= cost;
+  game.lotteryTickets += count;
+  log("🎰 +" + count + " tickets");
+  save();
+  updateUI();
+}
+
+function playLottery() {
+  if (game.lotteryTickets <= 0) {
+    alert("❌ Tu n'as pas de tickets!");
+    return;
+  }
+
+  game.lotteryTickets--;
+  let rand = Math.random();
+  let gain = 0;
+  let result = "";
+
+  if (rand < 0.50) {
+    gain = 50 + Math.floor(Math.random() * 50);
+    result = "🟢 Petit lot: +" + gain;
+  } else if (rand < 0.75) {
+    gain = 500 + Math.floor(Math.random() * 500);
+    result = "🟡 Moyen lot: +" + gain;
+  } else {
+    gain = 5000 + Math.floor(Math.random() * 5000);
+    result = "🔴 GROS LOT: +" + gain + "!!! 🎉";
+  }
+
+  game.coins += gain;
+  game.totalCoins += gain;
+  game.lotteryLog.unshift(result);
+  if (game.lotteryLog.length > 15) game.lotteryLog.pop();
+  
+  log(result);
+  save();
+  updateUI();
+}
+
+// =========== ACHIEVEMENTS SYSTEM ===========
+function checkAchievements() {
+  for (let ach of game.achievements) {
+    if (!ach.unlocked && ach.check()) {
+      ach.unlocked = true;
+      game.coins += ach.reward;
+      game.totalCoins += ach.reward;
+      log("🏆 ACHIEVEMENT: " + ach.name + " (+" + ach.reward + ")");
+    }
+  }
+}
+
 // =========== AUTO-CLICK SYSTEM ===========
 let autoClickData = {
   active: false,
@@ -1556,6 +1887,14 @@ setInterval(() => {
   let p = getProd();
   game.coins += p / FPS;
   game.totalCoins += p / FPS;
+  
+  // Banque génère 0.1% par sec
+  if (game.bankInvested > 0) {
+    let bankGains = (game.bankInvested * 0.001) / FPS;
+    game.bankInvested += bankGains;
+    game.bankGenerated += bankGains;
+  }
+  
   processTradeGains();
   updateUI();
 }, 1000 / FPS);
