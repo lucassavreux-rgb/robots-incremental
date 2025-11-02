@@ -3,10 +3,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Incremental Trade ULTIMATE</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
 ```
 body {
@@ -78,9 +78,6 @@ h1 {
   cursor: pointer;
   transition: all 0.3s;
   font-weight: bold;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-appearance: none;
-  appearance: none;
 }
 
 .tab-btn:hover { background: rgba(51,51,51,0.9); color: #0af; }
@@ -124,9 +121,6 @@ h1 {
   box-shadow: 0 10px 40px rgba(0,170,255,0.3);
   margin: 1rem auto;
   display: block;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-appearance: none;
-  appearance: none;
 }
 
 .click-btn:hover { transform: scale(1.05); box-shadow: 0 15px 50px rgba(0,170,255,0.5); }
@@ -154,9 +148,6 @@ h1 {
   cursor: pointer;
   transition: all 0.3s;
   font-weight: bold;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-appearance: none;
-  appearance: none;
 }
 
 .item button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,170,255,0.3); }
@@ -338,7 +329,7 @@ h3 {
 
   <div id="main" class="tab-content active">
     <div class="card" style="text-align: center;">
-      <button class="click-btn" onclick="clickBtn()">🖱️ CLIQUER</button>
+      <button class="click-btn" ontouchend="clickBtn()" onclick="clickBtn()">🖱️ CLIQUER</button>
       <div style="color: #aaa; margin-top: 1rem;">Gain par clic: <span class="count" id="clickValue">0</span></div>
     </div>
 
@@ -347,7 +338,7 @@ h3 {
   <h2>⏱️ PRESTIGE</h2>
   <div style="text-align: center; padding: 1rem;">
     <div style="font-size: 1.2rem; color: #0af; margin-bottom: 1rem;">Progression: <span id="prestigeProgress">0</span> / 5000</div>
-    <button class="click-btn" onclick="doPrestige()">⚡ PRESTIGE (gain ⭐ +10% par prestige!)</button>
+    <button class="click-btn" ontouchend="doPrestige()" onclick="doPrestige()">⚡ PRESTIGE (gain ⭐ +10% par prestige!)</button>
   </div>
 </div>
 
@@ -355,7 +346,7 @@ h3 {
   <h2>🌀 SUPER PRESTIGE (Galaxies)</h2>
   <div style="text-align: center; padding: 1rem;">
     <div style="font-size: 1.2rem; color: #a0f; margin-bottom: 1rem;">Coût: <span class="count" id="galaxyCost">100</span> ⭐</div>
-    <button class="click-btn" onclick="doSuperPrestige()">🌀 SUPER PRESTIGE (gain multiplicateur ×1.6)</button>
+    <button class="click-btn" ontouchend="doSuperPrestige()" onclick="doSuperPrestige()">🌀 SUPER PRESTIGE (gain multiplicateur ×1.6)</button>
   </div>
 </div>
 
@@ -387,13 +378,13 @@ h3 {
   <div id="questsList"></div>
 
   <h3>⏰ BOOSTS TEMPORAIRES</h3>
-  <button onclick="buyBoost('prod')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Prod ×2 (30s) - 50K</button>
-  <button onclick="buyBoost('click')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Click ×2 (30s) - 30K</button>
+  <button ontouchend="buyBoost('prod')" onclick="buyBoost('prod')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Prod ×2 (30s) - 50K</button>
+  <button ontouchend="buyBoost('click')" onclick="buyBoost('click')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Click ×2 (30s) - 30K</button>
   <div id="activeBoosts" style="margin-top: 1rem;"></div>
 
   <h3>🎮 MODE SPEEDRUN</h3>
-  <button onclick="startSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #0f0 0%, #0a0 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">⏱️ Lancer Speedrun</button>
-  <button onclick="completeSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #f0a 0%, #c08 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 0.5rem;">🏁 Terminer Speedrun</button>
+  <button ontouchend="startSpeedrun()" onclick="startSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #0f0 0%, #0a0 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">⏱️ Lancer Speedrun</button>
+  <button ontouchend="completeSpeedrun()" onclick="completeSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #f0a 0%, #c08 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 0.5rem;">🏁 Terminer Speedrun</button>
   <div style="margin-top: 0.5rem; color: #ffa;" id="speedrunStatus"></div>
 
   <h3>🌙 DARK MATTER BONUSES</h3>
@@ -455,6 +446,7 @@ const FPS = 10;
 const SAVE_KEY = "incremental_trade_v2";
 
 let currentTutorialPage = 0;
+let lastBuyTime = 0;
 
 const TUTORIAL_PAGES = [
   { title: "Bienvenue dans Incremental Trade Ultimate!", content: "Ce jeu est un jeu inactif addictif où tu gagnes de l'argent en cliquant et grâce à des générateurs automatiques. Le but est de progresser indéfiniment avec un système de Prestige qui te récompense pour ton grind. Prêt à devenir riche? Clique sur SUIVANT pour commencer!" },
@@ -537,22 +529,14 @@ function checkUnlocks() {
 }
 
 function clickVal() { let val = 1; for (let u of game.upgrades) { if (u.type === "click" && u.bought) val *= u.effect; } let labo = game.generators.find(g => g.id === "labo"); let usine = game.generators.find(g => g.id === "usine"); if (labo && usine && labo.count >= 2 && usine.count >= 5) val *= 1.5; val *= Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies); val *= (1 + (game.darkMatter * 0.05)); return val * getBoostMult("click"); }
-function clickBtn() { 
-  let val = clickVal(); 
-  game.coins += val; 
-  game.totalCoins += val; 
-  game.totalClicks++; 
-  game.prestigeProgress += val; 
-  updateUI(); 
-}
+function clickBtn() { let val = clickVal(); game.coins += val; game.totalCoins += val; game.totalClicks++; game.prestigeProgress += val; updateUI(); }
 
 function cps() { let total = 0; let syn = 1; let robot = game.generators.find(g => g.id === "robot"); let usine = game.generators.find(g => g.id === "usine"); let port = game.generators.find(g => g.id === "port"); let labo = game.generators.find(g => g.id === "labo"); let satellite = game.generators.find(g => g.id === "satellite"); if (robot && usine && robot.count >= 5 && usine.count >= 3) syn *= 1.3; if (port && satellite && port.count >= 3 && satellite.count >= 2) syn *= 1.4; if (labo && usine && labo.count >= 2 && usine.count >= 5) syn *= 1.2; let totalGens = [robot, usine, port, labo, satellite].reduce((a,g) => a + (g ? g.count : 0), 0); if (totalGens >= 30 && game.prestigeCount >= 10) syn *= 2; for (let g of game.generators) { let eff = 1; for (let u of game.upgrades) { if (u.type === g.id && u.bought) eff *= u.effect; } total += g.count * g.base * eff * syn; } total *= Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies); total *= (1 + (game.darkMatter * 0.05)); return total * getBoostMult("prod"); }
 
-let isProcessing = false;
 function buyGen(id) { 
-  if (isProcessing) return;
-  isProcessing = true;
-  setTimeout(() => { isProcessing = false; }, 100);
+  let now = Date.now();
+  if (now - lastBuyTime < 200) return;
+  lastBuyTime = now;
   
   let g = game.generators.find(x => x.id === id); 
   if (!g) return; 
@@ -564,9 +548,9 @@ function buyGen(id) {
   updateUI(); 
 }
 function buyUp(id) { 
-  if (isProcessing) return;
-  isProcessing = true;
-  setTimeout(() => { isProcessing = false; }, 100);
+  let now = Date.now();
+  if (now - lastBuyTime < 200) return;
+  lastBuyTime = now;
   
   let u = game.upgrades.find(x => x.id === id); 
   if (!u || u.bought || game.coins < u.price) return; 
@@ -611,10 +595,10 @@ function updateUI() {
   $("playTime").textContent = game.playTime + "s";
   $("eventCount").textContent = game.eventCount;
   
-  let genHTML = game.generators.map(g => { let cost = g.price * Math.pow(g.mult, g.count); return "<div class='item'><div><strong>" + g.name + "</strong> <span class='count'>×" + g.count + "</span></div><button onclick=\"buyGen('" + g.id + "')\" " + (game.coins < cost ? "disabled" : "") + ">" + formatNum(cost) + "</button></div>"; }).join("");
+  let genHTML = game.generators.map(g => { let cost = g.price * Math.pow(g.mult, g.count); return "<div class='item'><div><strong>" + g.name + "</strong> <span class='count'>×" + g.count + "</span></div><button ontouchend=\"buyGen('" + g.id + "')\" onclick=\"buyGen('" + g.id + "')\" " + (game.coins < cost ? "disabled" : "") + ">" + formatNum(cost) + "</button></div>"; }).join("");
   $("gensList").innerHTML = genHTML;
   
-  let upHTML = game.upgrades.filter(u => !u.bought).map(u => "<div class='item'><div><strong>" + u.name + "</strong> ×" + u.effect + "</div><button onclick=\"buyUp('" + u.id + "')\" " + (game.coins < u.price ? "disabled" : "") + ">" + formatNum(u.price) + "</button></div>").join("");
+  let upHTML = game.upgrades.filter(u => !u.bought).map(u => "<div class='item'><div><strong>" + u.name + "</strong> ×" + u.effect + "</div><button ontouchend=\"buyUp('" + u.id + "')\" onclick=\"buyUp('" + u.id + "')\" " + (game.coins < u.price ? "disabled" : "") + ">" + formatNum(u.price) + "</button></div>").join("");
   $("upgradesList").innerHTML = upHTML || "Tous les upgrades achetés!";
   
   if (game.unlockedFeatures.quests) { let questHTML = game.quests.map(q => { let rewardIcon = q.rewardType === "stars" ? "⭐" : (q.rewardType === "coins" ? "💰" : "🌀"); let rewardText = q.rewardType === "coins" ? formatNum(q.reward) : q.reward; return "<div class='item'><span>" + q.name + "</span><span style='color: #ffa; font-size: 0.9rem;'>Récompense: " + rewardIcon + " " + rewardText + "</span><span style='color:" + (q.done ? "#0f0" : "#ffa") + "'>" + (q.done ? "✅" : "⏳") + "</span></div>"; }).join(""); $("questsList").innerHTML = questHTML; } else { $("questsList").innerHTML = "<div style='color: #aaa;'>Débloqué à: Prestige 5 + 30⭐ + 1🌀</div>"; }
@@ -646,28 +630,6 @@ log("Bienvenue dans Incremental Trade!", "unlock");
 
 let hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
 if (!hasSeenTutorial) { showTutorial(); localStorage.setItem("hasSeenTutorial", "true"); }
-
-// Empêcher le zoom au double-clic sur mobile
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function(event) {
-  let now = Date.now();
-  if (now - lastTouchEnd <= 300) {
-    event.preventDefault();
-  }
-  lastTouchEnd = now;
-}, false);
-
-// Bloquer le pinch-to-zoom
-document.addEventListener('gesturestart', function(e) {
-  e.preventDefault();
-}, false);
-
-// Bloquer les touchmove pour éviter les zooms accidentels
-document.addEventListener('touchmove', function(e) {
-  if (e.scale !== 1) {
-    e.preventDefault();
-  }
-}, { passive: false });
 </script>
 
 </body>
