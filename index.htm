@@ -786,9 +786,6 @@ function updateDisplay() {
   if (graphData.length > 60) graphData.shift();
   drawGraph();
 
-  // Check quests
-  checkQuests();
-
   // Logs
   let logHtml = "";
   for (let l of game.logs) logHtml += `<div>${l}</div>`;
@@ -797,22 +794,12 @@ function updateDisplay() {
   save();
 }
 
-function updateUI() {
-  updateDisplay();
+function updateDisplay() {
+  updateStats();
 }
 
-function updateLog() {
-  let logHtml = "";
-  for (let l of game.logs) logHtml += `<div>${l}</div>`;
-  $("log").innerHTML = logHtml;
-}
-
-function updateSaveInfo() {
-  let d = new Date().toLocaleString();
-  $("lastSave").textContent = d;
-  let size = (JSON.stringify(game).length / 1024).toFixed(2);
-  $("saveSize").textContent = size + " KB";
-}
+function updateStats() {
+  let p = getProd();
 
 // =========== SAVE/LOAD FUNCTIONS ===========
 function downloadSave() {
@@ -955,6 +942,7 @@ setInterval(() => {
   game.coins += p / FPS;
   game.totalCoins += p / FPS;
   game.prestProg += p / FPS;
+  checkQuests();
   updateUI();
 }, 1000 / FPS);
 
