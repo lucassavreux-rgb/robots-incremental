@@ -1000,8 +1000,12 @@ function clickVal() {
     if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  let starsMultiplier = Math.exp(game.stars * Math.log(1.03));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.01));
+  let starsMultiplier = Math.pow(1.03, game.stars);
+  let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
+  
+  // Protection contre Infinity
+  if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
+  if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
   
   return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -1023,8 +1027,12 @@ function getProd() {
   if (p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  let starsMultiplier = Math.exp(game.stars * Math.log(1.03));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.01));
+  let starsMultiplier = Math.pow(1.03, game.stars);
+  let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
+
+  // Protection contre Infinity
+  if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
+  if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
 
   return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
