@@ -597,11 +597,9 @@ function updateUI() {
   
   let genHTML = game.generators.map(g => { let cost = g.price * Math.pow(g.mult, g.count); return "<div class='item'><div><strong>" + g.name + "</strong> <span class='count'>×" + g.count + "</span></div><button class='gen-btn' data-id='" + g.id + "' " + (game.coins < cost ? "disabled" : "") + ">" + formatNum(cost) + "</button></div>"; }).join("");
   $("gensList").innerHTML = genHTML;
-  document.querySelectorAll(".gen-btn").forEach(btn => { btn.onclick = function() { buyGen(this.dataset.id); }; });
   
   let upHTML = game.upgrades.filter(u => !u.bought).map(u => "<div class='item'><div><strong>" + u.name + "</strong> ×" + u.effect + "</div><button class='up-btn' data-id='" + u.id + "' " + (game.coins < u.price ? "disabled" : "") + ">" + formatNum(u.price) + "</button></div>").join("");
   $("upgradesList").innerHTML = upHTML || "Tous les upgrades achetés!";
-  document.querySelectorAll(".up-btn").forEach(btn => { btn.onclick = function() { buyUp(this.dataset.id); }; });
   
   if (game.unlockedFeatures.quests) { let questHTML = game.quests.map(q => { let rewardIcon = q.rewardType === "stars" ? "⭐" : (q.rewardType === "coins" ? "💰" : "🌀"); let rewardText = q.rewardType === "coins" ? formatNum(q.reward) : q.reward; return "<div class='item'><span>" + q.name + "</span><span style='color: #ffa; font-size: 0.9rem;'>Récompense: " + rewardIcon + " " + rewardText + "</span><span style='color:" + (q.done ? "#0f0" : "#ffa") + "'>" + (q.done ? "✅" : "⏳") + "</span></div>"; }).join(""); $("questsList").innerHTML = questHTML; } else { $("questsList").innerHTML = "<div style='color: #aaa;'>Débloqué à: Prestige 5 + 30⭐ + 1🌀</div>"; }
   
@@ -629,6 +627,16 @@ setInterval(() => { game.playTime++; if (Math.random() > 0.95 && game.unlockedFe
 load();
 updateUI();
 log("Bienvenue dans Incremental Trade!", "unlock");
+
+// EVENT DELEGATION pour les boutons
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("gen-btn")) {
+    buyGen(e.target.dataset.id);
+  }
+  if (e.target.classList.contains("up-btn")) {
+    buyUp(e.target.dataset.id);
+  }
+}, false);
 
 let hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
 if (!hasSeenTutorial) { showTutorial(); localStorage.setItem("hasSeenTutorial", "true"); }
