@@ -1235,7 +1235,7 @@ function updateUI() {
   let prestigePossible = game.coins >= nextPrestigeCost ? Math.floor(game.coins / nextPrestigeCost) : 0;
   $("prestigeCost").textContent = fmt(nextPrestigeCost);
   $("prestigeCount").textContent = prestigePossible;
-  $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
+  $("galaxyCost").textContent = game.galaxies === 0 ? 500 : 500 * Math.pow(100, game.galaxies);
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
   $("playTime").textContent = game.playTime + "s";
