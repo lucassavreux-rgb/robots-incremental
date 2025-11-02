@@ -468,7 +468,7 @@ let game = {
   ],
 
   upgrades: [
-    { id: "c1", n: "Clic +50%", p: 100, e: 1.15, b: 0, t: "c", unlock: { type: "none" } },
+    { id: "c1", n: "Clic +50%", p: 100, e: 1.08, b: 0, t: "c", unlock: { type: "none" } },
     { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
     { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
     { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
@@ -562,7 +562,7 @@ function clickVal() {
   
   // Utiliser Math.exp et Math.log pour éviter Infinity
   let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.6));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.1));
   
   return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -586,7 +586,7 @@ function getProd() {
 
   // Utiliser Math.exp et Math.log pour éviter Infinity
   let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.6));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.1));
 
   return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -671,14 +671,14 @@ function doPrestige() {
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
-    // BONUS PRESTIGE: +0.5 niveau auto sur Clic et Robot
+    // BONUS PRESTIGE: +0.25 niveau auto sur Clic et Robot (1 level tous les 4 prestiges)
     let clickUpgrade = game.upgrades.find(u => u.id === "c1");
     let robotUpgrade = game.upgrades.find(u => u.id === "r1");
     
-    if (clickUpgrade) clickUpgrade.b += 0.5;
-    if (robotUpgrade) robotUpgrade.b += 0.5;
+    if (clickUpgrade) clickUpgrade.b += 0.25;
+    if (robotUpgrade) robotUpgrade.b += 0.25;
     
-    log("🎁 Bonus: +0.5 Clic, +0.5 Robot");
+    log("🎁 Bonus: +0.25 Clic, +0.25 Robot");
 
     for (let gen of game.generators) gen.c = 0;
     for (let u of game.upgrades) {
@@ -933,7 +933,7 @@ function resetGame() {
       { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
     ],
     upgrades: [
-      { id: "c1", n: "Clic +50%", p: 100, e: 1.15, b: 0, t: "c", unlock: { type: "none" } },
+      { id: "c1", n: "Clic +50%", p: 100, e: 1.08, b: 0, t: "c", unlock: { type: "none" } },
       { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
       { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
       { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
