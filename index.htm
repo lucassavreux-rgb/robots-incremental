@@ -460,11 +460,11 @@ let game = {
   logs: [],
 
   generators: [
-    { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
-    { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
-    { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15, unlock: { type: "stars", val: 5 } },
-    { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15, unlock: { type: "prestige", val: 3 } },
-    { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
+    { id: "r", n: "Robot", b: 1, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
+    { id: "u", n: "Usine", b: 1.5, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
+    { id: "po", n: "Port", b: 4, c: 0, p: 1100, m: 1.15, unlock: { type: "stars", val: 5 } },
+    { id: "l", n: "Labo", b: 15, c: 0, p: 12e3, m: 1.15, unlock: { type: "prestige", val: 3 } },
+    { id: "s", n: "Satellite", b: 100, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
   ],
 
   upgrades: [
@@ -547,7 +547,7 @@ function load() {
 function clickVal() {
   let v = 1;
   for (let u of game.upgrades) {
-    if (u.t === "c" && u.b) v *= u.e;
+    if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   return v * Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies) * (1 + game.darkMatter * 0.05);
 }
@@ -557,7 +557,7 @@ function getProd() {
   for (let g of game.generators) {
     let e = 1;
     for (let u of game.upgrades) {
-      if (u.t === g.id && u.b) e *= u.e;
+      if (u.t === g.id && u.b > 0) e *= Math.pow(u.e, u.b);
     }
     total += g.c * g.b * e;
   }
@@ -600,11 +600,15 @@ function buyGen(id) {
 
 function buyUp(id) {
   let u = game.upgrades.find(x => x.id === id);
-  if (!u || !isUnlocked(u) || u.b || game.coins < u.p) return;
+  if (!u || !isUnlocked(u)) return;
 
-  game.coins -= u.p;
-  u.b = 1;
-  log("✅ " + u.n);
+  // Calculer le prix avec multiplicateur (comme les générateurs)
+  let cost = u.p * Math.pow(1.15, u.b);
+  if (game.coins < cost) return;
+
+  game.coins -= cost;
+  u.b++;
+  log("✅ " + u.n + " +" + (u.b) + "x");
   save();
   skipQuestCheck = true;
   updateUI();
@@ -648,8 +652,19 @@ function doPrestige() {
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
+    // BONUS PRESTIGE: +1 niveau auto sur Clic et Robot
+    let clickUpgrade = game.upgrades.find(u => u.id === "c1");
+    let robotUpgrade = game.upgrades.find(u => u.id === "r1");
+    
+    if (clickUpgrade) clickUpgrade.b++;
+    if (robotUpgrade) robotUpgrade.b++;
+    
+    log("🎁 Bonus: +1 Clic, +1 Robot");
+
     for (let gen of game.generators) gen.c = 0;
-    for (let u of game.upgrades) u.b = 0;
+    for (let u of game.upgrades) {
+      if (u.id !== "c1" && u.id !== "r1") u.b = 0;
+    }
 
     log("⭐ +" + starsGained + "! (Prestige " + game.prestige + ")");
   }
@@ -782,11 +797,12 @@ function updateUI() {
   for (let u of game.upgrades) {
     let unlocked = isUnlocked(u);
     let unlockText = getUnlockText(u);
+    let cost = u.p * Math.pow(1.15, u.b);
     
     if (!unlocked) {
       upHtml += `<div class="item" style="opacity:0.5;border-left:3px solid #f66"><strong>${u.n}</strong> ${unlockText}</div>`;
-    } else if (!u.b) {
-      upHtml += `<div class="item"><strong>${u.n}</strong> ×${u.e}<button class="btn up-buy" data-id="${u.id}" ${game.coins < u.p ? "disabled" : ""}>${fmt(u.p)}</button></div>`;
+    } else {
+      upHtml += `<div class="item"><strong>${u.n}</strong> ×${u.e} <span style="color:#0f0">(Lvl ${u.b})</span><button class="btn up-buy" data-id="${u.id}" ${game.coins < cost ? "disabled" : ""}>${fmt(cost)}</button></div>`;
     }
   }
   $("upsList").innerHTML = upHtml || "Tous débloqués!";
