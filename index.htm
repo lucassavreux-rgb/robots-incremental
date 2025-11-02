@@ -750,14 +750,14 @@
 <!-- TUTORIAL MODAL -->
 <div id="tutorialModal">
   <div class="tut-box">
-    <h1>📖 TUTORIEL</h1>
-    <div id="tutText" style="min-height:200px;line-height:1.6;margin:1rem 0"></div>
+    <h1>📖 TUTORIEL COMPLET</h1>
+    <div id="tutText" style="min-height:300px;line-height:1.8;margin:1rem 0"></div>
     <div class="tut-btns">
       <button class="btn" id="prevBtn">← PRÉCÉDENT</button>
       <button class="btn" onclick="document.getElementById('tutorialModal').style.display='none'">FERMER</button>
       <button class="btn" id="nextBtn">SUIVANT →</button>
     </div>
-    <p style="text-align:center;color:#aaa;font-size:0.9rem">Page <span id="tutPage">1</span>/12</p>
+    <p style="text-align:center;color:#aaa;font-size:0.85rem">Page <span id="tutPage">1</span>/16</p>
   </div>
 </div>
 
@@ -773,155 +773,331 @@ let tutPage = 0;
 let graphData = [];
 let skipQuestCheck = false;
 
-// =========== TUTORIEL ===========
+// =========== TUTORIEL 16 PAGES ===========
 const TUTORIAL = [
-  `<div style="text-align: center; font-size: 1.3rem; line-height: 2;">
-    <h2 style="color: #0af; font-size: 2rem; margin-bottom: 1rem;">🎮 BIENVENUE TRADER! 🎮</h2>
-    <p style="margin: 0.5rem 0;">Tu es prêt à devenir RICHE?</p>
-    <p style="margin: 0.5rem 0; color: #0f0;">Clique sur le bouton <strong>CLIQUER</strong> pour commencer...</p>
-    <p style="margin: 1rem 0; color: #aaa; font-size: 0.95rem;">Plus tu cliques, plus tu gagnes. C'est aussi simple que ça! 💰</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🤖 LES GÉNÉRATEURS 🤖</h2>
-    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Pourquoi cliquer si on peut se faire de l'argent PASSIF?</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p><strong>🤖 Robot</strong> → 1 pièce/sec (coût: 50)</p>
-      <p><strong>🏭 Usine</strong> → 1.5 pièces/sec (coût: 500)</p>
-      <p><strong>⛴️ Port</strong> → 4 pièces/sec (coût: 5K)</p>
-      <p><strong>🔬 Labo</strong> → 15 pièces/sec (coût: 50K)</p>
-      <p><strong>🛰️ Satellite</strong> → 100 pièces/sec (coût: 500K)</p>
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎮 INTRODUCTION - BIENVENUE!</h2>
+    <p style="margin: 0.5rem 0; color: #aaa;">Le jeu inactif ULTIME avec TRADING, ASCENSION, et ACHIEVEMENTS!</p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;">✅ Tu cliques pour gagner des pièces</p>
+      <p style="margin: 0.5rem 0;">✅ Tu achètes des générateurs (robots, usines, etc)</p>
+      <p style="margin: 0.5rem 0;">✅ Ils gagnent de l'argent AUTOMATIQUEMENT 24/7!</p>
+      <p style="margin: 0.5rem 0;">✅ Tu fais des prestige pour débloquer du contenu</p>
+      <p style="margin: 0.5rem 0;">✅ C'est INFINI! Continue jusqu'à l'infini! ♾️</p>
     </div>
-    <p style="color: #aaa; margin-top: 1rem;">Plus tu en as, PLUS TU GAGNES! 📈</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">⚡ LES UPGRADES ⚡</h2>
-    <p style="margin: 0.5rem 0; color: #fa0;"><strong>Améliore tes générateurs!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px;">
-      <p>🔥 Chaque upgrade peut être acheté <strong>PLUSIEURS FOIS</strong></p>
-      <p>📈 Plus tu achètes, plus le bonus augmente!</p>
-      <p>💎 Clic +2% (très faible!), Robot ×2 (2K), Usine ×2 (50K), etc...</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">⚠️ Attention: très cher et faible bonus! C'est pas la priorité!</p>
+    <p style="color: #fa0; margin-top: 1rem;"><strong>💡 Le but = avoir le plus de multiplicateurs possible!</strong></p>`,
+
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🖱️ ÉTAPE 1: LE CLIC - TES PREMIERS GAINS</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Commence ici!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>EXEMPLE:</strong></p>
+      <p style="margin: 0.5rem 0;">• Tu cliques 1 fois → +1 pièce (au départ)</p>
+      <p style="margin: 0.5rem 0;">• Tu cliques 100 fois → +100 pièces</p>
+      <p style="margin: 0.5rem 0;">• Avec des upgrades? +500 pièces par clic!</p>
     </div>
-    <p style="color: #0f0; margin-top: 1rem;">💡 <strong>Conseil:</strong> Focus sur les générateurs d'abord! 💡</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">⭐ LE PRESTIGE ⭐</h2>
-    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Accumule 50000 pièces = 1 PRESTIGE!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
-      <p>✨ Chaque étoile = <strong>×1.03 multiplicateur</strong> (faible mais ça s'accumule!)</p>
-      <p>📈 Le coût augmente: 50K → 75K → 112.5K → ...</p>
-      <p>🔄 Tes générateurs se réinitialisent COMPLÈTEMENT</p>
-      <p>💎 Bonus: +0.05 level sur Clic et Robot (petit bonus permanent!)</p>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>💡 TIP IMPORTANT:</strong></p>
+      <p style="margin: 0.5rem 0;">Ne clique que jusqu'à avoir 50 pièces!</p>
+      <p style="margin: 0.5rem 0;">Après, c'est plus rentable d'acheter un générateur!</p>
+    </div>`,
+
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🤖 ÉTAPE 2: LES GÉNÉRATEURS - L'ARGENT PASSIF</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>L'ÂME DU JEU!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>🤖 Robot</strong> → 1 pièce/sec | Coût: 50 | Débloqué: direct</p>
+      <p style="margin: 0.5rem 0;"><strong>🏭 Usine</strong> → 1.5 pièces/sec | Coût: 500 | Débloqué: Prestige 1</p>
+      <p style="margin: 0.5rem 0;"><strong>⛴️ Port</strong> → 4 pièces/sec | Coût: 5K | Débloqué: 5 étoiles</p>
+      <p style="margin: 0.5rem 0;"><strong>🔬 Labo</strong> → 15 pièces/sec | Coût: 50K | Débloqué: Prestige 3</p>
+      <p style="margin: 0.5rem 0;"><strong>🛰️ Satellite</strong> → 100 pièces/sec | Coût: 500K | Débloqué: 1 Galaxie</p>
     </div>
-    <p style="color: #fa0; margin-top: 1rem;">🎯 <strong>Objectif:</strong> Accumuler les étoiles! 🎯</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🌀 LES GALAXIES 🌀</h2>
-    <p style="margin: 0.5rem 0; color: #0f0;"><strong>L'ENDGAME commence ici!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p>🌀 <strong>Coûte des ⭐ Étoiles:</strong></p>
-      <p>1ère: 500⭐</p>
-      <p>2ème: 500 × 100 = 50K⭐</p>
-      <p>3ème: 500 × 100² = 5M⭐</p>
-      <p>♾️ <strong>JAMAIS RÉINITIALISÉES</strong> au Prestige!</p>
-      <p>📈 Chaque Galaxie = ×1.01 multiplicateur PERMANENT (faible mais s'accumule!)</p>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>EXEMPLE CONCRET:</strong></p>
+      <p style="margin: 0.5rem 0;">Tu achètes 10 Robots (coût: 500 coins)</p>
+      <p style="margin: 0.5rem 0;">→ Tu gagnes 10 pièces/sec AUTOMATIQUEMENT</p>
+      <p style="margin: 0.5rem 0;">→ En 1 minute = 600 pièces sans rien faire!</p>
+      <p style="margin: 0.5rem 0;">→ En 1 heure = 36,000 pièces!! 💰</p>
     </div>
-    <p style="color: #aaa; margin-top: 1rem;">💡 Les Galaxies = ta VRAIE progression! C'est le long terme! 💡</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #f00; font-size: 1.8rem; margin-bottom: 1rem;">💸 TRADING MINIMUM 💸</h2>
-    <p style="margin: 0.5rem 0; color: #0f0;"><strong>LA STRATÉGIE SAFE!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p style="font-size: 1.1rem; color: #0f0;">✅ <strong>+3% par seconde</strong></p>
-      <p style="font-size: 1.1rem; color: #0f0;">✅ Quasi pas de risque (0.5% chance)</p>
-      <p style="color: #aaa; margin-top: 0.5rem;">Idéal pour grinder sans peur!</p>
-      <p style="color: #aaa;">L'argent est BLOQUÉ mais tu peux retirer anytime 🔐</p>
-      <p style="color: #aaa;">⚠️ Attention: au PRESTIGE, l'argent DISPARAIT!</p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>💡 TIPS:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ HOLD le bouton +1 pour acheter rapidement!</p>
+      <p style="margin: 0.5rem 0;">✅ Utilise le bouton MAX pour acheter le maximum!</p>
+      <p style="margin: 0.5rem 0;">✅ Les générateurs deviennent plus chers à chaque achat!</p>
+      <p style="margin: 0.5rem 0;">✅ JAMAIS tu n'acheteras "trop" - achète toujours au MAX!</p>
+    </div>`,
+
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">⚡ ÉTAPE 3: LES UPGRADES - LES MULTIPLICATEURS</h2>
+    <p style="margin: 0.5rem 0; color: #fa0;"><strong>Les turbos!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>Types d'upgrades:</strong></p>
+      <p style="margin: 0.5rem 0;">🔥 <strong>Clic +50%</strong> → +50% à ton clic! (Répétable!)</p>
+      <p style="margin: 0.5rem 0;">📈 <strong>Robot ×2, Robot ×3</strong> → Les Robots produisent 2× ou 3× plus!</p>
+      <p style="margin: 0.5rem 0;">📈 <strong>Usine ×2, Port ×2, Labo ×2</strong> → Idem pour chaque générateur</p>
     </div>
-    <p style="color: #fa0; margin-top: 1rem;">💡 Pour les patients! 💡</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">💸 TRADING MOYEN 💸</h2>
-    <p style="margin: 0.5rem 0; color: #fa0;"><strong>L'ÉQUILIBRE PARFAIT!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px;">
-      <p style="font-size: 1.1rem; color: #fa0;">⚡ <strong>+10% par seconde</strong></p>
-      <p style="font-size: 1.1rem; color: #fa0;">⚠️ 3% chance de perdre 5%</p>
-      <p style="color: #aaa; margin-top: 0.5rem;">Risque modéré = gains modérés</p>
-      <p style="color: #aaa;">Parfait pour les joueurs équilibrés! ⚖️</p>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>EXEMPLE:</strong></p>
+      <p style="margin: 0.5rem 0;">Tu as 10 Robots (10 pièces/sec)</p>
+      <p style="margin: 0.5rem 0;">Tu achètes l'upgrade "Robot ×2"</p>
+      <p style="margin: 0.5rem 0;">→ Les 10 Robots deviennent 20 pièces/sec! 🚀</p>
+      <p style="margin: 0.5rem 0;">Tu achètes "Robot ×2" ENCORE UNE FOIS</p>
+      <p style="margin: 0.5rem 0;">→ Les 10 Robots deviennent 40 pièces/sec!! 💥</p>
     </div>
-    <p style="color: #0f0; margin-top: 1rem;">💡 Le choix des pros! 💡</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #f00; font-size: 1.8rem; margin-bottom: 1rem;">🔥 TRADING AGRESSIF 🔥</h2>
-    <p style="margin: 0.5rem 0; color: #f00;"><strong>POUR LES FOUS DE RISQUE!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #f00; border-radius: 4px;">
-      <p style="font-size: 1.1rem; color: #0f0;">🚀 <strong>+30% par seconde</strong></p>
-      <p style="font-size: 1.1rem; color: #f00;">💥 8% chance de perdre 15%</p>
-      <p style="font-size: 1.1rem; color: #aaa;">👻 0.1% chance de TOUT PERDRE! (ultra rare!)</p>
-      <p style="color: #aaa; margin-top: 0.5rem;">Énorme potentiel = énorme risque!</p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #f00; border-radius: 4px; text-align: left;">
+      <p style="color: #f00;"><strong>⚠️ ATTENTION:</strong></p>
+      <p style="margin: 0.5rem 0;">Les upgrades deviennent TRÈS chers!</p>
+      <p style="margin: 0.5rem 0;">Focus sur les GÉNÉRATEURS d'abord!</p>
+      <p style="margin: 0.5rem 0;">Les upgrades sont bonus mais pas prioritaires!</p>
+    </div>`,
+
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">⭐ ÉTAPE 4: LE PRESTIGE - LA PREMIÈRE ASCENSION</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Change la donne!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>Qu'est-ce que c'est?</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Quand tu as 50,000 pièces, tu peux faire 1 PRESTIGE</p>
+      <p style="margin: 0.5rem 0;">✅ Ça te donne 1 étoile (⭐)</p>
+      <p style="margin: 0.5rem 0;">✅ TOUT se réinitialise (pièces, générateurs, upgrades)</p>
+      <p style="margin: 0.5rem 0;">✅ MAIS les Galaxies restent! (plus tard)</p>
     </div>
-    <p style="color: #fa0; margin-top: 1rem;">⚠️ À utiliser avec modération! ⚠️</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🌙 DARK MATTER 🌙</h2>
-    <p style="margin: 0.5rem 0; color: #aaa;"><strong>Le secret de l'univers...</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
-      <p>🔓 Débloqué à <strong>Prestige 20</strong></p>
-      <p>✨ Chaque Dark Matter = <strong>+5% sur TOUS tes gains</strong></p>
-      <p>📈 +1 tous les 10 Prestige après P20</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Plus tu progressnes, plus ça devient puissant!</p>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>EXEMPLE:</strong></p>
+      <p style="margin: 0.5rem 0;">Prestige 1: 50,000 coins → gagne 1 étoile</p>
+      <p style="margin: 0.5rem 0;">Prestige 2: 75,000 coins → gagne 1 étoile (coût augmente!)</p>
+      <p style="margin: 0.5rem 0;">Prestige 3: 112,500 coins → gagne 1 étoile</p>
+      <p style="margin: 0.5rem 0;">À chaque étoile, tu gagnes ×1.03 multiplicateur!</p>
     </div>
-    <p style="color: #0f0; margin-top: 1rem;">💎 C'est LE multiplicateur final! 💎</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🎯 LES QUÊTES 🎯</h2>
-    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Des récompenses gratuites!</strong></p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p>💰 1M pièces totales → <strong>+500⭐</strong></p>
-      <p>🤖 5 générateurs → <strong>+5000 pièces</strong></p>
-      <p>⭐ Prestige 3x → <strong>+1 Galaxie gratuite!</strong></p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Se complètent automatiquement! ✅</p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>💡 TIPS PRESTIGE:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Les étoiles donnent un multiplicateur PERMANENT!</p>
+      <p style="margin: 0.5rem 0;">✅ 10 étoiles = ×1.34 (très puissant!)</p>
+      <p style="margin: 0.5rem 0;">✅ Le coût augmente de 50% à chaque fois (1.5×)</p>
+      <p style="margin: 0.5rem 0;">✅ Fais prestige RÉGULIÈREMENT pour avancer plus vite!</p>
+    </div>`,
+
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🌀 ÉTAPE 5: LES GALAXIES - LE VRAI ENDGAME</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Ta VRAIE progression!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>Qu'est-ce que c'est?</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Quand tu as 500 étoiles (⭐), tu peux acheter 1 Galaxie</p>
+      <p style="margin: 0.5rem 0;">✅ Ça coûte: 500⭐, 550⭐, 600⭐, 650⭐, etc...</p>
+      <p style="margin: 0.5rem 0;">✅ Chaque Galaxie = ×1.01 multiplicateur PERMANENT</p>
+      <p style="margin: 0.5rem 0;">✅ LES GALAXIES RESTENT MÊME AU PRESTIGE!</p>
     </div>
-    <p style="color: #fa0; margin-top: 1rem;">💡 Regarde l'onglet FEATURES pour les suivre! 💡</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #aaa; font-size: 1.8rem; margin-bottom: 1rem;">🎨 AUTRES FEATURES 🎨</h2>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
-      <p>⏰ <strong>BOOSTS:</strong> +50K = Prod ×2 pendant 30sec!</p>
-      <p>🔗 <strong>SYNERGIES:</strong> Bonus si tu as assez de générateurs!</p>
-      <p>📊 <strong>GRAPHIQUE:</strong> Vois ta production en temps réel!</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Explore tout pour maximiser tes gains! 🚀</p>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>EXEMPLE:</strong></p>
+      <p style="margin: 0.5rem 0;">Tu accumules 500 étoiles (faut faire ~13 prestige)</p>
+      <p style="margin: 0.5rem 0;">Tu achètes la Galaxie 1 → multiplicateur ×1.01</p>
+      <p style="margin: 0.5rem 0;">Tu continues et accumules 550 étoiles</p>
+      <p style="margin: 0.5rem 0;">Tu achètes la Galaxie 2 → multiplicateur ×1.01</p>
+      <p style="margin: 0.5rem 0;">Après 100 Galaxies? Tu as ×2.7 de multiplicateur!</p>
     </div>
-    <p style="color: #0f0; margin-top: 1rem;">✨ T'es prêt pour l'aventure? ✨</p>
-  </div>`,
-  
-  `<div style="text-align: center; line-height: 2;">
-    <h2 style="color: #0af; font-size: 2rem; margin-bottom: 1rem;">🚀 LET'S GO! 🚀</h2>
-    <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p style="font-size: 1.1rem; color: #0f0;"><strong>RÉSUMÉ DE TA MISSION:</strong></p>
-      <p>1️⃣ Clique & accumule des pièces</p>
-      <p>2️⃣ Achète des générateurs (priorité absolue!)</p>
-      <p>3️⃣ Fais des Prestige pour les multiplicateurs</p>
-      <p>4️⃣ Accumule des Étoiles → Des Galaxies (l'endgame)</p>
-      <p>5️⃣ Utilise le Trading pour accélérer!</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 1rem;">C'est infini, tu peux continuer forever! ♾️</p>
-      <p style="color: #fa0; font-size: 0.9rem; margin-top: 0.5rem;">⚠️ Au PRESTIGE: TOUT se réinitialise sauf les Galaxies!</p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>💡 C'EST IMPORTANT:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Les Galaxies = ta VRAIE progression!</p>
+      <p style="margin: 0.5rem 0;">✅ Elles s'accumulent pour TOUJOURS!</p>
+      <p style="margin: 0.5rem 0;">✅ C'est exponentiellement puissant à long terme!</p>
+      <p style="margin: 0.5rem 0;">✅ C'est ce qui te rend OP avec le temps!</p>
+    </div>`,
+
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">💸 ÉTAPE 6: LE TRADING - GAINS PASSIFS RISQUÉS</h2>
+    <p style="margin: 0.5rem 0; color: #fa0;"><strong>Multiplie ton argent (ou le perds!)</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>3 niveaux de risque:</strong></p>
+      <p style="margin: 0.5rem 0;"><span style="color: #0f0;">🟢 MINIMUM: +3%/sec</span> | -2% risque (0.5% chance) | SÛRE</p>
+      <p style="margin: 0.5rem 0;"><span style="color: #fa0;">🟡 MOYEN: +10%/sec</span> | -5% risque (3% chance) | MODÉRÉ</p>
+      <p style="margin: 0.5rem 0;"><span style="color: #f00;">🔴 AGRESSIF: +30%/sec</span> | -15% risque (8% chance) | RISQUÉ!</p>
+      <p style="margin: 0.5rem 0; color: #f00;">⚡ AGRESSIF BONUS: 0.1% chance de TOUT PERDRE!</p>
     </div>
-    <p style="color: #fa0; margin-top: 1.5rem; font-size: 1.2rem;">
-      <strong>💎 Bonne chance, TRADER! 💎</strong>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>EXEMPLE TRADING:</strong></p>
+      <p style="margin: 0.5rem 0;">Tu déposes 1000 coins en MINIMUM (sûr)</p>
+      <p style="margin: 0.5rem 0;">→ +3% par seconde = +30 coins/sec</p>
+      <p style="margin: 0.5rem 0;">→ En 1 minute = +1800 coins! (total: 2800)</p>
+      <p style="margin: 0.5rem 0;">Tu déposes 1000 coins en AGRESSIF (risqué)</p>
+      <p style="margin: 0.5rem 0;">→ +30% par seconde = +300 coins/sec (WOW!)</p>
+      <p style="margin: 0.5rem 0;">→ Mais 8% chance de perdre 150 coins/sec...</p>
+      <p style="margin: 0.5rem 0;">→ Et 0.1% chance de perdre les 1000 coins! 😱</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #f00; border-radius: 4px; text-align: left;">
+      <p style="color: #f00;"><strong>⚠️ IMPORTANT:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ L'argent en TRADING est BLOQUÉ!</p>
+      <p style="margin: 0.5rem 0;">✅ Au PRESTIGE, tout se réinitialise (tu perds tout!)</p>
+      <p style="margin: 0.5rem 0;">✅ Donc RETIRE ton trading AVANT de prestige!</p>
+      <p style="margin: 0.5rem 0;">✅ La stratégie = MINIMUM est plus rentable à long terme!</p>
+    </div>`,
+
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🏦 ÉTAPE 7: LA BANQUE - SAFE & FACILE</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>L'investissement SANS RISQUE!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>Comment ça marche?</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Tu déposes X coins à la banque</p>
+      <p style="margin: 0.5rem 0;">✅ La banque te donne +0.1% par seconde</p>
+      <p style="margin: 0.5rem 0;">✅ C'est automatique et SANS RISQUE!</p>
+      <p style="margin: 0.5rem 0;">✅ Tu peux retirer quand tu veux</p>
+    </div>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>EXEMPLE BANQUE:</strong></p>
+      <p style="margin: 0.5rem 0;">Tu déposes 10,000 coins</p>
+      <p style="margin: 0.5rem 0;">→ +0.1% par sec = +10 coins/sec</p>
+      <p style="margin: 0.5rem 0;">→ En 1 jour = +864,000 coins!! (total: 874K)</p>
+      <p style="margin: 0.5rem 0;">→ En 1 semaine = +6M coins!!</p>
+      <p style="margin: 0.5rem 0;">→ C'est lent mais régulier et sûr!</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>💡 STRATÉGIE BANQUE:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Meilleure que TRADING minimum!</p>
+      <p style="margin: 0.5rem 0;">✅ 100% sûr, aucun risque!</p>
+      <p style="margin: 0.5rem 0;">✅ RESTE MÊME AU PRESTIGE!</p>
+      <p style="margin: 0.5rem 0;">✅ À long terme = les gains s'accumulent!</p>
+      <p style="margin: 0.5rem 0;">✅ UTILISE LA BANQUE AU MAX!</p>
+    </div>`,
+
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🚀 ÉTAPE 8: L'ASCENSION - LE VRAI ENDGAME!</h2>
+    <p style="margin: 0.5rem 0; color: #fa0;"><strong>La VRAIE progression!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>Qu'est-ce que l'Ascension?</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Coûte: 100 Galaxies (première fois)</p>
+      <p style="margin: 0.5rem 0;">✅ Ensuite: 200 Galaxies (2ème fois)</p>
+      <p style="margin: 0.5rem 0;">✅ Ensuite: 400 Galaxies (3ème fois), etc...</p>
+      <p style="margin: 0.5rem 0;">✅ RÉINITIALISE: Pièces, générateurs, upgrades, étoiles!</p>
+      <p style="margin: 0.5rem 0;">✅ GARDE: Les Galaxies + points permanents!</p>
+    </div>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>LES BONUS:</strong></p>
+      <p style="margin: 0.5rem 0;">1ère Ascension → +5% multiplicateur</p>
+      <p style="margin: 0.5rem 0;">2ème Ascension → +10% multiplicateur (total: 1.05 × 1.05)</p>
+      <p style="margin: 0.5rem 0;">3ème Ascension → +15% multiplicateur (total: × 1.157...)</p>
+      <p style="margin: 0.5rem 0;">Avec 10 Ascensions? = ×1.629 multiplicateur!</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>💡 STRATÉGIE ASCENSION:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ C'est lent mais EXPONENTIELLEMENT puissant!</p>
+      <p style="margin: 0.5rem 0;">✅ Chaque Ascension rend tout 5% plus facile!</p>
+      <p style="margin: 0.5rem 0;">✅ Fais plusieurs ASCENSIONS pour dominer!</p>
+      <p style="margin: 0.5rem 0;">✅ À long terme = tu deviens impossible à arrêter!</p>
+    </div>`,
+
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🏆 ÉTAPE 9: ACHIEVEMENTS - BADGES & RÉCOMPENSES</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Débloque et gagne des coins!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>LES ACHIEVEMENTS:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ 5 Clics → récompense coins</p>
+      <p style="margin: 0.5rem 0;">✅ 1M coins totaux → récompense coins</p>
+      <p style="margin: 0.5rem 0;">✅ 10 générateurs → récompense coins</p>
+      <p style="margin: 0.5rem 0;">✅ 10 étoiles → récompense coins</p>
+      <p style="margin: 0.5rem 0;">✅ 100 étoiles → récompense coins</p>
+      <p style="margin: 0.5rem 0;">✅ 1ère Galaxie → récompense coins</p>
+      <p style="margin: 0.5rem 0;">✅ Et 7 autres achievements...</p>
+    </div>
+    <div style="background: #0a0a2a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>EXEMPLE:</strong></p>
+      <p style="margin: 0.5rem 0;">Tu achètes 10 générateurs</p>
+      <p style="margin: 0.5rem 0;">→ Achievement DÉBLOQUÉ: 🤖 Automatisé!</p>
+      <p style="margin: 0.5rem 0;">→ Tu gagnes 10,000 coins en bonus!</p>
+      <p style="margin: 0.5rem 0;">Tu accumules 100 étoiles</p>
+      <p style="margin: 0.5rem 0;">→ Achievement DÉBLOQUÉ: ⭐ Supernova!</p>
+      <p style="margin: 0.5rem 0;">→ Tu gagnes 50,000 coins en bonus!</p>
+    </div>`,
+
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🌙 ÉTAPE 10: DARK MATTER & FEATURES AVANCÉES</h2>
+    <p style="margin: 0.5rem 0; color: #0af;"><strong>Les multiplicateurs finaux!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="margin: 0.5rem 0;"><strong>🌙 DARK MATTER:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Débloqué à Prestige 20</p>
+      <p style="margin: 0.5rem 0;">✅ Chaque unité = +5% multiplicateur!</p>
+      <p style="margin: 0.5rem 0;">✅ Tu gagnes 1 Dark Matter tous les 10 Prestige après P20</p>
+      <p style="margin: 0.5rem 0;">✅ Exemple: 5 Dark Matter = ×1.276 multiplicateur!</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0;"><strong>🔗 SYNERGIES:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Robot+Usine (5+3) → +30% production</p>
+      <p style="margin: 0.5rem 0;">✅ Port+Satellite (3+2) → +40% production</p>
+      <p style="margin: 0.5rem 0;">✅ Labo+Usine (2+5) → +50% clics</p>
+      <p style="margin: 0.5rem 0;">✅ 30 générateurs + P10 → ×2 multiplicateur!</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0;"><strong>⏰ BOOSTS & 📊 GRAPHIQUE:</strong></p>
+      <p style="margin: 0.5rem 0;">✅ Production ×2 (50K coins) = 30 secondes de boost!</p>
+      <p style="margin: 0.5rem 0;">✅ Clic ×2 (30K coins) = 30 secondes de boost!</p>
+      <p style="margin: 0.5rem 0;">✅ Graphique = voir ta production en temps réel!</p>
+    </div>`,
+
+  `<h2 style="color: #fa0; font-size: 2rem; margin-bottom: 1.5rem;">📋 TA ROADMAP - COMMENT PROGRESSER!</h2>
+    <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0; font-size: 1.1rem;"><strong>PHASE 1: LES DÉBUTS (1-2 heures)</strong></p>
+      <p style="margin: 0.5rem 0;">1️⃣ Clique jusqu'à 50 coins</p>
+      <p style="margin: 0.5rem 0;">2️⃣ Achète des Robots au MAX</p>
+      <p style="margin: 0.5rem 0;">3️⃣ Laisse les Robots générer 50K coins</p>
+      <p style="margin: 0.5rem 0;">4️⃣ Fais ton PREMIER PRESTIGE (gagne 1 étoile)</p>
+      <p style="margin: 0.5rem 0;">5️⃣ Déverrouille l'Usine! Recommence au Prestige!</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0; font-size: 1.1rem;"><strong>PHASE 2: L'ACCELERATION (2-8 heures)</strong></p>
+      <p style="margin: 0.5rem 0;">6️⃣ Fais 5-10 prestige pour accumuler des étoiles</p>
+      <p style="margin: 0.5rem 0;">7️⃣ Déverrouille le Port, le Labo, Satellite!</p>
+      <p style="margin: 0.5rem 0;">8️⃣ Utilise BANQUE dès le début (0.1% = +30% par jour!)</p>
+      <p style="margin: 0.5rem 0;">9️⃣ Fais 15 prestige pour débloquer 500 étoiles</p>
+      <p style="margin: 0.5rem 0;">🔟 Achète ta 1ère GALAXIE! 🌀</p>
+    </div>
+    <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
+      <p style="color: #0af; font-size: 1.1rem;"><strong>PHASE 3: L'ENDGAME (8+ heures)</strong></p>
+      <p style="margin: 0.5rem 0;">1️⃣1️⃣ Accumule Galaxies (elles te rendent FORT!)</p>
+      <p style="margin: 0.5rem 0;">1️⃣2️⃣ Déverrouille Dark Matter (P20)</p>
+      <p style="margin: 0.5rem 0;">1️⃣3️⃣ Fais ta 1ère ASCENSION (100 Galaxies)</p>
+      <p style="margin: 0.5rem 0;">1️⃣4️⃣ Chaque Ascension = +5% pour TOUJOURS!</p>
+      <p style="margin: 0.5rem 0;">1️⃣5️⃣ Répète: Accumule Galaxies → Ascends → Recommence!</p>
+    </div>`,
+
+  `<h2 style="color: #0f0; font-size: 2rem; margin-bottom: 1.5rem;">💡 LES MEGA-TIPS POUR DOMINER!</h2>
+    <div style="background: #0a0a2a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px; text-align: left;">
+      <p style="color: #0f0; font-size: 1.1rem;"><strong>✅ TIPS ESSENTIELS:</strong></p>
+      <p style="margin: 0.5rem 0;">🔥 HOLD le bouton +1 pour acheter rapidement!</p>
+      <p style="margin: 0.5rem 0;">🔥 Utilise MAX pour acheter au maximum!</p>
+      <p style="margin: 0.5rem 0;">🔥 Les générateurs = ton ARGENT (achète-les!)</p>
+      <p style="margin: 0.5rem 0;">🔥 Les Galaxies = ta VRAIE progression!</p>
+      <p style="margin: 0.5rem 0;">🔥 BANQUE > Trading! (Plus rentable!)</p>
+      <p style="margin: 0.5rem 0;">🔥 RETIRE ton argent AVANT prestige!</p>
+      <p style="margin: 0.5rem 0;">🔥 Les Ascensions s'empilent (multiplicatif!)</p>
+      <p style="margin: 0.5rem 0;">🔥 Combine tout pour la MEILLEURE stratégie!</p>
+    </div>
+    <div style="background: #0a0a2a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
+      <p style="color: #fa0; font-size: 1.1rem;"><strong>⚡ LES STRATÉGIES PUISSANTES:</strong></p>
+      <p style="margin: 0.5rem 0;">1️⃣ Banque + Prestige = progression rapide!</p>
+      <p style="margin: 0.5rem 0;">2️⃣ Galaxies + Ascension = exponentiellement OP!</p>
+      <p style="margin: 0.5rem 0;">3️⃣ Dark Matter + Synergies = multiplicateurs MASSIFS!</p>
+      <p style="margin: 0.5rem 0;">4️⃣ Holdings long terme = tu deviens IMBATTABLE!</p>
+    </div>
+    <div style="background: #0a0a2a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #f00; border-radius: 4px; text-align: left;">
+      <p style="color: #f00; font-size: 1.1rem;"><strong>🚫 LES PIÈGES À ÉVITER:</strong></p>
+      <p style="margin: 0.5rem 0;">❌ NE focus pas sur les Upgrades (trop cher!)</p>
+      <p style="margin: 0.5rem 0;">❌ NE gaspille pas en Lotterie (tu perds!)</p>
+      <p style="margin: 0.5rem 0;">❌ NE oublie pas de sauvegarder (paramètres!)</p>
+      <p style="margin: 0.5rem 0;">❌ NE laisse pas l'argent bloqué (retire-le!)</p>
+      <p style="margin: 0.5rem 0;">❌ NE prestige trop tard (ça prend du temps!)</p>
+    </div>`,
+
+  `<h2 style="color: #0af; font-size: 2rem; margin-bottom: 1.5rem;">🚀 PRÊT À DOMINER? C'EST PARTI! 🚀</h2>
+    <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: center;">
+      <p style="font-size: 1.2rem; color: #0af;"><strong>TU AS TOUT APPRIS!</strong></p>
+      <p style="color: #aaa; margin: 1rem 0;">Tu sais maintenant:</p>
+      <p style="color: #0f0;">✅ Comment clicker et générer de l'argent</p>
+      <p style="color: #0f0;">✅ Comment acheter des générateurs</p>
+      <p style="color: #0f0;">✅ Comment faire Prestige et accumuler des étoiles</p>
+      <p style="color: #0f0;">✅ Comment acheter des Galaxies</p>
+      <p style="color: #0f0;">✅ Comment utiliser Trading et Banque</p>
+      <p style="color: #0f0;">✅ Comment faire Ascension</p>
+      <p style="color: #0f0;">✅ Comment devenir OP!</p>
+    </div>
+    <div style="background:#0a1a30;padding:1.5rem;margin:1rem 0;border-radius:4px;border-left:3px solid #0af;">
+      <p style="color: #0af; font-size: 1.3rem;"><strong>🎮 FERME CE TUTORIEL ET COMMENCE! 🎮</strong></p>
+      <p style="color: #aaa; margin: 1rem 0;">Clique sur FERMER et:</p>
+      <p style="color: #fff; font-size: 1.1rem;"><strong>1. Clique le bouton CLIQUER</strong></p>
+      <p style="color: #fff; font-size: 1.1rem;"><strong>2. Achète des Robots</strong></p>
+      <p style="color: #fff; font-size: 1.1rem;"><strong>3. Laisse-les générer 50K</strong></p>
+      <p style="color: #fff; font-size: 1.1rem;"><strong>4. Fais ton premier PRESTIGE! ⭐</strong></p>
+      <p style="color: #aaa; margin-top: 1rem;">Et voilà! Tu es en route vers l'infini! ♾️</p>
+    </div>
+    <p style="color: #0af; margin-top: 2rem; font-size: 1.4rem;">
+      <strong>💎 BON JEU, JOUEUR! 💎</strong>
     </p>
-    <p style="color: #aaa;">Ferme ce tutoriel et commence à GAGNER! 🎉</p>
-  </div>`
+    <p style="color: #fa0; margin-top: 1rem;">N'hésite pas à relire ce tutoriel si tu as des doutes!</p>`
 ];
 
 // =========== GAME STATE ===========
@@ -965,26 +1141,21 @@ let game = {
   boosts: [],
   graphData: [],
   
-  // TRADING SYSTEM
   trades: {
     min: { amount: 0, totalGains: 0, totalLosses: 0 },
     mid: { amount: 0, totalGains: 0, totalLosses: 0 },
     high: { amount: 0, totalGains: 0, totalLosses: 0 }
   },
 
-  // ASCENSION SYSTEM
   ascension: 0,
   ascensionCount: 0,
 
-  // BANQUE SYSTEM
   bankInvested: 0,
   bankGenerated: 0,
 
-  // LOTTERIE SYSTEM
   lotteryTickets: 0,
   lotteryLog: [],
 
-  // ACHIEVEMENTS
   achievements: [
     { id: "click5", name: "🖱️ Débutant", desc: "Faire 5 clics", check: () => game.totalClicks >= 5, reward: 0, unlocked: false },
     { id: "coins1m", name: "💰 Millionnaire", desc: "1M coins totaux", check: () => game.totalCoins >= 1e6, reward: 1000, unlocked: false },
@@ -1001,7 +1172,6 @@ let game = {
   ]
 };
 
-// =========== UNLOCK SYSTEM ===========
 function isUnlocked(item) {
   if (!item.unlock || item.unlock.type === "none") return true;
   
@@ -1028,7 +1198,6 @@ function getUnlockText(item) {
   return "";
 }
 
-// =========== UTILITY FUNCTIONS ===========
 function $(id) {
   return document.getElementById(id);
 }
@@ -1070,7 +1239,6 @@ function load() {
   if (data) game = JSON.parse(data);
 }
 
-// =========== TRADING SYSTEM ===========
 function getTradeConfig(type) {
   const configs = {
     min: { gainRate: 0.03, lossChance: 0.005, lossRate: 0.02 },
@@ -1123,23 +1291,19 @@ function processTradeGains() {
 
     let config = getTradeConfig(type);
     
-    // Gain
     let gain = trade.amount * config.gainRate / FPS;
     trade.amount += gain;
     trade.totalGains += gain;
 
-    // Risk management
     let rand = Math.random();
     
     if (type === "high" && rand < config.riskAll) {
-      // RISK ALL - Tout perdre!
       tradeLog(`💥 CATASTROPHE! Vous avez tout perdu en ${type}!`, "loss");
       log(`💥 Trade ${type}: TOUT PERDU!`);
       trade.amount = 0;
       trade.totalGains = 0;
       trade.totalLosses = 0;
     } else if (rand < config.lossChance) {
-      // Normal loss
       let loss = trade.amount * config.lossRate;
       trade.amount = Math.max(0, trade.amount - loss);
       trade.totalLosses += loss;
@@ -1160,7 +1324,6 @@ function updateTradeLog() {
   $("tradeLog").innerHTML = html || "<div class='trade-log-event'>En attente...</div>";
 }
 
-// =========== GAME MECHANICS ===========
 function clickVal() {
   let v = 1;
   for (let u of game.upgrades) {
@@ -1171,7 +1334,6 @@ function clickVal() {
   let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
   let ascensionMultiplier = 1 + (game.ascension * 0.05);
   
-  // Protection contre Infinity
   if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
   if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
   
@@ -1199,7 +1361,6 @@ function getProd() {
   let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
   let ascensionMultiplier = 1 + (game.ascension * 0.05);
 
-  // Protection contre Infinity
   if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
   if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
 
@@ -1313,7 +1474,6 @@ function doPrestige() {
   
   if (game.coins < prestigeCost) return;
 
-  // PRENDRE EXACTEMENT LE COÛT
   let coinsForThisPrestige = prestigeCost;
   let starsFromThisPrestige = Math.floor(coinsForThisPrestige / prestigeCost);
   let ms = Math.min(1.5, 1 + game.prestige * 0.02);
@@ -1326,13 +1486,11 @@ function doPrestige() {
 
   if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
-  // RESET TOUT - Générateurs ET Upgrades TOUS À ZÉRO
   for (let gen of game.generators) gen.c = 0;
   for (let u of game.upgrades) {
     u.b = 0;
   }
 
-  // BONUS PRESTIGE: +0.05 niveau auto sur Clic et Robot SEULEMENT
   let clickUpgrade = game.upgrades.find(u => u.id === "c1");
   let robotUpgrade = game.upgrades.find(u => u.id === "r1");
   
@@ -1341,7 +1499,6 @@ function doPrestige() {
   
   log("🎁 Bonus: +0.05 Clic, +0.05 Robot");
 
-  // RESET TRADES - L'argent disparait!
   game.trades.min = { amount: 0, totalGains: 0, totalLosses: 0 };
   game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
   game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
@@ -1418,11 +1575,9 @@ function drawGraph() {
   ct.stroke();
 }
 
-// =========== UI UPDATE ===========
 function updateUI() {
   let p = getProd();
 
-  // Update stats
   $("coins").textContent = fmt(game.coins);
   $("cps").textContent = fmt(p);
   $("stars").textContent = game.stars;
@@ -1430,11 +1585,9 @@ function updateUI() {
   $("dm").textContent = game.darkMatter;
   $("dmCount").textContent = game.darkMatter;
   
-  // Trade blocked coins
   let blockedTotal = game.trades.min.amount + game.trades.mid.amount + game.trades.high.amount;
   $("tradeBlocked").textContent = fmt(blockedTotal);
   
-  // Dark Matter info
   let dmInfo = "";
   if (game.darkMatter === 0) {
     dmInfo = "Débloqué à Prestige 20! +1 tous les 10 Prestige après P20.";
@@ -1456,21 +1609,18 @@ function updateUI() {
   $("playTime").textContent = game.playTime + "s";
   $("presCount").textContent = game.prestige;
 
-  // Ascension
   $("ascension").textContent = game.ascension || 0;
   $("ascensionBonus").textContent = (game.ascension || 0) * 5;
   $("ascensionCost").textContent = fmt(100 * Math.pow(2, game.ascension || 0));
   $("ascensionRequired").textContent = 100 * Math.pow(2, game.ascension || 0);
   $("ascensionCurrent").textContent = game.galaxies;
 
-  // Banque
   $("bankAmount").textContent = fmt(game.bankInvested || 0);
   $("bankInvested").textContent = fmt(game.bankInvested || 0);
   let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
   $("bankGains").textContent = fmt(bankGains);
   $("bankGenerated").textContent = fmt(game.bankGenerated || 0);
 
-  // Lotterie
   $("lotteryTickets").textContent = game.lotteryTickets || 0;
   let lotteryHtml = "";
   if (game.lotteryLog) {
@@ -1480,7 +1630,6 @@ function updateUI() {
   }
   if ($("lotteryLog")) $("lotteryLog").innerHTML = lotteryHtml || "<div style='color:#aaa'>En attente...</div>";
 
-  // Achievements
   let achCount = game.achievements ? game.achievements.filter(a => a.unlocked).length : 0;
   $("achievementCount").textContent = achCount;
   let achHtml = "";
@@ -1501,7 +1650,6 @@ function updateUI() {
   }
   if ($("achievementsList")) $("achievementsList").innerHTML = achHtml;
 
-  // Check achievements
   checkAchievements();
   for (let type of ["min", "mid", "high"]) {
     let trade = game.trades[type];
@@ -1513,7 +1661,6 @@ function updateUI() {
     $(`${type}Loss`).textContent = fmt(trade.amount * config.lossRate);
   }
 
-  // Generators list
   let genHtml = "";
   for (let g of game.generators) {
     let cost = g.p * Math.pow(g.m, g.c);
@@ -1534,7 +1681,6 @@ function updateUI() {
   }
   $("gensList").innerHTML = genHtml;
 
-  // Upgrades list
   let upHtml = "";
   for (let u of game.upgrades) {
     let unlocked = isUnlocked(u);
@@ -1549,14 +1695,12 @@ function updateUI() {
   }
   $("upsList").innerHTML = upHtml || "Tous débloqués!";
 
-  // Quests list
   let questHtml = "";
   for (let q of game.quests) {
     questHtml += `<div class="item">${q.n} <span style="color:${q.d ? "#0f0" : "#ffa"}">${q.d ? "✅" : "⏳"}</span></div>`;
   }
   $("questsList").innerHTML = questHtml;
 
-  // Active boosts
   let boostHtml = "";
   game.boosts.forEach(b => {
     if (Date.now() < b.e) {
@@ -1566,18 +1710,14 @@ function updateUI() {
   });
   $("activeBoosts").innerHTML = boostHtml || "Aucun";
 
-  // Synergies
   $("synergies").innerHTML = getSynergies();
 
-  // Graph
   graphData.push(p);
   if (graphData.length > 60) graphData.shift();
   drawGraph();
 
-  // Check quests
   if (!skipQuestCheck) checkQuests();
 
-  // Logs
   let logHtml = "";
   for (let l of game.logs) logHtml += `<div>${l}</div>`;
   $("log").innerHTML = logHtml;
@@ -1598,7 +1738,6 @@ function updateSaveInfo() {
   $("saveSize").textContent = size + " KB";
 }
 
-// =========== SAVE/LOAD FUNCTIONS ===========
 function downloadSave() {
   let data = JSON.stringify(game, null, 2);
   let blob = new Blob([data], { type: "application/json" });
@@ -1687,7 +1826,6 @@ function resetGame() {
   alert("✅ Jeu réinitialisé!");
 }
 
-// =========== TUTORIAL ===========
 function showTutorial() {
   $("tutorialModal").style.display = "block";
   tutPage = 0;
@@ -1700,7 +1838,7 @@ function updateTutorial() {
 }
 
 $("nextBtn").addEventListener("click", () => {
-  if (tutPage < 11) {
+  if (tutPage < 15) {
     tutPage++;
     updateTutorial();
   }
@@ -1713,7 +1851,6 @@ $("prevBtn").addEventListener("click", () => {
   }
 });
 
-// =========== TAB NAVIGATION ===========
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", function () {
     document.querySelectorAll(".tab-btn").forEach(x => x.classList.remove("active"));
@@ -1723,7 +1860,6 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-// =========== EVENT LISTENERS ===========
 $("clickBtn").addEventListener("click", clickBtn);
 $("prestigeBtn").addEventListener("click", doPrestige);
 $("galaxyBtn").addEventListener("click", doGalaxy);
@@ -1738,7 +1874,6 @@ document.addEventListener("click", e => {
   if (e.target.classList.contains("up-buy")) buyUp(e.target.dataset.id);
 });
 
-// =========== ASCENSION SYSTEM ===========
 function doAscension() {
   let cost = 100 * Math.pow(2, game.ascension);
   if (game.galaxies < cost) {
@@ -1752,7 +1887,6 @@ function doAscension() {
   game.ascension++;
   game.ascensionCount++;
 
-  // Reset TOUT
   game.coins = 0;
   game.stars = 0;
   game.prestige = 0;
@@ -1769,7 +1903,6 @@ function doAscension() {
   updateUI();
 }
 
-// =========== BANQUE SYSTEM ===========
 function depositBank() {
   let amount = parseFloat($("bankInput").value);
   if (!amount || amount <= 0 || game.coins < amount) {
@@ -1800,7 +1933,6 @@ function withdrawBank() {
   updateUI();
 }
 
-// =========== LOTTERIE SYSTEM ===========
 function buyLotteryTicket(count) {
   let cost = 100 * count;
   if (game.coins < cost) {
@@ -1847,9 +1979,8 @@ function playLottery() {
   updateUI();
 }
 
-// =========== ACHIEVEMENTS SYSTEM ===========
 function checkAchievements() {
-  if (!game.achievements) return; // Protection
+  if (!game.achievements) return;
   
   for (let ach of game.achievements) {
     if (!ach.unlocked && ach.check()) {
@@ -1861,11 +1992,10 @@ function checkAchievements() {
   }
 }
 
-// =========== AUTO-CLICK SYSTEM ===========
 let autoClickData = {
   active: false,
   targetId: null,
-  targetType: null, // "gen" ou "up"
+  targetType: null,
 };
 
 function startAutoClick(id, type) {
@@ -1880,7 +2010,6 @@ function stopAutoClick() {
   autoClickData.targetType = null;
 }
 
-// Auto-buy loop
 setInterval(() => {
   if (!autoClickData.active) return;
   
@@ -1889,13 +2018,13 @@ setInterval(() => {
   } else if (autoClickData.targetType === "up") {
     buyUp(autoClickData.targetId);
   }
-}, 50); // 50ms = très rapide!
+}, 50);
+
 setInterval(() => {
   let p = getProd();
   game.coins += p / FPS;
   game.totalCoins += p / FPS;
   
-  // Banque génère 0.1% par sec
   if (game.bankInvested > 0) {
     let bankGains = (game.bankInvested * 0.001) / FPS;
     game.bankInvested += bankGains;
@@ -1911,13 +2040,10 @@ setInterval(() => {
   updateUI();
 }, 1000);
 
-// =========== INIT ===========
-// Nettoyer les anciennes saves corrompues
 try {
   let oldSave = localStorage.getItem(SAVE_KEY);
   if (oldSave) {
     let parsed = JSON.parse(oldSave);
-    // Si pas de achievements, c'est une vieille save
     if (!parsed.achievements || !parsed.ascension || !parsed.bankInvested) {
       localStorage.removeItem(SAVE_KEY);
     }
