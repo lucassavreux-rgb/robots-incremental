@@ -429,6 +429,7 @@ const FPS = 10;
 const SAVE_KEY = "incremental_v3";
 let tutPage = 0;
 let graphData = [];
+let skipQuestCheck = false;
 
 // =========== TUTORIEL ===========
 const TUTORIAL = [
@@ -452,7 +453,6 @@ let game = {
   stars: 0,
   galaxies: 0,
   prestige: 0,
-  prestProg: 0,
   darkMatter: 0,
   playTime: 0,
   logs: [],
@@ -575,8 +575,9 @@ function clickBtn() {
   game.coins += v;
   game.totalCoins += v;
   game.totalClicks++;
-  game.prestProg += v;
+  skipQuestCheck = true;
   updateUI();
+  skipQuestCheck = false;
 }
 
 function buyGen(id) {
@@ -590,7 +591,9 @@ function buyGen(id) {
   g.c++;
   log("✅ +" + g.n);
   save();
+  skipQuestCheck = true;
   updateUI();
+  skipQuestCheck = false;
 }
 
 function buyUp(id) {
@@ -601,7 +604,9 @@ function buyUp(id) {
   u.b = 1;
   log("✅ " + u.n);
   save();
+  skipQuestCheck = true;
   updateUI();
+  skipQuestCheck = false;
 }
 
 function buyBoost(boostType) {
@@ -620,13 +625,13 @@ function buyBoost(boostType) {
 }
 
 function doPrestige() {
-  if (game.prestProg < 5e3) return;
+  if (game.totalCoins < 5000) return;
 
-  let g = Math.floor(game.prestProg / 5e3);
+  let g = Math.floor(game.totalCoins / 5000);
   let ms = Math.min(2, 1 + game.prestige * 0.1);
 
   game.coins = 0;
-  game.prestProg = 0;
+  game.totalCoins = 0;
   game.stars += Math.floor(g * ms);
   game.prestige++;
 
@@ -724,7 +729,7 @@ function updateUI() {
   }
   $("dmInfo").textContent = dmInfo;
   $("clickVal").textContent = fmt(clickVal());
-  $("prestProg").textContent = Math.floor(game.prestProg);
+  $("prestProg").textContent = Math.floor(game.totalCoins);
   $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
@@ -786,7 +791,7 @@ function updateUI() {
   drawGraph();
 
   // Check quests
-  checkQuests();
+  if (!skipQuestCheck) checkQuests();
 
   // Logs
   let logHtml = "";
@@ -856,7 +861,6 @@ function resetGame() {
     stars: 0,
     galaxies: 0,
     prestige: 0,
-    prestProg: 0,
     darkMatter: 0,
     playTime: 0,
     logs: [],
@@ -949,7 +953,6 @@ setInterval(() => {
   let p = getProd();
   game.coins += p / FPS;
   game.totalCoins += p / FPS;
-  game.prestProg += p / FPS;
   updateUI();
 }, 1000 / FPS);
 
