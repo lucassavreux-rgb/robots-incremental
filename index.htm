@@ -468,7 +468,7 @@
         <div class="trade-header">
           <div>
             <h4>🔥 GROS RISQUE</h4>
-            <p style="color: #f00; font-size: 0.9rem;">+30% par seconde | -20% risque (10% chance) | TOUT PERDRE (0.1% chance)</p>
+            <p style="color: #f00; font-size: 0.9rem;">+30% par seconde | -15% risque (8% chance) | TOUT PERDRE (0.1% chance)</p>
           </div>
         </div>
         
@@ -720,7 +720,7 @@ const TUTORIAL = [
     <p style="margin: 0.5rem 0; color: #f00;"><strong>POUR LES FOUS DE RISQUE!</strong></p>
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #f00; border-radius: 4px;">
       <p style="font-size: 1.1rem; color: #0f0;">🚀 <strong>+30% par seconde</strong></p>
-      <p style="font-size: 1.1rem; color: #f00;">💥 10% chance de perdre 20%</p>
+      <p style="font-size: 1.1rem; color: #f00;">💥 8% chance de perdre 15%</p>
       <p style="font-size: 1.1rem; color: #aaa;">👻 0.1% chance de TOUT PERDRE! (ultra rare!)</p>
       <p style="color: #aaa; margin-top: 0.5rem;">Énorme potentiel = énorme risque!</p>
     </div>
@@ -903,7 +903,7 @@ function getTradeConfig(type) {
   const configs = {
     min: { gainRate: 0.03, lossChance: 0.005, lossRate: 0.02 },
     mid: { gainRate: 0.10, lossChance: 0.03, lossRate: 0.05 },
-    high: { gainRate: 0.30, lossChance: 0.10, lossRate: 0.20, riskAll: 0.001 }
+    high: { gainRate: 0.30, lossChance: 0.08, lossRate: 0.15, riskAll: 0.001 }
   };
   return configs[type];
 }
