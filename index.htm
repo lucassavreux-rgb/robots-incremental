@@ -1,645 +1,907 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Incremental Trade ULTIMATE</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-```
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
-  color: #eee;
-  padding: 1rem;
-  min-height: 100vh;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #0a0a0a;
+      color: #eee;
+      padding: 1rem;
+    }
 
-.container { max-width: 1200px; margin: 0 auto; }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  animation: glow 3s infinite;
-}
+    h1 {
+      color: #0af;
+      text-align: center;
+      margin: 1rem 0;
+      font-size: 2.2rem;
+    }
 
-h1 {
-  font-size: 2.5rem;
-  background: linear-gradient(135deg, #0af, #0cf);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 1rem;
-  letter-spacing: 2px;
-}
+    h3, h4 {
+      color: #0af;
+      margin: 0.5rem 0;
+    }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
+    p {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
 
-.stat-box {
-  background: linear-gradient(135deg, rgba(26,26,26,0.9) 0%, rgba(30,15,30,0.9) 100%);
-  padding: 1rem;
-  border-radius: 10px;
-  border: 2px solid rgba(0,170,255,0.2);
-  text-align: center;
-  transition: all 0.3s;
-}
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
 
-.stat-box:hover {
-  border-color: rgba(0,170,255,0.4);
-  transform: translateY(-2px);
-}
+    .stat {
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #0af;
+      text-align: center;
+    }
 
-.stat-label { font-size: 0.9rem; color: #aaa; text-transform: uppercase; }
-.stat-value { font-size: 1.5rem; color: #0f0; font-weight: bold; margin-top: 0.5rem; }
+    .stat-val {
+      font-size: 1.4rem;
+      color: #0f0;
+      font-weight: bold;
+    }
 
-.tab-nav {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  background: rgba(0,0,0,0.5);
-  padding: 1rem;
-  border-radius: 10px;
-  border: 2px solid rgba(0,170,255,0.2);
-}
+    .tabs {
+      display: flex;
+      gap: 0.3rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+      background: #111;
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
 
-.tab-btn {
-  padding: 0.7rem 1.2rem;
-  background: rgba(51,51,51,0.8);
-  color: #aaa;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: bold;
-}
+    .tab-btn {
+      padding: 0.6rem 1rem;
+      background: #222;
+      color: #aaa;
+      border: 1px solid #333;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
 
-.tab-btn:hover { background: rgba(51,51,51,0.9); color: #0af; }
-.tab-btn.active { background: linear-gradient(135deg, #0af 0%, #08d 100%); color: #fff; border-color: #0af; }
+    .tab-btn:hover {
+      background: #333;
+    }
 
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+    .tab-btn.active {
+      background: #0af;
+      color: #000;
+      border-color: #0af;
+    }
 
-.card {
-  background: linear-gradient(135deg, rgba(26,26,26,0.9) 0%, rgba(30,15,30,0.9) 100%);
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 2px solid rgba(0,170,255,0.2);
-  margin-bottom: 1.5rem;
-  transition: all 0.3s;
-}
+    .content {
+      display: none;
+    }
 
-.card:hover { border-color: rgba(0,170,255,0.4); }
+    .content.active {
+      display: block;
+    }
 
-.card h2 {
-  color: #0cf;
-  border-bottom: 3px solid rgba(0,170,255,0.3);
-  padding-bottom: 0.8rem;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+    .card {
+      background: #1a1a1a;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 6px;
+      border: 1px solid #333;
+    }
 
-.click-btn {
-  width: 100%;
-  max-width: 300px;
-  padding: 2rem;
-  font-size: 1.5rem;
-  background: linear-gradient(135deg, #0af 0%, #08d 100%);
-  color: #fff;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
-  box-shadow: 0 10px 40px rgba(0,170,255,0.3);
-  margin: 1rem auto;
-  display: block;
-}
+    .btn {
+      padding: 0.6rem 1rem;
+      background: #0af;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 0.3rem 0.3rem 0.3rem 0;
+      transition: 0.2s;
+    }
 
-.click-btn:hover { transform: scale(1.05); box-shadow: 0 15px 50px rgba(0,170,255,0.5); }
-.click-btn:active { transform: scale(0.95); }
+    .btn:hover:not(:disabled) {
+      transform: scale(1.05);
+    }
 
-.item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem;
-  margin: 0.5rem 0;
-  background: rgba(34,34,34,0.7);
-  border-radius: 8px;
-  border-left: 4px solid #0af;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
 
-.item button {
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #0af 0%, #08d 100%);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: bold;
-}
+    .danger-btn {
+      background: #f00;
+      color: #fff;
+    }
 
-.item button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,170,255,0.3); }
-.item button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .danger-btn:hover:not(:disabled) {
+      background: #c00;
+    }
 
-.price { color: #ffa; font-weight: bold; }
-.count { color: #0f0; font-weight: bold; font-size: 1.1rem; }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem;
+      background: #0a0a0a;
+      margin: 0.4rem 0;
+      border-left: 3px solid #0af;
+    }
 
-.log {
-  background: rgba(0,0,0,0.8);
-  border-left: 5px solid #0af;
-  padding: 1rem;
-  border-radius: 8px;
-  max-height: 150px;
-  overflow-y: auto;
-  margin: 1rem 0;
-}
+    .big-btn {
+      width: 100%;
+      max-width: 280px;
+      padding: 1.2rem;
+      font-size: 1.1rem;
+      margin: 1rem auto;
+      display: block;
+    }
 
-.log-message {
-  padding: 0.4rem 0;
-  font-size: 0.9rem;
-  animation: slideIn 0.3s;
-}
+    .log {
+      background: #000;
+      border-left: 3px solid #0af;
+      padding: 0.8rem;
+      max-height: 120px;
+      overflow-y: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
 
-.log-success { color: #0f0; }
-.log-event { color: #ffa; }
-.log-unlock { color: #0af; }
+    canvas {
+      border: 1px solid #0af;
+      background: #111;
+      max-width: 100%;
+      margin: 1rem 0;
+    }
 
-@keyframes glow { 0%, 100% { text-shadow: 0 0 10px rgba(0,170,255,0.5); } 50% { text-shadow: 0 0 20px rgba(0,170,255,0.8); } }
-@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    #tutorialModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.98);
+      z-index: 9999;
+      padding: 1rem;
+      overflow-y: auto;
+      display: none;
+    }
 
-canvas {
-  border: 2px solid #0af;
-  border-radius: 8px;
-  background: #111;
-  max-width: 100%;
-  margin: 1rem 0;
-}
+    .tut-box {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border: 2px solid #0af;
+      border-radius: 6px;
+    }
 
-h3 {
-  color: #0cf;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-}
+    .tut-box h1 {
+      margin-top: 0;
+    }
 
-#tutorialModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.95);
-  z-index: 9999;
-  overflow-y: auto;
-  padding: 2rem;
-}
+    .tut-btns {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
 
-.tutorial-box {
-  max-width: 900px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(30,15,30,0.95) 100%);
-  border: 3px solid #0af;
-  border-radius: 15px;
-  padding: 2rem;
-  color: #eee;
-}
+    @media(max-width: 600px) {
+      .tabs {
+        font-size: 0.9rem;
+      }
 
-.tutorial-box h1 {
-  color: #0cf;
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  background: none;
-  -webkit-text-fill-color: unset;
-}
+      .stat {
+        padding: 0.6rem;
+      }
 
-#tutorialContent {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #ddd;
-  min-height: 400px;
-}
-
-#tutorialContent h2 {
-  color: #0af;
-  margin: 0.5rem 0;
-  font-size: 1.5rem;
-}
-
-#tutorialContent p {
-  margin: 1rem 0;
-}
-
-.tutorial-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.tutorial-buttons button {
-  padding: 0.8rem 2rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: all 0.3s;
-}
-
-.tutorial-buttons button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0,170,255,0.3);
-}
-
-.btn-prev, .btn-next {
-  background: linear-gradient(135deg, #0af 0%, #08d 100%);
-  color: #fff;
-}
-
-.btn-close {
-  background: linear-gradient(135deg, #0f0 0%, #0a0 100%);
-  color: #000;
-}
-
-.tutorial-page-counter {
-  text-align: center;
-  margin-top: 1rem;
-  color: #aaa;
-  font-size: 0.9rem;
-}
-```
-
+      .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <header>
-    <h1>💎 INCREMENTAL TRADE ULTIMATE 💎</h1>
-    <p>Le jeu d'argent le plus addictif!</p>
-    <button onclick="showTutorial()" style="margin-top: 1rem; padding: 0.6rem 1.5rem; background: linear-gradient(135deg, #0af 0%, #08d 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem;">📖 TUTORIEL</button>
-  </header>
+  <h1>💎 INCREMENTAL TRADE ULTIMATE 💎</h1>
+  <p>Le jeu inactif addictif!</p>
+  <button class="btn" onclick="showTutorial()" style="display:block;margin:0 auto 1rem">📖 TUTORIEL</button>
 
+  <!-- STATS AFFICHAGE -->
   <div class="stats">
-    <div class="stat-box">
-      <div class="stat-label">💰 Pièces</div>
-      <div class="stat-value" id="coins">0</div>
+    <div class="stat">
+      <div>💰 Pièces</div>
+      <div class="stat-val" id="coins">0</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">⚡ /sec</div>
-      <div class="stat-value" id="cps">0</div>
+    <div class="stat">
+      <div>⚡ /sec</div>
+      <div class="stat-val" id="cps">0</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">⭐ Étoiles</div>
-      <div class="stat-value" id="stars">0</div>
+    <div class="stat">
+      <div>⭐ Étoiles</div>
+      <div class="stat-val" id="stars">0</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">🌀 Galaxies</div>
-      <div class="stat-value" id="galaxies">0</div>
+    <div class="stat">
+      <div>🌀 Galaxies</div>
+      <div class="stat-val" id="galaxies">0</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">⚡ Prestige</div>
-      <div class="stat-value" id="prestige">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">🌙 Dark Matter</div>
-      <div class="stat-value" id="darkMatter">0</div>
+    <div class="stat">
+      <div>🌙 Dark Matter</div>
+      <div class="stat-val" id="dm">0</div>
     </div>
   </div>
 
-  <div class="tab-nav">
-    <button class="tab-btn active" onclick="switchTab(event, 'main')">🎮 JEU</button>
-    <button class="tab-btn" onclick="switchTab(event, 'generators')">🤖 GÉNÉRATEURS</button>
-    <button class="tab-btn" onclick="switchTab(event, 'upgrades')">⚡ UPGRADES</button>
-    <button class="tab-btn" onclick="switchTab(event, 'features')">✨ FEATURES</button>
-    <button class="tab-btn" onclick="switchTab(event, 'stats')">📊 STATS</button>
+  <!-- TABS NAVIGATION -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="main">🎮 JEU</button>
+    <button class="tab-btn" data-tab="gens">🤖 GÉNÉRATEURS</button>
+    <button class="tab-btn" data-tab="ups">⚡ UPGRADES</button>
+    <button class="tab-btn" data-tab="feat">✨ FEATURES</button>
+    <button class="tab-btn" data-tab="stats">📊 STATS</button>
+    <button class="tab-btn" data-tab="params">⚙️ PARAMÈTRES</button>
   </div>
 
-  <div id="main" class="tab-content active">
-    <div class="card" style="text-align: center;">
-      <button class="click-btn" onclick="clickBtn()">🖱️ CLIQUER</button>
-      <div style="color: #aaa; margin-top: 1rem;">Gain par clic: <span class="count" id="clickValue">0</span></div>
+  <!-- TAB: MAIN GAME -->
+  <div id="main" class="content active">
+    <div class="card" style="text-align:center">
+      <button class="btn big-btn" id="clickBtn">🖱️ CLIQUER</button>
+      <p>Gain: <span id="clickVal">0</span> par clic</p>
     </div>
 
-```
-<div class="card">
-  <h2>⏱️ PRESTIGE</h2>
-  <div style="text-align: center; padding: 1rem;">
-    <div style="font-size: 1.2rem; color: #0af; margin-bottom: 1rem;">Progression: <span id="prestigeProgress">0</span> / 5000</div>
-    <button class="click-btn" onclick="doPrestige()">⚡ PRESTIGE (gain ⭐ +10% par prestige!)</button>
-  </div>
-</div>
-
-<div class="card">
-  <h2>🌀 SUPER PRESTIGE (Galaxies)</h2>
-  <div style="text-align: center; padding: 1rem;">
-    <div style="font-size: 1.2rem; color: #a0f; margin-bottom: 1rem;">Coût: <span class="count" id="galaxyCost">100</span> ⭐</div>
-    <button class="click-btn" onclick="doSuperPrestige()">🌀 SUPER PRESTIGE (gain multiplicateur ×1.6)</button>
-  </div>
-</div>
-
-<div class="log" id="log"></div>
-```
-
-  </div>
-
-  <div id="generators" class="tab-content">
     <div class="card">
-      <h2>🤖 GÉNÉRATEURS AUTOMATIQUES</h2>
+      <h3>⏱️ PRESTIGE</h3>
+      <p>Progression: <span id="prestProg">0</span> / 5000</p>
+      <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
+    </div>
+
+    <div class="card">
+      <h3>🌀 GALAXIES</h3>
+      <p>Coût: <span id="galaxyCost">100</span> ⭐</p>
+      <button class="btn" id="galaxyBtn">🌀 SUPER PRESTIGE (×1.6)</button>
+    </div>
+
+    <div class="log" id="log"></div>
+  </div>
+
+  <!-- TAB: GENERATORS -->
+  <div id="gens" class="content">
+    <div class="card">
+      <h3>🤖 GÉNÉRATEURS AUTOMATIQUES</h3>
       <div id="gensList"></div>
     </div>
   </div>
 
-  <div id="upgrades" class="tab-content">
+  <!-- TAB: UPGRADES -->
+  <div id="ups" class="content">
     <div class="card">
-      <h2>⚡ AMÉLIORATIONS</h2>
-      <div id="upgradesList"></div>
+      <h3>⚡ AMÉLIORATIONS</h3>
+      <div id="upsList"></div>
     </div>
   </div>
 
-  <div id="features" class="tab-content">
+  <!-- TAB: FEATURES -->
+  <div id="feat" class="content">
     <div class="card">
-      <h2>✨ FONCTIONNALITÉS SPÉCIALES</h2>
+      <h3>🎯 QUÊTES</h3>
+      <div id="questsList"></div>
+    </div>
 
-```
-  <h3>🎯 QUÊTES QUOTIDIENNES</h3>
-  <div id="questsList"></div>
+    <div class="card">
+      <h3>⏰ BOOSTS</h3>
+      <button class="btn" id="boostProd">Prod ×2 (50K)</button>
+      <button class="btn" id="boostClick">Click ×2 (30K)</button>
+      <div id="activeBoosts" style="margin-top:0.5rem"></div>
+    </div>
 
-  <h3>⏰ BOOSTS TEMPORAIRES</h3>
-  <button onclick="buyBoost('prod')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Prod ×2 (30s) - 50K</button>
-  <button onclick="buyBoost('click')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Click ×2 (30s) - 30K</button>
-  <div id="activeBoosts" style="margin-top: 1rem;"></div>
+    <div class="card">
+      <h3>⚙️ SYNERGIES</h3>
+      <div id="synergies"></div>
+    </div>
 
-  <h3>🎮 MODE SPEEDRUN</h3>
-  <button onclick="startSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #0f0 0%, #0a0 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">⏱️ Lancer Speedrun</button>
-  <button onclick="completeSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #f0a 0%, #c08 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 0.5rem;">🏁 Terminer Speedrun</button>
-  <div style="margin-top: 0.5rem; color: #ffa;" id="speedrunStatus"></div>
-
-  <h3>🌙 DARK MATTER BONUSES</h3>
-  <div id="darkMatterInfo" style="color: #a0f;"></div>
-
-  <h3>🎪 FUSIONS</h3>
-  <div id="fusionsList"></div>
-
-  <h3>📊 GRAPHIQUE</h3>
-  <canvas id="graph" width="800" height="300"></canvas>
-
-  <h3>⚙️ SYNERGIES</h3>
-  <div id="synergiesList" style="color: #0f0;"></div>
-</div>
-```
-
+    <div class="card">
+      <h3>📊 GRAPHIQUE</h3>
+      <canvas id="graph" width="600" height="200"></canvas>
+    </div>
   </div>
 
-  <div id="stats" class="tab-content">
+  <!-- TAB: STATS -->
+  <div id="stats" class="content">
     <div class="card">
-      <h2>📈 STATISTIQUES</h2>
-      <div class="item" style="border-left: 4px solid #ffa;">
-        <span>Total Pièces Gagnées</span>
-        <span class="count" id="totalCoins">0</span>
+      <h3>📈 STATISTIQUES</h3>
+      <div class="item">
+        <span>Total Pièces</span>
+        <span id="totalCoins">0</span>
       </div>
-      <div class="item" style="border-left: 4px solid #ffa;">
+      <div class="item">
         <span>Total Clics</span>
-        <span class="count" id="totalClicks">0</span>
+        <span id="totalClicks">0</span>
       </div>
-      <div class="item" style="border-left: 4px solid #ffa;">
-        <span>Temps de Jeu</span>
-        <span class="count" id="playTime">0s</span>
+      <div class="item">
+        <span>Temps Jeu</span>
+        <span id="playTime">0s</span>
       </div>
-      <div class="item" style="border-left: 4px solid #ffa;">
-        <span>Événements Aléatoires</span>
-        <span class="count" id="eventCount">0</span>
+      <div class="item">
+        <span>Prestige</span>
+        <span id="presCount">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: PARAMETRES -->
+  <div id="params" class="content">
+    <div class="card">
+      <h3>⚙️ PARAMÈTRES</h3>
+      <p style="color:#aaa;margin-bottom:1rem">Gère ta partie ici</p>
+
+      <div class="item" style="border-left:3px solid #0f0;padding:1rem">
+        <div>
+          <strong>💾 Sauvegarder</strong><br>
+          <span style="color:#aaa;font-size:0.9rem">Télécharge une copie de ta progression</span>
+        </div>
+        <button class="btn" id="downloadBtn">📥 TÉLÉCHARGER</button>
+      </div>
+
+      <div class="item" style="border-left:3px solid #0af;padding:1rem">
+        <div>
+          <strong>📂 Charger</strong><br>
+          <span style="color:#aaa;font-size:0.9rem">Importe une sauvegarde</span>
+        </div>
+        <button class="btn" id="uploadBtn">📤 IMPORTER</button>
+      </div>
+
+      <div class="item" style="border-left:3px solid #fa0;padding:1rem">
+        <div>
+          <strong>🗑️ Réinitialiser</strong><br>
+          <span style="color:#aaa;font-size:0.9rem">Recommence à zéro (attention!)</span>
+        </div>
+        <button class="btn danger-btn" id="resetBtn">🔄 RESET</button>
+      </div>
+
+      <div class="card" style="background:#0a0a0a;margin-top:1rem">
+        <h4>📝 Info Sauvegarde</h4>
+        <p style="text-align:left;color:#aaa;font-size:0.9rem">
+          <strong>Dernière sauvegarde:</strong> <span id="lastSave">Jamais</span><br>
+          <strong>Taille:</strong> <span id="saveSize">0 KB</span>
+        </p>
       </div>
     </div>
   </div>
 </div>
 
-<div id="tutorialModal" style="display: none;">
-  <div class="tutorial-box">
-    <h1>📖 TUTORIEL COMPLET</h1>
-    <div id="tutorialContent"></div>
-    <div class="tutorial-buttons">
-      <button class="btn-prev" onclick="prevTutorial()">← PRÉCÉDENT</button>
-      <button class="btn-close" onclick="closeTutorial()">✓ FERMER</button>
-      <button class="btn-next" onclick="nextTutorial()">SUIVANT →</button>
+<!-- FILE INPUT HIDDEN -->
+<input type="file" id="fileInput" style="display:none" accept=".json">
+
+<!-- TUTORIAL MODAL -->
+<div id="tutorialModal">
+  <div class="tut-box">
+    <h1>📖 TUTORIEL</h1>
+    <div id="tutText" style="min-height:200px;line-height:1.6;margin:1rem 0"></div>
+    <div class="tut-btns">
+      <button class="btn" id="prevBtn">← PRÉCÉDENT</button>
+      <button class="btn" onclick="document.getElementById('tutorialModal').style.display='none'">FERMER</button>
+      <button class="btn" id="nextBtn">SUIVANT →</button>
     </div>
-    <div class="tutorial-page-counter">
-      Page <span id="tutorialPage">1</span> / <span id="tutorialTotal">10</span>
-    </div>
+    <p style="text-align:center;color:#aaa;font-size:0.9rem">Page <span id="tutPage">1</span>/10</p>
   </div>
 </div>
+
+<!-- ============================================================ -->
+<!-- SCRIPT -->
+<!-- ============================================================ -->
 
 <script>
+// =========== CONSTANTES ===========
 const FPS = 10;
-const SAVE_KEY = "incremental_trade_v2";
+const SAVE_KEY = "incremental_v3";
+let tutPage = 0;
+let graphData = [];
 
-let currentTutorialPage = 0;
-let lastBuyTime = 0;
-
-const TUTORIAL_PAGES = [
-  { title: "Bienvenue dans Incremental Trade Ultimate!", content: "Ce jeu est un jeu inactif addictif où tu gagnes de l'argent en cliquant et grâce à des générateurs automatiques. Le but est de progresser indéfiniment avec un système de Prestige qui te récompense pour ton grind. Prêt à devenir riche? Clique sur SUIVANT pour commencer!" },
-  { title: "Le Clic - Ton Arme de Base", content: "Au départ, tu cliques sur le gros bouton CLIQUER. Chaque clic te donne 1 pièce (au départ). Plus tu achètes d'upgrades, plus chaque clic donne de pièces! Le gain par clic augmente aussi avec tes Étoiles et Galaxies." },
-  { title: "Les Générateurs - Ton Équipe", content: "Les générateurs gagnent de l'argent AUTOMATIQUEMENT même quand tu ne cliques pas!<br><br>🤖 Robot: Coûte 15 → Produit 0.5/sec<br>🏭 Usine: Coûte 100 → Produit 0.8/sec<br>🚢 Port: Coûte 1,100 → Produit 2/sec<br>🔬 Labo: Coûte 12,000 → Produit 8/sec<br>🛰️ Satellite: Coûte 130,000 → Produit 50/sec<br><br>Chaque achat augmente le coût du prochain (×1.15 à chaque fois)" },
-  { title: "Les Upgrades - Les Améliorations", content: "Les upgrades augmentent ta production! Tu les achètes UNE SEULE FOIS par Prestige.<br><br>Exemples:<br>• Clic +50% - 100💰 - Chaque clic ×1.5<br>• Robot ×2 - 500💰 - Les Robots produisent ×2<br>• Robot ×3 - 5,000💰 - Les Robots produisent ×3<br>• Usine ×3 - 50,000💰<br>+ 4 autres pour Port, Labo, Satellite<br><br>Les upgrades se réinitialisent après Prestige, donc tu les rachèteras à chaque run!" },
-  { title: "Prestige - Le Moteur du Jeu", content: "Quand tu as 5,000 de progression, tu peux faire un Prestige!<br><br>⚠️ ATTENTION: Le Prestige RÉINITIALISE TOUT (0 pièces, 0 générateurs, 0 upgrades)<br><br>Mais tu reçois des ⭐ Étoiles permanentes! Les étoiles NE se réinitialisent PAS après Prestige!<br><br>Chaque Étoile = ×1.25 sur les clics ET la production<br>Exemple: 10 Étoiles = ×1.25^10 = ×9.3 multiplicateur total!<br><br>Les Prestiges deviennent plus rentables (+10% par prestige jusqu'à ×2)" },
-  { title: "Super Prestige - Galaxies", content: "Les Galaxies sont encore PLUS puissants que les étoiles!<br><br>Coûts des Galaxies:<br>• 1ère Galaxie: 100⭐<br>• 2e Galaxie: 1,000⭐ (×10)<br>• 3e Galaxie: 10,000⭐ (×10)<br><br>Ça coûte BEAUCOUP de grind!<br><br>Bonus de chaque Galaxie: ×1.6 sur TOUT<br>Exemple: 2 Galaxies = 1.6 × 1.6 = 2.56× multiplicateur!<br><br>Les Galaxies restent permanentes! (jamais de reset)" },
-  { title: "Quêtes & Boosts - Features Avancées", content: "🎯 QUÊTES (Prestige 5 + 30⭐ + 1🌀):<br>• Q1: Gagne 1M pièces → Récompense: 500⭐!<br>• Q2: 5 générateurs → Récompense: 50K💰 pièces<br>• Q3: Prestige 3x → Récompense: 1🌀 Galaxie GRATUITE!<br><br>⏰ BOOSTS TEMPORAIRES (Prestige 3 + 15⭐):<br>• Prod ×2 - 50K💰 - Dure 30 sec<br>• Click ×2 - 30K💰 - Dure 30 sec<br><br>Stratégie: Active un boost Production quand tu as plein de pièces pour farmer 30 sec!" },
-  { title: "Synergies - Les Combinaisons Secrètes", content: "Les synergies se déclenchent automatiquement! (Prestige 5 + 30⭐ + 1🌀)<br><br>1️⃣ Robot + Usine (5+ Robots & 3+ Usines) → Production +30% (×1.3)<br><br>2️⃣ Port + Satellite (3+ Ports & 2+ Satellites) → Production +40% (×1.4)<br><br>3️⃣ Labo + Usine (2+ Labos & 5+ Usines) → Clics +50% (×1.5)<br><br>4️⃣ MEGA SYNERGIE (30+ générateurs & Prestige 10+) → TOUT ×2!! 🔥<br><br>Les multiplicateurs stackent! 1.3 × 1.4 × 1.5 = 2.73× multiplicateur total!" },
-  { title: "Dark Matter - L'Endgame", content: "Dark Matter est le summum! (Prestige 20 + 150⭐ + 10🌀)<br><br>Comment obtenir du Dark Matter?<br>• Débloqué à Prestige 20<br>• Tu reçois +1 Dark Matter tous les 10 Prestiges après P20<br>• Prestige 30 = +1 DM (total: 1)<br>• Prestige 40 = +1 DM (total: 2)<br>• Prestige 50 = +1 DM (total: 3)<br><br>Bonus du Dark Matter: Chaque DM = +5% sur TOUT!<br>• 1 DM = ×1.05 (+5%)<br>• 10 DM = ×1.50 (+50%!)<br>• 20 DM = ×2.00 (+100%!! Double tout!)" },
-  { title: "Résumé & Conseils de Pro", content: "PROGRESSION:<br>Phase 1 (P0-2): Clic & Robot/Usine → 1er Prestige = 1⭐<br>Phase 2 (P2-5): Débloque Boosts & Quêtes → 30⭐ → 1ère Galaxie<br>Phase 3 (P5-8): Exploit Synergies → Débloque Fusions<br>Phase 4 (P8-20): Accumule générateurs → Grind vers P20<br>Phase 5 (P20+): Optimize Dark Matter gains → Infinite grind!<br><br>💎 CONSEILS PRO:<br>✅ Fais toutes les Quêtes (surtout Q3!)<br>✅ Achète les Upgrades en priorité<br>✅ Vise les Synergies (multiplicateurs gratuits!)<br>✅ Farm avec Boosts la nuit<br>✅ Prestige régulièrement<br><br>🚀 T'es prêt? Lance le jeu et deviens riche! Good luck chef!" }
+// =========== TUTORIEL ===========
+const TUTORIAL = [
+  "Bienvenue! Clique CLIQUER pour gagner des pièces. À 5000 progression = Prestige!",
+  "Les générateurs gagnent auto: Robot (15→0.5/s), Usine (100→0.8/s), Port (1100→2/s), Labo (12K→8/s), Satellite (130K→50/s)",
+  "8 Upgrades: Clic+50%, Robot×2, Robot×3, Usine×2, Usine×3, Port×2, Labo×2, Satellite×2. Se réinitialisent après Prestige!",
+  "Prestige réinitialise TOUT sauf les ⭐ Étoiles! Gagne: (progression/5000) × (1 + prestige×0.1, max ×2)",
+  "Les Étoiles amplifient: ×1.25 par étoile sur clics ET production! 10⭐ = ×9.3 multiplicateur!",
+  "Galaxies PLUS puissant: ×1.6 par Galaxy! Coûts: 100⭐, 1000⭐, 10000⭐... Permanent!",
+  "Quêtes: 1M pièces→500⭐, 5 générateurs→50K💰, Prestige 3x→1🌀 GRATUITE! Boosts: Prod×2 (50K,30s), Click×2 (30K,30s)",
+  "Synergies AUTO: Robot+Usine (5+,3+)→+30%, Port+Satellite (3+,2+)→+40%, Labo+Usine (2+,5+)→+50% clics, MEGA (30+gens,P10)→×2!",
+  "Dark Matter: Prestige 20→déblocké. +1 tous les 10 P après P20. Chaque DM=+5% sur TOUT!",
+  "Phase 1 (P0-2): Grind clics+robots→Prestige. Phase 2 (P2-5): Déblocage→30⭐→1🌀. Phase 5 (P20+): Infinite grind! Bonne chance!"
 ];
 
+// =========== GAME STATE ===========
 let game = {
   coins: 0,
   totalCoins: 0,
   totalClicks: 0,
   stars: 0,
   galaxies: 0,
-  prestigeCount: 0,
-  prestigeProgress: 0,
+  prestige: 0,
+  prestProg: 0,
   darkMatter: 0,
   playTime: 0,
-  eventCount: 0,
-  speedrunActive: false,
-  speedrunStart: 0,
-  speedrunTime: null,
-  generators: [
-    {id: "robot", name: "Robot", base: 0.5, count: 0, price: 15, mult: 1.15},
-    {id: "usine", name: "Usine", base: 0.8, count: 0, price: 100, mult: 1.15},
-    {id: "port", name: "Port", base: 2, count: 0, price: 1100, mult: 1.15},
-    {id: "labo", name: "Laboratoire", base: 8, count: 0, price: 12000, mult: 1.15},
-    {id: "satellite", name: "Satellite", base: 50, count: 0, price: 130000, mult: 1.15},
-  ],
-  upgrades: [
-    {id: "click1", name: "Clic +50%", price: 100, effect: 1.5, bought: false, type: "click"},
-    {id: "robot1", name: "Robot ×2", price: 500, effect: 2, bought: false, type: "robot"},
-    {id: "usine1", name: "Usine ×2", price: 5000, effect: 2, bought: false, type: "usine"},
-    {id: "robot2", name: "Robot ×3", price: 5000, effect: 3, bought: false, type: "robot"},
-    {id: "usine2", name: "Usine ×3", price: 50000, effect: 3, bought: false, type: "usine"},
-    {id: "port1", name: "Port ×2", price: 50000, effect: 2, bought: false, type: "port"},
-    {id: "labo1", name: "Labo ×2", price: 500000, effect: 2, bought: false, type: "labo"},
-    {id: "sat1", name: "Satellite ×2", price: 5000000, effect: 2, bought: false, type: "satellite"},
-  ],
-  quests: [
-    {id: "q1", name: "Gagne 1M pièces", check: () => game.totalCoins >= 1000000, reward: 500, rewardType: "stars", done: false},
-    {id: "q2", name: "5 générateurs", check: () => game.generators.reduce((a,g) => a+g.count, 0) >= 5, reward: 50000, rewardType: "coins", done: false},
-    {id: "q3", name: "Prestige 3x", check: () => game.prestigeCount >= 3, reward: 1, rewardType: "galaxy", done: false},
-  ],
-  boosts: [],
-  fusions: [],
-  graphData: {prod: [], time: []},
   logs: [],
-  unlockedFeatures: {boosts: false, quests: false, speedrun: false, graph: false, synergies: false, fusions: false, darkMatter: false, events: false},
+
+  generators: [
+    { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15 },
+    { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15 },
+    { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15 },
+    { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15 },
+    { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15 }
+  ],
+
+  upgrades: [
+    { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c" },
+    { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r" },
+    { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r" },
+    { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u" },
+    { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u" },
+    { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po" },
+    { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l" },
+    { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s" }
+  ],
+
+  quests: [
+    { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
+    { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 50e3, rt: "c", d: 0 },
+    { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
+  ],
+
+  boosts: [],
+  graphData: []
 };
 
-function $(id) { return document.getElementById(id); }
-function formatNum(n) { if (n >= 1e9) return (n / 1e9).toFixed(1) + "B"; if (n >= 1e6) return (n / 1e6).toFixed(1) + "M"; if (n >= 1e3) return (n / 1e3).toFixed(1) + "K"; return Math.round(n).toString(); }
-function log(msg, type = "event") { game.logs.unshift({msg, type}); if (game.logs.length > 20) game.logs.pop(); updateLog(); }
-function save() { localStorage.setItem(SAVE_KEY, JSON.stringify(game)); }
-function load() { let d = localStorage.getItem(SAVE_KEY); if (d) game = JSON.parse(d); }
-function switchTab(e, name) { e.preventDefault(); document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active")); document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active")); $(name).classList.add("active"); e.target.classList.add("active"); }
-
-function showTutorial() { $("tutorialModal").style.display = "block"; currentTutorialPage = 0; displayTutorialPage(); }
-function closeTutorial() { $("tutorialModal").style.display = "none"; }
-function nextTutorial() { if (currentTutorialPage < TUTORIAL_PAGES.length - 1) { currentTutorialPage++; displayTutorialPage(); } }
-function prevTutorial() { if (currentTutorialPage > 0) { currentTutorialPage--; displayTutorialPage(); } }
-function displayTutorialPage() { let page = TUTORIAL_PAGES[currentTutorialPage]; $("tutorialContent").innerHTML = "<h2>" + page.title + "</h2><p>" + page.content + "</p>"; $("tutorialPage").textContent = currentTutorialPage + 1; $("tutorialTotal").textContent = TUTORIAL_PAGES.length; }
-
-function checkUnlocks() {
-  if (game.prestigeCount >= 1 && game.stars >= 5 && !game.unlockedFeatures.events) { game.unlockedFeatures.events = true; log("🎲 ÉVÉNEMENTS ALÉATOIRES débloqués!", "unlock"); }
-  if (game.prestigeCount >= 3 && game.stars >= 15 && !game.unlockedFeatures.boosts) { game.unlockedFeatures.boosts = true; log("⏰ BOOSTS TEMPORAIRES débloqués!", "unlock"); }
-  if (game.prestigeCount >= 3 && game.stars >= 15 && !game.unlockedFeatures.graph) { game.unlockedFeatures.graph = true; log("📊 GRAPHIQUE DE PROGRESSION débloqué!", "unlock"); }
-  if (game.prestigeCount >= 5 && game.stars >= 30 && game.galaxies >= 1 && !game.unlockedFeatures.quests) { game.unlockedFeatures.quests = true; log("🎯 QUÊTES QUOTIDIENNES débloquées!", "unlock"); }
-  if (game.prestigeCount >= 5 && game.stars >= 30 && game.galaxies >= 1 && !game.unlockedFeatures.speedrun) { game.unlockedFeatures.speedrun = true; log("🎮 MODE SPEEDRUN débloqué!", "unlock"); }
-  if (game.prestigeCount >= 5 && game.stars >= 30 && game.galaxies >= 1 && !game.unlockedFeatures.synergies) { game.unlockedFeatures.synergies = true; log("⚙️ SYNERGIES GÉNÉRATEURS débloquées!", "unlock"); }
-  if (game.prestigeCount >= 8 && game.stars >= 50 && game.galaxies >= 2 && !game.unlockedFeatures.fusions) { game.unlockedFeatures.fusions = true; log("🎪 FUSIONS DE GÉNÉRATEURS débloquées!", "unlock"); }
-  if (game.prestigeCount >= 20 && game.stars >= 150 && game.galaxies >= 10 && !game.unlockedFeatures.darkMatter) { game.unlockedFeatures.darkMatter = true; log("🌙 DARK MATTER débloqué! (TRÈS RARE!)", "unlock"); }
+// =========== UTILITY FUNCTIONS ===========
+function $(id) {
+  return document.getElementById(id);
 }
 
-function clickVal() { let val = 1; for (let u of game.upgrades) { if (u.type === "click" && u.bought) val *= u.effect; } let labo = game.generators.find(g => g.id === "labo"); let usine = game.generators.find(g => g.id === "usine"); if (labo && usine && labo.count >= 2 && usine.count >= 5) val *= 1.5; val *= Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies); val *= (1 + (game.darkMatter * 0.05)); return val * getBoostMult("click"); }
-function clickBtn() { let val = clickVal(); game.coins += val; game.totalCoins += val; game.totalClicks++; game.prestigeProgress += val; updateUI(); }
-
-function cps() { let total = 0; let syn = 1; let robot = game.generators.find(g => g.id === "robot"); let usine = game.generators.find(g => g.id === "usine"); let port = game.generators.find(g => g.id === "port"); let labo = game.generators.find(g => g.id === "labo"); let satellite = game.generators.find(g => g.id === "satellite"); if (robot && usine && robot.count >= 5 && usine.count >= 3) syn *= 1.3; if (port && satellite && port.count >= 3 && satellite.count >= 2) syn *= 1.4; if (labo && usine && labo.count >= 2 && usine.count >= 5) syn *= 1.2; let totalGens = [robot, usine, port, labo, satellite].reduce((a,g) => a + (g ? g.count : 0), 0); if (totalGens >= 30 && game.prestigeCount >= 10) syn *= 2; for (let g of game.generators) { let eff = 1; for (let u of game.upgrades) { if (u.type === g.id && u.bought) eff *= u.effect; } total += g.count * g.base * eff * syn; } total *= Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies); total *= (1 + (game.darkMatter * 0.05)); return total * getBoostMult("prod"); }
-
-function buyGen(id) { 
-  let now = Date.now();
-  if (now - lastBuyTime < 200) return;
-  lastBuyTime = now;
-  
-  let g = game.generators.find(x => x.id === id); 
-  if (!g) return; 
-  let cost = g.price * Math.pow(g.mult, g.count); 
-  if (game.coins < cost) return; 
-  game.coins -= cost; 
-  g.count++; 
-  save(); 
-  updateUI(); 
-}
-function buyUp(id) { 
-  let now = Date.now();
-  if (now - lastBuyTime < 200) return;
-  lastBuyTime = now;
-  
-  let u = game.upgrades.find(x => x.id === id); 
-  if (!u || u.bought || game.coins < u.price) return; 
-  game.coins -= u.price; 
-  u.bought = true; 
-  log("✅ " + u.name, "success"); 
-  save(); 
-  updateUI(); 
+function fmt(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  return Math.round(n).toString();
 }
 
-function doPrestige() { if (game.prestigeProgress < 5000) return; let gain = Math.floor(game.prestigeProgress / 5000); let mastery = Math.min(2, 1 + (game.prestigeCount * 0.1)); gain = Math.floor(gain * mastery); game.coins = 0; game.prestigeProgress = 0; game.stars += gain; game.prestigeCount++; if (game.prestigeCount >= 20 && game.prestigeCount % 10 === 0) { game.darkMatter++; log("🌙 +1 DARK MATTER!", "unlock"); } for (let g of game.generators) g.count = 0; for (let u of game.upgrades) u.bought = false; log("⭐ +" + gain + " étoiles! (×" + mastery.toFixed(2) + ")", "success"); checkUnlocks(); save(); updateUI(); }
-function doSuperPrestige() { let cost = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies); if (game.stars < cost) return; game.stars -= cost; game.galaxies++; log("🌀 +1 GALAXIE!", "unlock"); checkUnlocks(); save(); updateUI(); }
+function log(msg) {
+  game.logs.unshift(msg);
+  if (game.logs.length > 12) game.logs.pop();
+  updateLog();
+}
 
-function buyBoost(type) { if (!game.unlockedFeatures.boosts) { log("❌ Boosts pas encore débloqués!", "event"); return; } let costs = {prod: 50000, click: 30000}; let mults = {prod: 2, click: 2}; if (game.coins < costs[type]) return; game.coins -= costs[type]; game.boosts.push({type, mult: mults[type], end: Date.now() + 30000}); log("⏰ Boost " + type, "event"); save(); updateUI(); }
-function getBoostMult(type) { game.boosts = game.boosts.filter(b => Date.now() < b.end); let m = 1; for (let b of game.boosts) if (b.type === type) m *= b.mult; return m; }
+function save() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(game));
+  updateSaveInfo();
+}
 
-function checkQuests() { for (let q of game.quests) { if (!q.done && q.check()) { q.done = true; if (q.rewardType === "stars") { game.stars += q.reward; log("🎯 " + q.name + " - ⭐ +" + q.reward + " étoiles!", "success"); } else if (q.rewardType === "coins") { game.coins += q.reward; log("🎯 " + q.name + " - 💰 +" + formatNum(q.reward) + " pièces!", "success"); } else if (q.rewardType === "galaxy") { game.galaxies += q.reward; log("🎯 " + q.name + " - 🌀 +" + q.reward + " galaxie!", "success"); checkUnlocks(); } save(); } } }
+function load() {
+  let data = localStorage.getItem(SAVE_KEY);
+  if (data) game = JSON.parse(data);
+}
 
-function startSpeedrun() { if (!game.unlockedFeatures.speedrun) { log("❌ Speedrun pas encore débloqué!", "event"); return; } if (game.speedrunActive) { log("⚠️ Speedrun déjà en cours!", "event"); return; } game.speedrunActive = true; game.speedrunStart = Date.now(); log("⏱️ SPEEDRUN LANCÉ!", "event"); updateUI(); }
-function completeSpeedrun() { if (!game.speedrunActive) { log("❌ Aucun speedrun en cours!", "event"); return; } game.speedrunTime = (Date.now() - game.speedrunStart) / 1000; game.speedrunActive = false; log("🏆 SPEEDRUN TERMINÉ: " + game.speedrunTime.toFixed(2) + "sec!", "success"); save(); updateUI(); }
+// =========== GAME MECHANICS ===========
+function clickVal() {
+  let v = 1;
+  for (let u of game.upgrades) {
+    if (u.t === "c" && u.b) v *= u.e;
+  }
+  return v * Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies) * (1 + game.darkMatter * 0.05);
+}
 
-function updateGraphData() { game.graphData.time.push(Date.now()); game.graphData.prod.push(cps()); if (game.graphData.time.length > 100) { game.graphData.time.shift(); game.graphData.prod.shift(); } }
-function drawGraph() { let canvas = $("graph"); if (!canvas || game.graphData.prod.length < 2) return; let ctx = canvas.getContext("2d"); ctx.fillStyle = "#0a0a0a"; ctx.fillRect(0, 0, canvas.width, canvas.height); let max = Math.max(...game.graphData.prod); if (max === 0) max = 1; ctx.strokeStyle = "#0af"; ctx.lineWidth = 2; ctx.beginPath(); for (let i = 0; i < game.graphData.prod.length; i++) { let x = (i / game.graphData.prod.length) * canvas.width; let y = canvas.height - (game.graphData.prod[i] / max) * canvas.height * 0.9; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke(); }
+function getProd() {
+  let total = 0;
+  for (let g of game.generators) {
+    let e = 1;
+    for (let u of game.upgrades) {
+      if (u.t === g.id && u.b) e *= u.e;
+    }
+    total += g.c * g.b * e;
+  }
 
-function getFusions() { let fusions = []; let totalGen = game.generators.reduce((a,g) => a+g.count, 0); if (totalGen >= 20 && game.prestigeCount >= 8) { fusions.push("Fusion MAJEURE activée: ×1.5 production globale!"); } return fusions; }
-function getSynergies() { let synergies = []; let robot = game.generators.find(g => g.id === "robot"); let usine = game.generators.find(g => g.id === "usine"); let port = game.generators.find(g => g.id === "port"); let labo = game.generators.find(g => g.id === "labo"); let satellite = game.generators.find(g => g.id === "satellite"); if (robot && usine && robot.count >= 5 && usine.count >= 3) { synergies.push("Robot+Usine: Production +30%"); } if (port && satellite && port.count >= 3 && satellite.count >= 2) { synergies.push("Port+Satellite: Production +40%"); } if (labo && usine && labo.count >= 2 && usine.count >= 5) { synergies.push("Labo+Usine: Clics +50%"); } let totalGens = [robot, usine, port, labo, satellite].reduce((a,g) => a + (g ? g.count : 0), 0); if (totalGens >= 30 && game.prestigeCount >= 10) { synergies.push("MEGA SYNERGIE: Tout ×2!"); } return synergies; }
+  let sy = 1;
+  let r = game.generators[0], us = game.generators[1], p = game.generators[2], l = game.generators[3], s = game.generators[4];
 
-function updateLog() { let html = game.logs.map(l => "<div class='log-message log-" + l.type + "'>" + l.msg + "</div>").join(""); $("log").innerHTML = html; }
+  if (r.c >= 5 && us.c >= 3) sy *= 1.3;
+  if (p.c >= 3 && s.c >= 2) sy *= 1.4;
+  if (l.c >= 2 && us.c >= 5) sy *= 1.2;
 
+  return (total * sy) * Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies) * (1 + game.darkMatter * 0.05);
+}
+
+function clickBtn() {
+  let v = clickVal();
+  game.coins += v;
+  game.totalCoins += v;
+  game.totalClicks++;
+  game.prestProg += v;
+  updateUI();
+}
+
+function buyGen(id) {
+  let g = game.generators.find(x => x.id === id);
+  if (!g) return;
+
+  let cost = g.p * Math.pow(g.m, g.c);
+  if (game.coins < cost) return;
+
+  game.coins -= cost;
+  g.c++;
+  log("✅ +" + g.n);
+  save();
+  updateUI();
+}
+
+function buyUp(id) {
+  let u = game.upgrades.find(x => x.id === id);
+  if (!u || u.b || game.coins < u.p) return;
+
+  game.coins -= u.p;
+  u.b = 1;
+  log("✅ " + u.n);
+  save();
+  updateUI();
+}
+
+function buyBoost(boostType) {
+  let costMap = { p: 50e3, c: 30e3 };
+  let multMap = { p: 2, c: 2 };
+  let cost = costMap[boostType];
+  let mult = multMap[boostType];
+
+  if (game.coins < cost) return;
+
+  game.coins -= cost;
+  game.boosts.push({ type: boostType, m: mult, e: Date.now() + 30e3 });
+  log("⏰ Boost " + boostType);
+  save();
+  updateUI();
+}
+
+function doPrestige() {
+  if (game.prestProg < 5e3) return;
+
+  let g = Math.floor(game.prestProg / 5e3);
+  let ms = Math.min(2, 1 + game.prestige * 0.1);
+
+  game.coins = 0;
+  game.prestProg = 0;
+  game.stars += Math.floor(g * ms);
+  game.prestige++;
+
+  if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
+
+  for (let gen of game.generators) gen.c = 0;
+  for (let u of game.upgrades) u.b = 0;
+
+  log("⭐ +" + Math.floor(g * ms) + "!");
+  save();
+  updateUI();
+}
+
+function doGalaxy() {
+  let cost = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
+  if (game.stars < cost) return;
+
+  game.stars -= cost;
+  game.galaxies++;
+  log("🌀 +1!");
+  save();
+  updateUI();
+}
+
+function getSynergies() {
+  let s = [];
+  let r = game.generators[0], u = game.generators[1], p = game.generators[2], l = game.generators[3], sat = game.generators[4];
+
+  if (r.c >= 5 && u.c >= 3) s.push("✅ Robot+Usine +30%");
+  if (p.c >= 3 && sat.c >= 2) s.push("✅ Port+Satellite +40%");
+  if (l.c >= 2 && u.c >= 5) s.push("✅ Labo+Usine +50% clics");
+
+  let tg = [r, u, p, l, sat].reduce((a, g) => a + g.c, 0);
+  if (tg >= 30 && game.prestige >= 10) s.push("✅ MEGA SYNERGIE ×2!");
+
+  return s.length ? s.join("<br>") : "Aucune synergy";
+}
+
+function checkQuests() {
+  for (let q of game.quests) {
+    if (!q.d && q.c()) {
+      q.d = 1;
+      if (q.rt === "s") game.stars += q.r;
+      else if (q.rt === "c") game.coins += q.r;
+      else if (q.rt === "g") game.galaxies += q.r;
+      log("🎯 " + q.n);
+      save();
+    }
+  }
+}
+
+function drawGraph() {
+  let c = $("graph");
+  if (!c || graphData.length < 2) return;
+
+  let ct = c.getContext("2d");
+  ct.fillStyle = "#0a0a0a";
+  ct.fillRect(0, 0, c.width, c.height);
+
+  let mx = Math.max(...graphData) || 1;
+
+  ct.strokeStyle = "#0af";
+  ct.lineWidth = 2;
+  ct.beginPath();
+
+  for (let i = 0; i < graphData.length; i++) {
+    let x = i / graphData.length * c.width;
+    let y = c.height - (graphData[i] / mx) * c.height * 0.9;
+    if (i === 0) ct.moveTo(x, y);
+    else ct.lineTo(x, y);
+  }
+
+  ct.stroke();
+}
+
+// =========== UI UPDATE ===========
 function updateUI() {
-  $("coins").textContent = formatNum(game.coins);
-  $("cps").textContent = formatNum(cps());
+  let p = getProd();
+
+  // Update stats
+  $("coins").textContent = fmt(game.coins);
+  $("cps").textContent = fmt(p);
   $("stars").textContent = game.stars;
   $("galaxies").textContent = game.galaxies;
-  $("prestige").textContent = game.prestigeCount;
-  $("darkMatter").textContent = game.darkMatter;
-  $("clickValue").textContent = formatNum(clickVal());
-  $("prestigeProgress").textContent = Math.floor(game.prestigeProgress);
+  $("dm").textContent = game.darkMatter;
+  $("clickVal").textContent = fmt(clickVal());
+  $("prestProg").textContent = Math.floor(game.prestProg);
   $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
-  $("totalCoins").textContent = formatNum(game.totalCoins);
+  $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
   $("playTime").textContent = game.playTime + "s";
-  $("eventCount").textContent = game.eventCount;
-  
-  let genHTML = game.generators.map(g => { let cost = g.price * Math.pow(g.mult, g.count); return "<div class='item'><div><strong>" + g.name + "</strong> <span class='count'>×" + g.count + "</span></div><button class='gen-btn' data-id='" + g.id + "' " + (game.coins < cost ? "disabled" : "") + ">" + formatNum(cost) + "</button></div>"; }).join("");
-  $("gensList").innerHTML = genHTML;
-  
-  let upHTML = game.upgrades.filter(u => !u.bought).map(u => "<div class='item'><div><strong>" + u.name + "</strong> ×" + u.effect + "</div><button class='up-btn' data-id='" + u.id + "' " + (game.coins < u.price ? "disabled" : "") + ">" + formatNum(u.price) + "</button></div>").join("");
-  $("upgradesList").innerHTML = upHTML || "Tous les upgrades achetés!";
-  
-  if (game.unlockedFeatures.quests) { let questHTML = game.quests.map(q => { let rewardIcon = q.rewardType === "stars" ? "⭐" : (q.rewardType === "coins" ? "💰" : "🌀"); let rewardText = q.rewardType === "coins" ? formatNum(q.reward) : q.reward; return "<div class='item'><span>" + q.name + "</span><span style='color: #ffa; font-size: 0.9rem;'>Récompense: " + rewardIcon + " " + rewardText + "</span><span style='color:" + (q.done ? "#0f0" : "#ffa") + "'>" + (q.done ? "✅" : "⏳") + "</span></div>"; }).join(""); $("questsList").innerHTML = questHTML; } else { $("questsList").innerHTML = "<div style='color: #aaa;'>Débloqué à: Prestige 5 + 30⭐ + 1🌀</div>"; }
-  
-  if (game.unlockedFeatures.boosts) { let boostHTML = game.boosts.filter(b => Date.now() < b.end).map(b => { let sec = Math.ceil((b.end - Date.now()) / 1000); return "<div class='item'><span>" + b.type + " ×" + b.mult + "</span><span>" + sec + "s</span></div>"; }).join(""); $("activeBoosts").innerHTML = boostHTML || "Aucun boost actif"; } else { $("activeBoosts").innerHTML = "<div style='color: #aaa;'>Débloqué à: Prestige 3 + 15⭐</div>"; }
-  
-  if (game.unlockedFeatures.speedrun) { $("speedrunStatus").innerHTML = game.speedrunActive ? "⏱️ EN COURS..." : (game.speedrunTime ? "🏆 " + game.speedrunTime.toFixed(2) + "sec" : "Aucun record"); } else { $("speedrunStatus").innerHTML = "Débloqué à: Prestige 5 + 30⭐ + 1🌀"; }
-  
-  if (game.unlockedFeatures.fusions) { $("fusionsList").innerHTML = getFusions().map(f => "<div>" + f + "</div>").join("") || "Aucune fusion active"; } else { $("fusionsList").innerHTML = "<div style='color: #aaa;'>Débloqué à: Prestige 8 + 50⭐ + 2🌀</div>"; }
-  
-  if (!game.unlockedFeatures.graph) { $("graph").style.display = "none"; } else { $("graph").style.display = "block"; drawGraph(); }
-  
-  if (game.unlockedFeatures.synergies) { $("synergiesList").innerHTML = getSynergies().map(s => "<div>✅ " + s + "</div>").join("") || "Aucune synergy active"; } else { $("synergiesList").innerHTML = "Débloqué à: Prestige 5 + 30⭐ + 1🌀"; }
-  
-  if (game.darkMatter > 0) { let darkMatterBonus = game.darkMatter * 5; $("darkMatterInfo").innerHTML = "Tu as <strong>" + game.darkMatter + "</strong> Dark Matter! Bonus: <strong>+" + darkMatterBonus + "%</strong> sur TOUT"; } else if (game.unlockedFeatures.darkMatter) { $("darkMatterInfo").innerHTML = "Accumule du Dark Matter en faisant des Prestiges (tous les 10 prestiges après prestige 20)"; } else { $("darkMatterInfo").innerHTML = "Débloqué à: Prestige 20 + 150⭐ + 10🌀"; }
-  
+  $("presCount").textContent = game.prestige;
+
+  // Generators list
+  let genHtml = "";
+  for (let g of game.generators) {
+    let cost = g.p * Math.pow(g.m, g.c);
+    genHtml += `<div class="item"><strong>${g.n}</strong> ×${g.c}<button class="btn gen-buy" data-id="${g.id}" ${game.coins < cost ? "disabled" : ""}>${fmt(cost)}</button></div>`;
+  }
+  $("gensList").innerHTML = genHtml;
+
+  // Upgrades list
+  let upHtml = "";
+  for (let u of game.upgrades) {
+    if (!u.b) {
+      upHtml += `<div class="item"><strong>${u.n}</strong> ×${u.e}<button class="btn up-buy" data-id="${u.id}" ${game.coins < u.p ? "disabled" : ""}>${fmt(u.p)}</button></div>`;
+    }
+  }
+  $("upsList").innerHTML = upHtml || "Tous!";
+
+  // Quests list
+  let questHtml = "";
+  for (let q of game.quests) {
+    questHtml += `<div class="item">${q.n} <span style="color:${q.d ? "#0f0" : "#ffa"}">${q.d ? "✅" : "⏳"}</span></div>`;
+  }
+  $("questsList").innerHTML = questHtml;
+
+  // Active boosts
+  let boostHtml = "";
+  game.boosts.forEach(b => {
+    if (Date.now() < b.e) {
+      let sec = Math.ceil((b.e - Date.now()) / 1e3);
+      boostHtml += `<div style="color:#ffa">${b.type} ×${b.m} (${sec}s)</div>`;
+    }
+  });
+  $("activeBoosts").innerHTML = boostHtml || "Aucun";
+
+  // Synergies
+  $("synergies").innerHTML = getSynergies();
+
+  // Graph
+  graphData.push(p);
+  if (graphData.length > 60) graphData.shift();
+  drawGraph();
+
+  // Check quests
   checkQuests();
-  checkUnlocks();
-  updateLog();
+
+  // Logs
+  let logHtml = "";
+  for (let l of game.logs) logHtml += `<div>${l}</div>`;
+  $("log").innerHTML = logHtml;
+
   save();
 }
 
-setInterval(() => { let gain = cps() / FPS; game.coins += gain; game.totalCoins += gain; game.prestigeProgress += gain; updateGraphData(); updateUI(); }, 1000 / FPS);
-setInterval(() => { game.playTime++; if (Math.random() > 0.95 && game.unlockedFeatures.events) { game.eventCount++; game.coins += game.coins * 0.3; log("✨ Événement aléatoire: +30% pièces!", "event"); } updateUI(); }, 1000);
+function updateLog() {
+  let logHtml = "";
+  for (let l of game.logs) logHtml += `<div>${l}</div>`;
+  $("log").innerHTML = logHtml;
+}
 
+function updateSaveInfo() {
+  let d = new Date().toLocaleString();
+  $("lastSave").textContent = d;
+  let size = (JSON.stringify(game).length / 1024).toFixed(2);
+  $("saveSize").textContent = size + " KB";
+}
+
+// =========== SAVE/LOAD FUNCTIONS ===========
+function downloadSave() {
+  let data = JSON.stringify(game, null, 2);
+  let blob = new Blob([data], { type: "application/json" });
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "incremental_save_" + Date.now() + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function uploadSave() {
+  $("fileInput").click();
+}
+
+$("fileInput").addEventListener("change", e => {
+  let file = e.target.files[0];
+  if (!file) return;
+
+  let reader = new FileReader();
+  reader.onload = f => {
+    try {
+      let data = JSON.parse(f.target.result);
+      game = data;
+      save();
+      updateUI();
+      log("📂 Sauvegarde importée!");
+      alert("✅ Sauvegarde importée avec succès!");
+    } catch (err) {
+      alert("❌ Erreur: fichier invalide");
+    }
+  };
+  reader.readAsText(file);
+});
+
+function resetGame() {
+  if (!confirm("⚠️ ATTENTION: Cela supprimera ta progression!\n\nEs-tu VRAIMENT sûr?")) return;
+  if (!confirm("🔄 Dernier avertissement! C'est irréversible!")) return;
+
+  game = {
+    coins: 0,
+    totalCoins: 0,
+    totalClicks: 0,
+    stars: 0,
+    galaxies: 0,
+    prestige: 0,
+    prestProg: 0,
+    darkMatter: 0,
+    playTime: 0,
+    logs: [],
+    generators: [
+      { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15 },
+      { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15 },
+      { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15 },
+      { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15 },
+      { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15 }
+    ],
+    upgrades: [
+      { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c" },
+      { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r" },
+      { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r" },
+      { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u" },
+      { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u" },
+      { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po" },
+      { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l" },
+      { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s" }
+    ],
+    quests: [
+      { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
+      { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 50e3, rt: "c", d: 0 },
+      { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
+    ],
+    boosts: [],
+    graphData: []
+  };
+
+  localStorage.removeItem(SAVE_KEY);
+  save();
+  updateUI();
+  log("🔄 Jeu réinitialisé!");
+  alert("✅ Jeu réinitialisé!");
+}
+
+// =========== TUTORIAL ===========
+function showTutorial() {
+  $("tutorialModal").style.display = "block";
+  tutPage = 0;
+  updateTutorial();
+}
+
+function updateTutorial() {
+  $("tutText").textContent = TUTORIAL[tutPage];
+  $("tutPage").textContent = tutPage + 1;
+}
+
+$("nextBtn").addEventListener("click", () => {
+  if (tutPage < 9) {
+    tutPage++;
+    updateTutorial();
+  }
+});
+
+$("prevBtn").addEventListener("click", () => {
+  if (tutPage > 0) {
+    tutPage--;
+    updateTutorial();
+  }
+});
+
+// =========== TAB NAVIGATION ===========
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", function () {
+    document.querySelectorAll(".tab-btn").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".content").forEach(x => x.classList.remove("active"));
+    this.classList.add("active");
+    $(this.dataset.tab).classList.add("active");
+  });
+});
+
+// =========== EVENT LISTENERS ===========
+$("clickBtn").addEventListener("click", clickBtn);
+$("prestigeBtn").addEventListener("click", doPrestige);
+$("galaxyBtn").addEventListener("click", doGalaxy);
+$("boostProd").addEventListener("click", () => buyBoost("p"));
+$("boostClick").addEventListener("click", () => buyBoost("c"));
+$("downloadBtn").addEventListener("click", downloadSave);
+$("uploadBtn").addEventListener("click", uploadSave);
+$("resetBtn").addEventListener("click", resetGame);
+
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("gen-buy")) buyGen(e.target.dataset.id);
+  if (e.target.classList.contains("up-buy")) buyUp(e.target.dataset.id);
+});
+
+// =========== GAME LOOP ===========
+setInterval(() => {
+  let p = getProd();
+  game.coins += p / FPS;
+  game.totalCoins += p / FPS;
+  game.prestProg += p / FPS;
+  updateUI();
+}, 1000 / FPS);
+
+setInterval(() => {
+  game.playTime++;
+  if (Math.random() > 0.95) game.coins += game.coins * 0.3;
+  updateUI();
+}, 1000);
+
+// =========== INIT ===========
 load();
 updateUI();
-log("Bienvenue dans Incremental Trade!", "unlock");
-
-// EVENT DELEGATION pour les boutons
-document.addEventListener("click", function(e) {
-  if (e.target.classList.contains("gen-btn")) {
-    buyGen(e.target.dataset.id);
-  }
-  if (e.target.classList.contains("up-btn")) {
-    buyUp(e.target.dataset.id);
-  }
-}, false);
-
-let hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
-if (!hasSeenTutorial) { showTutorial(); localStorage.setItem("hasSeenTutorial", "true"); }
+log("Bienvenue!");
 </script>
 
 </body>
