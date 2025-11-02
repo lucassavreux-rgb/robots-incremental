@@ -1000,9 +1000,9 @@ const TUTORIAL = [
     <p style="margin: 0.5rem 0; color: #0af;"><strong>Les multiplicateurs finaux!</strong></p>
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
       <p style="margin: 0.5rem 0;"><strong>🌙 DARK MATTER:</strong></p>
-      <p style="margin: 0.5rem 0;">✅ Débloqué à Prestige 20</p>
+      <p style="margin: 0.5rem 0;">✅ Débloqué à Prestige 10</p>
+      <p style="margin: 0.5rem 0;">✅ Ensuite: +1 Dark Matter tous les 10 Prestige (P20, P30, P40, etc)</p>
       <p style="margin: 0.5rem 0;">✅ Chaque unité = +5% multiplicateur!</p>
-      <p style="margin: 0.5rem 0;">✅ Tu gagnes 1 Dark Matter tous les 10 Prestige après P20</p>
       <p style="margin: 0.5rem 0;">✅ Exemple: 5 Dark Matter = ×1.276 multiplicateur!</p>
     </div>
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px; text-align: left;">
@@ -1039,7 +1039,7 @@ const TUTORIAL = [
     <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
       <p style="color: #0af; font-size: 1.1rem;"><strong>PHASE 3: L'ENDGAME (8+ heures)</strong></p>
       <p style="margin: 0.5rem 0;">1️⃣1️⃣ Accumule Galaxies (elles te rendent FORT!)</p>
-      <p style="margin: 0.5rem 0;">1️⃣2️⃣ Déverrouille Dark Matter (P20)</p>
+      <p style="margin: 0.5rem 0;">1️⃣2️⃣ Déverrouille Dark Matter (P10)</p>
       <p style="margin: 0.5rem 0;">1️⃣3️⃣ Fais ta 1ère ASCENSION (100 Galaxies)</p>
       <p style="margin: 0.5rem 0;">1️⃣4️⃣ Chaque Ascension = +5% pour TOUJOURS!</p>
       <p style="margin: 0.5rem 0;">1️⃣5️⃣ Répète: Accumule Galaxies → Ascends → Recommence!</p>
@@ -1236,7 +1236,15 @@ function save() {
 
 function load() {
   let data = localStorage.getItem(SAVE_KEY);
-  if (data) game = JSON.parse(data);
+  if (data) {
+    try {
+      let parsed = JSON.parse(data);
+      // FIX 3: FUSION au lieu de suppression
+      game = { ...game, ...parsed };
+    } catch(e) {
+      console.error("Erreur lors du chargement de la sauvegarde:", e);
+    }
+  }
 }
 
 function getTradeConfig(type) {
@@ -1484,7 +1492,8 @@ function doPrestige() {
   game.stars += starsGained;
   game.prestige++;
 
-  if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
+  // FIX 2: Dark Matter obtenu à partir de P10
+  if (game.prestige >= 10 && game.prestige % 10 === 0) game.darkMatter++;
 
   for (let gen of game.generators) gen.c = 0;
   for (let u of game.upgrades) {
@@ -1590,9 +1599,9 @@ function updateUI() {
   
   let dmInfo = "";
   if (game.darkMatter === 0) {
-    dmInfo = "Débloqué à Prestige 20! +1 tous les 10 Prestige après P20.";
+    dmInfo = "Débloqué à Prestige 10! +1 tous les 10 Prestige (P20, P30, P40, etc).";
   } else {
-    let nextDM = Math.ceil((game.prestige - 20) / 10) * 10 + 20;
+    let nextDM = Math.ceil(game.prestige / 10) * 10 + 10;
     dmInfo = `✅ Débloqué! Prochain: ${nextDM} Prestige (actuellement: ${game.prestige})`;
   }
   $("dmInfo").textContent = dmInfo;
@@ -1788,12 +1797,13 @@ function resetGame() {
     playTime: 0,
     logs: [],
     tradeLogs: [],
+    // FIX 1: Mettre b: 1 au lieu de b: 0.5 pour tous les générateurs (COHÉRENT)
     generators: [
-      { id: "r", n: "Robot", b: 0.5, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
-      { id: "u", n: "Usine", b: 0.8, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
-      { id: "po", n: "Port", b: 2, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
-      { id: "l", n: "Labo", b: 8, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
-      { id: "s", n: "Satellite", b: 50, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
+      { id: "r", n: "Robot", b: 1, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
+      { id: "u", n: "Usine", b: 1.5, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
+      { id: "po", n: "Port", b: 4, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
+      { id: "l", n: "Labo", b: 15, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
+      { id: "s", n: "Satellite", b: 100, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
     ],
     upgrades: [
       { id: "c1", n: "Clic +50%", p: 100, e: 1.02, b: 0, t: "c", unlock: { type: "none" } },
@@ -2039,18 +2049,6 @@ setInterval(() => {
   game.playTime++;
   updateUI();
 }, 1000);
-
-try {
-  let oldSave = localStorage.getItem(SAVE_KEY);
-  if (oldSave) {
-    let parsed = JSON.parse(oldSave);
-    if (!parsed.achievements || !parsed.ascension || !parsed.bankInvested) {
-      localStorage.removeItem(SAVE_KEY);
-    }
-  }
-} catch(e) {
-  localStorage.removeItem(SAVE_KEY);
-}
 
 load();
 updateUI();
