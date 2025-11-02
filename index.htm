@@ -647,11 +647,11 @@ const TUTORIAL = [
     <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🤖 LES GÉNÉRATEURS 🤖</h2>
     <p style="margin: 0.5rem 0; color: #0f0;"><strong>Pourquoi cliquer si on peut se faire de l'argent PASSIF?</strong></p>
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p><strong>🤖 Robot</strong> → 1 pièce/sec</p>
-      <p><strong>🏭 Usine</strong> → 1.5 pièces/sec</p>
-      <p><strong>⛴️ Port</strong> → 4 pièces/sec</p>
-      <p><strong>🔬 Labo</strong> → 15 pièces/sec</p>
-      <p><strong>🛰️ Satellite</strong> → 100 pièces/sec</p>
+      <p><strong>🤖 Robot</strong> → 1 pièce/sec (coût: 50)</p>
+      <p><strong>🏭 Usine</strong> → 1.5 pièces/sec (coût: 500)</p>
+      <p><strong>⛴️ Port</strong> → 4 pièces/sec (coût: 5K)</p>
+      <p><strong>🔬 Labo</strong> → 15 pièces/sec (coût: 50K)</p>
+      <p><strong>🛰️ Satellite</strong> → 100 pièces/sec (coût: 500K)</p>
     </div>
     <p style="color: #aaa; margin-top: 1rem;">Plus tu en as, PLUS TU GAGNES! 📈</p>
   </div>`,
@@ -662,34 +662,36 @@ const TUTORIAL = [
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px;">
       <p>🔥 Chaque upgrade peut être acheté <strong>PLUSIEURS FOIS</strong></p>
       <p>📈 Plus tu achètes, plus le bonus augmente!</p>
-      <p>💎 Clic +50%, Robot ×2, Robot ×3, etc...</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Attention: le prix augmente à chaque achat!</p>
+      <p>💎 Clic +2% (très faible!), Robot ×2 (2K), Usine ×2 (50K), etc...</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">⚠️ Attention: très cher et faible bonus! C'est pas la priorité!</p>
     </div>
-    <p style="color: #0f0; margin-top: 1rem;">💡 <strong>Conseil:</strong> Améliore régulièrement tes générateurs! 💡</p>
+    <p style="color: #0f0; margin-top: 1rem;">💡 <strong>Conseil:</strong> Focus sur les générateurs d'abord! 💡</p>
   </div>`,
   
   `<div style="text-align: center; line-height: 2;">
     <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">⭐ LE PRESTIGE ⭐</h2>
-    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Accumule 5000 pièces = 1 PRESTIGE!</strong></p>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Accumule 50000 pièces = 1 PRESTIGE!</strong></p>
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
-      <p>✨ Chaque prestige = <strong>×1.25 multiplicateur</strong></p>
-      <p>🔄 Tes générateurs se réinitialisent MAIS...</p>
-      <p>💎 Tes bonus Clic et Robot restent!</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">C'est comme une réinitialisation avec des bonus permanents!</p>
+      <p>✨ Chaque étoile = <strong>×1.03 multiplicateur</strong> (faible mais ça s'accumule!)</p>
+      <p>📈 Le coût augmente: 50K → 75K → 112.5K → ...</p>
+      <p>🔄 Tes générateurs se réinitialisent COMPLÈTEMENT</p>
+      <p>💎 Bonus: +0.05 level sur Clic et Robot (petit bonus permanent!)</p>
     </div>
-    <p style="color: #fa0; margin-top: 1rem;">🎯 <strong>Objectif:</strong> Fais plusieurs Prestige! 🎯</p>
+    <p style="color: #fa0; margin-top: 1rem;">🎯 <strong>Objectif:</strong> Accumuler les étoiles! 🎯</p>
   </div>`,
   
   `<div style="text-align: center; line-height: 2;">
     <h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🌀 LES GALAXIES 🌀</h2>
     <p style="margin: 0.5rem 0; color: #0f0;"><strong>L'ENDGAME commence ici!</strong></p>
     <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
-      <p>🌀 Coûte des ⭐ Étoiles</p>
+      <p>🌀 <strong>Coûte des ⭐ Étoiles:</strong></p>
+      <p>1ère: 500⭐</p>
+      <p>2ème: 500 × 100 = 50K⭐</p>
+      <p>3ème: 500 × 100² = 5M⭐</p>
       <p>♾️ <strong>JAMAIS RÉINITIALISÉES</strong> au Prestige!</p>
-      <p>📈 Chaque Galaxie = ×1.1 multiplicateur PERMANENT</p>
-      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">100⭐ pour la 1ère, 1000⭐ pour la 2ème...</p>
+      <p>📈 Chaque Galaxie = ×1.01 multiplicateur PERMANENT (faible mais s'accumule!)</p>
     </div>
-    <p style="color: #aaa; margin-top: 1rem;">💡 Les Galaxies = ta vraie progression! 💡</p>
+    <p style="color: #aaa; margin-top: 1rem;">💡 Les Galaxies = ta VRAIE progression! C'est le long terme! 💡</p>
   </div>`,
   
   `<div style="text-align: center; line-height: 2;">
@@ -700,6 +702,7 @@ const TUTORIAL = [
       <p style="font-size: 1.1rem; color: #0f0;">✅ Quasi pas de risque (0.5% chance)</p>
       <p style="color: #aaa; margin-top: 0.5rem;">Idéal pour grinder sans peur!</p>
       <p style="color: #aaa;">L'argent est BLOQUÉ mais tu peux retirer anytime 🔐</p>
+      <p style="color: #aaa;">⚠️ Attention: au PRESTIGE, l'argent DISPARAIT!</p>
     </div>
     <p style="color: #fa0; margin-top: 1rem;">💡 Pour les patients! 💡</p>
   </div>`,
@@ -768,11 +771,12 @@ const TUTORIAL = [
     <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
       <p style="font-size: 1.1rem; color: #0f0;"><strong>RÉSUMÉ DE TA MISSION:</strong></p>
       <p>1️⃣ Clique & accumule des pièces</p>
-      <p>2️⃣ Achète des générateurs</p>
+      <p>2️⃣ Achète des générateurs (priorité absolue!)</p>
       <p>3️⃣ Fais des Prestige pour les multiplicateurs</p>
-      <p>4️⃣ Accumule des Galaxies (l'endgame)</p>
-      <p>5️⃣ Utilise le Trading pour plus de gains!</p>
+      <p>4️⃣ Accumule des Étoiles → Des Galaxies (l'endgame)</p>
+      <p>5️⃣ Utilise le Trading pour accélérer!</p>
       <p style="color: #aaa; font-size: 0.9rem; margin-top: 1rem;">C'est infini, tu peux continuer forever! ♾️</p>
+      <p style="color: #fa0; font-size: 0.9rem; margin-top: 0.5rem;">⚠️ Au PRESTIGE: TOUT se réinitialise sauf les Galaxies!</p>
     </div>
     <p style="color: #fa0; margin-top: 1.5rem; font-size: 1.2rem;">
       <strong>💎 Bonne chance, TRADER! 💎</strong>
@@ -996,8 +1000,8 @@ function clickVal() {
     if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  let starsMultiplier = Math.exp(game.stars * Math.log(1.08));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.05));
+  let starsMultiplier = Math.exp(game.stars * Math.log(1.03));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.01));
   
   return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -1019,8 +1023,8 @@ function getProd() {
   if (p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  let starsMultiplier = Math.exp(game.stars * Math.log(1.08));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.05));
+  let starsMultiplier = Math.exp(game.stars * Math.log(1.03));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.01));
 
   return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -1103,19 +1107,16 @@ function doPrestige() {
     totalStarsGained += starsGained;
     game.prestige++;
     prestigesCount++;
-    
-    // Recalculer le coût pour le prochain prestige
-    prestigeCost = baseCost * Math.pow(1.5, game.prestige);
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
-    // RESET TOUT - Générateurs ET Upgrades
+    // RESET TOUT - Générateurs ET Upgrades TOUS À ZÉRO
     for (let gen of game.generators) gen.c = 0;
     for (let u of game.upgrades) {
       u.b = 0;
     }
 
-    // BONUS PRESTIGE: +0.05 niveau auto sur Clic et Robot
+    // BONUS PRESTIGE: +0.05 niveau auto sur Clic et Robot SEULEMENT
     let clickUpgrade = game.upgrades.find(u => u.id === "c1");
     let robotUpgrade = game.upgrades.find(u => u.id === "r1");
     
@@ -1131,6 +1132,9 @@ function doPrestige() {
     log("💨 Les trades ont été réinitialisés!");
 
     log("⭐ +" + starsGained + "! (Prestige " + game.prestige + ")");
+    
+    // RESET LE COÛT DU PRESTIGE POUR LE PROCHAIN (revient à 50K × 1.5^nouveau prestige)
+    prestigeCost = baseCost * Math.pow(1.5, game.prestige);
   }
 
   log("🎉 +" + prestigesCount + " Prestige! Total: ⭐ +" + totalStarsGained);
