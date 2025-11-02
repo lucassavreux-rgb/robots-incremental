@@ -329,7 +329,7 @@ h3 {
 
   <div id="main" class="tab-content active">
     <div class="card" style="text-align: center;">
-      <button class="click-btn" ontouchend="clickBtn()" onclick="clickBtn()">🖱️ CLIQUER</button>
+      <button class="click-btn" onclick="clickBtn()">🖱️ CLIQUER</button>
       <div style="color: #aaa; margin-top: 1rem;">Gain par clic: <span class="count" id="clickValue">0</span></div>
     </div>
 
@@ -338,7 +338,7 @@ h3 {
   <h2>⏱️ PRESTIGE</h2>
   <div style="text-align: center; padding: 1rem;">
     <div style="font-size: 1.2rem; color: #0af; margin-bottom: 1rem;">Progression: <span id="prestigeProgress">0</span> / 5000</div>
-    <button class="click-btn" ontouchend="doPrestige()" onclick="doPrestige()">⚡ PRESTIGE (gain ⭐ +10% par prestige!)</button>
+    <button class="click-btn" onclick="doPrestige()">⚡ PRESTIGE (gain ⭐ +10% par prestige!)</button>
   </div>
 </div>
 
@@ -346,7 +346,7 @@ h3 {
   <h2>🌀 SUPER PRESTIGE (Galaxies)</h2>
   <div style="text-align: center; padding: 1rem;">
     <div style="font-size: 1.2rem; color: #a0f; margin-bottom: 1rem;">Coût: <span class="count" id="galaxyCost">100</span> ⭐</div>
-    <button class="click-btn" ontouchend="doSuperPrestige()" onclick="doSuperPrestige()">🌀 SUPER PRESTIGE (gain multiplicateur ×1.6)</button>
+    <button class="click-btn" onclick="doSuperPrestige()">🌀 SUPER PRESTIGE (gain multiplicateur ×1.6)</button>
   </div>
 </div>
 
@@ -378,13 +378,13 @@ h3 {
   <div id="questsList"></div>
 
   <h3>⏰ BOOSTS TEMPORAIRES</h3>
-  <button ontouchend="buyBoost('prod')" onclick="buyBoost('prod')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Prod ×2 (30s) - 50K</button>
-  <button ontouchend="buyBoost('click')" onclick="buyBoost('click')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Click ×2 (30s) - 30K</button>
+  <button onclick="buyBoost('prod')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Prod ×2 (30s) - 50K</button>
+  <button onclick="buyBoost('click')" style="margin: 0.5rem; padding: 0.5rem 1rem; background: #0af; color: #fff; border: none; border-radius: 6px; cursor: pointer;">⏰ Click ×2 (30s) - 30K</button>
   <div id="activeBoosts" style="margin-top: 1rem;"></div>
 
   <h3>🎮 MODE SPEEDRUN</h3>
-  <button ontouchend="startSpeedrun()" onclick="startSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #0f0 0%, #0a0 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">⏱️ Lancer Speedrun</button>
-  <button ontouchend="completeSpeedrun()" onclick="completeSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #f0a 0%, #c08 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 0.5rem;">🏁 Terminer Speedrun</button>
+  <button onclick="startSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #0f0 0%, #0a0 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">⏱️ Lancer Speedrun</button>
+  <button onclick="completeSpeedrun()" style="padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #f0a 0%, #c08 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-left: 0.5rem;">🏁 Terminer Speedrun</button>
   <div style="margin-top: 0.5rem; color: #ffa;" id="speedrunStatus"></div>
 
   <h3>🌙 DARK MATTER BONUSES</h3>
@@ -595,11 +595,13 @@ function updateUI() {
   $("playTime").textContent = game.playTime + "s";
   $("eventCount").textContent = game.eventCount;
   
-  let genHTML = game.generators.map(g => { let cost = g.price * Math.pow(g.mult, g.count); return "<div class='item'><div><strong>" + g.name + "</strong> <span class='count'>×" + g.count + "</span></div><button ontouchend=\"buyGen('" + g.id + "')\" onclick=\"buyGen('" + g.id + "')\" " + (game.coins < cost ? "disabled" : "") + ">" + formatNum(cost) + "</button></div>"; }).join("");
+  let genHTML = game.generators.map(g => { let cost = g.price * Math.pow(g.mult, g.count); return "<div class='item'><div><strong>" + g.name + "</strong> <span class='count'>×" + g.count + "</span></div><button class='gen-btn' data-id='" + g.id + "' " + (game.coins < cost ? "disabled" : "") + ">" + formatNum(cost) + "</button></div>"; }).join("");
   $("gensList").innerHTML = genHTML;
+  document.querySelectorAll(".gen-btn").forEach(btn => { btn.onclick = function() { buyGen(this.dataset.id); }; });
   
-  let upHTML = game.upgrades.filter(u => !u.bought).map(u => "<div class='item'><div><strong>" + u.name + "</strong> ×" + u.effect + "</div><button ontouchend=\"buyUp('" + u.id + "')\" onclick=\"buyUp('" + u.id + "')\" " + (game.coins < u.price ? "disabled" : "") + ">" + formatNum(u.price) + "</button></div>").join("");
+  let upHTML = game.upgrades.filter(u => !u.bought).map(u => "<div class='item'><div><strong>" + u.name + "</strong> ×" + u.effect + "</div><button class='up-btn' data-id='" + u.id + "' " + (game.coins < u.price ? "disabled" : "") + ">" + formatNum(u.price) + "</button></div>").join("");
   $("upgradesList").innerHTML = upHTML || "Tous les upgrades achetés!";
+  document.querySelectorAll(".up-btn").forEach(btn => { btn.onclick = function() { buyUp(this.dataset.id); }; });
   
   if (game.unlockedFeatures.quests) { let questHTML = game.quests.map(q => { let rewardIcon = q.rewardType === "stars" ? "⭐" : (q.rewardType === "coins" ? "💰" : "🌀"); let rewardText = q.rewardType === "coins" ? formatNum(q.reward) : q.reward; return "<div class='item'><span>" + q.name + "</span><span style='color: #ffa; font-size: 0.9rem;'>Récompense: " + rewardIcon + " " + rewardText + "</span><span style='color:" + (q.done ? "#0f0" : "#ffa") + "'>" + (q.done ? "✅" : "⏳") + "</span></div>"; }).join(""); $("questsList").innerHTML = questHTML; } else { $("questsList").innerHTML = "<div style='color: #aaa;'>Débloqué à: Prestige 5 + 30⭐ + 1🌀</div>"; }
   
