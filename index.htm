@@ -468,7 +468,7 @@ let game = {
   ],
 
   upgrades: [
-    { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c", unlock: { type: "none" } },
+    { id: "c1", n: "Clic +50%", p: 100, e: 1.15, b: 0, t: "c", unlock: { type: "none" } },
     { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
     { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
     { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
@@ -521,6 +521,16 @@ function $(id) {
 }
 
 function fmt(n) {
+  // Vérifier si c'est NaN ou Infinity
+  if (!isFinite(n) || isNaN(n)) return "0";
+  
+  // Très grands nombres en notation scientifique
+  if (n >= 1e15) {
+    let exp = Math.floor(Math.log10(n));
+    let mantissa = (n / Math.pow(10, exp)).toFixed(2);
+    return mantissa + "e" + exp;
+  }
+  if (n >= 1e12) return (n / 1e12).toFixed(1) + "T";
   if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
   if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
   if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
@@ -549,7 +559,12 @@ function clickVal() {
   for (let u of game.upgrades) {
     if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
-  return v * Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies) * (1 + game.darkMatter * 0.05);
+  
+  // Utiliser Math.exp et Math.log pour éviter Infinity
+  let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.6));
+  
+  return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
 
 function getProd() {
@@ -569,7 +584,11 @@ function getProd() {
   if (p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  return (total * sy) * Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies) * (1 + game.darkMatter * 0.05);
+  // Utiliser Math.exp et Math.log pour éviter Infinity
+  let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.6));
+
+  return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
 
 function clickBtn() {
@@ -652,14 +671,14 @@ function doPrestige() {
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
-    // BONUS PRESTIGE: +1 niveau auto sur Clic et Robot
+    // BONUS PRESTIGE: +0.5 niveau auto sur Clic et Robot
     let clickUpgrade = game.upgrades.find(u => u.id === "c1");
     let robotUpgrade = game.upgrades.find(u => u.id === "r1");
     
-    if (clickUpgrade) clickUpgrade.b++;
-    if (robotUpgrade) robotUpgrade.b++;
+    if (clickUpgrade) clickUpgrade.b += 0.5;
+    if (robotUpgrade) robotUpgrade.b += 0.5;
     
-    log("🎁 Bonus: +1 Clic, +1 Robot");
+    log("🎁 Bonus: +0.5 Clic, +0.5 Robot");
 
     for (let gen of game.generators) gen.c = 0;
     for (let u of game.upgrades) {
@@ -914,7 +933,7 @@ function resetGame() {
       { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
     ],
     upgrades: [
-      { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c", unlock: { type: "none" } },
+      { id: "c1", n: "Clic +50%", p: 100, e: 1.15, b: 0, t: "c", unlock: { type: "none" } },
       { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
       { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
       { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
