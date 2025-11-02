@@ -277,6 +277,7 @@
     <div class="card">
       <h3>⏱️ PRESTIGE</h3>
       <p>Progression: <span id="prestProg">0</span> / 5000</p>
+      <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
       <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
     </div>
 
@@ -628,24 +629,32 @@ function buyBoost(boostType) {
 function doPrestige() {
   if (game.totalCoins < 5000) return;
 
+  let totalStarsGained = 0;
+  let prestigesCount = 0;
+
   // Boucle pour faire plusieurs prestiges si les pièces le permettent
   while (game.totalCoins >= 5000) {
-    let g = Math.floor(game.totalCoins / 5000);
+    let coinsForThisPrestige = Math.floor(game.totalCoins / 5000) * 5000;
+    let starsFromThisPrestige = Math.floor(coinsForThisPrestige / 5000);
     let ms = Math.min(2, 1 + game.prestige * 0.1);
+    let starsGained = Math.floor(starsFromThisPrestige * ms);
 
-    game.totalCoins -= g * 5000;
+    game.totalCoins -= coinsForThisPrestige;
     game.coins = 0;
-    game.stars += Math.floor(g * ms);
+    game.stars += starsGained;
+    totalStarsGained += starsGained;
     game.prestige++;
+    prestigesCount++;
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
     for (let gen of game.generators) gen.c = 0;
     for (let u of game.upgrades) u.b = 0;
 
-    log("⭐ +" + Math.floor(g * ms) + "! (Prestige " + game.prestige + ")");
+    log("⭐ +" + starsGained + "! (Prestige " + game.prestige + ")");
   }
 
+  log("🎉 +" + prestigesCount + " Prestige! Total: ⭐ +" + totalStarsGained);
   save();
   updateUI();
 }
@@ -738,6 +747,8 @@ function updateUI() {
   $("dmInfo").textContent = dmInfo;
   $("clickVal").textContent = fmt(clickVal());
   $("prestProg").textContent = Math.floor(game.totalCoins);
+  let prestigePossible = Math.floor(game.totalCoins / 5000);
+  $("prestigeCount").textContent = prestigePossible;
   $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
