@@ -305,6 +305,17 @@
   <!-- TAB: FEATURES -->
   <div id="feat" class="content">
     <div class="card">
+      <h3>🌙 DARK MATTER</h3>
+      <div class="item">
+        <div>
+          <strong>Dark Matter: <span id="dmCount">0</span></strong><br>
+          <span style="color:#aaa;font-size:0.9rem">+5% à TOUS les gains par Dark Matter</span>
+        </div>
+      </div>
+      <div id="dmInfo" style="color:#aaa;font-size:0.9rem;margin-top:0.5rem"></div>
+    </div>
+
+    <div class="card">
       <h3>🎯 QUÊTES</h3>
       <div id="questsList"></div>
     </div>
@@ -447,22 +458,22 @@ let game = {
   logs: [],
 
   generators: [
-    { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15 },
-    { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15 },
-    { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15 },
-    { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15 },
-    { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15 }
+    { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
+    { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
+    { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15, unlock: { type: "stars", val: 5 } },
+    { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15, unlock: { type: "prestige", val: 3 } },
+    { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
   ],
 
   upgrades: [
-    { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c" },
-    { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r" },
-    { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r" },
-    { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u" },
-    { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u" },
-    { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po" },
-    { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l" },
-    { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s" }
+    { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c", unlock: { type: "none" } },
+    { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
+    { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
+    { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
+    { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
+    { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
+    { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
+    { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
   ],
 
   quests: [
@@ -474,6 +485,33 @@ let game = {
   boosts: [],
   graphData: []
 };
+
+// =========== UNLOCK SYSTEM ===========
+function isUnlocked(item) {
+  if (!item.unlock || item.unlock.type === "none") return true;
+  
+  if (item.unlock.type === "prestige") return game.prestige >= item.unlock.val;
+  if (item.unlock.type === "stars") return game.stars >= item.unlock.val;
+  if (item.unlock.type === "galaxies") return game.galaxies >= item.unlock.val;
+  
+  return false;
+}
+
+function getUnlockText(item) {
+  if (!item.unlock || item.unlock.type === "none") return "";
+  
+  if (item.unlock.type === "prestige") {
+    return `🔒 Débloqué à Prestige ${item.unlock.val} (actuellement: ${game.prestige})`;
+  }
+  if (item.unlock.type === "stars") {
+    return `🔒 Débloqué à ${item.unlock.val}⭐ (actuellement: ${game.stars})`;
+  }
+  if (item.unlock.type === "galaxies") {
+    return `🔒 Débloqué à ${item.unlock.val}🌀 (actuellement: ${game.galaxies})`;
+  }
+  
+  return "";
+}
 
 // =========== UTILITY FUNCTIONS ===========
 function $(id) {
@@ -543,7 +581,7 @@ function clickBtn() {
 
 function buyGen(id) {
   let g = game.generators.find(x => x.id === id);
-  if (!g) return;
+  if (!g || !isUnlocked(g)) return;
 
   let cost = g.p * Math.pow(g.m, g.c);
   if (game.coins < cost) return;
@@ -557,7 +595,7 @@ function buyGen(id) {
 
 function buyUp(id) {
   let u = game.upgrades.find(x => x.id === id);
-  if (!u || u.b || game.coins < u.p) return;
+  if (!u || !isUnlocked(u) || u.b || game.coins < u.p) return;
 
   game.coins -= u.p;
   u.b = 1;
@@ -674,6 +712,17 @@ function updateUI() {
   $("stars").textContent = game.stars;
   $("galaxies").textContent = game.galaxies;
   $("dm").textContent = game.darkMatter;
+  $("dmCount").textContent = game.darkMatter;
+  
+  // Dark Matter info
+  let dmInfo = "";
+  if (game.darkMatter === 0) {
+    dmInfo = "Débloqué à Prestige 20! +1 tous les 10 Prestige après P20.";
+  } else {
+    let nextDM = Math.ceil((game.prestige - 20) / 10) * 10 + 20;
+    dmInfo = `✅ Débloqué! Prochain: ${nextDM} Prestige (actuellement: ${game.prestige})`;
+  }
+  $("dmInfo").textContent = dmInfo;
   $("clickVal").textContent = fmt(clickVal());
   $("prestProg").textContent = Math.floor(game.prestProg);
   $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
@@ -686,18 +735,30 @@ function updateUI() {
   let genHtml = "";
   for (let g of game.generators) {
     let cost = g.p * Math.pow(g.m, g.c);
-    genHtml += `<div class="item"><strong>${g.n}</strong> ×${g.c}<button class="btn gen-buy" data-id="${g.id}" ${game.coins < cost ? "disabled" : ""}>${fmt(cost)}</button></div>`;
+    let unlocked = isUnlocked(g);
+    let unlockText = getUnlockText(g);
+    
+    if (!unlocked) {
+      genHtml += `<div class="item" style="opacity:0.5;border-left:3px solid #f66"><strong>${g.n}</strong> ${unlockText}</div>`;
+    } else {
+      genHtml += `<div class="item"><strong>${g.n}</strong> ×${g.c}<button class="btn gen-buy" data-id="${g.id}" ${game.coins < cost ? "disabled" : ""}>${fmt(cost)}</button></div>`;
+    }
   }
   $("gensList").innerHTML = genHtml;
 
   // Upgrades list
   let upHtml = "";
   for (let u of game.upgrades) {
-    if (!u.b) {
+    let unlocked = isUnlocked(u);
+    let unlockText = getUnlockText(u);
+    
+    if (!unlocked) {
+      upHtml += `<div class="item" style="opacity:0.5;border-left:3px solid #f66"><strong>${u.n}</strong> ${unlockText}</div>`;
+    } else if (!u.b) {
       upHtml += `<div class="item"><strong>${u.n}</strong> ×${u.e}<button class="btn up-buy" data-id="${u.id}" ${game.coins < u.p ? "disabled" : ""}>${fmt(u.p)}</button></div>`;
     }
   }
-  $("upsList").innerHTML = upHtml || "Tous!";
+  $("upsList").innerHTML = upHtml || "Tous débloqués!";
 
   // Quests list
   let questHtml = "";
@@ -800,21 +861,21 @@ function resetGame() {
     playTime: 0,
     logs: [],
     generators: [
-      { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15 },
-      { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15 },
-      { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15 },
-      { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15 },
-      { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15 }
+      { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
+      { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
+      { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15, unlock: { type: "stars", val: 5 } },
+      { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15, unlock: { type: "prestige", val: 3 } },
+      { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
     ],
     upgrades: [
-      { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c" },
-      { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r" },
-      { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r" },
-      { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u" },
-      { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u" },
-      { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po" },
-      { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l" },
-      { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s" }
+      { id: "c1", n: "Clic +50%", p: 100, e: 1.5, b: 0, t: "c", unlock: { type: "none" } },
+      { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
+      { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
+      { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
+      { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
+      { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
+      { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
+      { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
     ],
     quests: [
       { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
