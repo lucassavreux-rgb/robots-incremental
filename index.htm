@@ -367,7 +367,8 @@
 
     <div class="card">
       <h3>⏱️ PRESTIGE</h3>
-      <p>Progression: <span id="prestProg">0</span> / 50000</p>
+      <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
+      <p>Progression: <span id="prestProg">0</span></p>
       <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
       <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
     </div>
@@ -1082,14 +1083,17 @@ function buyBoost(boostType) {
 }
 
 function doPrestige() {
-  if (game.coins < 50000) return;
+  let baseCost = 50000;
+  let prestigeCost = baseCost * Math.pow(1.5, game.prestige);
+  
+  if (game.coins < prestigeCost) return;
 
   let totalStarsGained = 0;
   let prestigesCount = 0;
 
-  while (game.coins >= 50000) {
-    let coinsForThisPrestige = Math.floor(game.coins / 50000) * 50000;
-    let starsFromThisPrestige = Math.floor(coinsForThisPrestige / 50000);
+  while (game.coins >= prestigeCost) {
+    let coinsForThisPrestige = Math.floor(game.coins / prestigeCost) * prestigeCost;
+    let starsFromThisPrestige = Math.floor(coinsForThisPrestige / prestigeCost);
     let ms = Math.min(1.5, 1 + game.prestige * 0.02);
     let starsGained = Math.floor(starsFromThisPrestige * ms);
 
@@ -1099,6 +1103,9 @@ function doPrestige() {
     totalStarsGained += starsGained;
     game.prestige++;
     prestigesCount++;
+    
+    // Recalculer le coût pour le prochain prestige
+    prestigeCost = baseCost * Math.pow(1.5, game.prestige);
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
@@ -1108,14 +1115,14 @@ function doPrestige() {
       u.b = 0;
     }
 
-    // BONUS PRESTIGE: +0.25 niveau auto sur Clic et Robot
+    // BONUS PRESTIGE: +0.05 niveau auto sur Clic et Robot
     let clickUpgrade = game.upgrades.find(u => u.id === "c1");
     let robotUpgrade = game.upgrades.find(u => u.id === "r1");
     
     if (clickUpgrade) clickUpgrade.b += 0.05;
     if (robotUpgrade) robotUpgrade.b += 0.05;
     
-    log("🎁 Bonus: +0.25 Clic, +0.25 Robot");
+    log("🎁 Bonus: +0.05 Clic, +0.05 Robot");
 
     // RESET TRADES - L'argent disparait!
     game.trades.min = { amount: 0, totalGains: 0, totalLosses: 0 };
@@ -1223,7 +1230,10 @@ function updateUI() {
   $("dmInfo").textContent = dmInfo;
   $("clickVal").textContent = fmt(clickVal());
   $("prestProg").textContent = Math.floor(game.coins);
-  let prestigePossible = Math.floor(game.coins / 5000);
+  let baseCost = 50000;
+  let nextPrestigeCost = baseCost * Math.pow(1.5, game.prestige);
+  let prestigePossible = game.coins >= nextPrestigeCost ? Math.floor(game.coins / nextPrestigeCost) : 0;
+  $("prestigeCost").textContent = fmt(nextPrestigeCost);
   $("prestigeCount").textContent = prestigePossible;
   $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
   $("totalCoins").textContent = fmt(game.totalCoins);
