@@ -174,6 +174,92 @@
       margin: 1rem 0;
     }
 
+    .trade-card {
+      background: #1a1a2a;
+      border: 2px solid #0af;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 6px;
+    }
+
+    .trade-card.min {
+      border-color: #0f0;
+    }
+
+    .trade-card.mid {
+      border-color: #fa0;
+    }
+
+    .trade-card.high {
+      border-color: #f00;
+    }
+
+    .trade-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .trade-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .trade-stat {
+      background: #0a0a1a;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      border-left: 2px solid #0af;
+    }
+
+    .trade-stat-val {
+      font-weight: bold;
+      color: #0f0;
+      font-size: 1.1rem;
+    }
+
+    .trade-input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .trade-input {
+      flex: 1;
+      min-width: 100px;
+      padding: 0.5rem;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      color: #0f0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .trade-log-event {
+      padding: 0.5rem;
+      margin: 0.3rem 0;
+      background: #000;
+      border-left: 2px solid #0af;
+      font-size: 0.85rem;
+    }
+
+    .trade-log-event.gain {
+      border-left-color: #0f0;
+      color: #0f0;
+    }
+
+    .trade-log-event.loss {
+      border-left-color: #f00;
+      color: #f00;
+    }
+
     #tutorialModal {
       position: fixed;
       top: 0;
@@ -255,6 +341,10 @@
       <div>🌙 Dark Matter</div>
       <div class="stat-val" id="dm">0</div>
     </div>
+    <div class="stat">
+      <div>💸 Trade Bloqué</div>
+      <div class="stat-val" id="tradeBlocked">0</div>
+    </div>
   </div>
 
   <!-- TABS NAVIGATION -->
@@ -262,6 +352,7 @@
     <button class="tab-btn active" data-tab="main">🎮 JEU</button>
     <button class="tab-btn" data-tab="gens">🤖 GÉNÉRATEURS</button>
     <button class="tab-btn" data-tab="ups">⚡ UPGRADES</button>
+    <button class="tab-btn" data-tab="trade">💸 TRADING</button>
     <button class="tab-btn" data-tab="feat">✨ FEATURES</button>
     <button class="tab-btn" data-tab="stats">📊 STATS</button>
     <button class="tab-btn" data-tab="params">⚙️ PARAMÈTRES</button>
@@ -301,6 +392,115 @@
     <div class="card">
       <h3>⚡ AMÉLIORATIONS</h3>
       <div id="upsList"></div>
+    </div>
+  </div>
+
+  <!-- TAB: TRADING -->
+  <div id="trade" class="content">
+    <div class="card">
+      <h3>💸 SYSTÈME DE TRADING</h3>
+      <p style="color: #aaa; margin-bottom: 1rem;">Plus tu déposes, plus tu gagnes/perds! L'argent est BLOQUÉ jusqu'au retrait.</p>
+
+      <!-- RISQUE MINIMUM -->
+      <div class="trade-card min">
+        <div class="trade-header">
+          <div>
+            <h4>✅ RISQUE MINIMUM</h4>
+            <p style="color: #0f0; font-size: 0.9rem;">+3% par seconde | -2% risque (0.5% chance)</p>
+          </div>
+        </div>
+        
+        <div class="trade-stats">
+          <div class="trade-stat">
+            <div>💰 Investi</div>
+            <div class="trade-stat-val" id="minAmount">0</div>
+          </div>
+          <div class="trade-stat">
+            <div>⚡ +/sec</div>
+            <div class="trade-stat-val" id="minGain">0</div>
+          </div>
+          <div class="trade-stat">
+            <div>📉 Risque</div>
+            <div class="trade-stat-val" id="minLoss">0</div>
+          </div>
+        </div>
+
+        <div class="trade-input-group">
+          <input type="number" class="trade-input" id="minInput" placeholder="Montant à déposer" min="0">
+          <button class="btn" onclick="investTrade('min')">📤 DÉPOSER</button>
+          <button class="btn danger-btn" onclick="withdrawTrade('min')">📥 RETIRER</button>
+        </div>
+      </div>
+
+      <!-- RISQUE MOYEN -->
+      <div class="trade-card mid">
+        <div class="trade-header">
+          <div>
+            <h4>⚠️ RISQUE MOYEN</h4>
+            <p style="color: #fa0; font-size: 0.9rem;">+10% par seconde | -5% risque (3% chance)</p>
+          </div>
+        </div>
+        
+        <div class="trade-stats">
+          <div class="trade-stat">
+            <div>💰 Investi</div>
+            <div class="trade-stat-val" id="midAmount">0</div>
+          </div>
+          <div class="trade-stat">
+            <div>⚡ +/sec</div>
+            <div class="trade-stat-val" id="midGain">0</div>
+          </div>
+          <div class="trade-stat">
+            <div>📉 Risque</div>
+            <div class="trade-stat-val" id="midLoss">0</div>
+          </div>
+        </div>
+
+        <div class="trade-input-group">
+          <input type="number" class="trade-input" id="midInput" placeholder="Montant à déposer" min="0">
+          <button class="btn" onclick="investTrade('mid')">📤 DÉPOSER</button>
+          <button class="btn danger-btn" onclick="withdrawTrade('mid')">📥 RETIRER</button>
+        </div>
+      </div>
+
+      <!-- GROS RISQUE -->
+      <div class="trade-card high">
+        <div class="trade-header">
+          <div>
+            <h4>🔥 GROS RISQUE</h4>
+            <p style="color: #f00; font-size: 0.9rem;">+30% par seconde | -20% risque (10% chance) | TOUT PERDRE (5% chance)</p>
+          </div>
+        </div>
+        
+        <div class="trade-stats">
+          <div class="trade-stat">
+            <div>💰 Investi</div>
+            <div class="trade-stat-val" id="highAmount">0</div>
+          </div>
+          <div class="trade-stat">
+            <div>⚡ +/sec</div>
+            <div class="trade-stat-val" id="highGain">0</div>
+          </div>
+          <div class="trade-stat">
+            <div>📉 Risque</div>
+            <div class="trade-stat-val" id="highLoss">0</div>
+          </div>
+        </div>
+
+        <div class="trade-input-group">
+          <input type="number" class="trade-input" id="highInput" placeholder="Montant à déposer" min="0">
+          <button class="btn" onclick="investTrade('high')">📤 DÉPOSER</button>
+          <button class="btn danger-btn" onclick="withdrawTrade('high')">📥 RETIRER</button>
+        </div>
+      </div>
+
+      <!-- TRADE LOG -->
+      <div class="card">
+        <h4>📊 LOG TRADING</h4>
+        <div id="tradeLog" style="max-height: 200px; overflow-y: auto;">
+          <div class="trade-log-event">En attente...</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -417,7 +617,7 @@
       <button class="btn" onclick="document.getElementById('tutorialModal').style.display='none'">FERMER</button>
       <button class="btn" id="nextBtn">SUIVANT →</button>
     </div>
-    <p style="text-align:center;color:#aaa;font-size:0.9rem">Page <span id="tutPage">1</span>/10</p>
+    <p style="text-align:center;color:#aaa;font-size:0.9rem">Page <span id="tutPage">1</span>/12</p>
   </div>
 </div>
 
@@ -435,25 +635,149 @@ let skipQuestCheck = false;
 
 // =========== TUTORIEL ===========
 const TUTORIAL = [
-  "🎮 BIENVENUE! Clique sur CLIQUER pour gagner des pièces. C'est le début!",
+  `<div style="text-align: center; font-size: 1.3rem; line-height: 2;">
+    <h2 style="color: #0af; font-size: 2rem; margin-bottom: 1rem;">🎮 BIENVENUE TRADER! 🎮</h2>
+    <p style="margin: 0.5rem 0;">Tu es prêt à devenir RICHE?</p>
+    <p style="margin: 0.5rem 0; color: #0f0;">Clique sur le bouton <strong>CLIQUER</strong> pour commencer...</p>
+    <p style="margin: 1rem 0; color: #aaa; font-size: 0.95rem;">Plus tu cliques, plus tu gagnes. C'est aussi simple que ça! 💰</p>
+  </div>`,
   
-  "🤖 GÉNÉRATEURS: Tu peux acheter des robots qui gagnent automatiquement. Robot: 1/s, Usine: 1.5/s, Port: 4/s, Labo: 15/s, Satellite: 100/s. Plus tu en as, plus tu gagnes!",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🤖 LES GÉNÉRATEURS 🤖</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Pourquoi cliquer si on peut se faire de l'argent PASSIF?</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
+      <p><strong>🤖 Robot</strong> → 1 pièce/sec</p>
+      <p><strong>🏭 Usine</strong> → 1.5 pièces/sec</p>
+      <p><strong>⛴️ Port</strong> → 4 pièces/sec</p>
+      <p><strong>🔬 Labo</strong> → 15 pièces/sec</p>
+      <p><strong>🛰️ Satellite</strong> → 100 pièces/sec</p>
+    </div>
+    <p style="color: #aaa; margin-top: 1rem;">Plus tu en as, PLUS TU GAGNES! 📈</p>
+  </div>`,
   
-  "⚡ UPGRADES: Améliore tes gains! Clic +50% (×1.08 par level), Robot ×2, Robot ×3, Usine ×2, Usine ×3, Port ×2, Labo ×2, Satellite ×2. Tu peux les acheter PLUSIEURS FOIS! Le prix augmente à chaque achat.",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">⚡ LES UPGRADES ⚡</h2>
+    <p style="margin: 0.5rem 0; color: #fa0;"><strong>Améliore tes générateurs!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px;">
+      <p>🔥 Chaque upgrade peut être acheté <strong>PLUSIEURS FOIS</strong></p>
+      <p>📈 Plus tu achètes, plus le bonus augmente!</p>
+      <p>💎 Clic +50%, Robot ×2, Robot ×3, etc...</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Attention: le prix augmente à chaque achat!</p>
+    </div>
+    <p style="color: #0f0; margin-top: 1rem;">💡 <strong>Conseil:</strong> Améliore régulièrement tes générateurs! 💡</p>
+  </div>`,
   
-  "⭐ PRESTIGE: Accumule 5000 pièces → clique PRESTIGE! Tu gagnes des étoiles (1 étoile = 5000 pièces). Les étoiles: ×1.25 multiplicateur par étoile sur TOUT (clics + production). Les générateurs et upgrades se réinitialisent, SAUF ton bonus de Clic et Robot!",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">⭐ LE PRESTIGE ⭐</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Accumule 5000 pièces = 1 PRESTIGE!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
+      <p>✨ Chaque prestige = <strong>×1.25 multiplicateur</strong></p>
+      <p>🔄 Tes générateurs se réinitialisent MAIS...</p>
+      <p>💎 Tes bonus Clic et Robot restent!</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">C'est comme une réinitialisation avec des bonus permanents!</p>
+    </div>
+    <p style="color: #fa0; margin-top: 1rem;">🎯 <strong>Objectif:</strong> Fais plusieurs Prestige! 🎯</p>
+  </div>`,
   
-  "🌀 GALAXIES: Dépense des étoiles pour acheter des Galaxies! 100⭐ pour la 1ère, 1000⭐ pour la 2ème, etc. Chaque Galaxie = ×1.1 multiplicateur PERMANENT! Les Galaxies ne se réinitialisent JAMAIS au prestige!",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🌀 LES GALAXIES 🌀</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>L'ENDGAME commence ici!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
+      <p>🌀 Coûte des ⭐ Étoiles</p>
+      <p>♾️ <strong>JAMAIS RÉINITIALISÉES</strong> au Prestige!</p>
+      <p>📈 Chaque Galaxie = ×1.1 multiplicateur PERMANENT</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">100⭐ pour la 1ère, 1000⭐ pour la 2ème...</p>
+    </div>
+    <p style="color: #aaa; margin-top: 1rem;">💡 Les Galaxies = ta vraie progression! 💡</p>
+  </div>`,
   
-  "🌙 DARK MATTER: Débloqué à Prestige 20! Chaque Dark Matter = +5% sur TOUS tes gains. +1 Dark Matter tous les 10 Prestige après P20.",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #f00; font-size: 1.8rem; margin-bottom: 1rem;">💸 TRADING MINIMUM 💸</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>LA STRATÉGIE SAFE!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
+      <p style="font-size: 1.1rem; color: #0f0;">✅ <strong>+3% par seconde</strong></p>
+      <p style="font-size: 1.1rem; color: #0f0;">✅ Quasi pas de risque (0.5% chance)</p>
+      <p style="color: #aaa; margin-top: 0.5rem;">Idéal pour grinder sans peur!</p>
+      <p style="color: #aaa;">L'argent est BLOQUÉ mais tu peux retirer anytime 🔐</p>
+    </div>
+    <p style="color: #fa0; margin-top: 1rem;">💡 Pour les patients! 💡</p>
+  </div>`,
   
-  "🎯 QUÊTES: 1M pièces totales → +500⭐. 5 générateurs → +5000💰. Prestige 3x → +1🌀 gratuit! Les quêtes se complètent automatiquement.",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">💸 TRADING MOYEN 💸</h2>
+    <p style="margin: 0.5rem 0; color: #fa0;"><strong>L'ÉQUILIBRE PARFAIT!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #fa0; border-radius: 4px;">
+      <p style="font-size: 1.1rem; color: #fa0;">⚡ <strong>+10% par seconde</strong></p>
+      <p style="font-size: 1.1rem; color: #fa0;">⚠️ 3% chance de perdre 5%</p>
+      <p style="color: #aaa; margin-top: 0.5rem;">Risque modéré = gains modérés</p>
+      <p style="color: #aaa;">Parfait pour les joueurs équilibrés! ⚖️</p>
+    </div>
+    <p style="color: #0f0; margin-top: 1rem;">💡 Le choix des pros! 💡</p>
+  </div>`,
   
-  "⏰ BOOSTS: Active des boosts temporaires (30 sec): Prod ×2 (50K) ou Click ×2 (30K). Ils s'additionnent avec tes gains!",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #f00; font-size: 1.8rem; margin-bottom: 1rem;">🔥 TRADING AGRESSIF 🔥</h2>
+    <p style="margin: 0.5rem 0; color: #f00;"><strong>POUR LES FOUS DE RISQUE!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #f00; border-radius: 4px;">
+      <p style="font-size: 1.1rem; color: #0f0;">🚀 <strong>+30% par seconde</strong></p>
+      <p style="font-size: 1.1rem; color: #f00;">💥 10% chance de perdre 20%</p>
+      <p style="font-size: 1.1rem; color: #f00;">💥 5% chance de TOUT PERDRE!</p>
+      <p style="color: #aaa; margin-top: 0.5rem;">Énorme potentiel = énorme risque!</p>
+    </div>
+    <p style="color: #fa0; margin-top: 1rem;">⚠️ À utiliser avec modération! ⚠️</p>
+  </div>`,
   
-  "🔗 SYNERGIES: Des bonus spéciaux! Robot+Usine (5+,3+)→+30%. Port+Satellite (3+,2+)→+40%. Labo+Usine (2+,5+)→+50% clics. MEGA (30+ gens, P10)→×2!",
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🌙 DARK MATTER 🌙</h2>
+    <p style="margin: 0.5rem 0; color: #aaa;"><strong>Le secret de l'univers...</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
+      <p>🔓 Débloqué à <strong>Prestige 20</strong></p>
+      <p>✨ Chaque Dark Matter = <strong>+5% sur TOUS tes gains</strong></p>
+      <p>📈 +1 tous les 10 Prestige après P20</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Plus tu progressnes, plus ça devient puissant!</p>
+    </div>
+    <p style="color: #0f0; margin-top: 1rem;">💎 C'est LE multiplicateur final! 💎</p>
+  </div>`,
   
-  "🎉 PROGRESSION: Phase 1 (P0-2): Grind clics+robots. Phase 2 (P2-5): Unlock → 30⭐ → 1🌀. Phase 3 (P20+): Infinite! Le jeu ne se termine pas, tu peux continuer indéfiniment. BONNE CHANCE! 🚀"
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🎯 LES QUÊTES 🎯</h2>
+    <p style="margin: 0.5rem 0; color: #0f0;"><strong>Des récompenses gratuites!</strong></p>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
+      <p>💰 1M pièces totales → <strong>+500⭐</strong></p>
+      <p>🤖 5 générateurs → <strong>+5000 pièces</strong></p>
+      <p>⭐ Prestige 3x → <strong>+1 Galaxie gratuite!</strong></p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Se complètent automatiquement! ✅</p>
+    </div>
+    <p style="color: #fa0; margin-top: 1rem;">💡 Regarde l'onglet FEATURES pour les suivre! 💡</p>
+  </div>`,
+  
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #aaa; font-size: 1.8rem; margin-bottom: 1rem;">🎨 AUTRES FEATURES 🎨</h2>
+    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px;">
+      <p>⏰ <strong>BOOSTS:</strong> +50K = Prod ×2 pendant 30sec!</p>
+      <p>🔗 <strong>SYNERGIES:</strong> Bonus si tu as assez de générateurs!</p>
+      <p>📊 <strong>GRAPHIQUE:</strong> Vois ta production en temps réel!</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 0.5rem;">Explore tout pour maximiser tes gains! 🚀</p>
+    </div>
+    <p style="color: #0f0; margin-top: 1rem;">✨ T'es prêt pour l'aventure? ✨</p>
+  </div>`,
+  
+  `<div style="text-align: center; line-height: 2;">
+    <h2 style="color: #0af; font-size: 2rem; margin-bottom: 1rem;">🚀 LET'S GO! 🚀</h2>
+    <div style="background: #0a0a1a; padding: 1.5rem; margin: 1rem 0; border-left: 3px solid #0f0; border-radius: 4px;">
+      <p style="font-size: 1.1rem; color: #0f0;"><strong>RÉSUMÉ DE TA MISSION:</strong></p>
+      <p>1️⃣ Clique & accumule des pièces</p>
+      <p>2️⃣ Achète des générateurs</p>
+      <p>3️⃣ Fais des Prestige pour les multiplicateurs</p>
+      <p>4️⃣ Accumule des Galaxies (l'endgame)</p>
+      <p>5️⃣ Utilise le Trading pour plus de gains!</p>
+      <p style="color: #aaa; font-size: 0.9rem; margin-top: 1rem;">C'est infini, tu peux continuer forever! ♾️</p>
+    </div>
+    <p style="color: #fa0; margin-top: 1.5rem; font-size: 1.2rem;">
+      <strong>💎 Bonne chance, TRADER! 💎</strong>
+    </p>
+    <p style="color: #aaa;">Ferme ce tutoriel et commence à GAGNER! 🎉</p>
+  </div>`
 ];
 
 // =========== GAME STATE ===========
@@ -467,6 +791,7 @@ let game = {
   darkMatter: 0,
   playTime: 0,
   logs: [],
+  tradeLogs: [],
 
   generators: [
     { id: "r", n: "Robot", b: 1, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
@@ -497,11 +822,11 @@ let game = {
   graphData: [],
   
   // TRADING SYSTEM
-  trades: [
-    { id: "min", n: "Risque Minimum", amount: 0, gain: 0, loss: 0 },
-    { id: "mid", n: "Risque Moyen", amount: 0, gain: 0, loss: 0 },
-    { id: "high", n: "Gros Risque", amount: 0, gain: 0, loss: 0 }
-  ]
+  trades: {
+    min: { amount: 0, totalGains: 0, totalLosses: 0 },
+    mid: { amount: 0, totalGains: 0, totalLosses: 0 },
+    high: { amount: 0, totalGains: 0, totalLosses: 0 }
+  }
 };
 
 // =========== UNLOCK SYSTEM ===========
@@ -537,10 +862,8 @@ function $(id) {
 }
 
 function fmt(n) {
-  // Vérifier si c'est NaN ou Infinity
   if (!isFinite(n) || isNaN(n)) return "0";
   
-  // Très grands nombres en notation scientifique
   if (n >= 1e15) {
     let exp = Math.floor(Math.log10(n));
     let mantissa = (n / Math.pow(10, exp)).toFixed(2);
@@ -559,6 +882,12 @@ function log(msg) {
   updateLog();
 }
 
+function tradeLog(msg, type = "info") {
+  game.tradeLogs.unshift({ msg, type, time: Date.now() });
+  if (game.tradeLogs.length > 20) game.tradeLogs.pop();
+  updateTradeLog();
+}
+
 function save() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(game));
   updateSaveInfo();
@@ -569,6 +898,96 @@ function load() {
   if (data) game = JSON.parse(data);
 }
 
+// =========== TRADING SYSTEM ===========
+function getTradeConfig(type) {
+  const configs = {
+    min: { gainRate: 0.03, lossChance: 0.005, lossRate: 0.02 },
+    mid: { gainRate: 0.10, lossChance: 0.03, lossRate: 0.05 },
+    high: { gainRate: 0.30, lossChance: 0.10, lossRate: 0.20, riskAll: 0.05 }
+  };
+  return configs[type];
+}
+
+function investTrade(type) {
+  let input = $(`${type}Input`);
+  let amount = parseFloat(input.value);
+  
+  if (!amount || amount <= 0 || game.coins < amount) {
+    alert("❌ Montant invalide!");
+    return;
+  }
+
+  game.coins -= amount;
+  game.trades[type].amount += amount;
+  input.value = "";
+  tradeLog(`📤 Dépôt ${type}: +${fmt(amount)}`, "info");
+  log(`📤 Trade ${type}: +${fmt(amount)}`);
+  save();
+  updateUI();
+}
+
+function withdrawTrade(type) {
+  let trade = game.trades[type];
+  if (trade.amount <= 0) {
+    alert("❌ Rien à retirer!");
+    return;
+  }
+
+  game.coins += trade.amount;
+  game.totalCoins += trade.amount;
+  tradeLog(`📥 Retrait ${type}: +${fmt(trade.amount)} ✅`, "gain");
+  log(`📥 Retrait ${type}: +${fmt(trade.amount)}`);
+  trade.amount = 0;
+  trade.totalGains = 0;
+  trade.totalLosses = 0;
+  save();
+  updateUI();
+}
+
+function processTradeGains() {
+  for (let type of ["min", "mid", "high"]) {
+    let trade = game.trades[type];
+    if (trade.amount <= 0) continue;
+
+    let config = getTradeConfig(type);
+    
+    // Gain
+    let gain = trade.amount * config.gainRate / FPS;
+    trade.amount += gain;
+    trade.totalGains += gain;
+
+    // Risk management
+    let rand = Math.random();
+    
+    if (type === "high" && rand < config.riskAll) {
+      // RISK ALL - Tout perdre!
+      tradeLog(`💥 CATASTROPHE! Vous avez tout perdu en ${type}!`, "loss");
+      log(`💥 Trade ${type}: TOUT PERDU!`);
+      trade.amount = 0;
+      trade.totalGains = 0;
+      trade.totalLosses = 0;
+    } else if (rand < config.lossChance) {
+      // Normal loss
+      let loss = trade.amount * config.lossRate;
+      trade.amount = Math.max(0, trade.amount - loss);
+      trade.totalLosses += loss;
+      tradeLog(`📉 Perte ${type}: -${fmt(loss)}`, "loss");
+      log(`📉 Trade ${type}: -${fmt(loss)}`);
+    }
+  }
+
+  save();
+  updateUI();
+}
+
+function updateTradeLog() {
+  let html = "";
+  for (let entry of game.tradeLogs) {
+    html += `<div class="trade-log-event ${entry.type}">${entry.msg}</div>`;
+  }
+  $("tradeLog").innerHTML = html || "<div class='trade-log-event'>En attente...</div>";
+}
+
 // =========== GAME MECHANICS ===========
 function clickVal() {
   let v = 1;
@@ -576,7 +995,6 @@ function clickVal() {
     if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  // Utiliser Math.exp et Math.log pour éviter Infinity
   let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
   let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.1));
   
@@ -600,7 +1018,6 @@ function getProd() {
   if (p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  // Utiliser Math.exp et Math.log pour éviter Infinity
   let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
   let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.1));
 
@@ -637,7 +1054,6 @@ function buyUp(id) {
   let u = game.upgrades.find(x => x.id === id);
   if (!u || !isUnlocked(u)) return;
 
-  // Calculer le prix avec multiplicateur (comme les générateurs)
   let cost = u.p * Math.pow(1.15, u.b);
   if (game.coins < cost) return;
 
@@ -671,7 +1087,6 @@ function doPrestige() {
   let totalStarsGained = 0;
   let prestigesCount = 0;
 
-  // Boucle pour faire plusieurs prestiges si les pièces le permettent
   while (game.coins >= 5000) {
     let coinsForThisPrestige = Math.floor(game.coins / 5000) * 5000;
     let starsFromThisPrestige = Math.floor(coinsForThisPrestige / 5000);
@@ -687,7 +1102,6 @@ function doPrestige() {
 
     if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
-    // BONUS PRESTIGE: +0.25 niveau auto sur Clic et Robot (1 level tous les 4 prestiges)
     let clickUpgrade = game.upgrades.find(u => u.id === "c1");
     let robotUpgrade = game.upgrades.find(u => u.id === "r1");
     
@@ -698,7 +1112,6 @@ function doPrestige() {
 
     for (let gen of game.generators) gen.c = 0;
     for (let u of game.upgrades) {
-      // Garder seulement Clic et Robot bonus, reset les autres
       if (u.id !== "c1" && u.id !== "r1") u.b = 0;
     }
 
@@ -787,6 +1200,10 @@ function updateUI() {
   $("dm").textContent = game.darkMatter;
   $("dmCount").textContent = game.darkMatter;
   
+  // Trade blocked coins
+  let blockedTotal = game.trades.min.amount + game.trades.mid.amount + game.trades.high.amount;
+  $("tradeBlocked").textContent = fmt(blockedTotal);
+  
   // Dark Matter info
   let dmInfo = "";
   if (game.darkMatter === 0) {
@@ -806,6 +1223,17 @@ function updateUI() {
   $("playTime").textContent = game.playTime + "s";
   $("presCount").textContent = game.prestige;
 
+  // Update trades UI
+  for (let type of ["min", "mid", "high"]) {
+    let trade = game.trades[type];
+    let config = getTradeConfig(type);
+    let gain = trade.amount * config.gainRate;
+    
+    $(`${type}Amount`).textContent = fmt(trade.amount);
+    $(`${type}Gain`).textContent = fmt(gain);
+    $(`${type}Loss`).textContent = fmt(trade.amount * config.lossRate);
+  }
+
   // Generators list
   let genHtml = "";
   for (let g of game.generators) {
@@ -813,7 +1241,6 @@ function updateUI() {
     let unlocked = isUnlocked(g);
     let unlockText = getUnlockText(g);
     
-    // Calculer le gain/sec de ce générateur
     let upgMultiplier = 1;
     for (let u of game.upgrades) {
       if (u.t === g.id && u.b) upgMultiplier *= u.e;
@@ -942,6 +1369,7 @@ function resetGame() {
     darkMatter: 0,
     playTime: 0,
     logs: [],
+    tradeLogs: [],
     generators: [
       { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
       { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
@@ -965,7 +1393,12 @@ function resetGame() {
       { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
     ],
     boosts: [],
-    graphData: []
+    graphData: [],
+    trades: {
+      min: { amount: 0, totalGains: 0, totalLosses: 0 },
+      mid: { amount: 0, totalGains: 0, totalLosses: 0 },
+      high: { amount: 0, totalGains: 0, totalLosses: 0 }
+    }
   };
 
   localStorage.removeItem(SAVE_KEY);
@@ -983,12 +1416,12 @@ function showTutorial() {
 }
 
 function updateTutorial() {
-  $("tutText").textContent = TUTORIAL[tutPage];
+  $("tutText").innerHTML = TUTORIAL[tutPage];
   $("tutPage").textContent = tutPage + 1;
 }
 
 $("nextBtn").addEventListener("click", () => {
-  if (tutPage < 9) {
+  if (tutPage < 11) {
     tutPage++;
     updateTutorial();
   }
@@ -1031,6 +1464,7 @@ setInterval(() => {
   let p = getProd();
   game.coins += p / FPS;
   game.totalCoins += p / FPS;
+  processTradeGains();
   updateUI();
 }, 1000 / FPS);
 
@@ -1043,6 +1477,7 @@ setInterval(() => {
 load();
 updateUI();
 log("Bienvenue!");
+updateTradeLog();
 </script>
 
 </body>
