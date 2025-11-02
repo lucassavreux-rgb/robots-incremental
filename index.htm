@@ -576,7 +576,7 @@ function clickBtn() {
   game.totalCoins += v;
   game.totalClicks++;
   game.prestProg += v;
-  updateUI();
+  updateDisplay();
 }
 
 function buyGen(id) {
@@ -590,7 +590,7 @@ function buyGen(id) {
   g.c++;
   log("✅ +" + g.n);
   save();
-  updateUI();
+  updateDisplay();
 }
 
 function buyUp(id) {
@@ -601,7 +601,7 @@ function buyUp(id) {
   u.b = 1;
   log("✅ " + u.n);
   save();
-  updateUI();
+  updateDisplay();
 }
 
 function buyBoost(boostType) {
@@ -616,7 +616,7 @@ function buyBoost(boostType) {
   game.boosts.push({ type: boostType, m: mult, e: Date.now() + 30e3 });
   log("⏰ Boost " + boostType);
   save();
-  updateUI();
+  updateDisplay();
 }
 
 function doPrestige() {
@@ -637,7 +637,7 @@ function doPrestige() {
 
   log("⭐ +" + Math.floor(g * ms) + "!");
   save();
-  updateUI();
+  updateDisplay();
 }
 
 function doGalaxy() {
@@ -648,7 +648,7 @@ function doGalaxy() {
   game.galaxies++;
   log("🌀 +1!");
   save();
-  updateUI();
+  updateDisplay();
 }
 
 function getSynergies() {
@@ -674,6 +674,7 @@ function checkQuests() {
       else if (q.rt === "g") game.galaxies += q.r;
       log("🎯 " + q.n);
       save();
+      updateDisplay();
     }
   }
 }
@@ -703,7 +704,7 @@ function drawGraph() {
 }
 
 // =========== UI UPDATE ===========
-function updateUI() {
+function updateDisplay() {
   let p = getProd();
 
   // Update stats
@@ -796,6 +797,10 @@ function updateUI() {
   save();
 }
 
+function updateUI() {
+  updateDisplay();
+}
+
 function updateLog() {
   let logHtml = "";
   for (let l of game.logs) logHtml += `<div>${l}</div>`;
@@ -835,7 +840,7 @@ $("fileInput").addEventListener("change", e => {
       let data = JSON.parse(f.target.result);
       game = data;
       save();
-      updateUI();
+      updateDisplay();
       log("📂 Sauvegarde importée!");
       alert("✅ Sauvegarde importée avec succès!");
     } catch (err) {
@@ -888,7 +893,7 @@ function resetGame() {
 
   localStorage.removeItem(SAVE_KEY);
   save();
-  updateUI();
+  updateDisplay();
   log("🔄 Jeu réinitialisé!");
   alert("✅ Jeu réinitialisé!");
 }
