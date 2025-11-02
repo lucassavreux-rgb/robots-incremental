@@ -1169,12 +1169,13 @@ function clickVal() {
   
   let starsMultiplier = Math.pow(1.03, game.stars);
   let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
+  let ascensionMultiplier = 1 + (game.ascension * 0.05);
   
   // Protection contre Infinity
   if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
   if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
   
-  return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
+  return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
 }
 
 function getProd() {
