@@ -1457,43 +1457,47 @@ function updateUI() {
   $("presCount").textContent = game.prestige;
 
   // Ascension
-  $("ascension").textContent = game.ascension;
-  $("ascensionBonus").textContent = game.ascension * 5;
-  $("ascensionCost").textContent = fmt(100 * Math.pow(2, game.ascension));
-  $("ascensionRequired").textContent = 100 * Math.pow(2, game.ascension);
+  $("ascension").textContent = game.ascension || 0;
+  $("ascensionBonus").textContent = (game.ascension || 0) * 5;
+  $("ascensionCost").textContent = fmt(100 * Math.pow(2, game.ascension || 0));
+  $("ascensionRequired").textContent = 100 * Math.pow(2, game.ascension || 0);
   $("ascensionCurrent").textContent = game.galaxies;
 
   // Banque
-  $("bankAmount").textContent = fmt(game.bankInvested);
-  $("bankInvested").textContent = fmt(game.bankInvested);
-  let bankGains = (game.bankInvested * 0.001) / FPS;
+  $("bankAmount").textContent = fmt(game.bankInvested || 0);
+  $("bankInvested").textContent = fmt(game.bankInvested || 0);
+  let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
   $("bankGains").textContent = fmt(bankGains);
-  $("bankGenerated").textContent = fmt(game.bankGenerated);
+  $("bankGenerated").textContent = fmt(game.bankGenerated || 0);
 
   // Lotterie
-  $("lotteryTickets").textContent = game.lotteryTickets;
+  $("lotteryTickets").textContent = game.lotteryTickets || 0;
   let lotteryHtml = "";
-  for (let log of game.lotteryLog) {
-    lotteryHtml += `<div style="padding:0.3rem;color:#aaa">${log}</div>`;
+  if (game.lotteryLog) {
+    for (let log of game.lotteryLog) {
+      lotteryHtml += `<div style="padding:0.3rem;color:#aaa">${log}</div>`;
+    }
   }
   if ($("lotteryLog")) $("lotteryLog").innerHTML = lotteryHtml || "<div style='color:#aaa'>En attente...</div>";
 
   // Achievements
-  let achCount = game.achievements.filter(a => a.unlocked).length;
+  let achCount = game.achievements ? game.achievements.filter(a => a.unlocked).length : 0;
   $("achievementCount").textContent = achCount;
   let achHtml = "";
-  for (let ach of game.achievements) {
-    let achDiv = ach.unlocked ? 
-      `<div style="background:#0a0a2a;padding:1rem;border-radius:4px;border-left:3px solid #0f0">
-        <div style="color:#0f0;font-weight:bold">${ach.name}</div>
-        <div style="color:#aaa;font-size:0.9rem">${ach.desc}</div>
-        <div style="color:#fa0;font-size:0.9rem">+${ach.reward} 💰</div>
-      </div>` :
-      `<div style="background:#0a0a0a;padding:1rem;border-radius:4px;border-left:3px solid #666;opacity:0.5">
-        <div style="color:#aaa;font-weight:bold">${ach.name}</div>
-        <div style="color:#666;font-size:0.9rem">${ach.desc}</div>
-      </div>`;
-    achHtml += achDiv;
+  if (game.achievements) {
+    for (let ach of game.achievements) {
+      let achDiv = ach.unlocked ? 
+        `<div style="background:#0a0a2a;padding:1rem;border-radius:4px;border-left:3px solid #0f0">
+          <div style="color:#0f0;font-weight:bold">${ach.name}</div>
+          <div style="color:#aaa;font-size:0.9rem">${ach.desc}</div>
+          <div style="color:#fa0;font-size:0.9rem">+${ach.reward} 💰</div>
+        </div>` :
+        `<div style="background:#0a0a0a;padding:1rem;border-radius:4px;border-left:3px solid #666;opacity:0.5">
+          <div style="color:#aaa;font-weight:bold">${ach.name}</div>
+          <div style="color:#666;font-size:0.9rem">${ach.desc}</div>
+        </div>`;
+      achHtml += achDiv;
+    }
   }
   if ($("achievementsList")) $("achievementsList").innerHTML = achHtml;
 
@@ -1845,6 +1849,8 @@ function playLottery() {
 
 // =========== ACHIEVEMENTS SYSTEM ===========
 function checkAchievements() {
+  if (!game.achievements) return; // Protection
+  
   for (let ach of game.achievements) {
     if (!ach.unlocked && ach.check()) {
       ach.unlocked = true;
@@ -1906,6 +1912,20 @@ setInterval(() => {
 }, 1000);
 
 // =========== INIT ===========
+// Nettoyer les anciennes saves corrompues
+try {
+  let oldSave = localStorage.getItem(SAVE_KEY);
+  if (oldSave) {
+    let parsed = JSON.parse(oldSave);
+    // Si pas de achievements, c'est une vieille save
+    if (!parsed.achievements || !parsed.ascension || !parsed.bankInvested) {
+      localStorage.removeItem(SAVE_KEY);
+    }
+  }
+} catch(e) {
+  localStorage.removeItem(SAVE_KEY);
+}
+
 load();
 updateUI();
 log("Bienvenue!");
