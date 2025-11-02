@@ -576,7 +576,7 @@ function clickBtn() {
   game.totalCoins += v;
   game.totalClicks++;
   game.prestProg += v;
-  updateDisplay();
+  updateUI();
 }
 
 function buyGen(id) {
@@ -590,7 +590,7 @@ function buyGen(id) {
   g.c++;
   log("✅ +" + g.n);
   save();
-  updateDisplay();
+  updateUI();
 }
 
 function buyUp(id) {
@@ -601,7 +601,7 @@ function buyUp(id) {
   u.b = 1;
   log("✅ " + u.n);
   save();
-  updateDisplay();
+  updateUI();
 }
 
 function buyBoost(boostType) {
@@ -616,7 +616,7 @@ function buyBoost(boostType) {
   game.boosts.push({ type: boostType, m: mult, e: Date.now() + 30e3 });
   log("⏰ Boost " + boostType);
   save();
-  updateDisplay();
+  updateUI();
 }
 
 function doPrestige() {
@@ -637,7 +637,7 @@ function doPrestige() {
 
   log("⭐ +" + Math.floor(g * ms) + "!");
   save();
-  updateDisplay();
+  updateUI();
 }
 
 function doGalaxy() {
@@ -648,7 +648,7 @@ function doGalaxy() {
   game.galaxies++;
   log("🌀 +1!");
   save();
-  updateDisplay();
+  updateUI();
 }
 
 function getSynergies() {
@@ -674,7 +674,6 @@ function checkQuests() {
       else if (q.rt === "g") game.galaxies += q.r;
       log("🎯 " + q.n);
       save();
-      updateDisplay();
     }
   }
 }
@@ -704,7 +703,7 @@ function drawGraph() {
 }
 
 // =========== UI UPDATE ===========
-function updateDisplay() {
+function updateUI() {
   let p = getProd();
 
   // Update stats
@@ -786,6 +785,9 @@ function updateDisplay() {
   if (graphData.length > 60) graphData.shift();
   drawGraph();
 
+  // Check quests
+  checkQuests();
+
   // Logs
   let logHtml = "";
   for (let l of game.logs) logHtml += `<div>${l}</div>`;
@@ -794,12 +796,18 @@ function updateDisplay() {
   save();
 }
 
-function updateDisplay() {
-  updateStats();
+function updateLog() {
+  let logHtml = "";
+  for (let l of game.logs) logHtml += `<div>${l}</div>`;
+  $("log").innerHTML = logHtml;
 }
 
-function updateStats() {
-  let p = getProd();
+function updateSaveInfo() {
+  let d = new Date().toLocaleString();
+  $("lastSave").textContent = d;
+  let size = (JSON.stringify(game).length / 1024).toFixed(2);
+  $("saveSize").textContent = size + " KB";
+}
 
 // =========== SAVE/LOAD FUNCTIONS ===========
 function downloadSave() {
@@ -827,7 +835,7 @@ $("fileInput").addEventListener("change", e => {
       let data = JSON.parse(f.target.result);
       game = data;
       save();
-      updateDisplay();
+      updateUI();
       log("📂 Sauvegarde importée!");
       alert("✅ Sauvegarde importée avec succès!");
     } catch (err) {
@@ -880,7 +888,7 @@ function resetGame() {
 
   localStorage.removeItem(SAVE_KEY);
   save();
-  updateDisplay();
+  updateUI();
   log("🔄 Jeu réinitialisé!");
   alert("✅ Jeu réinitialisé!");
 }
@@ -942,7 +950,6 @@ setInterval(() => {
   game.coins += p / FPS;
   game.totalCoins += p / FPS;
   game.prestProg += p / FPS;
-  checkQuests();
   updateUI();
 }, 1000 / FPS);
 
