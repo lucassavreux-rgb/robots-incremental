@@ -733,6 +733,14 @@
         <button class="btn danger-btn" id="resetBtn">🔄 RESET</button>
       </div>
 
+      <div class="item" style="border-left:3px solid #f00;padding:1rem">
+        <div>
+          <strong>🧹 NETTOYER DONNÉES</strong><br>
+          <span style="color:#aaa;font-size:0.9rem">Supprime les données corrompues (garde ta progression!)</span>
+        </div>
+        <button class="btn danger-btn" id="cleanBtn">🧹 NETTOYER</button>
+      </div>
+
       <div class="card" style="background:#0a0a0a;margin-top:1rem">
         <h4>📝 Info Sauvegarde</h4>
         <p style="text-align:left;color:#aaa;font-size:0.9rem">
@@ -1826,7 +1834,27 @@ function resetGame() {
       min: { amount: 0, totalGains: 0, totalLosses: 0 },
       mid: { amount: 0, totalGains: 0, totalLosses: 0 },
       high: { amount: 0, totalGains: 0, totalLosses: 0 }
-    }
+    },
+    ascension: 0,
+    ascensionCount: 0,
+    bankInvested: 0,
+    bankGenerated: 0,
+    lotteryTickets: 0,
+    lotteryLog: [],
+    achievements: [
+      { id: "click5", name: "🖱️ Débutant", desc: "Faire 5 clics", check: () => game.totalClicks >= 5, reward: 0, unlocked: false },
+      { id: "coins1m", name: "💰 Millionnaire", desc: "1M coins totaux", check: () => game.totalCoins >= 1e6, reward: 1000, unlocked: false },
+      { id: "gen10", name: "🤖 Automatisé", desc: "10 générateurs", check: () => game.generators.reduce((a, g) => a + g.c, 0) >= 10, reward: 10000, unlocked: false },
+      { id: "stars10", name: "⭐ Star", desc: "10 Étoiles", check: () => game.stars >= 10, reward: 5000, unlocked: false },
+      { id: "stars100", name: "⭐ Supernova", desc: "100 Étoiles", check: () => game.stars >= 100, reward: 50000, unlocked: false },
+      { id: "galaxy1", name: "🌀 Cosmique", desc: "1ère Galaxie", check: () => game.galaxies >= 1, reward: 25000, unlocked: false },
+      { id: "galaxy5", name: "🌀 Univers", desc: "5 Galaxies", check: () => game.galaxies >= 5, reward: 100000, unlocked: false },
+      { id: "prestige5", name: "⚡ Prestigieux", desc: "5 Prestige", check: () => game.prestige >= 5, reward: 50000, unlocked: false },
+      { id: "prestige20", name: "⚡ Légende", desc: "20 Prestige", check: () => game.prestige >= 20, reward: 200000, unlocked: false },
+      { id: "trading1m", name: "💸 Trader Pro", desc: "1M en Trading", check: () => (game.trades.min.totalGains + game.trades.mid.totalGains + game.trades.high.totalGains) >= 1e6, reward: 100000, unlocked: false },
+      { id: "lottery10", name: "🎰 Chanceux", desc: "10 tirages lotterie", check: () => game.lotteryTickets >= 10, reward: 50000, unlocked: false },
+      { id: "darkm5", name: "🌙 Ombre", desc: "5 Dark Matter", check: () => game.darkMatter >= 5, reward: 75000, unlocked: false },
+    ]
   };
 
   localStorage.removeItem(SAVE_KEY);
@@ -1834,6 +1862,73 @@ function resetGame() {
   updateUI();
   log("🔄 Jeu réinitialisé!");
   alert("✅ Jeu réinitialisé!");
+}
+
+// NOUVEAU: Nettoyer les données corrompues
+function cleanData() {
+  if (!confirm("🧹 Nettoyer les données corrompues?\n\nTa progression sera préservée!")) return;
+
+  // Garder les données importantes
+  let backup = {
+    coins: game.coins,
+    totalCoins: game.totalCoins,
+    totalClicks: game.totalClicks,
+    stars: game.stars,
+    galaxies: game.galaxies,
+    prestige: game.prestige,
+    darkMatter: game.darkMatter,
+    playTime: game.playTime,
+    ascension: game.ascension,
+    bankInvested: game.bankInvested,
+    bankGenerated: game.bankGenerated,
+    lotteryTickets: game.lotteryTickets,
+    generators: JSON.parse(JSON.stringify(game.generators)),
+    upgrades: JSON.parse(JSON.stringify(game.upgrades)),
+    achievements: game.achievements
+  };
+
+  // Réinitialiser complètement
+  localStorage.removeItem(SAVE_KEY);
+
+  // Recréer le jeu
+  game = {
+    coins: backup.coins,
+    totalCoins: backup.totalCoins,
+    totalClicks: backup.totalClicks,
+    stars: backup.stars,
+    galaxies: backup.galaxies,
+    prestige: backup.prestige,
+    darkMatter: backup.darkMatter,
+    playTime: backup.playTime,
+    logs: [],
+    tradeLogs: [],
+    generators: backup.generators,
+    upgrades: backup.upgrades,
+    quests: [
+      { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
+      { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 5000, rt: "c", d: 0 },
+      { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
+    ],
+    boosts: [],
+    graphData: [],
+    trades: {
+      min: { amount: 0, totalGains: 0, totalLosses: 0 },
+      mid: { amount: 0, totalGains: 0, totalLosses: 0 },
+      high: { amount: 0, totalGains: 0, totalLosses: 0 }
+    },
+    ascension: backup.ascension,
+    ascensionCount: 0,
+    bankInvested: backup.bankInvested,
+    bankGenerated: backup.bankGenerated,
+    lotteryTickets: backup.lotteryTickets,
+    lotteryLog: [],
+    achievements: backup.achievements
+  };
+
+  save();
+  updateUI();
+  log("🧹 Données nettoyées!");
+  alert("✅ Données nettoyées! Données corrompues supprimées, ta progression est préservée!");
 }
 
 function showTutorial() {
@@ -1878,6 +1973,7 @@ $("boostClick").addEventListener("click", () => buyBoost("c"));
 $("downloadBtn").addEventListener("click", downloadSave);
 $("uploadBtn").addEventListener("click", uploadSave);
 $("resetBtn").addEventListener("click", resetGame);
+$("cleanBtn").addEventListener("click", cleanData);
 
 document.addEventListener("click", e => {
   if (e.target.classList.contains("gen-buy")) buyGen(e.target.dataset.id);
