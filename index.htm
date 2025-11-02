@@ -627,20 +627,20 @@ function buyBoost(boostType) {
 }
 
 function doPrestige() {
-  if (game.totalCoins < 5000) return;
+  if (game.coins < 5000) return;
 
   let totalStarsGained = 0;
   let prestigesCount = 0;
 
   // Boucle pour faire plusieurs prestiges si les pièces le permettent
-  while (game.totalCoins >= 5000) {
-    let coinsForThisPrestige = Math.floor(game.totalCoins / 5000) * 5000;
+  while (game.coins >= 5000) {
+    let coinsForThisPrestige = Math.floor(game.coins / 5000) * 5000;
     let starsFromThisPrestige = Math.floor(coinsForThisPrestige / 5000);
     let ms = Math.min(2, 1 + game.prestige * 0.1);
     let starsGained = Math.floor(starsFromThisPrestige * ms);
 
-    game.totalCoins -= coinsForThisPrestige;
-    game.coins = 0;
+    game.coins -= coinsForThisPrestige;
+    game.totalCoins += coinsForThisPrestige;
     game.stars += starsGained;
     totalStarsGained += starsGained;
     game.prestige++;
@@ -746,8 +746,8 @@ function updateUI() {
   }
   $("dmInfo").textContent = dmInfo;
   $("clickVal").textContent = fmt(clickVal());
-  $("prestProg").textContent = Math.floor(game.totalCoins);
-  let prestigePossible = Math.floor(game.totalCoins / 5000);
+  $("prestProg").textContent = Math.floor(game.coins);
+  let prestigePossible = Math.floor(game.coins / 5000);
   $("prestigeCount").textContent = prestigePossible;
   $("galaxyCost").textContent = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
   $("totalCoins").textContent = fmt(game.totalCoins);
