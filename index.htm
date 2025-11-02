@@ -1092,52 +1092,42 @@ function doPrestige() {
   
   if (game.coins < prestigeCost) return;
 
-  let totalStarsGained = 0;
-  let prestigesCount = 0;
+  // PRENDRE EXACTEMENT LE COÛT
+  let coinsForThisPrestige = prestigeCost;
+  let starsFromThisPrestige = Math.floor(coinsForThisPrestige / prestigeCost);
+  let ms = Math.min(1.5, 1 + game.prestige * 0.02);
+  let starsGained = Math.floor(starsFromThisPrestige * ms);
 
-  while (game.coins >= prestigeCost) {
-    let coinsForThisPrestige = Math.floor(game.coins / prestigeCost) * prestigeCost;
-    let starsFromThisPrestige = Math.floor(coinsForThisPrestige / prestigeCost);
-    let ms = Math.min(1.5, 1 + game.prestige * 0.02);
-    let starsGained = Math.floor(starsFromThisPrestige * ms);
+  game.coins -= coinsForThisPrestige;
+  game.totalCoins += coinsForThisPrestige;
+  game.stars += starsGained;
+  game.prestige++;
 
-    game.coins -= coinsForThisPrestige;
-    game.totalCoins += coinsForThisPrestige;
-    game.stars += starsGained;
-    totalStarsGained += starsGained;
-    game.prestige++;
-    prestigesCount++;
+  if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
 
-    if (game.prestige >= 20 && game.prestige % 10 === 0) game.darkMatter++;
-
-    // RESET TOUT - Générateurs ET Upgrades TOUS À ZÉRO
-    for (let gen of game.generators) gen.c = 0;
-    for (let u of game.upgrades) {
-      u.b = 0;
-    }
-
-    // BONUS PRESTIGE: +0.05 niveau auto sur Clic et Robot SEULEMENT
-    let clickUpgrade = game.upgrades.find(u => u.id === "c1");
-    let robotUpgrade = game.upgrades.find(u => u.id === "r1");
-    
-    if (clickUpgrade) clickUpgrade.b += 0.05;
-    if (robotUpgrade) robotUpgrade.b += 0.05;
-    
-    log("🎁 Bonus: +0.05 Clic, +0.05 Robot");
-
-    // RESET TRADES - L'argent disparait!
-    game.trades.min = { amount: 0, totalGains: 0, totalLosses: 0 };
-    game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
-    game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
-    log("💨 Les trades ont été réinitialisés!");
-
-    log("⭐ +" + starsGained + "! (Prestige " + game.prestige + ")");
-    
-    // RESET LE COÛT DU PRESTIGE POUR LE PROCHAIN (revient à 50K × 1.5^nouveau prestige)
-    prestigeCost = baseCost * Math.pow(1.5, game.prestige);
+  // RESET TOUT - Générateurs ET Upgrades TOUS À ZÉRO
+  for (let gen of game.generators) gen.c = 0;
+  for (let u of game.upgrades) {
+    u.b = 0;
   }
 
-  log("🎉 +" + prestigesCount + " Prestige! Total: ⭐ +" + totalStarsGained);
+  // BONUS PRESTIGE: +0.05 niveau auto sur Clic et Robot SEULEMENT
+  let clickUpgrade = game.upgrades.find(u => u.id === "c1");
+  let robotUpgrade = game.upgrades.find(u => u.id === "r1");
+  
+  if (clickUpgrade) clickUpgrade.b += 0.05;
+  if (robotUpgrade) robotUpgrade.b += 0.05;
+  
+  log("🎁 Bonus: +0.05 Clic, +0.05 Robot");
+
+  // RESET TRADES - L'argent disparait!
+  game.trades.min = { amount: 0, totalGains: 0, totalLosses: 0 };
+  game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
+  game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
+  log("💨 Les trades ont été réinitialisés!");
+
+  log("⭐ +" + starsGained + "! (Prestige " + game.prestige + ")");
+  log("🎉 1 Prestige effectué!");
   save();
   updateUI();
 }
@@ -1236,9 +1226,9 @@ function updateUI() {
   $("prestProg").textContent = Math.floor(game.coins);
   let baseCost = 50000;
   let nextPrestigeCost = baseCost * Math.pow(1.5, game.prestige);
-  let prestigePossible = game.coins >= nextPrestigeCost ? Math.floor(game.coins / nextPrestigeCost) : 0;
+  let prestigePossible = game.coins >= nextPrestigeCost ? 1 : 0;
   $("prestigeCost").textContent = fmt(nextPrestigeCost);
-  $("prestigeCount").textContent = prestigePossible;
+  $("prestigeCount").textContent = prestigePossible > 0 ? "✅ OUI" : "❌ NON";
   $("galaxyCost").textContent = game.galaxies === 0 ? 500 : 500 * Math.pow(100, game.galaxies);
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
