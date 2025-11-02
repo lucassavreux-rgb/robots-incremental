@@ -1185,7 +1185,7 @@ function doPrestige() {
 }
 
 function doGalaxy() {
-  let cost = game.galaxies === 0 ? 500 : 500 * Math.pow(100, game.galaxies);
+  let cost = 500 + (game.galaxies * 50);
   if (game.stars < cost) return;
 
   game.stars -= cost;
@@ -1281,7 +1281,7 @@ function updateUI() {
   let prestigePossible = game.coins >= nextPrestigeCost ? 1 : 0;
   $("prestigeCost").textContent = fmt(nextPrestigeCost);
   $("prestigeCount").textContent = prestigePossible > 0 ? "✅ OUI" : "❌ NON";
-  $("galaxyCost").textContent = game.galaxies === 0 ? 500 : 500 * Math.pow(100, game.galaxies);
+  $("galaxyCost").textContent = fmt(500 + (game.galaxies * 50));
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
   $("playTime").textContent = game.playTime + "s";
@@ -1314,7 +1314,7 @@ function updateUI() {
     if (!unlocked) {
       genHtml += `<div class="item" style="opacity:0.5;border-left:3px solid #f66"><strong>${g.n}</strong> ${unlockText}</div>`;
     } else {
-      genHtml += `<div class="item"><strong>${g.n}</strong> ×${g.c} <span style="color:#0f0">(${fmt(gainPerSec)}/s)</span><button class="btn gen-buy" data-id="${g.id}" ${game.coins < cost ? "disabled" : ""}>+1 (${fmt(cost)})</button><button class="btn" style="background:#0f0; color:#000" onclick="buyGenMax('${g.id}')">MAX</button></div>`;
+      genHtml += `<div class="item"><strong>${g.n}</strong> ×${g.c} <span style="color:#0f0">(${fmt(gainPerSec)}/s)</span><button class="btn gen-buy" data-id="${g.id}" onmousedown="startAutoClick('${g.id}', 'gen')" onmouseup="stopAutoClick()" onmouseleave="stopAutoClick()" ${game.coins < cost ? "disabled" : ""}>+1 (${fmt(cost)})</button><button class="btn" style="background:#0f0; color:#000" onclick="buyGenMax('${g.id}')">MAX</button></div>`;
     }
   }
   $("gensList").innerHTML = genHtml;
@@ -1329,7 +1329,7 @@ function updateUI() {
     if (!unlocked) {
       upHtml += `<div class="item" style="opacity:0.5;border-left:3px solid #f66"><strong>${u.n}</strong> ${unlockText}</div>`;
     } else {
-      upHtml += `<div class="item"><strong>${u.n}</strong> ×${u.e} <span style="color:#0f0">(Lvl ${u.b})</span><button class="btn up-buy" data-id="${u.id}" ${game.coins < cost ? "disabled" : ""}>+1 (${fmt(cost)})</button><button class="btn" style="background:#0f0; color:#000" onclick="buyUpMax('${u.id}')">MAX</button></div>`;
+      upHtml += `<div class="item"><strong>${u.n}</strong> ×${u.e} <span style="color:#0f0">(Lvl ${u.b})</span><button class="btn up-buy" data-id="${u.id}" onmousedown="startAutoClick('${u.id}', 'up')" onmouseup="stopAutoClick()" onmouseleave="stopAutoClick()" ${game.coins < cost ? "disabled" : ""}>+1 (${fmt(cost)})</button><button class="btn" style="background:#0f0; color:#000" onclick="buyUpMax('${u.id}')">MAX</button></div>`;
     }
   }
   $("upsList").innerHTML = upHtml || "Tous débloqués!";
@@ -1523,7 +1523,35 @@ document.addEventListener("click", e => {
   if (e.target.classList.contains("up-buy")) buyUp(e.target.dataset.id);
 });
 
-// =========== GAME LOOP ===========
+// =========== AUTO-CLICK SYSTEM ===========
+let autoClickData = {
+  active: false,
+  targetId: null,
+  targetType: null, // "gen" ou "up"
+};
+
+function startAutoClick(id, type) {
+  autoClickData.active = true;
+  autoClickData.targetId = id;
+  autoClickData.targetType = type;
+}
+
+function stopAutoClick() {
+  autoClickData.active = false;
+  autoClickData.targetId = null;
+  autoClickData.targetType = null;
+}
+
+// Auto-buy loop
+setInterval(() => {
+  if (!autoClickData.active) return;
+  
+  if (autoClickData.targetType === "gen") {
+    buyGen(autoClickData.targetId);
+  } else if (autoClickData.targetType === "up") {
+    buyUp(autoClickData.targetId);
+  }
+}, 50); // 50ms = très rapide!
 setInterval(() => {
   let p = getProd();
   game.coins += p / FPS;
