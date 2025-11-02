@@ -435,16 +435,25 @@ let skipQuestCheck = false;
 
 // =========== TUTORIEL ===========
 const TUTORIAL = [
-  "Bienvenue! Clique CLIQUER pour gagner des pièces. À 5000 progression = Prestige!",
-  "Les générateurs gagnent auto: Robot (15→0.5/s), Usine (100→0.8/s), Port (1100→2/s), Labo (12K→8/s), Satellite (130K→50/s)",
-  "8 Upgrades: Clic+50%, Robot×2, Robot×3, Usine×2, Usine×3, Port×2, Labo×2, Satellite×2. Se réinitialisent après Prestige!",
-  "Prestige réinitialise TOUT sauf les ⭐ Étoiles! Gagne: (progression/5000) × (1 + prestige×0.1, max ×2)",
-  "Les Étoiles amplifient: ×1.25 par étoile sur clics ET production! 10⭐ = ×9.3 multiplicateur!",
-  "Galaxies PLUS puissant: ×1.6 par Galaxy! Coûts: 100⭐, 1000⭐, 10000⭐... Permanent!",
-  "Quêtes: 1M pièces→500⭐, 5 générateurs→50K💰, Prestige 3x→1🌀 GRATUITE! Boosts: Prod×2 (50K,30s), Click×2 (30K,30s)",
-  "Synergies AUTO: Robot+Usine (5+,3+)→+30%, Port+Satellite (3+,2+)→+40%, Labo+Usine (2+,5+)→+50% clics, MEGA (30+gens,P10)→×2!",
-  "Dark Matter: Prestige 20→déblocké. +1 tous les 10 P après P20. Chaque DM=+5% sur TOUT!",
-  "Phase 1 (P0-2): Grind clics+robots→Prestige. Phase 2 (P2-5): Déblocage→30⭐→1🌀. Phase 5 (P20+): Infinite grind! Bonne chance!"
+  "🎮 BIENVENUE! Clique sur CLIQUER pour gagner des pièces. C'est le début!",
+  
+  "🤖 GÉNÉRATEURS: Tu peux acheter des robots qui gagnent automatiquement. Robot: 1/s, Usine: 1.5/s, Port: 4/s, Labo: 15/s, Satellite: 100/s. Plus tu en as, plus tu gagnes!",
+  
+  "⚡ UPGRADES: Améliore tes gains! Clic +50% (×1.08 par level), Robot ×2, Robot ×3, Usine ×2, Usine ×3, Port ×2, Labo ×2, Satellite ×2. Tu peux les acheter PLUSIEURS FOIS! Le prix augmente à chaque achat.",
+  
+  "⭐ PRESTIGE: Accumule 5000 pièces → clique PRESTIGE! Tu gagnes des étoiles (1 étoile = 5000 pièces). Les étoiles: ×1.25 multiplicateur par étoile sur TOUT (clics + production). Les générateurs et upgrades se réinitialisent, SAUF ton bonus de Clic et Robot!",
+  
+  "🌀 GALAXIES: Dépense des étoiles pour acheter des Galaxies! 100⭐ pour la 1ère, 1000⭐ pour la 2ème, etc. Chaque Galaxie = ×1.1 multiplicateur PERMANENT! Les Galaxies ne se réinitialisent JAMAIS au prestige!",
+  
+  "🌙 DARK MATTER: Débloqué à Prestige 20! Chaque Dark Matter = +5% sur TOUS tes gains. +1 Dark Matter tous les 10 Prestige après P20.",
+  
+  "🎯 QUÊTES: 1M pièces totales → +500⭐. 5 générateurs → +5000💰. Prestige 3x → +1🌀 gratuit! Les quêtes se complètent automatiquement.",
+  
+  "⏰ BOOSTS: Active des boosts temporaires (30 sec): Prod ×2 (50K) ou Click ×2 (30K). Ils s'additionnent avec tes gains!",
+  
+  "🔗 SYNERGIES: Des bonus spéciaux! Robot+Usine (5+,3+)→+30%. Port+Satellite (3+,2+)→+40%. Labo+Usine (2+,5+)→+50% clics. MEGA (30+ gens, P10)→×2!",
+  
+  "🎉 PROGRESSION: Phase 1 (P0-2): Grind clics+robots. Phase 2 (P2-5): Unlock → 30⭐ → 1🌀. Phase 3 (P20+): Infinite! Le jeu ne se termine pas, tu peux continuer indéfiniment. BONNE CHANCE! 🚀"
 ];
 
 // =========== GAME STATE ===========
@@ -682,6 +691,7 @@ function doPrestige() {
 
     for (let gen of game.generators) gen.c = 0;
     for (let u of game.upgrades) {
+      // Garder seulement Clic et Robot bonus, reset les autres
       if (u.id !== "c1" && u.id !== "r1") u.b = 0;
     }
 
