@@ -478,7 +478,7 @@ let game = {
 
   quests: [
     { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
-    { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 50e3, rt: "c", d: 0 },
+    { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 5000, rt: "c", d: 0 },
     { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
   ],
 
@@ -675,7 +675,10 @@ function checkQuests() {
     if (!q.d && q.c()) {
       q.d = 1;
       if (q.rt === "s") game.stars += q.r;
-      else if (q.rt === "c") game.coins += q.r;
+      else if (q.rt === "c") {
+        game.coins += q.r;
+        game.totalCoins += q.r;
+      }
       else if (q.rt === "g") game.galaxies += q.r;
       log("🎯 " + q.n);
       save();
@@ -883,7 +886,7 @@ function resetGame() {
     ],
     quests: [
       { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
-      { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 50e3, rt: "c", d: 0 },
+      { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 5000, rt: "c", d: 0 },
       { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
     ],
     boosts: [],
