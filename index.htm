@@ -367,7 +367,7 @@
 
     <div class="card">
       <h3>⏱️ PRESTIGE</h3>
-      <p>Progression: <span id="prestProg">0</span> / 5000</p>
+      <p>Progression: <span id="prestProg">0</span> / 50000</p>
       <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
       <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
     </div>
@@ -794,22 +794,22 @@ let game = {
   tradeLogs: [],
 
   generators: [
-    { id: "r", n: "Robot", b: 1, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
-    { id: "u", n: "Usine", b: 1.5, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
-    { id: "po", n: "Port", b: 4, c: 0, p: 1100, m: 1.15, unlock: { type: "stars", val: 5 } },
-    { id: "l", n: "Labo", b: 15, c: 0, p: 12e3, m: 1.15, unlock: { type: "prestige", val: 3 } },
-    { id: "s", n: "Satellite", b: 100, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
+    { id: "r", n: "Robot", b: 1, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
+    { id: "u", n: "Usine", b: 1.5, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
+    { id: "po", n: "Port", b: 4, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
+    { id: "l", n: "Labo", b: 15, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
+    { id: "s", n: "Satellite", b: 100, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
   ],
 
   upgrades: [
-    { id: "c1", n: "Clic +50%", p: 100, e: 1.08, b: 0, t: "c", unlock: { type: "none" } },
-    { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
-    { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
-    { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
-    { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
-    { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
-    { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
-    { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
+    { id: "c1", n: "Clic +50%", p: 100, e: 1.02, b: 0, t: "c", unlock: { type: "none" } },
+    { id: "r1", n: "Robot ×2", p: 2e3, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
+    { id: "r2", n: "Robot ×3", p: 50e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
+    { id: "u1", n: "Usine ×2", p: 50e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
+    { id: "u2", n: "Usine ×3", p: 500e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
+    { id: "po1", n: "Port ×2", p: 500e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
+    { id: "l1", n: "Labo ×2", p: 5e6, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
+    { id: "s1", n: "Satellite ×2", p: 50e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
   ],
 
   quests: [
@@ -995,8 +995,8 @@ function clickVal() {
     if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.1));
+  let starsMultiplier = Math.exp(game.stars * Math.log(1.08));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.05));
   
   return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -1018,8 +1018,8 @@ function getProd() {
   if (p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  let starsMultiplier = Math.exp(game.stars * Math.log(1.25));
-  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.1));
+  let starsMultiplier = Math.exp(game.stars * Math.log(1.08));
+  let galaxiesMultiplier = Math.exp(game.galaxies * Math.log(1.05));
 
   return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05);
 }
@@ -1082,15 +1082,15 @@ function buyBoost(boostType) {
 }
 
 function doPrestige() {
-  if (game.coins < 5000) return;
+  if (game.coins < 50000) return;
 
   let totalStarsGained = 0;
   let prestigesCount = 0;
 
-  while (game.coins >= 5000) {
-    let coinsForThisPrestige = Math.floor(game.coins / 5000) * 5000;
-    let starsFromThisPrestige = Math.floor(coinsForThisPrestige / 5000);
-    let ms = Math.min(2, 1 + game.prestige * 0.1);
+  while (game.coins >= 50000) {
+    let coinsForThisPrestige = Math.floor(game.coins / 50000) * 50000;
+    let starsFromThisPrestige = Math.floor(coinsForThisPrestige / 50000);
+    let ms = Math.min(1.5, 1 + game.prestige * 0.02);
     let starsGained = Math.floor(starsFromThisPrestige * ms);
 
     game.coins -= coinsForThisPrestige;
@@ -1112,8 +1112,8 @@ function doPrestige() {
     let clickUpgrade = game.upgrades.find(u => u.id === "c1");
     let robotUpgrade = game.upgrades.find(u => u.id === "r1");
     
-    if (clickUpgrade) clickUpgrade.b += 0.25;
-    if (robotUpgrade) robotUpgrade.b += 0.25;
+    if (clickUpgrade) clickUpgrade.b += 0.05;
+    if (robotUpgrade) robotUpgrade.b += 0.05;
     
     log("🎁 Bonus: +0.25 Clic, +0.25 Robot");
 
@@ -1132,7 +1132,7 @@ function doPrestige() {
 }
 
 function doGalaxy() {
-  let cost = game.galaxies === 0 ? 100 : 100 * Math.pow(10, game.galaxies);
+  let cost = game.galaxies === 0 ? 500 : 500 * Math.pow(100, game.galaxies);
   if (game.stars < cost) return;
 
   game.stars -= cost;
@@ -1379,21 +1379,21 @@ function resetGame() {
     logs: [],
     tradeLogs: [],
     generators: [
-      { id: "r", n: "Robot", b: 0.5, c: 0, p: 15, m: 1.15, unlock: { type: "none" } },
-      { id: "u", n: "Usine", b: 0.8, c: 0, p: 100, m: 1.15, unlock: { type: "prestige", val: 1 } },
-      { id: "po", n: "Port", b: 2, c: 0, p: 1100, m: 1.15, unlock: { type: "stars", val: 5 } },
-      { id: "l", n: "Labo", b: 8, c: 0, p: 12e3, m: 1.15, unlock: { type: "prestige", val: 3 } },
-      { id: "s", n: "Satellite", b: 50, c: 0, p: 130e3, m: 1.15, unlock: { type: "galaxies", val: 1 } }
+      { id: "r", n: "Robot", b: 0.5, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
+      { id: "u", n: "Usine", b: 0.8, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
+      { id: "po", n: "Port", b: 2, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
+      { id: "l", n: "Labo", b: 8, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
+      { id: "s", n: "Satellite", b: 50, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
     ],
     upgrades: [
-      { id: "c1", n: "Clic +50%", p: 100, e: 1.08, b: 0, t: "c", unlock: { type: "none" } },
-      { id: "r1", n: "Robot ×2", p: 500, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
-      { id: "r2", n: "Robot ×3", p: 5e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
-      { id: "u1", n: "Usine ×2", p: 5e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
-      { id: "u2", n: "Usine ×3", p: 50e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
-      { id: "po1", n: "Port ×2", p: 50e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
-      { id: "l1", n: "Labo ×2", p: 500e3, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
-      { id: "s1", n: "Satellite ×2", p: 5e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
+      { id: "c1", n: "Clic +50%", p: 100, e: 1.02, b: 0, t: "c", unlock: { type: "none" } },
+      { id: "r1", n: "Robot ×2", p: 2e3, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
+      { id: "r2", n: "Robot ×3", p: 50e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
+      { id: "u1", n: "Usine ×2", p: 50e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
+      { id: "u2", n: "Usine ×3", p: 500e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
+      { id: "po1", n: "Port ×2", p: 500e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
+      { id: "l1", n: "Labo ×2", p: 5e6, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
+      { id: "s1", n: "Satellite ×2", p: 50e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
     ],
     quests: [
       { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
