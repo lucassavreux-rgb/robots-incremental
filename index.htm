@@ -483,6 +483,22 @@ function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
   {
+    version: "v4.2.3 BUGFIX",
+    date: "Nov 03, 2025",
+    title: "FIX CRITIQUE BANQUE + GALAXY MOINS PUNITIVE",
+    changes: [
+      "🐛 FIX CRITIQUE BANQUE: Intérêt composé retiré!",
+      "🐛 Problème: bankInvested += gains créait un intérêt composé exponentiel",
+      "🐛 50K → 170B en 30s à cause de l'effet composé (300 frames!)",
+      "🐛 Solution: Gains vont dans coins directement, pas dans bankInvested",
+      "✅ La banque donne maintenant des gains linéaires, pas exponentiels!",
+      "⚡ GALAXY BUFF: Ne reset plus les générateurs et upgrades!",
+      "⚡ Avant: Galaxy réinitialisait tout (très punitive)",
+      "⚡ Maintenant: Tu gardes tes générateurs et upgrades après Galaxy!",
+      "✨ Progression beaucoup plus fluide et moins frustrante!"
+    ]
+  },
+  {
     version: "v4.2.2 BALANCE",
     date: "Nov 03, 2025",
     title: "RÉÉQUILIBRAGES MAJEURS - BANQUE, LOTTERIE, TRADING, RECHERCHES",
@@ -1223,8 +1239,9 @@ function doGalaxy() {
   game.coins = 0;
   game.prestige = 0; // Reset prestige counter to reset prestige cost
   game.galaxies++;
-  for(let gen of game.generators) gen.c = 0;
-  for(let u of game.upgrades) u.b = 0;
+  // REMOVED: Ne plus reset générateurs et upgrades sur Galaxy
+  // for(let gen of game.generators) gen.c = 0;
+  // for(let u of game.upgrades) u.b = 0;
   game.trades.min = {amount:0,totalGains:0,totalLosses:0};
   game.trades.mid = {amount:0,totalGains:0,totalLosses:0};
   game.trades.high = {amount:0,totalGains:0,totalLosses:0};
@@ -2119,7 +2136,9 @@ document.addEventListener("DOMContentLoaded", function() {
         let dmBankMult = getDMBoost("dmBankMult");
         let bankRate = (0.0000001 + bankBoost) * (1 + resBankBonus) * dmBankMult;
         let bankGains = (game.bankInvested * bankRate) / FPS;
-        game.bankInvested += bankGains;
+        // IMPORTANT: Gains vont dans coins, pas dans bankInvested (sinon intérêt composé!)
+        game.coins += bankGains;
+        game.totalCoins += bankGains;
         game.bankGenerated += bankGains;
       }
       processTradeGains();
