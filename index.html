@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub - Sélection de Jeux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .game-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        .game-description {
+            color: #666;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+
+        .tags-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .game-card {
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Game Hub</h1>
+        <p class="subtitle">Choisis ton jeu et commence à jouer !</p>
+
+        <div class="games-grid">
+            <!-- Incremental Trade Game -->
+            <a href="incremental-trade.html" class="game-card">
+                <div class="game-icon">🤖</div>
+                <div class="game-title">Incremental Trade ULTIMATE</div>
+                <div class="game-description">
+                    Un jeu incrémental complet avec robots, usines, recherches et prestige.
+                    Construis ton empire et débloque des galaxies !
+                </div>
+                <div class="tags-container">
+                    <span class="game-tag">Incrémental</span>
+                    <span class="game-tag">Prestige</span>
+                    <span class="game-tag">Trading</span>
+                </div>
+            </a>
+
+            <!-- Business Trading Game -->
+            <a href="business-game.html" class="game-card">
+                <div class="new-badge">NOUVEAU</div>
+                <div class="game-icon">💰</div>
+                <div class="game-title">Business Tycoon</div>
+                <div class="game-description">
+                    Achète des produits pas cher et revends-les au meilleur prix !
+                    Gère ton capital, surveille le marché et deviens riche.
+                </div>
+                <div class="tags-container">
+                    <span class="game-tag">Trading</span>
+                    <span class="game-tag">Stratégie</span>
+                    <span class="game-tag">Économie</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
