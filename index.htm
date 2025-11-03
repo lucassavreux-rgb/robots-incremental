@@ -1604,24 +1604,14 @@ function withdrawTrade(type) {
 }
 
 function processTradeGains() {
-  if (!game.trades) {
-    console.log("❌ game.trades est undefined!");
-    return;
-  }
+  if (!game.trades) return;  // ✅ Garde!
   
   for (let type of ["min", "mid", "high"]) {
     let trade = game.trades[type];
-    if (!trade) {
-      console.log(`❌ game.trades[${type}] est undefined!`);
-      continue;
-    }
-    if (trade.amount <= 0) continue;
-    
+    if (!trade || trade.amount <= 0) continue;  // ✅ Double vérif
     let config = getTradeConfig(type);
+    
     let gain = trade.amount * config.gainRate / 60;
-    
-    console.log(`🔄 ${type}: ${fmt(trade.amount)} + ${fmt(gain)} = ${fmt(trade.amount + gain)}`);
-    
     trade.amount += gain;
     trade.totalGains += gain;
     let rand = Math.random();
@@ -2129,6 +2119,14 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // CHARGEMENT
   load();
+  // ✅ S'assurer que game.trades existe
+  if (!game.trades) {
+    game.trades = {
+      min: { amount: 0, totalGains: 0, totalLosses: 0 },
+      mid: { amount: 0, totalGains: 0, totalLosses: 0 },
+      high: { amount: 0, totalGains: 0, totalLosses: 0 }
+    };
+  }
   updateUI();
   log("Bienvenue!");
   updateTradeLog();
