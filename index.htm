@@ -1290,8 +1290,29 @@ function load() {
       game = { ...game, ...parsed };
       
       // ✅ FIX MAJEUR: Vérifier TOUTES les propriétés et restaurer les fonctions!
-      if (!Array.isArray(game.generators)) game.generators = [];
-      if (!Array.isArray(game.upgrades)) game.upgrades = [];
+      if (!Array.isArray(game.generators) || game.generators.length === 0) {
+        // ✅ Si generators manquent, les recréer de zéro
+        game.generators = [
+          { id: "r", n: "Robot", b: 1, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
+          { id: "u", n: "Usine", b: 1.5, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
+          { id: "po", n: "Port", b: 4, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
+          { id: "l", n: "Labo", b: 15, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
+          { id: "s", n: "Satellite", b: 100, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
+        ];
+      }
+      if (!Array.isArray(game.upgrades) || game.upgrades.length === 0) {
+        // ✅ Si upgrades manquent, les recréer de zéro
+        game.upgrades = [
+          { id: "c1", n: "Clic +50%", p: 100, e: 1.02, b: 0, t: "c", unlock: { type: "none" } },
+          { id: "r1", n: "Robot ×2", p: 2e3, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
+          { id: "r2", n: "Robot ×3", p: 50e3, e: 3, b: 0, t: "r", unlock: { type: "stars", val: 10 } },
+          { id: "u1", n: "Usine ×2", p: 50e3, e: 2, b: 0, t: "u", unlock: { type: "prestige", val: 2 } },
+          { id: "u2", n: "Usine ×3", p: 500e3, e: 3, b: 0, t: "u", unlock: { type: "prestige", val: 5 } },
+          { id: "po1", n: "Port ×2", p: 500e3, e: 2, b: 0, t: "po", unlock: { type: "stars", val: 20 } },
+          { id: "l1", n: "Labo ×2", p: 5e6, e: 2, b: 0, t: "l", unlock: { type: "prestige", val: 4 } },
+          { id: "s1", n: "Satellite ×2", p: 50e6, e: 2, b: 0, t: "s", unlock: { type: "galaxies", val: 1 } }
+        ];
+      }
       if (!Array.isArray(game.boosts)) game.boosts = [];
       if (!Array.isArray(game.logs)) game.logs = [];
       if (!Array.isArray(game.tradeLogs)) game.tradeLogs = [];
@@ -1312,6 +1333,9 @@ function load() {
       if (!Array.isArray(game.achievements) || game.achievements.length === 0) {
         game.achievements = getDefaultAchievements();
       }
+      if (!Array.isArray(game.milestones) || game.milestones.length === 0) {
+        game.milestones = getDefaultMilestones();
+      }
       
     } catch(e) {
       console.error("Erreur load:", e);
@@ -1320,6 +1344,11 @@ function load() {
 }
 
 function getProd() {
+  // ✅ Garde: si pas d'initialisé correctement, retourner 0
+  if (!game.generators || !Array.isArray(game.generators) || game.generators.length === 0) {
+    return 0;
+  }
+  
   // ✅ OPTIMISATION: Retourner la valeur en cache si rien n'a changé
   if (!cache.isDirty && cache.lastUpdate === Date.now() / 1000 | 0) {
     return cache.prod;
@@ -1370,10 +1399,15 @@ function clickVal() {
   // ✅ OPTIMISATION: Réutiliser les multiplicateurs du cache
   let v = 1;
   for (let u of game.upgrades) {
-    if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
+    if (u && u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  let result = v * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier;
+  // ✅ Gardes pour les multiplicateurs
+  let starsMult = cache.starsMultiplier || 1;
+  let galaxiesMult = cache.galaxiesMultiplier || 1;
+  let ascensionMult = cache.ascensionMultiplier || 1;
+  
+  let result = v * starsMult * galaxiesMult * (1 + (game.darkMatter || 0) * 0.05) * ascensionMult;
   
   if (!isFinite(result) || result > 1e308) return 1e308;
   
@@ -2029,11 +2063,11 @@ function updateMilestonesDisplay() {
 }
 
 function getMilestoneMultiplier() {
-  if (!game.milestones) return 1;
+  if (!game.milestones || !Array.isArray(game.milestones)) return 1;
   let mult = 1;
   for (let m of game.milestones) {
-    if (m.unlocked && m.reward.mult) {
-      mult += m.reward.mult;
+    if (m && m.unlocked && m.reward && m.reward.mult) {
+      mult *= (1 + m.reward.mult);  // ✅ Multiplicateur au lieu d'addition!
     }
   }
   return mult;
