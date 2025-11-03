@@ -454,7 +454,7 @@ canvas {
     <div class="trade-header">
       <div>
         <h4>✅ RISQUE MINIMUM</h4>
-        <p style="color: #0f0; font-size: 0.9rem;">+3% par seconde | -2% risque (0.5% chance)</p>
+        <p style="color: #0f0; font-size: 0.9rem;">+1.2% par seconde | -2% risque (0.5% chance)</p>
       </div>
     </div>
     
@@ -490,7 +490,7 @@ canvas {
     <div class="trade-header">
       <div>
         <h4>⚠️ RISQUE MOYEN</h4>
-        <p style="color: #fa0; font-size: 0.9rem;">+10% par seconde | -5% risque (3% chance)</p>
+        <p style="color: #fa0; font-size: 0.9rem;">+4% par seconde | -5% risque (3% chance)</p>
       </div>
     </div>
     
@@ -1512,9 +1512,9 @@ function doGalaxy() {
 
 function getTradeConfig(type) {
   const configs = {
-    min: { gainRate: 0.03, lossChance: 0.005, lossRate: 0.02 },
-    mid: { gainRate: 0.10, lossChance: 0.03, lossRate: 0.05 },
-    high: { gainRate: 0.30, lossChance: 0.08, lossRate: 0.15, riskAll: 0.001 }
+    min: { gainRate: 0.012, lossChance: 0.005, lossRate: 0.01 },      // ✅ Perte: 2% → 1%
+    mid: { gainRate: 0.04, lossChance: 0.03, lossRate: 0.025 },       // ✅ Perte: 5% → 2.5%
+    high: { gainRate: 0.12, lossChance: 0.08, lossRate: 0.075, riskAll: 0.001 }  // ✅ Perte: 15% → 7.5%
   };
   return configs[type];
 }
