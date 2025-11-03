@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#0a0a0a">
-  <title>Incremental Trade ULTIMATE - v3 FINAL</title>
+  <title>Incremental Trade ULTIMATE - v4.1 QOL</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     @media (prefers-color-scheme: light) {
@@ -28,12 +28,12 @@
     .content { display: none; }
     .content.active { display: block; }
     .card { background: #1a1a1a; padding: 1rem; margin: 1rem 0; border-radius: 6px; border: 1px solid #333; }
-    .btn { padding: 0.6rem 1rem; background: #0af; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 0.3rem 0.3rem 0.3rem 0; transition: 0.2s; }
+    .btn { padding: 0.6rem 1rem; background: #0af; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 0.3rem 0.3rem 0.3rem 0; transition: 0.2s; touch-action: manipulation; min-height: 40px; }
     .btn:hover:not(:disabled) { transform: scale(1.05); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .danger-btn { background: #f00; color: #fff; }
     .danger-btn:hover:not(:disabled) { background: #c00; }
-    .item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem; background: #0a0a0a; margin: 0.4rem 0; border-left: 3px solid #0af; }
+    .item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #0a0a0a; margin: 0.6rem 0; border-left: 3px solid #0af; gap: 0.5rem; }
     .big-btn { width: 100%; max-width: 280px; padding: 1.2rem; font-size: 1.1rem; margin: 1rem auto; display: block; }
     .log { background: #000; border-left: 3px solid #0af; padding: 0.8rem; max-height: 120px; overflow-y: auto; margin: 1rem 0; font-size: 0.85rem; }
     canvas { border: 1px solid #0af; background: #111; max-width: 100%; margin: 1rem 0; width: 100%; height: auto; }
@@ -59,14 +59,20 @@
     .market-up { background: #0f0; color: #000; }
     .market-down { background: #f00; color: #fff; }
     .market-neutral { background: #fa0; color: #000; }
-    @media(max-width: 600px) { .tabs { font-size: 0.9rem; } .stat { padding: 0.6rem; } .btn { padding: 0.4rem 0.8rem; font-size: 0.85rem; } }
+    @media(max-width: 600px) {
+      .tabs { font-size: 0.9rem; }
+      .stat { padding: 0.6rem; }
+      .btn { padding: 0.7rem 1rem; font-size: 0.9rem; min-height: 44px; margin: 0.4rem; }
+      .item { flex-direction: column; align-items: stretch; gap: 0.8rem; }
+      .item .btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>💎 INCREMENTAL TRADE ULTIMATE v3 FINAL 💎</h1>
-  <p>Le jeu inactif addictif avec NEW GAME PLUS! [FINAL EDITION]</p>
+  <h1>💎 INCREMENTAL TRADE ULTIMATE v4.1 QOL 💎</h1>
+  <p>Le jeu inactif addictif avec NEW GAME PLUS! [QUALITY OF LIFE UPDATE]</p>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
     <button class="btn" onclick="showTutorial()" style="display:block">📖 TUTORIEL</button>
@@ -126,7 +132,12 @@
   <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
   <p>Progression: <span id="prestProg">0</span></p>
   <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
-  <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0;">
+    <button class="btn" id="prestigeBtn" style="flex: 1; min-width: 120px;">⚡ PRESTIGE x1</button>
+    <button class="btn" onclick="doPrestigeMultiple(10)" style="flex: 1; min-width: 120px; background: #0f0; color: #000;">⚡⚡ x10</button>
+    <button class="btn" onclick="doPrestigeMultiple(100)" style="flex: 1; min-width: 120px; background: #fa0; color: #000;">⚡⚡⚡ x100</button>
+    <button class="btn" onclick="doPrestigeMultiple(9999)" style="flex: 1; min-width: 120px; background: #f0f; color: #fff;">♾️ MAX</button>
+  </div>
 </div>
 <div class="card">
   <h3>🌀 GALAXIES</h3>
@@ -158,7 +169,7 @@
 ```
   <div class="trade-card min">
     <div class="trade-header">
-      <div><h4>✅ RISQUE MINIMUM - Obligations</h4><p style="color: #0f0; font-size: 0.9rem;">+1.2% base ±0.6% volatilité</p></div>
+      <div><h4>✅ RISQUE MINIMUM - Obligations</h4><p style="color: #0f0; font-size: 0.9rem;">+2.4% base ±0.6% volatilité</p></div>
     </div>
     <div class="trade-stats">
       <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="minAmount">0</div></div>
@@ -178,7 +189,7 @@
 
   <div class="trade-card mid">
     <div class="trade-header">
-      <div><h4>⚠️ RISQUE MOYEN - Stocks</h4><p style="color: #fa0; font-size: 0.9rem;">+4% base ±4.8% volatilité</p></div>
+      <div><h4>⚠️ RISQUE MOYEN - Stocks</h4><p style="color: #fa0; font-size: 0.9rem;">+8% base ±9.6% volatilité</p></div>
     </div>
     <div class="trade-stats">
       <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="midAmount">0</div></div>
@@ -198,7 +209,7 @@
 
   <div class="trade-card high">
     <div class="trade-header">
-      <div><h4>🔥 GROS RISQUE - Crypto</h4><p style="color: #f00; font-size: 0.9rem;">+30% base ±75% volatilité!</p></div>
+      <div><h4>🔥 GROS RISQUE - Crypto</h4><p style="color: #f00; font-size: 0.9rem;">+24% base ±60% volatilité!</p></div>
     </div>
     <div class="trade-stats">
       <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="highAmount">0</div></div>
@@ -228,7 +239,7 @@
   <div id="bank" class="content">
     <div class="card">
       <h3>🏦 BANQUE - INVESTISSEMENTS</h3>
-      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.1% par sec! (SANS RISQUE)</p>
+      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.005% par sec! (SANS RISQUE)</p>
       <div class="trade-stats">
         <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="bankInvested">0</div></div>
         <div class="trade-stat"><div>⚡ +/sec</div><div class="trade-stat-val" id="bankGains">0</div></div>
@@ -257,7 +268,10 @@
         <button class="btn" onclick="buyLotteryTicket(10)">10 Tickets (1K)</button>
         <button class="btn" onclick="buyLotteryTicket(100)">100 Tickets (10K)</button>
       </div>
-      <button class="btn big-btn" onclick="playLottery()" style="max-width: 100%; width: 100%;">🎰 JOUER!</button>
+      <div style="display: flex; gap: 0.5rem; margin: 0.5rem 0; flex-wrap: wrap;">
+        <button class="btn" onclick="playLottery()" style="flex: 1; min-width: 150px;">🎰 JOUER x1</button>
+        <button class="btn" onclick="playLotteryAll()" style="flex: 1; min-width: 150px; background: #f0f; color: #fff;">🎰🎰 OUVRIR TOUS!</button>
+      </div>
       <div class="card" style="background:#0a0a0a;margin-top:1rem">
         <h4>🎲 Résultats</h4>
         <div id="lotteryLog" style="max-height: 200px; overflow-y: auto;"><div style="color:#aaa">En attente...</div></div>
@@ -268,10 +282,33 @@
   <div id="ascensionTab" class="content">
     <div class="card">
       <h3>🚀 ASCENSION - META PRESTIGE</h3>
+      <p style="color: #0f0; margin-bottom: 1rem;">Réinitialise TOUT sauf Galaxies pour un bonus PERMANENT!</p>
+
       <div class="trade-stats">
-        <div class="trade-stat"><div>🚀 Points</div><div class="trade-stat-val" id="ascensionPoints">0</div></div>
-        <div class="trade-stat"><div>⚡ Bonus</div><div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div></div>
+        <div class="trade-stat"><div>🚀 Ascensions</div><div class="trade-stat-val" id="ascensionPoints">0</div></div>
+        <div class="trade-stat"><div>⚡ Bonus Actuel</div><div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div></div>
+        <div class="trade-stat"><div>🌀 Galaxies</div><div class="trade-stat-val" id="ascGalaxies">0</div></div>
       </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
+        <p style="color:#fa0;margin:0.5rem 0"><strong>💰 COÛT ASCENSION #<span id="nextAscLevel">1</span>:</strong></p>
+        <p style="color:#0af;font-size:1rem;margin:0.5rem 0">🌀 <span id="ascCost">100</span> Galaxies (tu as: <span id="ascHas">0</span>)</p>
+      </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #0f0;border-radius:4px;">
+        <p style="color:#0f0;margin:0.5rem 0"><strong>✅ BONUS ASCENSION:</strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✨ +5% ALL production par Ascension</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✨ +5% ALL clics par Ascension</p>
+        <p style="color:#0f0;font-size:1rem;margin:0.5rem 0">💪 Prochain bonus: +<span id="nextAscBonus">5</span>%</p>
+      </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #f00;border-radius:4px;">
+        <p style="color:#f00;margin:0.5rem 0"><strong>⚠️ ASCENSION RÉINITIALISE:</strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Coins, Clics, Prestige, Étoiles, Dark Matter</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Générateurs, Upgrades, Trades, Banque</p>
+        <p style="color:#0f0;font-size:0.9rem;margin:0.5rem 0">✅ GARDE: Galaxies (utilisées), Achievements, NGP+</p>
+      </div>
+
       <button class="btn big-btn danger-btn" onclick="doAscension()" style="max-width: 100%; width: 100%;">🚀 ASCENSIONNER!</button>
     </div>
   </div>
@@ -418,6 +455,21 @@ let cache = { prod: 0, clickVal: 0, starsMultiplier: 1, galaxiesMultiplier: 1, a
 function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
+  {
+    version: "v4.1 QOL",
+    date: "Nov 03, 2025",
+    title: "QUALITY OF LIFE - UX MOBILE + RÉÉQUILIBRAGES",
+    changes: [
+      "📱 MOBILE FIX: Boutons plus gros, zones de clic améliorées, touch-friendly",
+      "📱 Sur mobile: Boutons pleine largeur, espacement augmenté",
+      "💰 BANQUE NERFÉE: 0.1%/sec → 0.005%/sec (÷20)",
+      "💸 TRADING BUFFÉ ×2: Gains doublés, pertes réduites de moitié!",
+      "⚡ PRESTIGE MULTIPLE: Boutons x10, x100, MAX ajoutés!",
+      "🎰 LOTTERIE RAPIDE: Bouton 'Ouvrir TOUS les tickets' ajouté!",
+      "🚀 INTERFACE ASCENSION: Détails complets, coûts clairs, explications",
+      "✨ Meilleure expérience mobile et desktop!"
+    ]
+  },
   {
     version: "v4.0 QUANTUM",
     date: "Nov 03, 2025",
@@ -762,9 +814,9 @@ function load() {
 function getTradeConfig(type) {
   const baseMarketVolatility = 0.05 + (Math.sin(Date.now() / 5000) * 0.03);
   return {
-    min: { baseGain: 0.012, volatility: baseMarketVolatility * 0.5, lossChance: 0.005, lossRate: 0.01 },
-    mid: { baseGain: 0.04, volatility: baseMarketVolatility * 1.2, lossChance: 0.03, lossRate: 0.025 },
-    high: { baseGain: 0.12, volatility: baseMarketVolatility * 2.5, lossChance: 0.08, lossRate: 0.075, riskAll: 0.001 }
+    min: { baseGain: 0.024, volatility: baseMarketVolatility * 0.5, lossChance: 0.0025, lossRate: 0.005 },
+    mid: { baseGain: 0.08, volatility: baseMarketVolatility * 1.2, lossChance: 0.015, lossRate: 0.0125 },
+    high: { baseGain: 0.24, volatility: baseMarketVolatility * 2.5, lossChance: 0.04, lossRate: 0.0375, riskAll: 0.0005 }
   }[type];
 }
 
@@ -916,6 +968,43 @@ function doPrestige() {
   game.trades.high = {amount:0,totalGains:0,totalLosses:0};
   invalidateCache();
   log("⭐ +1! (Prestige " + game.prestige + ")");
+  save();
+  updateUI();
+}
+
+function doPrestigeMultiple(count) {
+  let baseCost = 50000;
+  let prestigeCount = 0;
+
+  // Calculer combien de prestige sont possibles
+  for(let i = 0; i < count; i++) {
+    let prestigeCost = baseCost * Math.pow(1.5, game.prestige + i);
+    if(game.coins < prestigeCost) break;
+    prestigeCount++;
+  }
+
+  if(prestigeCount === 0) { alert("❌ Pas assez de coins!"); return; }
+
+  // Effectuer tous les prestige
+  game.coins = 0;
+  game.stars += prestigeCount;
+  game.prestige += prestigeCount;
+
+  // Calculer Dark Matter gagné
+  let dmGained = 0;
+  for(let i = game.prestige - prestigeCount; i < game.prestige; i++) {
+    if(i >= 10 && i % 10 === 0) dmGained++;
+  }
+  if(dmGained > 0) game.darkMatter += dmGained;
+
+  for(let gen of game.generators) gen.c = 0;
+  for(let u of game.upgrades) u.b = 0;
+  game.trades.min = {amount:0,totalGains:0,totalLosses:0};
+  game.trades.mid = {amount:0,totalGains:0,totalLosses:0};
+  game.trades.high = {amount:0,totalGains:0,totalLosses:0};
+
+  invalidateCache();
+  log(`⭐ +${prestigeCount}! (Total: ${game.prestige})` + (dmGained > 0 ? ` 🌙 +${dmGained} DM!` : ""));
   save();
   updateUI();
 }
@@ -1164,6 +1253,48 @@ function playLottery() {
   updateUI();
 }
 
+function playLotteryAll() {
+  if(game.lotteryTickets <= 0) { alert("❌ Aucun ticket!"); return; }
+
+  let ticketsToPlay = game.lotteryTickets;
+  let totalGain = 0;
+  let petits = 0, moyens = 0, grosLots = 0;
+  let lotteryMult = getShopBoost("lotteryMult");
+
+  for(let i = 0; i < ticketsToPlay; i++) {
+    let rand = Math.random();
+    let gain = 0;
+    if(rand < 0.50) {
+      gain = (50 + Math.floor(Math.random() * 50)) * lotteryMult;
+      petits++;
+    } else if(rand < 0.75) {
+      gain = (500 + Math.floor(Math.random() * 500)) * lotteryMult;
+      moyens++;
+    } else {
+      gain = (5000 + Math.floor(Math.random() * 5000)) * lotteryMult;
+      grosLots++;
+    }
+    totalGain += gain;
+  }
+
+  game.lotteryTickets = 0;
+  game.coins += totalGain;
+  game.totalCoins += totalGain;
+
+  let summary = `🎰 ${ticketsToPlay} tickets: `;
+  if(petits > 0) summary += `🟢×${petits} `;
+  if(moyens > 0) summary += `🟡×${moyens} `;
+  if(grosLots > 0) summary += `🔴×${grosLots} `;
+  summary += `= +${fmt(totalGain)} 💰`;
+
+  game.lotteryLog.unshift(summary);
+  if(game.lotteryLog.length > 15) game.lotteryLog.pop();
+  log(summary);
+
+  save();
+  updateUI();
+}
+
 function checkAchievements() {
   for(let ach of game.achievements) {
     if(!ach.unlocked && ach.check && typeof ach.check === 'function' && ach.check()) {
@@ -1311,6 +1442,16 @@ function updateUI() {
   $("presCount").textContent = game.prestige;
   $("ascension").textContent = game.ascension || 0;
   $("ascensionBonus").textContent = (game.ascension || 0) * 5;
+
+  // Ascension Tab détails
+  if($("ascensionPoints")) $("ascensionPoints").textContent = game.ascension || 0;
+  if($("ascGalaxies")) $("ascGalaxies").textContent = game.galaxies || 0;
+  if($("nextAscLevel")) $("nextAscLevel").textContent = (game.ascension || 0) + 1;
+  let ascCost = 100 * Math.pow(2, game.ascension || 0);
+  if($("ascCost")) $("ascCost").textContent = fmt(ascCost);
+  if($("ascHas")) $("ascHas").textContent = game.galaxies || 0;
+  if($("nextAscBonus")) $("nextAscBonus").textContent = ((game.ascension || 0) + 1) * 5;
+
   $("ngpLevelDisplay").textContent = game.ngpLevel || 0;
   $("ngpBonusDisplay").textContent = (game.ngpLevel || 0) * 10;
   
@@ -1327,7 +1468,7 @@ function updateUI() {
   $("yourStars").textContent = game.stars;
   $("yourDM").textContent = game.darkMatter;
   $("bankInvested").textContent = fmt(game.bankInvested || 0);
-  let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
+  let bankGains = ((game.bankInvested || 0) * 0.00005) / FPS;
   $("bankGains").textContent = fmt(bankGains);
   $("bankGenerated").textContent = fmt(game.bankGenerated || 0);
   $("lotteryTickets").textContent = game.lotteryTickets || 0;
@@ -1593,7 +1734,7 @@ document.addEventListener("DOMContentLoaded", function() {
       game.totalCoins += p / FPS;
       if(game.bankInvested > 0) {
         let bankBoost = getShopBoost("bankBonus");
-        let bankRate = 0.001 + bankBoost;
+        let bankRate = 0.00005 + bankBoost;
         let bankGains = (game.bankInvested * bankRate) / FPS;
         game.bankInvested += bankGains;
         game.bankGenerated += bankGains;
