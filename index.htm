@@ -1604,11 +1604,19 @@ function withdrawTrade(type) {
 }
 
 function processTradeGains() {
+  if (!game.trades) return;  // ✅ Garde!
+  
+  // ✅ FIX: Les gains doivent être par SECONDE, pas divisés par FPS constant
+  // requestAnimationFrame tourne à 60 FPS, pas 10
+  // Donc on doit appliquer les gains en fonction du temps écoulé
+  
   for (let type of ["min", "mid", "high"]) {
     let trade = game.trades[type];
-    if (trade.amount <= 0) continue;
+    if (!trade || trade.amount <= 0) continue;  // ✅ Double vérif
     let config = getTradeConfig(type);
-    let gain = trade.amount * config.gainRate / FPS;
+    
+    // ✅ Les gains sont par SECONDE, donc divisés par 60 (60 FPS réel)
+    let gain = trade.amount * config.gainRate / 60;
     trade.amount += gain;
     trade.totalGains += gain;
     let rand = Math.random();
