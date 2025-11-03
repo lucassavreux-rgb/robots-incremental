@@ -263,21 +263,33 @@
   <div id="ngp" class="content">
     <div class="card">
       <h3>🔄 NEW GAME PLUS - RECOMMENCE AVEC BONUS!</h3>
-      <p style="color: #fa0; margin-bottom: 1rem;">Réinitialise TOUT mais garde des bonus permanents!</p>
+      <p style="color: #fa0; margin-bottom: 1rem;">Payant! Coûte Prestige + Étoiles + Dark Matter!</p>
       <div class="trade-stats">
         <div class="trade-stat"><div>🔄 NGP+ Level</div><div class="trade-stat-val" id="ngpLevelDisplay">0</div></div>
         <div class="trade-stat"><div>⚡ Bonus</div><div class="trade-stat-val">+<span id="ngpBonusDisplay">0</span>%</div></div>
       </div>
-      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
-        <p style="color:#fa0;margin:0.5rem 0"><strong>⚠️ NGP+ va:</strong></p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les générateurs</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les upgrades</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser coins, étoiles, prestige</p>
-        <p style="color:#0f0;font-size:0.9rem;margin:0.5rem 0">✅ Garder Galaxies et Ascension</p>
-        <p style="color:#0f0;font-size:0.9rem;margin:0.5rem 0">✅ +10% multiplicateur permanent par NGP+</p>
-      </div>
-      <button class="btn big-btn danger-btn" onclick="doNGP()" style="max-width: 100%; width: 100%;">🔄 NEW GAME PLUS!</button>
-    </div>
+
+```
+  <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
+    <p style="color:#fa0;margin:0.5rem 0"><strong>💰 COÛT NGP+ #<span id="nextNGPLevel">1</span>:</strong></p>
+    <p style="color:#0af;font-size:1rem;margin:0.5rem 0">⚡ <span id="ngpCostPrestige">10</span> Prestige (tu as: <span id="yourPrestige">0</span>)</p>
+    <p style="color:#0af;font-size:1rem;margin:0.5rem 0">⭐ <span id="ngpCostStars">20</span> Étoiles (tu as: <span id="yourStars">0</span>)</p>
+    <p style="color:#0af;font-size:1rem;margin:0.5rem 0">🌙 <span id="ngpCostDM">3</span> Dark Matter (tu as: <span id="yourDM">0</span>)</p>
+  </div>
+  
+  <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
+    <p style="color:#fa0;margin:0.5rem 0"><strong>⚠️ NGP+ va:</strong></p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les générateurs</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les upgrades</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser coins, clics, prestige, étoiles, dark matter, trades, banque</p>
+    <p style="color:#0f0;font-size:0.9rem;margin:0.5rem 0">✅ Garder Galaxies et Ascension</p>
+    <p style="color:#0f0;font-size:0.9rem;margin:0.5rem 0">✅ +10% multiplicateur permanent par NGP+</p>
+  </div>
+  
+  <button class="btn big-btn danger-btn" onclick="doNGP()" style="max-width: 100%; width: 100%;">🔄 NEW GAME PLUS!</button>
+</div>
+```
+
   </div>
 
   <div id="achievements" class="content">
@@ -375,6 +387,19 @@ function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
   {
+    version: "v3 FINAL+",
+    date: "Nov 03, 2025",
+    title: "NEW GAME PLUS PAYANT!",
+    changes: [
+      "✨ NGP+ MAINTENANT PAYANT: Coûte Prestige + Étoiles + Dark Matter",
+      "✨ Coûts progressifs: 10P/20S/3DM → 15P/30S/5DM → 20P/40S/7DM...",
+      "✨ Affichage des coûts en direct dans le tab NGP+",
+      "✨ Vérification des ressources avant de lancer NGP+",
+      "✨ Plus hardcore et stratégique!",
+      "✨ Reste: +10% multiplicateur permanent par NGP+"
+    ]
+  },
+  {
     version: "v3 FINAL",
     date: "Nov 03, 2025",
     title: "NEW GAME PLUS + GÉNÉRATEURS BUFF + 20+ ACHIEVEMENTS",
@@ -445,10 +470,14 @@ const TUTORIAL = [
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎯 PAGE 14: 50 MILESTONES</h2>
     <p>Défis progressifs avec récompenses énormes!</p>`,
   
-  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🔄 PAGE 15: NEW GAME PLUS!</h2>
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🔄 PAGE 15: NEW GAME PLUS PAYANT!</h2>
     <p><strong>LA GRANDE NOUVEAUTÉ!</strong></p>
-    <p>Réinitialise TOUT mais +10% multiplicateur PERMANENT!</p>
-    <p>Garde Galaxies et Ascension! Peut faire NGP+ infini!</p>`,
+    <p>NGP+ COÛTE CHER:</p>
+    <p style="color: #0af;"><strong>NGP+ #1:</strong> 10 Prestige + 20 Étoiles + 3 Dark Matter</p>
+    <p style="color: #0af;"><strong>NGP+ #2:</strong> 15 Prestige + 30 Étoiles + 5 Dark Matter</p>
+    <p style="color: #0af;"><strong>NGP+ #3:</strong> 20 Prestige + 40 Étoiles + 7 Dark Matter</p>
+    <p>Mais bonus: +10% multiplicateur PERMANENT par NGP+!</p>
+    <p>Garde Galaxies et Ascension! TRÈS HARDCORE!</p>`,
   
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">💡 PAGE 16: MEGA-TIPS</h2>
     <p>✅ HOLD +1 pour cliquer vite!</p>
@@ -741,19 +770,57 @@ function doAscension() {
 }
 
 function doNGP() {
-  if(!confirm("🔄 NEW GAME PLUS? Tout se réinitialise mais +10% bonus permanent!")) return;
+  // Calculer les coûts
+  let ngpCost = {
+    prestige: 10 + (game.ngpLevel * 5),  // 10, 15, 20, 25...
+    stars: 20 + (game.ngpLevel * 10),    // 20, 30, 40, 50...
+    darkMatter: 3 + (game.ngpLevel * 2)  // 3, 5, 7, 9...
+  };
+  
+  // Vérifier les ressources
+  if(game.prestige < ngpCost.prestige) {
+    alert(`❌ Tu as besoin de ${ngpCost.prestige} Prestige! (Tu en as ${game.prestige})`);
+    return;
+  }
+  if(game.stars < ngpCost.stars) {
+    alert(`❌ Tu as besoin de ${ngpCost.stars} Étoiles! (Tu en as ${game.stars})`);
+    return;
+  }
+  if(game.darkMatter < ngpCost.darkMatter) {
+    alert(`❌ Tu as besoin de ${ngpCost.darkMatter} Dark Matter! (Tu en as ${game.darkMatter})`);
+    return;
+  }
+  
+  let confirmMsg = `🔄 NEW GAME PLUS #${game.ngpLevel + 1}?\n\nCoûte:\n`;
+  confirmMsg += `⚡ ${ngpCost.prestige} Prestige\n`;
+  confirmMsg += `⭐ ${ngpCost.stars} Étoiles\n`;
+  confirmMsg += `🌙 ${ngpCost.darkMatter} Dark Matter\n\n`;
+  confirmMsg += `Bonus: +${(game.ngpLevel + 1) * 10}% permanent!\n`;
+  confirmMsg += `Tout se réinitialise sauf Galaxies et Ascension!`;
+  
+  if(!confirm(confirmMsg)) return;
+  
+  // Payer le coût
+  game.prestige -= ngpCost.prestige;
+  game.stars -= ngpCost.stars;
+  game.darkMatter -= ngpCost.darkMatter;
+  
+  // Réinitialiser et upgrader
   game.ngpLevel++;
   game.coins = 0;
-  game.stars = 0;
-  game.prestige = 0;
-  game.darkMatter = 0;
+  game.totalClicks = 0;
   game.trades.min = {amount:0,totalGains:0,totalLosses:0};
   game.trades.mid = {amount:0,totalGains:0,totalLosses:0};
   game.trades.high = {amount:0,totalGains:0,totalLosses:0};
+  game.bankInvested = 0;
+  game.bankGenerated = 0;
+  game.lotteryTickets = 0;
+  game.lotteryLog = [];
   for(let gen of game.generators) gen.c = 0;
   for(let u of game.upgrades) u.b = 0;
+  
   invalidateCache();
-  log("🔄 NEW GAME PLUS #" + game.ngpLevel + "! Bonus: +" + (game.ngpLevel * 10) + "%");
+  log("🔄 NEW GAME PLUS #" + game.ngpLevel + "! Coût payé! Bonus: +" + (game.ngpLevel * 10) + "%");
   save();
   updateUI();
 }
@@ -973,6 +1040,19 @@ function updateUI() {
   $("ascensionBonus").textContent = (game.ascension || 0) * 5;
   $("ngpLevelDisplay").textContent = game.ngpLevel || 0;
   $("ngpBonusDisplay").textContent = (game.ngpLevel || 0) * 10;
+  
+  // Mettre à jour les coûts NGP+
+  let nextNGPLevel = (game.ngpLevel || 0) + 1;
+  let ngpCostPrestige = 10 + ((game.ngpLevel || 0) * 5);
+  let ngpCostStars = 20 + ((game.ngpLevel || 0) * 10);
+  let ngpCostDM = 3 + ((game.ngpLevel || 0) * 2);
+  $("nextNGPLevel").textContent = nextNGPLevel;
+  $("ngpCostPrestige").textContent = ngpCostPrestige;
+  $("ngpCostStars").textContent = ngpCostStars;
+  $("ngpCostDM").textContent = ngpCostDM;
+  $("yourPrestige").textContent = game.prestige;
+  $("yourStars").textContent = game.stars;
+  $("yourDM").textContent = game.darkMatter;
   $("bankInvested").textContent = fmt(game.bankInvested || 0);
   let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
   $("bankGains").textContent = fmt(bankGains);
