@@ -83,6 +83,7 @@
     <div class="stat"><div>💸 Trade Bloqué</div><div class="stat-val" id="tradeBlocked">0</div></div>
     <div class="stat"><div>🚀 Ascension</div><div class="stat-val" id="ascension">0</div></div>
     <div class="stat"><div>🔄 NGP+</div><div class="stat-val" id="ngpLevel">0</div></div>
+    <div class="stat" id="qcStat" style="display:none"><div>💎 Quantum</div><div class="stat-val" id="quantumCoins">0</div></div>
     <div class="stat"><div>🏆 Achievements</div><div class="stat-val" id="achievementCount">0</div></div>
   </div>
 
@@ -95,6 +96,7 @@
     <button class="tab-btn" data-tab="lottery">🎰 LOTTERIE</button>
     <button class="tab-btn" data-tab="ascensionTab">🚀 ASCENSION</button>
     <button class="tab-btn" data-tab="ngp">🔄 NEW GAME+</button>
+    <button class="tab-btn" id="shopNGPBtn" data-tab="shopNGP" style="display:none">💎 SHOP NGP+</button>
     <button class="tab-btn" data-tab="achievements">🏆 ACHIEVEMENTS</button>
     <button class="tab-btn" data-tab="milestones">🎯 MILESTONES</button>
     <button class="tab-btn" data-tab="graph">📊 GRAPHIQUE</button>
@@ -306,6 +308,22 @@
 
   </div>
 
+  <div id="shopNGP" class="content">
+    <div class="card">
+      <h3>💎 SHOP NGP+ - BOUTIQUE QUANTIQUE</h3>
+      <p style="color: #f0f; margin-bottom: 0.5rem;">🔓 Débloqué à NGP+ niveau 5!</p>
+      <p style="color: #0f0; margin-bottom: 1rem;">Achète des boosts PERMANENTS avec tes Quantum Coins!</p>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #f0f;border-radius:4px;">
+        <p style="color:#f0f;margin:0.5rem 0"><strong>💎 Quantum Coins: <span id="qcDisplay">0</span></strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">Gagnes +1 Quantum Coin par NGP+ effectué!</p>
+        <p style="color:#fa0;font-size:0.85rem;margin:0.5rem 0">⚠️ Les boosts NE SE RÉINITIALISENT JAMAIS!</p>
+      </div>
+
+      <div id="shopItemsList"></div>
+    </div>
+  </div>
+
   <div id="achievements" class="content">
     <div class="card">
       <h3>🏆 ACHIEVEMENTS & BADGES</h3>
@@ -401,6 +419,25 @@ function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
   {
+    version: "v4.0 QUANTUM",
+    date: "Nov 03, 2025",
+    title: "SHOP NGP+ + 50 MILESTONES + 35 ACHIEVEMENTS + GÉNÉRATEURS BUFFÉS",
+    changes: [
+      "💎 SHOP NGP+ débloqué à NGP+5 avec Quantum Coins!",
+      "💎 10 items permanents: Production ×2, Clics ×3, MEGA BOOST ×10...",
+      "💎 Gagne 1 Quantum Coin par NGP+ effectué!",
+      "🎯 50 MILESTONES progressifs avec barres de progression!",
+      "🎯 Récompenses: Coins ET Quantum Coins!",
+      "🏆 35+ ACHIEVEMENTS (15 nouveaux + 8 secrets) = ÉNORME!",
+      "🏆 Achievements NGP+, Quantum, Shop, Bank Elite...",
+      "🚀 GÉNÉRATEURS BUFFÉS ×5-7: Robot 5/s, Usine 15/s, Port 50/s, Labo 200/s, Satellite 1500/s!",
+      "⚡ Shop boosts: Production, Clics, Trading, Banque, Lotterie...",
+      "💸 Progression ultra longue et enrichie!",
+      "✨ Interface complète avec affichage Quantum Coins",
+      "✨ Tab Shop NGP+ apparaît automatiquement à NGP+5"
+    ]
+  },
+  {
     version: "v3.1 BUGFIX",
     date: "Nov 03, 2025",
     title: "CORRECTIONS CRITIQUES - TRADING & CALCULS",
@@ -460,9 +497,9 @@ const TUTORIAL = [
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🖱️ PAGE 2: LE CLIC</h2>
     <p>COMMENCE ICI! Clique jusqu'à 50 pièces, puis achète des Robots!</p>`,
   
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🤖 PAGE 3: GÉNÉRATEURS BUFFÉS</h2>
-    <p><strong>Les gains ont augmenté!</strong></p>
-    <p>Robot: 1/sec | Usine: 3/sec | Port: 8/sec | Labo: 30/sec | Satellite: 200/sec</p>`,
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🤖 PAGE 3: GÉNÉRATEURS SUPER BUFFÉS</h2>
+    <p><strong>Les gains ont été ÉNORMÉMENT augmentés!</strong></p>
+    <p>Robot: 5/sec | Usine: 15/sec | Port: 50/sec | Labo: 200/sec | Satellite: 1500/sec</p>`,
   
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">⚡ PAGE 4: UPGRADES</h2>
     <p>Multiplicateurs! Clic +50%, Robot ×2, etc.</p>`,
@@ -546,24 +583,58 @@ function getDefaultAchievements() {
     { id: "prestige50", name: "⚡ Légende", desc: "50 Prestige", check: () => game.prestige >= 50, reward: 500000, unlocked: false, secret: false },
     { id: "galaxy10", name: "🌀 Univers", desc: "10 Galaxies", check: () => game.galaxies >= 10, reward: 300000, unlocked: false, secret: false },
     
+    // NOUVEAUX ACHIEVEMENTS
+    { id: "coins10b", name: "💵 Milliardaire", desc: "10B coins", check: () => game.totalCoins >= 1e10, reward: 50000, unlocked: false, secret: false },
+    { id: "coins1t", name: "💸 Trillionaire", desc: "1T coins", check: () => game.totalCoins >= 1e12, reward: 250000, unlocked: false, secret: false },
+    { id: "clicks1k", name: "👆 Clickeur Pro", desc: "1000 clics", check: () => game.totalClicks >= 1000, reward: 25000, unlocked: false, secret: false },
+    { id: "gen50", name: "🏭 Industriel", desc: "50 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=50, reward: 50000, unlocked: false, secret: false },
+    { id: "gen500", name: "🏙️ Empire", desc: "500 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=500, reward: 500000, unlocked: false, secret: false },
+    { id: "prestige20", name: "⭐ Vétéran", desc: "20 Prestige", check: () => game.prestige >= 20, reward: 150000, unlocked: false, secret: false },
+    { id: "prestige100", name: "🌟 Maître", desc: "100 Prestige", check: () => game.prestige >= 100, reward: 1000000, unlocked: false, secret: false },
+    { id: "galaxy5", name: "🌌 Conquérant", desc: "5 Galaxies", check: () => game.galaxies >= 5, reward: 200000, unlocked: false, secret: false },
+    { id: "galaxy50", name: "🪐 Dieu Galactique", desc: "50 Galaxies", check: () => game.galaxies >= 50, reward: 2000000, unlocked: false, secret: false },
+    { id: "ascension5", name: "🚀 Transcendant", desc: "5 Ascensions", check: () => game.ascension >= 5, reward: 500000, unlocked: false, secret: false },
+    { id: "ngp5", name: "🔄 Persistant", desc: "NGP+ niveau 5", check: () => game.ngpLevel >= 5, reward: 500000, unlocked: false, secret: false },
+    { id: "ngp20", name: "♻️ Éternel", desc: "NGP+ niveau 20", check: () => game.ngpLevel >= 20, reward: 2000000, unlocked: false, secret: false },
+    { id: "qc10", name: "💎 Collectionneur", desc: "10 Quantum Coins", check: () => game.quantumCoins >= 10, reward: 1000000, unlocked: false, secret: false },
+    { id: "shop5", name: "🛒 Acheteur", desc: "5 items du shop", check: () => game.shopItems && game.shopItems.reduce((a,i)=>a+i.bought,0)>=5, reward: 750000, unlocked: false, secret: false },
+    { id: "bank100b", name: "🏦 Banquier Elite", desc: "100B à la banque", check: () => game.bankGenerated >= 1e11, reward: 500000, unlocked: false, secret: false },
+    { id: "trading1t", name: "📈 Trader Pro", desc: "1T en trading", check: () => Object.values(game.trades).reduce((a,t)=>a+t.totalGains,0)>=1e12, reward: 1000000, unlocked: false, secret: false },
+
+    // SECRETS
     { id: "secret_noclick", name: "🤐 Ascète", desc: "???", check: () => game.totalClicks === 0, reward: 50000, unlocked: false, secret: true },
     { id: "secret_lucky", name: "🍀 Miracle", desc: "???", check: () => game.lotteryLog && game.lotteryLog.some(l=>l.includes("GROS")), reward: 100000, unlocked: false, secret: true },
     { id: "secret_ngp10", name: "♾️ Infini", desc: "???", check: () => game.ngpLevel >= 10, reward: 500000, unlocked: false, secret: true },
     { id: "secret_rich", name: "💎 Riche", desc: "???", check: () => game.totalCoins >= 1e18, reward: 1000000, unlocked: false, secret: true },
-    { id: "secret_speed", name: "⚡ Éclair", desc: "???", check: () => game.totalClicks >= 1000 && game.playTime < 300, reward: 200000, unlocked: false, secret: true }
+    { id: "secret_speed", name: "⚡ Éclair", desc: "???", check: () => game.totalClicks >= 1000 && game.playTime < 300, reward: 200000, unlocked: false, secret: true },
+    { id: "secret_shopmax", name: "🛍️ Perfectionniste", desc: "???", check: () => game.shopItems && game.shopItems.every(i=>i.bought >= i.maxBuy), reward: 5000000, unlocked: false, secret: true },
+    { id: "secret_qc50", name: "💠 Quantique", desc: "???", check: () => game.quantumCoins >= 50, reward: 10000000, unlocked: false, secret: true },
+    { id: "secret_allach", name: "🏅 Complétionniste", desc: "???", check: () => game.achievements && game.achievements.filter(a=>!a.secret && a.unlocked).length >= 30, reward: 20000000, unlocked: false, secret: true }
   ];
 }
 
 let game = {
   coins: 0, totalCoins: 0, totalClicks: 0, stars: 0, galaxies: 0, prestige: 0, darkMatter: 0, ngpLevel: 0,
-  playTime: 0, logs: [], tradeLogs: [],
+  quantumCoins: 0, playTime: 0, logs: [], tradeLogs: [],
+  shopItems: [
+    { id: "qc1", name: "🚀 Boost Production ×2", desc: "Double la production de TOUS les générateurs", cost: 1, bought: 0, maxBuy: 10, effect: "prodMult", value: 2 },
+    { id: "qc2", name: "💰 Boost Clics ×3", desc: "Triple les gains par clic", cost: 2, bought: 0, maxBuy: 5, effect: "clickMult", value: 3 },
+    { id: "qc3", name: "⭐ Boost Prestige +50%", desc: "+50% gains d'étoiles", cost: 3, bought: 0, maxBuy: 3, effect: "starMult", value: 1.5 },
+    { id: "qc4", name: "🌀 Boost Galaxies +25%", desc: "+25% gains de galaxies", cost: 5, bought: 0, maxBuy: 3, effect: "galaxyMult", value: 1.25 },
+    { id: "qc5", name: "💸 Trading ×2", desc: "Double les gains de trading", cost: 4, bought: 0, maxBuy: 5, effect: "tradeMult", value: 2 },
+    { id: "qc6", name: "🏦 Banque +0.1%", desc: "+0.1% d'intérêts bancaires", cost: 3, bought: 0, maxBuy: 10, effect: "bankBonus", value: 0.001 },
+    { id: "qc7", name: "🌙 Dark Matter Auto", desc: "Gagne 1 DM tous les 5 Prestige", cost: 10, bought: 0, maxBuy: 1, effect: "dmAuto", value: 1 },
+    { id: "qc8", name: "♾️ NGP+ Discount", desc: "Réduit coût NGP+ de 20%", cost: 15, bought: 0, maxBuy: 3, effect: "ngpDiscount", value: 0.8 },
+    { id: "qc9", name: "⚡ MEGA BOOST", desc: "×10 TOUT (production, clics, etc)", cost: 25, bought: 0, maxBuy: 1, effect: "megaBoost", value: 10 },
+    { id: "qc10", name: "🎰 Lucky Lottery", desc: "×5 gains de lotterie", cost: 8, bought: 0, maxBuy: 2, effect: "lotteryMult", value: 5 }
+  ],
   
   generators: [
-    { id: "r", n: "Robot", b: 1, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
-    { id: "u", n: "Usine", b: 3, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
-    { id: "po", n: "Port", b: 8, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
-    { id: "l", n: "Labo", b: 30, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
-    { id: "s", n: "Satellite", b: 200, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
+    { id: "r", n: "Robot", b: 5, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
+    { id: "u", n: "Usine", b: 15, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
+    { id: "po", n: "Port", b: 50, c: 0, p: 5e3, m: 1.2, unlock: { type: "stars", val: 5 } },
+    { id: "l", n: "Labo", b: 200, c: 0, p: 50e3, m: 1.2, unlock: { type: "prestige", val: 3 } },
+    { id: "s", n: "Satellite", b: 1500, c: 0, p: 500e3, m: 1.2, unlock: { type: "galaxies", val: 1 } }
   ],
 
   upgrades: [
@@ -579,10 +650,85 @@ let game = {
 
   trades: { min: { amount: 0, totalGains: 0, totalLosses: 0 }, mid: { amount: 0, totalGains: 0, totalLosses: 0 }, high: { amount: 0, totalGains: 0, totalLosses: 0 } },
   graphData: [], boosts: [], lotteryLog: [], lotteryTickets: 0,
-  bankInvested: 0, bankGenerated: 0, ascension: 0, achievements: []
+  bankInvested: 0, bankGenerated: 0, ascension: 0, achievements: [], milestones: []
 };
 
+function getDefaultMilestones() {
+  return [
+    // TIER 1 - Début
+    { id: "m1", name: "Premier Pas", desc: "Atteindre 1K coins", goal: 1e3, type: "coins", reward: { coins: 500 }, completed: false },
+    { id: "m2", name: "En Route", desc: "Atteindre 10K coins", goal: 1e4, type: "coins", reward: { coins: 5000 }, completed: false },
+    { id: "m3", name: "Producteur", desc: "10 coins/sec", goal: 10, type: "cps", reward: { coins: 10000 }, completed: false },
+
+    // TIER 2 - Croissance
+    { id: "m4", name: "Fortune", desc: "Atteindre 1M coins", goal: 1e6, type: "coins", reward: { coins: 100000 }, completed: false },
+    { id: "m5", name: "Rapidité", desc: "100 coins/sec", goal: 100, type: "cps", reward: { coins: 250000 }, completed: false },
+    { id: "m6", name: "Collecteur", desc: "5 générateurs", goal: 5, type: "totalGens", reward: { coins: 150000 }, completed: false },
+
+    // TIER 3 - Prestige
+    { id: "m7", name: "Réincarnation", desc: "1er Prestige", goal: 1, type: "prestige", reward: { coins: 500000 }, completed: false },
+    { id: "m8", name: "Richesse", desc: "Atteindre 100M coins", goal: 1e8, type: "coins", reward: { coins: 1000000 }, completed: false },
+    { id: "m9", name: "Production", desc: "1K coins/sec", goal: 1000, type: "cps", reward: { coins: 2000000 }, completed: false },
+    { id: "m10", name: "Flotte", desc: "25 générateurs", goal: 25, type: "totalGens", reward: { coins: 1500000 }, completed: false },
+
+    // TIER 4 - Galaxies
+    { id: "m11", name: "Cosmique", desc: "1ère Galaxie", goal: 1, type: "galaxies", reward: { coins: 5000000 }, completed: false },
+    { id: "m12", name: "Tycoon", desc: "Atteindre 1B coins", goal: 1e9, type: "coins", reward: { coins: 10000000 }, completed: false },
+    { id: "m13", name: "Usine", desc: "10K coins/sec", goal: 10000, type: "cps", reward: { coins: 15000000 }, completed: false },
+    { id: "m14", name: "Armée", desc: "50 générateurs", goal: 50, type: "totalGens", reward: { coins: 10000000 }, completed: false },
+    { id: "m15", name: "Étoilé", desc: "10 Prestige", goal: 10, type: "prestige", reward: { coins: 20000000 }, completed: false },
+
+    // TIER 5 - Ascension
+    { id: "m16", name: "Transcendance", desc: "1ère Ascension", goal: 1, type: "ascension", reward: { coins: 50000000 }, completed: false },
+    { id: "m17", name: "Titan", desc: "Atteindre 1T coins", goal: 1e12, type: "coins", reward: { coins: 100000000 }, completed: false },
+    { id: "m18", name: "Méga Production", desc: "100K coins/sec", goal: 100000, type: "cps", reward: { coins: 150000000 }, completed: false },
+    { id: "m19", name: "Galaxies", desc: "5 Galaxies", goal: 5, type: "galaxies", reward: { coins: 100000000 }, completed: false },
+    { id: "m20", name: "Industriel", desc: "100 générateurs", goal: 100, type: "totalGens", reward: { coins: 200000000 }, completed: false },
+
+    // TIER 6 - NGP+
+    { id: "m21", name: "Renaissance", desc: "1er NGP+", goal: 1, type: "ngp", reward: { coins: 500000000 }, completed: false },
+    { id: "m22", name: "Quantum Débloqué", desc: "NGP+5 (Shop débloqué)", goal: 5, type: "ngp", reward: { quantumCoins: 2 }, completed: false },
+    { id: "m23", name: "Infini", desc: "Atteindre 1Qa coins", goal: 1e15, type: "coins", reward: { coins: 1000000000 }, completed: false },
+    { id: "m24", name: "Giga Production", desc: "1M coins/sec", goal: 1000000, type: "cps", reward: { coins: 2000000000 }, completed: false },
+    { id: "m25", name: "Empire", desc: "200 générateurs", goal: 200, type: "totalGens", reward: { coins: 1500000000 }, completed: false },
+
+    // TIER 7 - Quantum
+    { id: "m26", name: "Acheteur Quantum", desc: "Acheter 1er item shop", goal: 1, type: "shopBought", reward: { quantumCoins: 1 }, completed: false },
+    { id: "m27", name: "Collectionneur", desc: "Acheter 5 items shop", goal: 5, type: "shopBought", reward: { quantumCoins: 2 }, completed: false },
+    { id: "m28", name: "Maître Quantum", desc: "10 Quantum Coins", goal: 10, type: "quantumCoins", reward: { quantumCoins: 3 }, completed: false },
+    { id: "m29", name: "Légende", desc: "50 Prestige", goal: 50, type: "prestige", reward: { quantumCoins: 5 }, completed: false },
+    { id: "m30", name: "Dieu", desc: "Atteindre 1Qi coins", goal: 1e18, type: "coins", reward: { quantumCoins: 10 }, completed: false },
+
+    // TIER 8 - Extrême
+    { id: "m31", name: "Tera Production", desc: "10M coins/sec", goal: 10000000, type: "cps", reward: { quantumCoins: 5 }, completed: false },
+    { id: "m32", name: "Civilisation", desc: "500 générateurs", goal: 500, type: "totalGens", reward: { quantumCoins: 3 }, completed: false },
+    { id: "m33", name: "Univers", desc: "20 Galaxies", goal: 20, type: "galaxies", reward: { quantumCoins: 8 }, completed: false },
+    { id: "m34", name: "Éternel", desc: "NGP+20", goal: 20, type: "ngp", reward: { quantumCoins: 15 }, completed: false },
+    { id: "m35", name: "Transcendant", desc: "10 Ascensions", goal: 10, type: "ascension", reward: { quantumCoins: 12 }, completed: false },
+
+    // TIER 9 - Impossible
+    { id: "m36", name: "Au-delà", desc: "Atteindre 1Sx coins", goal: 1e21, type: "coins", reward: { quantumCoins: 20 }, completed: false },
+    { id: "m37", name: "Peta Production", desc: "100M coins/sec", goal: 100000000, type: "cps", reward: { quantumCoins: 15 }, completed: false },
+    { id: "m38", name: "Multivers", desc: "50 Galaxies", goal: 50, type: "galaxies", reward: { quantumCoins: 25 }, completed: false },
+    { id: "m39", name: "Perfection", desc: "100 Prestige", goal: 100, type: "prestige", reward: { quantumCoins: 30 }, completed: false },
+    { id: "m40", name: "Divin", desc: "NGP+50", goal: 50, type: "ngp", reward: { quantumCoins: 50 }, completed: false },
+
+    // BONUS MILESTONES
+    { id: "m41", name: "Banquier", desc: "100B générés banque", goal: 1e11, type: "bankGen", reward: { quantumCoins: 10 }, completed: false },
+    { id: "m42", name: "Trader Elite", desc: "1T gains trading", goal: 1e12, type: "tradeGains", reward: { quantumCoins: 10 }, completed: false },
+    { id: "m43", name: "Chanceux", desc: "100 tickets lotterie", goal: 100, type: "lotteryTotal", reward: { quantumCoins: 5 }, completed: false },
+    { id: "m44", name: "Clicker Fou", desc: "10K clics", goal: 10000, type: "clicks", reward: { quantumCoins: 8 }, completed: false },
+    { id: "m45", name: "Achievements Hunter", desc: "20 achievements", goal: 20, type: "achievements", reward: { quantumCoins: 15 }, completed: false },
+    { id: "m46", name: "Shop Master", desc: "Tous items shop MAX", goal: 1, type: "shopMax", reward: { quantumCoins: 100 }, completed: false },
+    { id: "m47", name: "Dark Matter", desc: "50 Dark Matter", goal: 50, type: "darkMatter", reward: { quantumCoins: 20 }, completed: false },
+    { id: "m48", name: "Hyperproducteur", desc: "1B coins/sec", goal: 1e9, type: "cps", reward: { quantumCoins: 50 }, completed: false },
+    { id: "m49", name: "Richesse Ultime", desc: "1Sp coins total", goal: 1e24, type: "coins", reward: { quantumCoins: 100 }, completed: false },
+    { id: "m50", name: "Dimension Finale", desc: "NGP+100", goal: 100, type: "ngp", reward: { quantumCoins: 200 }, completed: false }
+  ];
+}
+
 game.achievements = getDefaultAchievements();
+game.milestones = getDefaultMilestones();
 
 function $(id) { return document.getElementById(id); }
 
@@ -606,6 +752,9 @@ function load() {
       game = {...game, ...parsed};
       if(!Array.isArray(game.generators) || game.generators.length === 0) game.generators = [...game.generators];
       if(!Array.isArray(game.achievements) || game.achievements.length === 0) game.achievements = getDefaultAchievements();
+      if(!Array.isArray(game.milestones) || game.milestones.length === 0) game.milestones = getDefaultMilestones();
+      if(!game.quantumCoins) game.quantumCoins = 0;
+      if(!Array.isArray(game.shopItems)) game.shopItems = [...game.shopItems];
     } catch(e) { console.error("Load error:", e); }
   }
 }
@@ -649,9 +798,13 @@ function getProd() {
   if(!isFinite(cache.ascensionMultiplier) || cache.ascensionMultiplier > 1e50) cache.ascensionMultiplier = 1e50;
   if(!isFinite(ngpMult) || ngpMult > 1e50) ngpMult = 1e50;
 
-  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier * ngpMult;
+  // Boosts du shop NGP+
+  let shopProdBoost = getShopBoost("prodMult");
+  let shopMegaBoost = getShopBoost("megaBoost");
+
+  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier * ngpMult * shopProdBoost * shopMegaBoost;
   if(!isFinite(result) || result > 1e308) result = 1e308;
-  
+
   cache.prod = result;
   cache.isDirty = false;
   cache.lastUpdate = Date.now()/1000|0;
@@ -665,7 +818,12 @@ function clickVal() {
   let galaxiesMult = cache.galaxiesMultiplier || 1;
   let ascensionMult = cache.ascensionMultiplier || 1;
   let ngpMult = Math.pow(1.10, game.ngpLevel || 0);
-  let result = v * starsMult * galaxiesMult * (1 + (game.darkMatter || 0) * 0.05) * ascensionMult * ngpMult;
+
+  // Boosts du shop NGP+
+  let shopClickBoost = getShopBoost("clickMult");
+  let shopMegaBoost = getShopBoost("megaBoost");
+
+  let result = v * starsMult * galaxiesMult * (1 + (game.darkMatter || 0) * 0.05) * ascensionMult * ngpMult * shopClickBoost * shopMegaBoost;
   if(!isFinite(result) || result > 1e308) return 1e308;
   return result;
 }
@@ -835,9 +993,10 @@ function doNGP() {
   game.prestige -= ngpCost.prestige;
   game.stars -= ngpCost.stars;
   game.darkMatter -= ngpCost.darkMatter;
-  
+
   // Réinitialiser et upgrader
   game.ngpLevel++;
+  game.quantumCoins++; // Gagne 1 Quantum Coin par NGP+!
   game.coins = 0;
   game.totalClicks = 0;
   game.trades.min = {amount:0,totalGains:0,totalLosses:0};
@@ -852,8 +1011,34 @@ function doNGP() {
   
   invalidateCache();
   log("🔄 NEW GAME PLUS #" + game.ngpLevel + "! Coût payé! Bonus: +" + (game.ngpLevel * 10) + "%");
+  log("💎 +1 Quantum Coin!");
   save();
   updateUI();
+}
+
+function buyShopItem(id) {
+  let item = game.shopItems.find(i => i.id === id);
+  if(!item) return;
+  if(item.bought >= item.maxBuy) { alert("❌ Maximum atteint!"); return; }
+  if(game.quantumCoins < item.cost) { alert("❌ Pas assez de Quantum Coins!"); return; }
+
+  game.quantumCoins -= item.cost;
+  item.bought++;
+
+  log("💎 Acheté: " + item.name);
+  invalidateCache();
+  save();
+  updateUI();
+}
+
+function getShopBoost(effectType) {
+  let boost = 1;
+  for(let item of game.shopItems) {
+    if(item.effect === effectType && item.bought > 0) {
+      boost *= Math.pow(item.value, item.bought);
+    }
+  }
+  return boost;
 }
 
 function investTrade(type) {
@@ -903,12 +1088,13 @@ function withdrawTrade(type) {
 }
 
 function processTradeGains() {
+  let tradeMult = getShopBoost("tradeMult");
   for(let type of ["min","mid","high"]) {
     let trade = game.trades[type];
     if(!trade || trade.amount <= 0) continue;
     let config = getTradeConfig(type);
     let volatilityFactor = 1 + (Math.random() - 0.5) * config.volatility;
-    let actualGain = config.baseGain * volatilityFactor;
+    let actualGain = config.baseGain * volatilityFactor * tradeMult;
     let gain = trade.amount * actualGain / FPS;
     trade.amount += gain;
     trade.totalGains += gain;
@@ -965,9 +1151,10 @@ function playLottery() {
   game.lotteryTickets--;
   let rand = Math.random();
   let gain = 0, result = "";
-  if(rand < 0.50) { gain = 50 + Math.floor(Math.random() * 50); result = "🟢 Petit: +" + gain; }
-  else if(rand < 0.75) { gain = 500 + Math.floor(Math.random() * 500); result = "🟡 Moyen: +" + gain; }
-  else { gain = 5000 + Math.floor(Math.random() * 5000); result = "🔴 GROS LOT: +" + gain + "! 🎉"; }
+  let lotteryMult = getShopBoost("lotteryMult");
+  if(rand < 0.50) { gain = (50 + Math.floor(Math.random() * 50)) * lotteryMult; result = "🟢 Petit: +" + gain; }
+  else if(rand < 0.75) { gain = (500 + Math.floor(Math.random() * 500)) * lotteryMult; result = "🟡 Moyen: +" + gain; }
+  else { gain = (5000 + Math.floor(Math.random() * 5000)) * lotteryMult; result = "🔴 GROS LOT: +" + gain + "! 🎉"; }
   game.coins += gain;
   game.totalCoins += gain;
   game.lotteryLog.unshift(result);
@@ -985,6 +1172,40 @@ function checkAchievements() {
       else log("🏆 " + ach.name);
       game.coins += ach.reward;
       game.totalCoins += ach.reward;
+      save();
+    }
+  }
+}
+
+function checkMilestones() {
+  for(let ms of game.milestones) {
+    if(ms.completed) continue;
+
+    let currentValue = 0;
+    switch(ms.type) {
+      case "coins": currentValue = game.totalCoins; break;
+      case "cps": currentValue = getProd(); break;
+      case "prestige": currentValue = game.prestige; break;
+      case "galaxies": currentValue = game.galaxies; break;
+      case "ascension": currentValue = game.ascension; break;
+      case "ngp": currentValue = game.ngpLevel; break;
+      case "quantumCoins": currentValue = game.quantumCoins; break;
+      case "totalGens": currentValue = game.generators.reduce((a,g)=>a+g.c,0); break;
+      case "shopBought": currentValue = game.shopItems ? game.shopItems.reduce((a,i)=>a+i.bought,0) : 0; break;
+      case "bankGen": currentValue = game.bankGenerated; break;
+      case "tradeGains": currentValue = Object.values(game.trades).reduce((a,t)=>a+t.totalGains,0); break;
+      case "lotteryTotal": currentValue = game.lotteryTickets || 0; break;
+      case "clicks": currentValue = game.totalClicks; break;
+      case "achievements": currentValue = game.achievements.filter(a=>a.unlocked).length; break;
+      case "shopMax": currentValue = game.shopItems && game.shopItems.every(i=>i.bought >= i.maxBuy) ? 1 : 0; break;
+      case "darkMatter": currentValue = game.darkMatter; break;
+    }
+
+    if(currentValue >= ms.goal) {
+      ms.completed = true;
+      log("🎯 Milestone: " + ms.name);
+      if(ms.reward.coins) { game.coins += ms.reward.coins; game.totalCoins += ms.reward.coins; }
+      if(ms.reward.quantumCoins) { game.quantumCoins += ms.reward.quantumCoins; }
       save();
     }
   }
@@ -1137,7 +1358,91 @@ function updateUI() {
   if($("achievementsList")) $("achievementsList").innerHTML = achHtml;
   
   checkAchievements();
-  
+  checkMilestones();
+
+  // Affichage du shop NGP+ et Quantum Coins
+  if(game.ngpLevel >= 5) {
+    if($("shopNGPBtn")) $("shopNGPBtn").style.display = "block";
+    if($("qcStat")) $("qcStat").style.display = "block";
+  } else {
+    if($("shopNGPBtn")) $("shopNGPBtn").style.display = "none";
+    if($("qcStat")) $("qcStat").style.display = "none";
+  }
+
+  if($("quantumCoins")) $("quantumCoins").textContent = game.quantumCoins || 0;
+  if($("qcDisplay")) $("qcDisplay").textContent = game.quantumCoins || 0;
+
+  // Afficher les items du shop
+  if($("shopItemsList") && game.shopItems) {
+    let shopHtml = "";
+    for(let item of game.shopItems) {
+      let canBuy = game.quantumCoins >= item.cost && item.bought < item.maxBuy;
+      let maxReached = item.bought >= item.maxBuy;
+      let itemDiv = `<div class="trade-card" style="border-color:${maxReached ? '#666' : '#f0f'}">
+        <div class="trade-header">
+          <div>
+            <h4>${item.name}</h4>
+            <p style="color:#aaa;font-size:0.9rem">${item.desc}</p>
+          </div>
+        </div>
+        <div class="trade-stats">
+          <div class="trade-stat"><div>💎 Coût</div><div class="trade-stat-val">${item.cost}</div></div>
+          <div class="trade-stat"><div>✅ Acheté</div><div class="trade-stat-val">${item.bought}/${item.maxBuy}</div></div>
+        </div>
+        <button class="btn" onclick="buyShopItem('${item.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem">${maxReached ? "✅ MAX" : "💎 ACHETER"}</button>
+      </div>`;
+      shopHtml += itemDiv;
+    }
+    $("shopItemsList").innerHTML = shopHtml;
+  }
+
+  // Afficher les milestones
+  if($("milestonesList") && game.milestones) {
+    let milestonesHtml = "";
+    for(let ms of game.milestones) {
+      let currentValue = 0;
+      switch(ms.type) {
+        case "coins": currentValue = game.totalCoins; break;
+        case "cps": currentValue = getProd(); break;
+        case "prestige": currentValue = game.prestige; break;
+        case "galaxies": currentValue = game.galaxies; break;
+        case "ascension": currentValue = game.ascension; break;
+        case "ngp": currentValue = game.ngpLevel; break;
+        case "quantumCoins": currentValue = game.quantumCoins; break;
+        case "totalGens": currentValue = game.generators.reduce((a,g)=>a+g.c,0); break;
+        case "shopBought": currentValue = game.shopItems ? game.shopItems.reduce((a,i)=>a+i.bought,0) : 0; break;
+        case "bankGen": currentValue = game.bankGenerated; break;
+        case "tradeGains": currentValue = Object.values(game.trades).reduce((a,t)=>a+t.totalGains,0); break;
+        case "lotteryTotal": currentValue = game.lotteryTickets || 0; break;
+        case "clicks": currentValue = game.totalClicks; break;
+        case "achievements": currentValue = game.achievements.filter(a=>a.unlocked).length; break;
+        case "shopMax": currentValue = game.shopItems && game.shopItems.every(i=>i.bought >= i.maxBuy) ? 1 : 0; break;
+        case "darkMatter": currentValue = game.darkMatter; break;
+      }
+
+      let progress = Math.min(100, (currentValue / ms.goal) * 100);
+      let progressColor = ms.completed ? '#0f0' : (progress >= 100 ? '#0af' : '#fa0');
+
+      let rewardText = "";
+      if(ms.reward.coins) rewardText += `${fmt(ms.reward.coins)} 💰`;
+      if(ms.reward.quantumCoins) rewardText += `${ms.reward.quantumCoins} 💎`;
+
+      let msDiv = `<div style="background:${ms.completed ? '#0a0a2a' : '#0a0a0a'};padding:1rem;border-radius:4px;border-left:3px solid ${progressColor}">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+          <div style="color:${ms.completed ? '#0f0' : '#0af'};font-weight:bold">${ms.completed ? '✅' : '🎯'} ${ms.name}</div>
+          <div style="color:#fa0;font-size:0.9rem">${rewardText}</div>
+        </div>
+        <div style="color:#aaa;font-size:0.9rem;margin-bottom:0.5rem">${ms.desc}</div>
+        <div style="color:#0af;font-size:0.85rem;margin-bottom:0.3rem">${fmt(currentValue)} / ${fmt(ms.goal)}</div>
+        <div style="background:#111;border-radius:3px;height:8px;overflow:hidden">
+          <div style="background:${progressColor};height:100%;width:${progress}%;transition:width 0.3s"></div>
+        </div>
+      </div>`;
+      milestonesHtml += msDiv;
+    }
+    $("milestonesList").innerHTML = milestonesHtml;
+  }
+
   for(let type of ["min","mid","high"]) {
     let trade = game.trades[type];
     let config = getTradeConfig(type);
@@ -1247,11 +1552,23 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   $("resetBtn").addEventListener("click", () => {
     if(!confirm("VRAIMENT?")) return;
-    game = { coins: 0, totalCoins: 0, totalClicks: 0, stars: 0, galaxies: 0, prestige: 0, darkMatter: 0, ngpLevel: 0, playTime: 0, logs: [], tradeLogs: [],
-      generators: [{ id: "r", n: "Robot", b: 1, c: 0, p: 50, m: 1.2, unlock: {type:"none"}}, {id:"u",n:"Usine",b:3,c:0,p:500,m:1.2,unlock:{type:"prestige",val:1}}, {id:"po",n:"Port",b:8,c:0,p:5e3,m:1.2,unlock:{type:"stars",val:5}}, {id:"l",n:"Labo",b:30,c:0,p:50e3,m:1.2,unlock:{type:"prestige",val:3}}, {id:"s",n:"Satellite",b:200,c:0,p:500e3,m:1.2,unlock:{type:"galaxies",val:1}}],
+    game = { coins: 0, totalCoins: 0, totalClicks: 0, stars: 0, galaxies: 0, prestige: 0, darkMatter: 0, ngpLevel: 0, quantumCoins: 0, playTime: 0, logs: [], tradeLogs: [],
+      shopItems: [
+        { id: "qc1", name: "🚀 Boost Production ×2", desc: "Double la production de TOUS les générateurs", cost: 1, bought: 0, maxBuy: 10, effect: "prodMult", value: 2 },
+        { id: "qc2", name: "💰 Boost Clics ×3", desc: "Triple les gains par clic", cost: 2, bought: 0, maxBuy: 5, effect: "clickMult", value: 3 },
+        { id: "qc3", name: "⭐ Boost Prestige +50%", desc: "+50% gains d'étoiles", cost: 3, bought: 0, maxBuy: 3, effect: "starMult", value: 1.5 },
+        { id: "qc4", name: "🌀 Boost Galaxies +25%", desc: "+25% gains de galaxies", cost: 5, bought: 0, maxBuy: 3, effect: "galaxyMult", value: 1.25 },
+        { id: "qc5", name: "💸 Trading ×2", desc: "Double les gains de trading", cost: 4, bought: 0, maxBuy: 5, effect: "tradeMult", value: 2 },
+        { id: "qc6", name: "🏦 Banque +0.1%", desc: "+0.1% d'intérêts bancaires", cost: 3, bought: 0, maxBuy: 10, effect: "bankBonus", value: 0.001 },
+        { id: "qc7", name: "🌙 Dark Matter Auto", desc: "Gagne 1 DM tous les 5 Prestige", cost: 10, bought: 0, maxBuy: 1, effect: "dmAuto", value: 1 },
+        { id: "qc8", name: "♾️ NGP+ Discount", desc: "Réduit coût NGP+ de 20%", cost: 15, bought: 0, maxBuy: 3, effect: "ngpDiscount", value: 0.8 },
+        { id: "qc9", name: "⚡ MEGA BOOST", desc: "×10 TOUT (production, clics, etc)", cost: 25, bought: 0, maxBuy: 1, effect: "megaBoost", value: 10 },
+        { id: "qc10", name: "🎰 Lucky Lottery", desc: "×5 gains de lotterie", cost: 8, bought: 0, maxBuy: 2, effect: "lotteryMult", value: 5 }
+      ],
+      generators: [{ id: "r", n: "Robot", b: 5, c: 0, p: 50, m: 1.2, unlock: {type:"none"}}, {id:"u",n:"Usine",b:15,c:0,p:500,m:1.2,unlock:{type:"prestige",val:1}}, {id:"po",n:"Port",b:50,c:0,p:5e3,m:1.2,unlock:{type:"stars",val:5}}, {id:"l",n:"Labo",b:200,c:0,p:50e3,m:1.2,unlock:{type:"prestige",val:3}}, {id:"s",n:"Satellite",b:1500,c:0,p:500e3,m:1.2,unlock:{type:"galaxies",val:1}}],
       upgrades: [{id:"c1",n:"Clic +50%",p:100,e:1.02,b:0,t:"c",unlock:{type:"none"}}, {id:"r1",n:"Robot ×2",p:2e3,e:2,b:0,t:"r",unlock:{type:"prestige",val:1}}, {id:"r2",n:"Robot ×3",p:50e3,e:3,b:0,t:"r",unlock:{type:"stars",val:10}}, {id:"u1",n:"Usine ×2",p:50e3,e:2,b:0,t:"u",unlock:{type:"prestige",val:2}}, {id:"u2",n:"Usine ×3",p:500e3,e:3,b:0,t:"u",unlock:{type:"prestige",val:5}}, {id:"po1",n:"Port ×2",p:500e3,e:2,b:0,t:"po",unlock:{type:"stars",val:20}}, {id:"l1",n:"Labo ×2",p:5e6,e:2,b:0,t:"l",unlock:{type:"prestige",val:4}}, {id:"s1",n:"Satellite ×2",p:50e6,e:2,b:0,t:"s",unlock:{type:"galaxies",val:1}}],
       trades: {min:{amount:0,totalGains:0,totalLosses:0}, mid:{amount:0,totalGains:0,totalLosses:0}, high:{amount:0,totalGains:0,totalLosses:0}},
-      graphData:[], boosts:[], lotteryLog:[], lotteryTickets:0, bankInvested:0, bankGenerated:0, ascension:0, achievements: getDefaultAchievements()
+      graphData:[], boosts:[], lotteryLog:[], lotteryTickets:0, bankInvested:0, bankGenerated:0, ascension:0, achievements: getDefaultAchievements(), milestones: getDefaultMilestones()
     };
     localStorage.removeItem(SAVE_KEY);
     updateUI();
@@ -1275,7 +1592,9 @@ document.addEventListener("DOMContentLoaded", function() {
       game.coins += p / FPS;
       game.totalCoins += p / FPS;
       if(game.bankInvested > 0) {
-        let bankGains = (game.bankInvested * 0.001) / FPS;
+        let bankBoost = getShopBoost("bankBonus");
+        let bankRate = 0.001 + bankBoost;
+        let bankGains = (game.bankInvested * bankRate) / FPS;
         game.bankInvested += bankGains;
         game.bankGenerated += bankGains;
       }
