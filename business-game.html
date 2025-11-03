@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Tycoon - Trading Game</title>
+    <title>Business Tycoon v1.0</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,68 +14,159 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
 
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
         .header {
-            background: white;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
-        .back-button {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            margin-bottom: 15px;
-            transition: background 0.3s;
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .back-button:hover {
-            background: #5568d3;
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         h1 {
-            color: #1e3c72;
-            margin-bottom: 10px;
+            color: #fff;
+            font-size: 2.5em;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
 
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        .version {
+            display: inline-block;
+            background: linear-gradient(135deg, #e94560, #d63447);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.4em;
+            vertical-align: middle;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
         }
 
-        .stat-item {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(58, 123, 213, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e94560, #d63447);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f2994a, #f2c94c);
+            color: #1a1a2e;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(242, 201, 76, 0.4);
+        }
+
+        /* Stats Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
             text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(0, 210, 255, 0.5);
+            transform: translateY(-5px);
         }
 
         .stat-label {
             font-size: 0.9em;
-            opacity: 0.9;
-            margin-bottom: 5px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 10px;
+            font-weight: 500;
         }
 
         .stat-value {
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .main-content {
+        /* Main Content Grid */
+        .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -81,65 +174,127 @@
         }
 
         .panel {
-            background: white;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
             padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
         .panel h2 {
-            color: #1e3c72;
+            color: #fff;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .product-list {
+            font-size: 1.8em;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 210, 255, 0.3);
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            gap: 10px;
         }
 
-        .product-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+        /* Products */
+        .product-card {
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.6), rgba(22, 33, 62, 0.4));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            border-color: rgba(0, 210, 255, 0.5);
+            transform: translateX(5px);
         }
 
         .product-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .product-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #1e3c72;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .product-icon {
             font-size: 1.5em;
         }
 
-        .product-info {
+        .owned-badge {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .price-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 0.95em;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .price-box {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
         }
 
         .price-buy {
-            color: #e74c3c;
-            font-weight: bold;
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.2), rgba(214, 52, 71, 0.1));
+            border: 2px solid rgba(233, 69, 96, 0.5);
         }
 
         .price-sell {
-            color: #27ae60;
-            font-weight: bold;
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.1));
+            border: 2px solid rgba(56, 239, 125, 0.5);
+        }
+
+        .price-label {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 5px;
+        }
+
+        .price-value {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .price-buy .price-value {
+            color: #e94560;
+        }
+
+        .price-sell .price-value {
+            color: #38ef7d;
+        }
+
+        .profit-indicator {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .profit-positive {
+            background: linear-gradient(135deg, rgba(56, 239, 125, 0.2), rgba(17, 153, 142, 0.1));
+            color: #38ef7d;
+        }
+
+        .profit-negative {
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.2), rgba(214, 52, 71, 0.1));
+            color: #e94560;
         }
 
         .product-actions {
@@ -149,127 +304,145 @@
         }
 
         .quantity-input {
-            width: 80px;
-            padding: 8px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            width: 90px;
+            padding: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border-radius: 10px;
             text-align: center;
-            font-size: 1em;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-
-        .btn-buy {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-buy:hover {
-            background: #c0392b;
-            transform: scale(1.05);
-        }
-
-        .btn-sell {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btn-sell:hover {
-            background: #229954;
-            transform: scale(1.05);
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
         }
 
         .btn-max {
-            background: #3498db;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            padding: 8px 12px;
-            font-size: 0.9em;
+            padding: 12px 20px;
         }
 
         .btn-max:hover {
-            background: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-buy {
+            flex: 1;
+            background: linear-gradient(135deg, #e94560, #d63447);
+        }
+
+        .btn-sell {
+            flex: 1;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Inventory */
+        .inventory-empty {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
         }
 
         .inventory-item {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.6), rgba(22, 33, 62, 0.4));
+            padding: 15px;
+            border-radius: 12px;
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
         }
 
-        .inventory-empty {
-            text-align: center;
-            color: #999;
-            padding: 30px;
-            font-style: italic;
+        .inventory-item:hover {
+            border-color: rgba(56, 239, 125, 0.5);
         }
 
-        .upgrade-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid #f39c12;
+        .inventory-info {
+            flex: 1;
         }
 
-        .upgrade-name {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #1e3c72;
+        .inventory-name {
+            font-size: 1.2em;
+            font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .upgrade-desc {
-            color: #666;
+        .inventory-details {
             font-size: 0.9em;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Upgrades */
+        .upgrade-card {
+            background: linear-gradient(135deg, rgba(242, 153, 74, 0.2), rgba(242, 201, 76, 0.1));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(242, 201, 76, 0.3);
+            transition: all 0.3s;
+        }
+
+        .upgrade-card:hover {
+            border-color: rgba(242, 201, 76, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .upgrade-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #f2c94c;
             margin-bottom: 10px;
+        }
+
+        .upgrade-desc {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 15px;
+            line-height: 1.6;
         }
 
         .upgrade-cost {
-            color: #e67e22;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: #f2994a;
+            margin-bottom: 15px;
+            font-size: 1.1em;
         }
 
-        .btn-upgrade {
-            background: #f39c12;
-            color: white;
+        /* News Feed */
+        .news-feed {
+            max-height: 400px;
+            overflow-y: auto;
         }
 
-        .btn-upgrade:hover {
-            background: #e67e22;
+        .news-feed::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .btn-upgrade:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
+        .news-feed::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
         }
 
-        .news-panel {
-            grid-column: 1 / -1;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .news-feed::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            border-radius: 10px;
         }
 
         .news-item {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.1), rgba(58, 123, 213, 0.05));
             padding: 15px;
             margin-bottom: 10px;
-            border-radius: 5px;
+            border-radius: 10px;
+            border-left: 4px solid #00d2ff;
             animation: slideIn 0.5s ease;
         }
 
@@ -284,102 +457,283 @@
             }
         }
 
-        .trend-up {
-            color: #27ae60;
-            font-weight: bold;
+        .news-item.success {
+            border-left-color: #38ef7d;
+            background: linear-gradient(135deg, rgba(56, 239, 125, 0.1), rgba(17, 153, 142, 0.05));
         }
 
-        .trend-down {
-            color: #e74c3c;
-            font-weight: bold;
+        .news-item.error {
+            border-left-color: #e94560;
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.1), rgba(214, 52, 71, 0.05));
         }
 
-        .level-badge {
-            display: inline-block;
-            background: #f39c12;
-            color: white;
-            padding: 5px 15px;
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 800px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            padding: 40px;
             border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
+            border: 2px solid rgba(0, 210, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
-        @media (max-width: 968px) {
-            .main-content {
+        .modal-content h1 {
+            margin-bottom: 30px;
+            color: #00d2ff;
+        }
+
+        .modal-content h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #3a7bd5;
+        }
+
+        .modal-content ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .modal-content li {
+            margin-bottom: 10px;
+        }
+
+        .changelog-version {
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(58, 123, 213, 0.1));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00d2ff;
+        }
+
+        .changelog-version h3 {
+            color: #00d2ff;
+            margin-bottom: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .owned-count {
-            background: #667eea;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.9em;
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+
+            .quantity-input, .btn-max {
+                width: 100%;
+            }
         }
 
-        .profit-indicator {
-            font-size: 0.85em;
-            margin-top: 5px;
+        .full-width {
+            grid-column: 1 / -1;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="index.html" class="back-button">← Retour au menu</a>
-        <h1>💰 Business Tycoon</h1>
-        <p>Achète des produits pas cher, revends-les cher, et deviens riche !</p>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <h1>💰 Business Tycoon <span class="version">v1.0</span></h1>
+                    <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">Achète bas, vends haut, deviens riche !</p>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-primary" onclick="window.location.href='index.html'">🏠 Menu</button>
+                    <button class="btn btn-primary" onclick="showTutorial()">📖 Tutoriel</button>
+                    <button class="btn btn-primary" onclick="showChangelog()">📝 Changelog</button>
+                    <button class="btn btn-danger" onclick="confirmReset()">🔄 Reset</button>
+                </div>
+            </div>
 
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-label">💵 Capital</div>
-                <div class="stat-value" id="money">1000€</div>
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">💵 Capital</div>
+                    <div class="stat-value" id="money">1000€</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">📦 Inventaire</div>
+                    <div class="stat-value"><span id="inventory-used">0</span>/<span id="inventory-max">10</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🏆 Niveau</div>
+                    <div class="stat-value" id="level">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">📈 Profit Total</div>
+                    <div class="stat-value" id="total-profit">0€</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🔄 Transactions</div>
+                    <div class="stat-value" id="transactions">0</div>
+                </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-label">📦 Capacité</div>
-                <div class="stat-value"><span id="inventory-used">0</span>/<span id="inventory-max">10</span></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-grid">
+            <!-- Market Panel -->
+            <div class="panel">
+                <h2><span>📊</span> Marché</h2>
+                <div id="market"></div>
             </div>
-            <div class="stat-item">
-                <div class="stat-label">🏆 Niveau</div>
-                <div class="stat-value" id="level">1</div>
+
+            <!-- Inventory Panel -->
+            <div class="panel">
+                <h2><span>📦</span> Mon Inventaire</h2>
+                <div id="inventory">
+                    <div class="inventory-empty">Ton inventaire est vide.<br>Achète des produits pour commencer !</div>
+                </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-label">📈 Profit Total</div>
-                <div class="stat-value" id="total-profit">0€</div>
+
+            <!-- Upgrades Panel -->
+            <div class="panel">
+                <h2><span>⚡</span> Améliorations</h2>
+                <div id="upgrades"></div>
+            </div>
+
+            <!-- News Panel -->
+            <div class="panel">
+                <h2><span>📰</span> Fil d'Actualités</h2>
+                <div class="news-feed" id="news">
+                    <div class="news-item success">🎉 Bienvenue dans Business Tycoon ! Tu commences avec 1000€. Bonne chance !</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="main-content">
-        <!-- Market Panel -->
-        <div class="panel">
-            <h2>📊 Marché</h2>
-            <div class="product-list" id="market">
-                <!-- Products will be generated here -->
-            </div>
-        </div>
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <h1>📖 Tutoriel - Business Tycoon</h1>
 
-        <!-- Inventory Panel -->
-        <div class="panel">
-            <h2>📦 Mon Inventaire</h2>
-            <div id="inventory">
-                <div class="inventory-empty">Ton inventaire est vide. Achète des produits pour commencer !</div>
-            </div>
-        </div>
+            <h2>🎯 Objectif du Jeu</h2>
+            <p>Deviens riche en achetant des produits à bas prix et en les revendant plus cher ! Utilise ta stratégie pour maximiser tes profits.</p>
 
-        <!-- Upgrades Panel -->
-        <div class="panel">
+            <h2>💰 Comment Jouer</h2>
+            <ul>
+                <li><strong>📊 Surveille le Marché :</strong> Les prix des produits fluctuent toutes les 10 secondes. Observe les tendances !</li>
+                <li><strong>💵 Achète Malin :</strong> Achète quand les prix sont bas (en rouge). Regarde l'indicateur de profit potentiel.</li>
+                <li><strong>📈 Vends au Bon Moment :</strong> Attends que les prix montent, puis revends pour faire du profit (en vert).</li>
+                <li><strong>📦 Gère ton Inventaire :</strong> Tu as une capacité limitée (10 produits au début). Utilise-la intelligemment !</li>
+            </ul>
+
             <h2>⚡ Améliorations</h2>
-            <div id="upgrades">
-                <!-- Upgrades will be generated here -->
+            <ul>
+                <li><strong>🏪 Entrepôts :</strong> Augmente ta capacité de stockage (500€, 2000€, 5000€)</li>
+                <li><strong>💼 Négociateur :</strong> Réduit le prix d'achat de 5% ou 10% (1000€, 3000€)</li>
+                <li><strong>📈 Vendeur :</strong> Augmente le prix de vente de 5% ou 10% (1500€, 4000€)</li>
+            </ul>
+
+            <h2>🏆 Progression</h2>
+            <ul>
+                <li><strong>Niveau :</strong> Monte de niveau tous les 10 achats/ventes. Reçois un bonus en argent !</li>
+                <li><strong>Stratégie :</strong> Concentre-toi sur les produits avec le meilleur profit potentiel.</li>
+                <li><strong>Patience :</strong> Attends le bon moment pour vendre. Le marché fluctue constamment !</li>
+            </ul>
+
+            <h2>💡 Astuces</h2>
+            <ul>
+                <li>Utilise le bouton <strong>MAX</strong> pour acheter le maximum possible avec ton argent</li>
+                <li>Diversifie tes investissements pour réduire les risques</li>
+                <li>Les produits chers (Vélo, Laptop) donnent plus de profit mais nécessitent plus de capital</li>
+                <li>Achète les améliorations dès que possible pour maximiser tes gains</li>
+                <li>Ton jeu est sauvegardé automatiquement toutes les 30 secondes</li>
+            </ul>
+
+            <div class="modal-buttons">
+                <button class="btn btn-success" onclick="closeTutorial()">C'est Parti ! 🚀</button>
             </div>
         </div>
+    </div>
 
-        <!-- News Panel -->
-        <div class="panel">
-            <h2>📰 Actualités du Marché</h2>
-            <div id="news">
-                <div class="news-item">🎉 Bienvenue dans Business Tycoon ! Tu commences avec 1000€. Achète et revends pour faire du profit !</div>
+    <!-- Changelog Modal -->
+    <div id="changelogModal" class="modal">
+        <div class="modal-content">
+            <h1>📝 Changelog - Business Tycoon</h1>
+
+            <div class="changelog-version">
+                <h3>Version 1.0 - Lancement Initial 🎉</h3>
+                <p><strong>Date:</strong> Novembre 2025</p>
+                <ul>
+                    <li>🎮 <strong>Système de Trading :</strong> Achète et vends 5 produits différents</li>
+                    <li>📊 <strong>Marché Dynamique :</strong> Prix qui fluctuent en temps réel toutes les 10 secondes</li>
+                    <li>📦 <strong>Gestion d'Inventaire :</strong> Capacité de stockage évolutive</li>
+                    <li>⚡ <strong>7 Améliorations :</strong> Entrepôts, négociateur, vendeur</li>
+                    <li>🏆 <strong>Système de Niveau :</strong> Monte de niveau avec des bonus d'argent</li>
+                    <li>📰 <strong>Fil d'Actualités :</strong> Suis tes transactions en temps réel</li>
+                    <li>💾 <strong>Sauvegarde Auto :</strong> Ta progression est sauvegardée toutes les 30 secondes</li>
+                    <li>📖 <strong>Tutoriel Interactif :</strong> Apprends à jouer facilement</li>
+                    <li>🎨 <strong>Interface Moderne :</strong> Design élégant et responsive</li>
+                    <li>📱 <strong>Mobile Friendly :</strong> Joue sur ton téléphone ou tablette</li>
+                </ul>
+            </div>
+
+            <div class="changelog-version">
+                <h3>Produits Disponibles 🛍️</h3>
+                <ul>
+                    <li>📱 <strong>Smartphone</strong> - Prix de base: 200€ (150€ - 300€)</li>
+                    <li>💻 <strong>Ordinateur Portable</strong> - Prix de base: 500€ (400€ - 700€)</li>
+                    <li>⌚ <strong>Montre de Luxe</strong> - Prix de base: 150€ (100€ - 250€)</li>
+                    <li>🎮 <strong>Console de Jeu</strong> - Prix de base: 300€ (250€ - 450€)</li>
+                    <li>🚴 <strong>Vélo Électrique</strong> - Prix de base: 800€ (600€ - 1000€)</li>
+                </ul>
+            </div>
+
+            <div class="changelog-version">
+                <h3>Prochaines Fonctionnalités 🚀</h3>
+                <ul>
+                    <li>🏪 Plus de produits à débloquer</li>
+                    <li>🎲 Événements de marché spéciaux</li>
+                    <li>🏆 Système d'achievements</li>
+                    <li>📈 Graphiques de tendances</li>
+                    <li>💼 Employés automatiques</li>
+                    <li>🌍 Expansion dans d'autres marchés</li>
+                </ul>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeChangelog()">Fermer</button>
             </div>
         </div>
     </div>
@@ -400,64 +754,22 @@
                 discount1: false,
                 discount2: false,
                 markup1: false,
-                markup2: false,
-                market1: false
+                markup2: false
             }
         };
 
         // Products Database
         const products = [
-            {
-                id: 'phone',
-                name: 'Smartphone',
-                icon: '📱',
-                basePrice: 200,
-                volatility: 0.15,
-                minPrice: 150,
-                maxPrice: 300
-            },
-            {
-                id: 'laptop',
-                name: 'Ordinateur Portable',
-                icon: '💻',
-                basePrice: 500,
-                volatility: 0.12,
-                minPrice: 400,
-                maxPrice: 700
-            },
-            {
-                id: 'watch',
-                name: 'Montre de Luxe',
-                icon: '⌚',
-                basePrice: 150,
-                volatility: 0.20,
-                minPrice: 100,
-                maxPrice: 250
-            },
-            {
-                id: 'console',
-                name: 'Console de Jeu',
-                icon: '🎮',
-                basePrice: 300,
-                volatility: 0.18,
-                minPrice: 250,
-                maxPrice: 450
-            },
-            {
-                id: 'bike',
-                name: 'Vélo Électrique',
-                icon: '🚴',
-                basePrice: 800,
-                volatility: 0.10,
-                minPrice: 600,
-                maxPrice: 1000
-            }
+            { id: 'phone', name: 'Smartphone', icon: '📱', basePrice: 200, volatility: 0.15, minPrice: 150, maxPrice: 300 },
+            { id: 'laptop', name: 'Ordinateur Portable', icon: '💻', basePrice: 500, volatility: 0.12, minPrice: 400, maxPrice: 700 },
+            { id: 'watch', name: 'Montre de Luxe', icon: '⌚', basePrice: 150, volatility: 0.20, minPrice: 100, maxPrice: 250 },
+            { id: 'console', name: 'Console de Jeu', icon: '🎮', basePrice: 300, volatility: 0.18, minPrice: 250, maxPrice: 450 },
+            { id: 'bike', name: 'Vélo Électrique', icon: '🚴', basePrice: 800, volatility: 0.10, minPrice: 600, maxPrice: 1000 }
         ];
 
-        // Current market prices
         const marketPrices = {};
 
-        // Initialize market prices
+        // Initialize market
         function initMarket() {
             products.forEach(product => {
                 marketPrices[product.id] = {
@@ -468,46 +780,51 @@
             });
         }
 
-        // Update sell price based on buy price
         function updateSellPrice(productId) {
             const product = products.find(p => p.id === productId);
             const buyPrice = marketPrices[productId].buy;
-
-            // Sell price is 80-95% of buy price (you lose money if you buy and immediately sell)
             const baseMargin = 0.80 + Math.random() * 0.15;
             marketPrices[productId].sell = Math.round(buyPrice * baseMargin);
         }
 
-        // Fluctuate market prices
         function fluctuateMarket() {
             products.forEach(product => {
                 const currentPrice = marketPrices[product.id].buy;
                 const change = (Math.random() - 0.5) * product.volatility;
                 let newPrice = Math.round(currentPrice * (1 + change));
-
-                // Clamp to min/max
                 newPrice = Math.max(product.minPrice, Math.min(product.maxPrice, newPrice));
-
                 marketPrices[product.id].buy = newPrice;
                 updateSellPrice(product.id);
             });
         }
 
-        // Buy product
+        function getDiscountMultiplier() {
+            let discount = 1;
+            if (game.upgrades.discount1) discount -= 0.05;
+            if (game.upgrades.discount2) discount -= 0.10;
+            return discount;
+        }
+
+        function getMarkupMultiplier() {
+            let markup = 1;
+            if (game.upgrades.markup1) markup += 0.05;
+            if (game.upgrades.markup2) markup += 0.10;
+            return markup;
+        }
+
         function buyProduct(productId, quantity) {
             const product = products.find(p => p.id === productId);
-            const price = marketPrices[productId].buy;
+            const price = Math.round(marketPrices[productId].buy * getDiscountMultiplier());
             const totalCost = price * quantity;
-
             const currentInventorySize = Object.values(game.inventory).reduce((sum, count) => sum + count, 0);
 
             if (currentInventorySize + quantity > game.inventoryMax) {
-                addNews(`❌ Pas assez d'espace dans l'inventaire ! (${currentInventorySize}/${game.inventoryMax})`);
+                addNews(`❌ Pas assez d'espace dans l'inventaire ! (${currentInventorySize}/${game.inventoryMax})`, 'error');
                 return;
             }
 
             if (game.money < totalCost) {
-                addNews(`❌ Pas assez d'argent pour acheter ${quantity}x ${product.name}!`);
+                addNews(`❌ Pas assez d'argent pour acheter ${quantity}x ${product.name}!`, 'error');
                 return;
             }
 
@@ -515,18 +832,17 @@
             game.inventory[productId] = (game.inventory[productId] || 0) + quantity;
             game.totalTransactions += quantity;
 
-            addNews(`✅ Acheté ${quantity}x ${product.icon} ${product.name} pour ${totalCost}€`);
+            addNews(`✅ Acheté ${quantity}x ${product.icon} ${product.name} pour ${totalCost}€`, 'success');
             updateUI();
             checkLevelUp();
         }
 
-        // Sell product
         function sellProduct(productId, quantity) {
             const product = products.find(p => p.id === productId);
-            const price = marketPrices[productId].sell;
+            const price = Math.round(marketPrices[productId].sell * getMarkupMultiplier());
 
             if (!game.inventory[productId] || game.inventory[productId] < quantity) {
-                addNews(`❌ Tu n'as pas assez de ${product.name} dans ton inventaire !`);
+                addNews(`❌ Tu n'as pas assez de ${product.name} dans ton inventaire !`, 'error');
                 return;
             }
 
@@ -540,40 +856,35 @@
                 delete game.inventory[productId];
             }
 
-            addNews(`💰 Vendu ${quantity}x ${product.icon} ${product.name} pour ${totalRevenue}€`);
+            addNews(`💰 Vendu ${quantity}x ${product.icon} ${product.name} pour ${totalRevenue}€`, 'success');
             updateUI();
             checkLevelUp();
         }
 
-        // Add news
         let newsCounter = 0;
-        function addNews(message) {
+        function addNews(message, type = '') {
             const newsDiv = document.getElementById('news');
             const newsItem = document.createElement('div');
-            newsItem.className = 'news-item';
+            newsItem.className = `news-item ${type}`;
             newsItem.textContent = message;
-
             newsDiv.insertBefore(newsItem, newsDiv.firstChild);
 
-            // Keep only last 5 news items
             newsCounter++;
-            if (newsCounter > 5) {
+            if (newsCounter > 10) {
                 newsDiv.removeChild(newsDiv.lastChild);
             }
         }
 
-        // Check level up
         function checkLevelUp() {
             const newLevel = Math.floor(game.totalTransactions / 10) + 1;
             if (newLevel > game.level) {
                 game.level = newLevel;
                 const bonus = newLevel * 100;
                 game.money += bonus;
-                addNews(`🎉 NIVEAU ${newLevel} ATTEINT ! Bonus de ${bonus}€ !`);
+                addNews(`🎉 NIVEAU ${newLevel} ATTEINT ! Bonus de ${bonus}€ !`, 'success');
             }
         }
 
-        // Buy upgrade
         function buyUpgrade(upgradeId) {
             const upgradeConfig = {
                 storage1: { cost: 500, name: 'Petit Entrepôt', bonus: 10 },
@@ -582,46 +893,35 @@
                 discount1: { cost: 1000, name: 'Négociateur Bronze', bonus: 0.05 },
                 discount2: { cost: 3000, name: 'Négociateur Or', bonus: 0.10 },
                 markup1: { cost: 1500, name: 'Vendeur Pro', bonus: 0.05 },
-                markup2: { cost: 4000, name: 'Vendeur Elite', bonus: 0.10 },
-                market1: { cost: 2500, name: 'Nouveaux Marchés', bonus: 0 }
+                markup2: { cost: 4000, name: 'Vendeur Elite', bonus: 0.10 }
             };
 
             const config = upgradeConfig[upgradeId];
 
             if (game.money < config.cost) {
-                addNews(`❌ Pas assez d'argent pour cette amélioration (${config.cost}€ requis) !`);
+                addNews(`❌ Pas assez d'argent pour cette amélioration (${config.cost}€ requis) !`, 'error');
                 return;
             }
 
             game.money -= config.cost;
             game.upgrades[upgradeId] = true;
 
-            // Apply upgrade effects
             if (upgradeId.startsWith('storage')) {
                 game.inventoryMax += config.bonus;
             }
 
-            addNews(`⚡ Amélioration achetée : ${config.name} !`);
+            addNews(`⚡ Amélioration achetée : ${config.name} !`, 'success');
             updateUI();
         }
 
-        // Get discount multiplier
-        function getDiscountMultiplier() {
-            let discount = 1;
-            if (game.upgrades.discount1) discount -= 0.05;
-            if (game.upgrades.discount2) discount -= 0.10;
-            return discount;
+        function setMaxBuy(productId, price) {
+            const currentInventorySize = Object.values(game.inventory).reduce((sum, count) => sum + count, 0);
+            const spaceLeft = game.inventoryMax - currentInventorySize;
+            const maxAffordable = Math.floor(game.money / price);
+            const max = Math.min(spaceLeft, maxAffordable);
+            document.getElementById(`qty-${productId}`).value = Math.max(1, max);
         }
 
-        // Get markup multiplier
-        function getMarkupMultiplier() {
-            let markup = 1;
-            if (game.upgrades.markup1) markup += 0.05;
-            if (game.upgrades.markup2) markup += 0.10;
-            return markup;
-        }
-
-        // Render market
         function renderMarket() {
             const marketDiv = document.getElementById('market');
             marketDiv.innerHTML = '';
@@ -630,33 +930,40 @@
                 const buyPrice = Math.round(marketPrices[product.id].buy * getDiscountMultiplier());
                 const sellPrice = Math.round(marketPrices[product.id].sell * getMarkupMultiplier());
                 const owned = game.inventory[product.id] || 0;
-
-                // Calculate potential profit
                 const potentialProfit = sellPrice - buyPrice;
                 const profitPercent = ((potentialProfit / buyPrice) * 100).toFixed(1);
 
                 const productDiv = document.createElement('div');
-                productDiv.className = 'product-item';
+                productDiv.className = 'product-card';
                 productDiv.innerHTML = `
                     <div class="product-header">
-                        <span class="product-name">${product.icon} ${product.name}</span>
-                        ${owned > 0 ? `<span class="owned-count">Possédé: ${owned}</span>` : ''}
+                        <div class="product-name">
+                            <span class="product-icon">${product.icon}</span>
+                            ${product.name}
+                        </div>
+                        ${owned > 0 ? `<span class="owned-badge">Possédé: ${owned}</span>` : ''}
                     </div>
-                    <div class="product-info">
-                        <div>Prix d'achat: <span class="price-buy">${buyPrice}€</span></div>
-                        <div>Prix de vente: <span class="price-sell">${sellPrice}€</span></div>
+                    <div class="price-grid">
+                        <div class="price-box price-buy">
+                            <div class="price-label">Prix d'achat</div>
+                            <div class="price-value">${buyPrice}€</div>
+                        </div>
+                        <div class="price-box price-sell">
+                            <div class="price-label">Prix de vente</div>
+                            <div class="price-value">${sellPrice}€</div>
+                        </div>
                     </div>
-                    <div class="profit-indicator ${potentialProfit >= 0 ? 'trend-up' : 'trend-down'}">
-                        Profit potentiel: ${potentialProfit >= 0 ? '+' : ''}${potentialProfit}€ (${profitPercent}%)
+                    <div class="profit-indicator ${potentialProfit >= 0 ? 'profit-positive' : 'profit-negative'}">
+                        💹 Profit potentiel: ${potentialProfit >= 0 ? '+' : ''}${potentialProfit}€ (${profitPercent}%)
                     </div>
                     <div class="product-actions">
                         <input type="number" class="quantity-input" id="qty-${product.id}" value="1" min="1">
                         <button class="btn btn-max" onclick="setMaxBuy('${product.id}', ${buyPrice})">MAX</button>
                         <button class="btn btn-buy" onclick="buyProduct('${product.id}', parseInt(document.getElementById('qty-${product.id}').value))">
-                            Acheter
+                            💵 Acheter
                         </button>
                         <button class="btn btn-sell" onclick="sellProduct('${product.id}', parseInt(document.getElementById('qty-${product.id}').value))" ${owned === 0 ? 'disabled' : ''}>
-                            Vendre
+                            💰 Vendre
                         </button>
                     </div>
                 `;
@@ -664,22 +971,11 @@
             });
         }
 
-        // Set max buyable quantity
-        function setMaxBuy(productId, price) {
-            const currentInventorySize = Object.values(game.inventory).reduce((sum, count) => sum + count, 0);
-            const spaceLeft = game.inventoryMax - currentInventorySize;
-            const maxAffordable = Math.floor(game.money / price);
-            const max = Math.min(spaceLeft, maxAffordable);
-
-            document.getElementById(`qty-${productId}`).value = Math.max(1, max);
-        }
-
-        // Render inventory
         function renderInventory() {
             const inventoryDiv = document.getElementById('inventory');
 
             if (Object.keys(game.inventory).length === 0) {
-                inventoryDiv.innerHTML = '<div class="inventory-empty">Ton inventaire est vide. Achète des produits pour commencer !</div>';
+                inventoryDiv.innerHTML = '<div class="inventory-empty">Ton inventaire est vide.<br>Achète des produits pour commencer !</div>';
                 return;
             }
 
@@ -692,65 +988,62 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'inventory-item';
                 itemDiv.innerHTML = `
-                    <div>
-                        <strong>${product.icon} ${product.name}</strong><br>
-                        <small>Quantité: ${count} | Valeur: ${sellPrice * count}€</small>
+                    <div class="inventory-info">
+                        <div class="inventory-name">${product.icon} ${product.name}</div>
+                        <div class="inventory-details">Quantité: ${count} | Valeur totale: ${sellPrice * count}€</div>
                     </div>
                     <button class="btn btn-sell" onclick="sellProduct('${productId}', ${count})">
-                        Tout vendre
+                        💰 Tout Vendre
                     </button>
                 `;
                 inventoryDiv.appendChild(itemDiv);
             });
         }
 
-        // Render upgrades
         function renderUpgrades() {
             const upgradesDiv = document.getElementById('upgrades');
-
             const upgradesList = [
-                { id: 'storage1', name: 'Petit Entrepôt', desc: '+10 places de stockage', cost: 500 },
-                { id: 'storage2', name: 'Grand Entrepôt', desc: '+20 places de stockage', cost: 2000, req: 'storage1' },
-                { id: 'storage3', name: 'Entrepôt XXL', desc: '+50 places de stockage', cost: 5000, req: 'storage2' },
-                { id: 'discount1', name: 'Négociateur Bronze', desc: '-5% sur les achats', cost: 1000 },
-                { id: 'discount2', name: 'Négociateur Or', desc: '-10% sur les achats', cost: 3000, req: 'discount1' },
-                { id: 'markup1', name: 'Vendeur Pro', desc: '+5% sur les ventes', cost: 1500 },
-                { id: 'markup2', name: 'Vendeur Elite', desc: '+10% sur les ventes', cost: 4000, req: 'markup1' }
+                { id: 'storage1', name: '🏪 Petit Entrepôt', desc: 'Augmente ta capacité de stockage de 10 produits', cost: 500 },
+                { id: 'storage2', name: '🏪 Grand Entrepôt', desc: 'Augmente ta capacité de stockage de 20 produits supplémentaires', cost: 2000, req: 'storage1' },
+                { id: 'storage3', name: '🏪 Entrepôt XXL', desc: 'Augmente ta capacité de stockage de 50 produits supplémentaires', cost: 5000, req: 'storage2' },
+                { id: 'discount1', name: '💼 Négociateur Bronze', desc: 'Réduit le prix d\'achat de tous les produits de 5%', cost: 1000 },
+                { id: 'discount2', name: '💼 Négociateur Or', desc: 'Réduit le prix d\'achat de tous les produits de 10% supplémentaires', cost: 3000, req: 'discount1' },
+                { id: 'markup1', name: '📈 Vendeur Pro', desc: 'Augmente le prix de vente de tous les produits de 5%', cost: 1500 },
+                { id: 'markup2', name: '📈 Vendeur Elite', desc: 'Augmente le prix de vente de tous les produits de 10% supplémentaires', cost: 4000, req: 'markup1' }
             ];
 
             upgradesDiv.innerHTML = '';
 
             upgradesList.forEach(upgrade => {
-                if (game.upgrades[upgrade.id]) return; // Already bought
-
+                if (game.upgrades[upgrade.id]) return;
                 const reqMet = !upgrade.req || game.upgrades[upgrade.req];
-                if (!reqMet) return; // Requirements not met
+                if (!reqMet) return;
 
                 const canAfford = game.money >= upgrade.cost;
 
                 const upgradeDiv = document.createElement('div');
-                upgradeDiv.className = 'upgrade-item';
+                upgradeDiv.className = 'upgrade-card';
                 upgradeDiv.innerHTML = `
                     <div class="upgrade-name">${upgrade.name}</div>
                     <div class="upgrade-desc">${upgrade.desc}</div>
-                    <div class="upgrade-cost">Coût: ${upgrade.cost}€</div>
-                    <button class="btn btn-upgrade" onclick="buyUpgrade('${upgrade.id}')" ${!canAfford ? 'disabled' : ''}>
-                        Acheter
+                    <div class="upgrade-cost">💰 Coût: ${upgrade.cost}€</div>
+                    <button class="btn btn-warning" onclick="buyUpgrade('${upgrade.id}')" ${!canAfford ? 'disabled' : ''}>
+                        ⚡ Acheter l'Amélioration
                     </button>
                 `;
                 upgradesDiv.appendChild(upgradeDiv);
             });
 
             if (upgradesDiv.innerHTML === '') {
-                upgradesDiv.innerHTML = '<div class="inventory-empty">Toutes les améliorations disponibles ont été achetées !</div>';
+                upgradesDiv.innerHTML = '<div class="inventory-empty">🎉 Toutes les améliorations ont été achetées !</div>';
             }
         }
 
-        // Update UI
         function updateUI() {
             document.getElementById('money').textContent = Math.floor(game.money) + '€';
             document.getElementById('level').textContent = game.level;
             document.getElementById('total-profit').textContent = Math.floor(game.totalProfit) + '€';
+            document.getElementById('transactions').textContent = game.totalTransactions;
 
             const inventoryUsed = Object.values(game.inventory).reduce((sum, count) => sum + count, 0);
             document.getElementById('inventory-used').textContent = inventoryUsed;
@@ -761,13 +1054,10 @@
             renderUpgrades();
         }
 
-        // Game loop
         function gameLoop() {
-            // Market fluctuates every 10 seconds
             fluctuateMarket();
             updateUI();
 
-            // Random news about market trends
             if (Math.random() < 0.3) {
                 const product = products[Math.floor(Math.random() * products.length)];
                 const trends = [
@@ -779,28 +1069,61 @@
             }
         }
 
-        // Initialize game
-        initMarket();
-        updateUI();
+        // Modals
+        function showTutorial() {
+            document.getElementById('tutorialModal').style.display = 'block';
+        }
 
-        // Start game loop (market updates every 10 seconds)
-        setInterval(gameLoop, 10000);
+        function closeTutorial() {
+            document.getElementById('tutorialModal').style.display = 'none';
+        }
 
-        // Auto-save every 30 seconds
-        setInterval(() => {
+        function showChangelog() {
+            document.getElementById('changelogModal').style.display = 'block';
+        }
+
+        function closeChangelog() {
+            document.getElementById('changelogModal').style.display = 'none';
+        }
+
+        function confirmReset() {
+            if (confirm('⚠️ Es-tu sûr de vouloir réinitialiser ta progression ? Cette action est irréversible !')) {
+                localStorage.removeItem('businessGame_save');
+                location.reload();
+            }
+        }
+
+        // Save/Load
+        function saveGame() {
             localStorage.setItem('businessGame_save', JSON.stringify(game));
-        }, 30000);
+        }
 
-        // Load save on start
-        window.addEventListener('load', () => {
+        function loadGame() {
             const save = localStorage.getItem('businessGame_save');
             if (save) {
                 const loadedGame = JSON.parse(save);
                 Object.assign(game, loadedGame);
-                updateUI();
-                addNews('💾 Sauvegarde chargée avec succès !');
+                addNews('💾 Sauvegarde chargée avec succès !', 'success');
             }
-        });
+        }
+
+        // Initialize
+        initMarket();
+        loadGame();
+        updateUI();
+
+        // Game loop (10 seconds)
+        setInterval(gameLoop, 10000);
+
+        // Auto-save (30 seconds)
+        setInterval(saveGame, 30000);
+
+        // Close modals on click outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
