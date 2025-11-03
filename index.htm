@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#0a0a0a">
-  <title>Incremental Trade ULTIMATE - v3 FINAL</title>
+  <title>Incremental Trade ULTIMATE - v4.1 QOL</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     @media (prefers-color-scheme: light) {
@@ -28,12 +28,12 @@
     .content { display: none; }
     .content.active { display: block; }
     .card { background: #1a1a1a; padding: 1rem; margin: 1rem 0; border-radius: 6px; border: 1px solid #333; }
-    .btn { padding: 0.6rem 1rem; background: #0af; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 0.3rem 0.3rem 0.3rem 0; transition: 0.2s; }
+    .btn { padding: 0.6rem 1rem; background: #0af; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin: 0.3rem 0.3rem 0.3rem 0; transition: 0.2s; touch-action: manipulation; min-height: 40px; }
     .btn:hover:not(:disabled) { transform: scale(1.05); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .danger-btn { background: #f00; color: #fff; }
     .danger-btn:hover:not(:disabled) { background: #c00; }
-    .item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem; background: #0a0a0a; margin: 0.4rem 0; border-left: 3px solid #0af; }
+    .item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #0a0a0a; margin: 0.6rem 0; border-left: 3px solid #0af; gap: 0.5rem; }
     .big-btn { width: 100%; max-width: 280px; padding: 1.2rem; font-size: 1.1rem; margin: 1rem auto; display: block; }
     .log { background: #000; border-left: 3px solid #0af; padding: 0.8rem; max-height: 120px; overflow-y: auto; margin: 1rem 0; font-size: 0.85rem; }
     canvas { border: 1px solid #0af; background: #111; max-width: 100%; margin: 1rem 0; width: 100%; height: auto; }
@@ -59,14 +59,20 @@
     .market-up { background: #0f0; color: #000; }
     .market-down { background: #f00; color: #fff; }
     .market-neutral { background: #fa0; color: #000; }
-    @media(max-width: 600px) { .tabs { font-size: 0.9rem; } .stat { padding: 0.6rem; } .btn { padding: 0.4rem 0.8rem; font-size: 0.85rem; } }
+    @media(max-width: 600px) {
+      .tabs { font-size: 0.9rem; }
+      .stat { padding: 0.6rem; }
+      .btn { padding: 0.7rem 1rem; font-size: 0.9rem; min-height: 44px; margin: 0.4rem; }
+      .item { flex-direction: column; align-items: stretch; gap: 0.8rem; }
+      .item .btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>💎 INCREMENTAL TRADE ULTIMATE v3 FINAL 💎</h1>
-  <p>Le jeu inactif addictif avec NEW GAME PLUS! [FINAL EDITION]</p>
+  <h1>💎 INCREMENTAL TRADE ULTIMATE v4.1 QOL 💎</h1>
+  <p>Le jeu inactif addictif avec NEW GAME PLUS! [QUALITY OF LIFE UPDATE]</p>
 
   <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
     <button class="btn" onclick="showTutorial()" style="display:block">📖 TUTORIEL</button>
@@ -91,12 +97,14 @@
     <button class="tab-btn active" data-tab="main">🎮 JEU</button>
     <button class="tab-btn" data-tab="gens">🤖 GÉNÉRATEURS</button>
     <button class="tab-btn" data-tab="ups">⚡ UPGRADES</button>
+    <button class="tab-btn" data-tab="research">🔬 RECHERCHES</button>
     <button class="tab-btn" data-tab="trade">💸 TRADING</button>
     <button class="tab-btn" data-tab="bank">🏦 BANQUE</button>
     <button class="tab-btn" data-tab="lottery">🎰 LOTTERIE</button>
     <button class="tab-btn" data-tab="ascensionTab">🚀 ASCENSION</button>
     <button class="tab-btn" data-tab="ngp">🔄 NEW GAME+</button>
     <button class="tab-btn" id="shopNGPBtn" data-tab="shopNGP" style="display:none">💎 SHOP NGP+</button>
+    <button class="tab-btn" id="shopDMBtn" data-tab="shopDM" style="display:none">🌙 SHOP DM</button>
     <button class="tab-btn" data-tab="achievements">🏆 ACHIEVEMENTS</button>
     <button class="tab-btn" data-tab="milestones">🎯 MILESTONES</button>
     <button class="tab-btn" data-tab="graph">📊 GRAPHIQUE</button>
@@ -126,7 +134,12 @@
   <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
   <p>Progression: <span id="prestProg">0</span></p>
   <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
-  <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0;">
+    <button class="btn" id="prestigeBtn" style="flex: 1; min-width: 120px;">⚡ PRESTIGE x1</button>
+    <button class="btn" onclick="doPrestigeMultiple(10)" style="flex: 1; min-width: 120px; background: #0f0; color: #000;">⚡⚡ x10</button>
+    <button class="btn" onclick="doPrestigeMultiple(100)" style="flex: 1; min-width: 120px; background: #fa0; color: #000;">⚡⚡⚡ x100</button>
+    <button class="btn" onclick="doPrestigeMultiple(9999)" style="flex: 1; min-width: 120px; background: #f0f; color: #fff;">♾️ MAX</button>
+  </div>
 </div>
 <div class="card">
   <h3>🌀 GALAXIES</h3>
@@ -145,6 +158,31 @@
     <div class="card"><h3>⚡ AMÉLIORATIONS</h3><div id="upsList"></div></div>
   </div>
 
+  <div id="research" class="content">
+    <div class="card">
+      <h3>🔬 RECHERCHES AVANCÉES - PERMANENT</h3>
+      <p style="color: #0f0; margin-bottom: 0.5rem;">Upgrades PERMANENTS qui NE SE RÉINITIALISENT JAMAIS (sauf NGP+)!</p>
+      <p style="color: #fa0; font-size: 0.9rem; margin-bottom: 1rem;">💡 Chaque recherche augmente en coût mais donne des bonus cumulatifs!</p>
+      <div id="researchList"></div>
+    </div>
+  </div>
+
+  <div id="shopDM" class="content">
+    <div class="card">
+      <h3>🌙 SHOP DARK MATTER - BOOSTS TEMPORAIRES</h3>
+      <p style="color: #f0f; margin-bottom: 0.5rem;">🔓 Débloqué à 10 Dark Matter!</p>
+      <p style="color: #0f0; margin-bottom: 0.5rem;">Achète des boosts puissants avec Dark Matter!</p>
+      <p style="color: #f00; font-size: 0.9rem; margin-bottom: 1rem;">⚠️ PERDU AU NGP+ (pas à l'Ascension)!</p>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #f0f;border-radius:4px;">
+        <p style="color:#f0f;margin:0.5rem 0"><strong>🌙 Dark Matter: <span id="dmDisplay">0</span></strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">Gagnes 1 DM tous les 10 Prestige!</p>
+      </div>
+
+      <div id="shopDMList"></div>
+    </div>
+  </div>
+
   <div id="trade" class="content">
     <div class="card">
       <h3>💸 SYSTÈME DE TRADING - RÉALISTE 📊</h3>
@@ -158,7 +196,7 @@
 ```
   <div class="trade-card min">
     <div class="trade-header">
-      <div><h4>✅ RISQUE MINIMUM - Obligations</h4><p style="color: #0f0; font-size: 0.9rem;">+1.2% base ±0.6% volatilité</p></div>
+      <div><h4>✅ RISQUE MINIMUM - Obligations</h4><p style="color: #0f0; font-size: 0.9rem;">+2.4% base ±0.6% volatilité</p></div>
     </div>
     <div class="trade-stats">
       <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="minAmount">0</div></div>
@@ -178,7 +216,7 @@
 
   <div class="trade-card mid">
     <div class="trade-header">
-      <div><h4>⚠️ RISQUE MOYEN - Stocks</h4><p style="color: #fa0; font-size: 0.9rem;">+4% base ±4.8% volatilité</p></div>
+      <div><h4>⚠️ RISQUE MOYEN - Stocks</h4><p style="color: #fa0; font-size: 0.9rem;">+8% base ±9.6% volatilité</p></div>
     </div>
     <div class="trade-stats">
       <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="midAmount">0</div></div>
@@ -198,7 +236,7 @@
 
   <div class="trade-card high">
     <div class="trade-header">
-      <div><h4>🔥 GROS RISQUE - Crypto</h4><p style="color: #f00; font-size: 0.9rem;">+30% base ±75% volatilité!</p></div>
+      <div><h4>🔥 GROS RISQUE - Crypto</h4><p style="color: #f00; font-size: 0.9rem;">+24% base ±60% volatilité!</p></div>
     </div>
     <div class="trade-stats">
       <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="highAmount">0</div></div>
@@ -228,7 +266,7 @@
   <div id="bank" class="content">
     <div class="card">
       <h3>🏦 BANQUE - INVESTISSEMENTS</h3>
-      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.1% par sec! (SANS RISQUE)</p>
+      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.005% par sec! (SANS RISQUE)</p>
       <div class="trade-stats">
         <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="bankInvested">0</div></div>
         <div class="trade-stat"><div>⚡ +/sec</div><div class="trade-stat-val" id="bankGains">0</div></div>
@@ -257,7 +295,10 @@
         <button class="btn" onclick="buyLotteryTicket(10)">10 Tickets (1K)</button>
         <button class="btn" onclick="buyLotteryTicket(100)">100 Tickets (10K)</button>
       </div>
-      <button class="btn big-btn" onclick="playLottery()" style="max-width: 100%; width: 100%;">🎰 JOUER!</button>
+      <div style="display: flex; gap: 0.5rem; margin: 0.5rem 0; flex-wrap: wrap;">
+        <button class="btn" onclick="playLottery()" style="flex: 1; min-width: 150px;">🎰 JOUER x1</button>
+        <button class="btn" onclick="playLotteryAll()" style="flex: 1; min-width: 150px; background: #f0f; color: #fff;">🎰🎰 OUVRIR TOUS!</button>
+      </div>
       <div class="card" style="background:#0a0a0a;margin-top:1rem">
         <h4>🎲 Résultats</h4>
         <div id="lotteryLog" style="max-height: 200px; overflow-y: auto;"><div style="color:#aaa">En attente...</div></div>
@@ -268,10 +309,33 @@
   <div id="ascensionTab" class="content">
     <div class="card">
       <h3>🚀 ASCENSION - META PRESTIGE</h3>
+      <p style="color: #0f0; margin-bottom: 1rem;">Réinitialise TOUT sauf Galaxies pour un bonus PERMANENT!</p>
+
       <div class="trade-stats">
-        <div class="trade-stat"><div>🚀 Points</div><div class="trade-stat-val" id="ascensionPoints">0</div></div>
-        <div class="trade-stat"><div>⚡ Bonus</div><div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div></div>
+        <div class="trade-stat"><div>🚀 Ascensions</div><div class="trade-stat-val" id="ascensionPoints">0</div></div>
+        <div class="trade-stat"><div>⚡ Bonus Actuel</div><div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div></div>
+        <div class="trade-stat"><div>🌀 Galaxies</div><div class="trade-stat-val" id="ascGalaxies">0</div></div>
       </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
+        <p style="color:#fa0;margin:0.5rem 0"><strong>💰 COÛT ASCENSION #<span id="nextAscLevel">1</span>:</strong></p>
+        <p style="color:#0af;font-size:1rem;margin:0.5rem 0">🌀 <span id="ascCost">100</span> Galaxies (tu as: <span id="ascHas">0</span>)</p>
+      </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #0f0;border-radius:4px;">
+        <p style="color:#0f0;margin:0.5rem 0"><strong>✅ BONUS ASCENSION:</strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✨ +5% ALL production par Ascension</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✨ +5% ALL clics par Ascension</p>
+        <p style="color:#0f0;font-size:1rem;margin:0.5rem 0">💪 Prochain bonus: +<span id="nextAscBonus">5</span>%</p>
+      </div>
+
+      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #f00;border-radius:4px;">
+        <p style="color:#f00;margin:0.5rem 0"><strong>⚠️ ASCENSION RÉINITIALISE:</strong></p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Coins, Clics, Prestige, Étoiles, Dark Matter</p>
+        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Générateurs, Upgrades, Trades, Banque</p>
+        <p style="color:#0f0;font-size:0.9rem;margin:0.5rem 0">✅ GARDE: Galaxies (utilisées), Achievements, NGP+</p>
+      </div>
+
       <button class="btn big-btn danger-btn" onclick="doAscension()" style="max-width: 100%; width: 100%;">🚀 ASCENSIONNER!</button>
     </div>
   </div>
@@ -419,6 +483,46 @@ function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
   {
+    version: "v4.2 RESEARCH",
+    date: "Nov 03, 2025",
+    title: "SYSTÈMES DE RECHERCHE + DARK MATTER SHOP - PROGRESSION LONGUE",
+    changes: [
+      "🔬 RECHERCHES AVANCÉES: 15 upgrades permanents qui NE SE RESET JAMAIS (sauf NGP+)!",
+      "🔬 Recherches: Production I-III, Clics I-III, Prestige Boost, Trading Pro...",
+      "🔬 Recherches: Intérêts Bancaires, Chance Lotterie, Galaxie Efficiency...",
+      "🔬 Recherches: Dark Matter Gen (DM tous les 9P au lieu de 10P!)",
+      "🔬 Recherches: Ascension Power, NGP+ Efficiency, Synergies...",
+      "🔬 Coûts progressifs: 10K → 5M coins, jusqu'à 20M pour Synergies!",
+      "🌙 DARK MATTER SHOP: 10 boosts temporaires (perdus au NGP+, PAS Ascension)",
+      "🌙 Débloqué à 10 Dark Matter!",
+      "🌙 Mega Production ×3, Super Clics ×5, Prestige Rapide ÷2, Galaxie Discount ÷2",
+      "🌙 Trading ×10, Banque ×20, Jackpot ×100, Auto-Clicker +5/sec",
+      "🌙 Time Warp ×2, Quantum Rain +1 QC/minute",
+      "🌙 Coûts: 5-50 Dark Matter selon le boost",
+      "⚙️ Auto-Clicker actif en background quand acheté",
+      "⚙️ Quantum Rain génère passivement des QC",
+      "✨ Nouveaux onglets: Recherche (toujours visible) + DM Shop (débloqué à 10 DM)",
+      "✨ Interface avec niveaux, coûts progressifs, status actif/inactif",
+      "✨ Bonus cumulatifs sur TOUS les systèmes (production, clics, trading, bank, lottery...)",
+      "🎮 Progression ultra longue et stratégique avec ces 2 nouveaux systèmes!"
+    ]
+  },
+  {
+    version: "v4.1 QOL",
+    date: "Nov 03, 2025",
+    title: "QUALITY OF LIFE - UX MOBILE + RÉÉQUILIBRAGES",
+    changes: [
+      "📱 MOBILE FIX: Boutons plus gros, zones de clic améliorées, touch-friendly",
+      "📱 Sur mobile: Boutons pleine largeur, espacement augmenté",
+      "💰 BANQUE NERFÉE: 0.1%/sec → 0.005%/sec (÷20)",
+      "💸 TRADING BUFFÉ ×2: Gains doublés, pertes réduites de moitié!",
+      "⚡ PRESTIGE MULTIPLE: Boutons x10, x100, MAX ajoutés!",
+      "🎰 LOTTERIE RAPIDE: Bouton 'Ouvrir TOUS les tickets' ajouté!",
+      "🚀 INTERFACE ASCENSION: Détails complets, coûts clairs, explications",
+      "✨ Meilleure expérience mobile et desktop!"
+    ]
+  },
+  {
     version: "v4.0 QUANTUM",
     date: "Nov 03, 2025",
     title: "SHOP NGP+ + 50 MILESTONES + 35 ACHIEVEMENTS + GÉNÉRATEURS BUFFÉS",
@@ -490,9 +594,9 @@ const CHANGELOGS = [
 ];
 
 const TUTORIAL = [
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎮 PAGE 1: BIENVENUE v3 FINAL!</h2>
-    <p style="margin: 0.5rem 0; color: #aaa;">Bienvenue dans INCREMENTAL TRADE ULTIMATE v3 FINAL!</p>
-    <p style="margin: 0.5rem 0; color: #aaa;"><strong>NEW GAME PLUS, Générateurs buffés, 20 achievements!</strong></p>`,
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎮 PAGE 1: BIENVENUE v4.2 RESEARCH!</h2>
+    <p style="margin: 0.5rem 0; color: #aaa;">Bienvenue dans INCREMENTAL TRADE ULTIMATE v4.2 RESEARCH!</p>
+    <p style="margin: 0.5rem 0; color: #aaa;"><strong>Système de Recherche + Dark Matter Shop + Progression ultra longue!</strong></p>`,
   
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🖱️ PAGE 2: LE CLIC</h2>
     <p>COMMENCE ICI! Clique jusqu'à 50 pièces, puis achète des Robots!</p>`,
@@ -514,7 +618,8 @@ const TUTORIAL = [
     <p>Marché volatile! Les taux changent en temps réel (±5-75%)</p>`,
   
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🏦 PAGE 8: BANQUE</h2>
-    <p>+0.1%/sec SANS RISQUE! Le meilleur investissement!</p>`,
+    <p>+0.005%/sec SANS RISQUE! Investissement à long terme!</p>
+    <p style="color: #0af;">Recherches + DM Shop peuvent booster les gains bancaires ×20+!</p>`,
   
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🚀 PAGE 9: ASCENSION</h2>
     <p>100 Galaxies = Ascension = +5% PERMANENT!</p>`,
@@ -527,15 +632,35 @@ const TUTORIAL = [
     <p>Les secrets révèlent leur vrai nom quand tu les déverrouilles!</p>`,
   
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🌙 PAGE 12: DARK MATTER</h2>
-    <p>Débloqué à P10! +5% multiplicateur par unité!</p>`,
-  
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">📊 PAGE 13: GRAPHIQUE LIVE</h2>
+    <p>Débloqué à P10! +5% multiplicateur par unité!</p>
+    <p style="color: #fa0;">Gagne 1 DM tous les 10 Prestige (ou 9 avec recherche!)</p>`,
+
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🔬 PAGE 13: RECHERCHES AVANCÉES</h2>
+    <p><strong style="color: #0f0;">NOUVEAU! Upgrades PERMANENTS!</strong></p>
+    <p>15 recherches disponibles dans l'onglet Recherche:</p>
+    <p style="color: #0af;">✅ Production I-III: +15% → +20% → +30% production</p>
+    <p style="color: #0af;">✅ Clics I-III: +20% → +25% → +35% gains clics</p>
+    <p style="color: #0af;">✅ Trading Pro, Banque, Lotterie, Galaxies, Ascension...</p>
+    <p style="color: #fa0;"><strong>NE SE RESET JAMAIS (sauf NGP+)!</strong></p>
+    <p>Coûts: 10K → 20M coins. Plusieurs niveaux par recherche!</p>`,
+
+  `<h2 style="color: #f0f; font-size: 1.8rem; margin-bottom: 1rem;">🌙 PAGE 14: DARK MATTER SHOP</h2>
+    <p><strong style="color: #f0f;">NOUVEAU! Boosts ULTRA PUISSANTS!</strong></p>
+    <p>Débloqué à 10 Dark Matter - 10 items disponibles:</p>
+    <p style="color: #0af;">⚡ Mega Production ×3 (5 DM)</p>
+    <p style="color: #0af;">💰 Super Clics ×5 (8 DM)</p>
+    <p style="color: #0af;">💸 Trading ×10, Banque ×20, Lotterie ×100</p>
+    <p style="color: #0af;">🤖 Auto-Clicker +5 coins/sec en automatique!</p>
+    <p style="color: #0af;">💎 Quantum Rain: +1 QC par minute!</p>
+    <p style="color: #f00;"><strong>ATTENTION: Perdus au NGP+ (gardés à Ascension)!</strong></p>`,
+
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">📊 PAGE 15: GRAPHIQUE LIVE</h2>
     <p>Vois ta production augmenter en temps réel!</p>`,
-  
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎯 PAGE 14: 50 MILESTONES</h2>
+
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎯 PAGE 16: 50 MILESTONES</h2>
     <p>Défis progressifs avec récompenses énormes!</p>`,
-  
-  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🔄 PAGE 15: NEW GAME PLUS PAYANT!</h2>
+
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🔄 PAGE 17: NEW GAME PLUS PAYANT!</h2>
     <p><strong>LA GRANDE NOUVEAUTÉ!</strong></p>
     <p>NGP+ COÛTE CHER:</p>
     <p style="color: #0af;"><strong>NGP+ #1:</strong> 10 Prestige + 20 Étoiles + 3 Dark Matter</p>
@@ -544,25 +669,40 @@ const TUTORIAL = [
     <p>Mais bonus: +10% multiplicateur PERMANENT par NGP+!</p>
     <p>Garde Galaxies et Ascension! TRÈS HARDCORE!</p>`,
   
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">💡 PAGE 16: MEGA-TIPS</h2>
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">💡 PAGE 18: MEGA-TIPS</h2>
     <p>✅ HOLD +1 pour cliquer vite!</p>
     <p>✅ Générateurs > Upgrades!</p>
     <p>✅ BANQUE meilleure que Trading!</p>
     <p>✅ Fais NGP+ régulièrement pour des bonus énormes!</p>`,
-  
-  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🎯 PAGE 17: PROGRESSION IDÉALE</h2>
+
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🔬 PAGE 19: STRATÉGIE RECHERCHE + DM SHOP</h2>
+    <p><strong style="color: #0f0;">PRIORITÉS RECHERCHES:</strong></p>
+    <p style="color: #0af;">1️⃣ Production I-II-III: Boost massif dès le début!</p>
+    <p style="color: #0af;">2️⃣ Clics I-II: Très utile en early game</p>
+    <p style="color: #0af;">3️⃣ Trading Pro + Banque: Gains passifs énormes!</p>
+    <p style="color: #0af;">4️⃣ Dark Matter Gen: DM tous les 9P au lieu de 10!</p>
+    <p><strong style="color: #f0f;">STRATÉGIE DM SHOP:</strong></p>
+    <p style="color: #fa0;">⚠️ Garde ton DM pour NGP+! Les boosts se perdent au reset!</p>
+    <p style="color: #0af;">✅ Auto-Clicker + Quantum Rain = passif permanent</p>
+    <p style="color: #0af;">✅ Achète les boosts avant un gros push!</p>`,
+
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🎯 PAGE 20: PROGRESSION IDÉALE v4.2</h2>
     <p><strong>Phase 1:</strong> Clique → Robots → Prestige</p>
-    <p><strong>Phase 2:</strong> 5-10 Prestige → Générateurs</p>
-    <p><strong>Phase 3:</strong> 15 Prestige → Galaxies</p>
-    <p><strong>Phase 4:</strong> Ascension → NGP+ loop!</p>`,
-  
-  `<h2 style="color: #0f0; font-size: 2rem; margin-bottom: 1rem;">🚀 PAGE 18: C'EST PARTI!</h2>
+    <p><strong>Phase 2:</strong> 5-10 Prestige → Recherche Production I-II</p>
+    <p><strong>Phase 3:</strong> 10 DM → DM Shop débloqué!</p>
+    <p><strong>Phase 4:</strong> 15 Prestige → Galaxies</p>
+    <p><strong>Phase 5:</strong> Recherches avancées → Ascension</p>
+    <p><strong>Phase 6:</strong> NGP+ loop avec Quantum Coins!</p>`,
+
+  `<h2 style="color: #0f0; font-size: 2rem; margin-bottom: 1rem;">🚀 PAGE 21: C'EST PARTI!</h2>
     <p>1️⃣ Clique 50 fois</p>
     <p>2️⃣ Achète Robots</p>
     <p>3️⃣ Génère 50K et Prestige!</p>
-    <p>4️⃣ Fais NGP+ pour des bonus ÉNORMES!</p>
-    <p>5️⃣ CONTINUE jusqu'à l'infini! ♾️</p>
-    <p style="color: #fa0; margin-top: 1rem;"><strong>💎 Tu as TOUT! Bon jeu! 🎮✨</strong></p>`
+    <p>4️⃣ Investis dans les Recherches pour des bonus permanents!</p>
+    <p>5️⃣ Atteins 10 DM pour débloquer le Dark Matter Shop!</p>
+    <p>6️⃣ Fais NGP+ pour des Quantum Coins!</p>
+    <p>7️⃣ CONTINUE jusqu'à l'infini! ♾️</p>
+    <p style="color: #fa0; margin-top: 1rem;"><strong>💎 Recherches + DM Shop = Progression ULTIME! 🎮✨</strong></p>`
 ];
 
 function getDefaultAchievements() {
@@ -650,7 +790,38 @@ let game = {
 
   trades: { min: { amount: 0, totalGains: 0, totalLosses: 0 }, mid: { amount: 0, totalGains: 0, totalLosses: 0 }, high: { amount: 0, totalGains: 0, totalLosses: 0 } },
   graphData: [], boosts: [], lotteryLog: [], lotteryTickets: 0,
-  bankInvested: 0, bankGenerated: 0, ascension: 0, achievements: [], milestones: []
+  bankInvested: 0, bankGenerated: 0, ascension: 0, achievements: [], milestones: [],
+
+  research: [
+    { id: "res1", name: "🚀 Production I", desc: "+15% production générateurs", level: 0, maxLevel: 10, baseCost: 10000, mult: 1.8, effect: "prodBonus", value: 0.15 },
+    { id: "res2", name: "💰 Clics I", desc: "+20% gains par clic", level: 0, maxLevel: 10, baseCost: 5000, mult: 1.8, effect: "clickBonus", value: 0.20 },
+    { id: "res3", name: "⭐ Prestige Boost", desc: "+10% gains étoiles", level: 0, maxLevel: 5, baseCost: 50000, mult: 2.0, effect: "starBonus", value: 0.10 },
+    { id: "res4", name: "💸 Trading Pro", desc: "+25% gains trading", level: 0, maxLevel: 8, baseCost: 25000, mult: 1.9, effect: "tradeBonus", value: 0.25 },
+    { id: "res5", name: "🏦 Intérêts Bancaires", desc: "+50% gains banque", level: 0, maxLevel: 6, baseCost: 30000, mult: 2.0, effect: "bankBonus", value: 0.50 },
+    { id: "res6", name: "🎰 Chance Lotterie", desc: "+30% gains lotterie", level: 0, maxLevel: 5, baseCost: 15000, mult: 1.7, effect: "lotteryBonus", value: 0.30 },
+    { id: "res7", name: "🚀 Production II", desc: "+20% production générateurs", level: 0, maxLevel: 10, baseCost: 100000, mult: 2.2, effect: "prodBonus", value: 0.20 },
+    { id: "res8", name: "💰 Clics II", desc: "+25% gains par clic", level: 0, maxLevel: 10, baseCost: 75000, mult: 2.2, effect: "clickBonus", value: 0.25 },
+    { id: "res9", name: "🌀 Galaxie Efficiency", desc: "+5% bonus galaxies", level: 0, maxLevel: 5, baseCost: 500000, mult: 2.5, effect: "galaxyBonus", value: 0.05 },
+    { id: "res10", name: "🌙 Dark Matter Gen", desc: "+1 DM par 9 Prestige", level: 0, maxLevel: 1, baseCost: 1000000, mult: 1.0, effect: "dmGen", value: 1 },
+    { id: "res11", name: "⚡ Ascension Power", desc: "+10% bonus ascension", level: 0, maxLevel: 5, baseCost: 2000000, mult: 3.0, effect: "ascBonus", value: 0.10 },
+    { id: "res12", name: "🚀 Production III", desc: "+30% production générateurs", level: 0, maxLevel: 10, baseCost: 5000000, mult: 2.5, effect: "prodBonus", value: 0.30 },
+    { id: "res13", name: "💰 Clics III", desc: "+35% gains par clic", level: 0, maxLevel: 10, baseCost: 3000000, mult: 2.5, effect: "clickBonus", value: 0.35 },
+    { id: "res14", name: "♾️ NGP+ Efficiency", desc: "+5% bonus NGP+", level: 0, maxLevel: 5, baseCost: 10000000, mult: 3.0, effect: "ngpBonus", value: 0.05 },
+    { id: "res15", name: "🏭 Synergies", desc: "+50% bonus synergies", level: 0, maxLevel: 3, baseCost: 20000000, mult: 4.0, effect: "synergyBonus", value: 0.50 }
+  ],
+
+  shopDM: [
+    { id: "dm1", name: "⚡ Mega Production", desc: "×3 production", cost: 5, bought: false, effect: "dmProdMult", value: 3 },
+    { id: "dm2", name: "💰 Super Clics", desc: "×5 gains clics", cost: 8, bought: false, effect: "dmClickMult", value: 5 },
+    { id: "dm3", name: "⭐ Prestige Rapide", desc: "÷2 coût Prestige", cost: 10, bought: false, effect: "dmPrestigeCost", value: 0.5 },
+    { id: "dm4", name: "🌀 Galaxie Discount", desc: "÷2 coût Galaxies", cost: 15, bought: false, effect: "dmGalaxyCost", value: 0.5 },
+    { id: "dm5", name: "💸 Trading x10", desc: "×10 gains trading", cost: 12, bought: false, effect: "dmTradeMult", value: 10 },
+    { id: "dm6", name: "🏦 Banque x20", desc: "×20 gains banque", cost: 18, bought: false, effect: "dmBankMult", value: 20 },
+    { id: "dm7", name: "🎰 Jackpot", desc: "×100 gains lotterie", cost: 20, bought: false, effect: "dmLotteryMult", value: 100 },
+    { id: "dm8", name: "🤖 Auto-Clicker", desc: "+5 coins/sec automatique", cost: 25, bought: false, effect: "dmAutoClick", value: 5 },
+    { id: "dm9", name: "⚡ Time Warp", desc: "×2 vitesse jeu", cost: 30, bought: false, effect: "dmTimeWarp", value: 2 },
+    { id: "dm10", name: "💎 Quantum Rain", desc: "+1 QC par minute", cost: 50, bought: false, effect: "dmQCRain", value: 1 }
+  ]
 };
 
 function getDefaultMilestones() {
@@ -749,12 +920,21 @@ function load() {
   if(data) {
     try {
       let parsed = JSON.parse(data);
+
+      // Preserve default research and shopDM structures
+      let defaultResearch = game.research;
+      let defaultShopDM = game.shopDM;
+
       game = {...game, ...parsed};
       if(!Array.isArray(game.generators) || game.generators.length === 0) game.generators = [...game.generators];
       if(!Array.isArray(game.achievements) || game.achievements.length === 0) game.achievements = getDefaultAchievements();
       if(!Array.isArray(game.milestones) || game.milestones.length === 0) game.milestones = getDefaultMilestones();
       if(!game.quantumCoins) game.quantumCoins = 0;
       if(!Array.isArray(game.shopItems)) game.shopItems = [...game.shopItems];
+
+      // Initialize research and shopDM if they don't exist in save
+      if(!Array.isArray(game.research)) game.research = defaultResearch;
+      if(!Array.isArray(game.shopDM)) game.shopDM = defaultShopDM;
     } catch(e) { console.error("Load error:", e); }
   }
 }
@@ -762,9 +942,9 @@ function load() {
 function getTradeConfig(type) {
   const baseMarketVolatility = 0.05 + (Math.sin(Date.now() / 5000) * 0.03);
   return {
-    min: { baseGain: 0.012, volatility: baseMarketVolatility * 0.5, lossChance: 0.005, lossRate: 0.01 },
-    mid: { baseGain: 0.04, volatility: baseMarketVolatility * 1.2, lossChance: 0.03, lossRate: 0.025 },
-    high: { baseGain: 0.12, volatility: baseMarketVolatility * 2.5, lossChance: 0.08, lossRate: 0.075, riskAll: 0.001 }
+    min: { baseGain: 0.024, volatility: baseMarketVolatility * 0.5, lossChance: 0.0025, lossRate: 0.005 },
+    mid: { baseGain: 0.08, volatility: baseMarketVolatility * 1.2, lossChance: 0.015, lossRate: 0.0125 },
+    high: { baseGain: 0.24, volatility: baseMarketVolatility * 2.5, lossChance: 0.04, lossRate: 0.0375, riskAll: 0.0005 }
   }[type];
 }
 
@@ -788,10 +968,15 @@ function getProd() {
     if(l && us && l.c >= 2 && us.c >= 5) sy *= 1.2;
   }
 
+  // Research bonuses for multipliers
+  let resGalaxyBonus = 1 + getResearchBoost("galaxyBonus");
+  let resAscBonus = 1 + getResearchBoost("ascBonus");
+  let resNGPBonus = 1 + getResearchBoost("ngpBonus");
+
   cache.starsMultiplier = Math.pow(1.03, game.stars);
-  cache.galaxiesMultiplier = Math.pow(1.01, game.galaxies);
-  cache.ascensionMultiplier = 1 + (game.ascension * 0.05);
-  let ngpMult = Math.pow(1.10, game.ngpLevel);
+  cache.galaxiesMultiplier = Math.pow(1.01 * resGalaxyBonus, game.galaxies);
+  cache.ascensionMultiplier = (1 + (game.ascension * 0.05)) * resAscBonus;
+  let ngpMult = Math.pow(1.10 * resNGPBonus, game.ngpLevel);
 
   if(!isFinite(cache.starsMultiplier) || cache.starsMultiplier > 1e100) cache.starsMultiplier = 1e100;
   if(!isFinite(cache.galaxiesMultiplier) || cache.galaxiesMultiplier > 1e100) cache.galaxiesMultiplier = 1e100;
@@ -802,7 +987,15 @@ function getProd() {
   let shopProdBoost = getShopBoost("prodMult");
   let shopMegaBoost = getShopBoost("megaBoost");
 
-  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier * ngpMult * shopProdBoost * shopMegaBoost;
+  // Research bonuses
+  let resProdBonus = 1 + getResearchBoost("prodBonus");
+  let resSynergyBonus = 1 + getResearchBoost("synergyBonus");
+  sy *= resSynergyBonus;
+
+  // Dark Matter shop bonuses
+  let dmProdMult = getDMBoost("dmProdMult");
+
+  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier * ngpMult * shopProdBoost * shopMegaBoost * resProdBonus * dmProdMult;
   if(!isFinite(result) || result > 1e308) result = 1e308;
 
   cache.prod = result;
@@ -823,7 +1016,13 @@ function clickVal() {
   let shopClickBoost = getShopBoost("clickMult");
   let shopMegaBoost = getShopBoost("megaBoost");
 
-  let result = v * starsMult * galaxiesMult * (1 + (game.darkMatter || 0) * 0.05) * ascensionMult * ngpMult * shopClickBoost * shopMegaBoost;
+  // Research bonuses
+  let resClickBonus = 1 + getResearchBoost("clickBonus");
+
+  // Dark Matter shop bonuses
+  let dmClickMult = getDMBoost("dmClickMult");
+
+  let result = v * starsMult * galaxiesMult * (1 + (game.darkMatter || 0) * 0.05) * ascensionMult * ngpMult * shopClickBoost * shopMegaBoost * resClickBonus * dmClickMult;
   if(!isFinite(result) || result > 1e308) return 1e308;
   return result;
 }
@@ -902,13 +1101,22 @@ function buyUpMax(id) {
 
 function doPrestige() {
   let baseCost = 50000;
-  let prestigeCost = baseCost * Math.pow(1.5, game.prestige);
+  let dmPrestigeCostMod = getDMBoost("dmPrestigeCost");
+  let prestigeCost = (baseCost * Math.pow(1.5, game.prestige)) * dmPrestigeCostMod;
   if(game.coins < prestigeCost) return;
   game.coins = 0;
   game.totalCoins += prestigeCost;
-  game.stars++;
+
+  // Star bonus from research
+  let resStarBonus = 1 + getResearchBoost("starBonus");
+  game.stars += Math.max(1, Math.floor(resStarBonus));
   game.prestige++;
-  if(game.prestige >= 10 && game.prestige % 10 === 0) game.darkMatter++;
+
+  // Dark Matter gain (every 10 prestige, or 9 with research)
+  let dmGenResearch = game.research.find(r => r.id === "res10");
+  let dmInterval = (dmGenResearch && dmGenResearch.level > 0) ? 9 : 10;
+  if(game.prestige >= dmInterval && game.prestige % dmInterval === 0) game.darkMatter++;
+
   for(let gen of game.generators) gen.c = 0;
   for(let u of game.upgrades) u.b = 0;
   game.trades.min = {amount:0,totalGains:0,totalLosses:0};
@@ -920,8 +1128,53 @@ function doPrestige() {
   updateUI();
 }
 
+function doPrestigeMultiple(count) {
+  let baseCost = 50000;
+  let dmPrestigeCostMod = getDMBoost("dmPrestigeCost");
+  let prestigeCount = 0;
+
+  // Calculer combien de prestige sont possibles
+  for(let i = 0; i < count; i++) {
+    let prestigeCost = (baseCost * Math.pow(1.5, game.prestige + i)) * dmPrestigeCostMod;
+    if(game.coins < prestigeCost) break;
+    prestigeCount++;
+  }
+
+  if(prestigeCount === 0) { alert("❌ Pas assez de coins!"); return; }
+
+  // Effectuer tous les prestige
+  game.coins = 0;
+
+  // Star bonus from research
+  let resStarBonus = 1 + getResearchBoost("starBonus");
+  let starsGained = Math.max(prestigeCount, Math.floor(prestigeCount * resStarBonus));
+  game.stars += starsGained;
+  game.prestige += prestigeCount;
+
+  // Calculer Dark Matter gagné (every 10 prestige, or 9 with research)
+  let dmGenResearch = game.research.find(r => r.id === "res10");
+  let dmInterval = (dmGenResearch && dmGenResearch.level > 0) ? 9 : 10;
+  let dmGained = 0;
+  for(let i = game.prestige - prestigeCount; i < game.prestige; i++) {
+    if(i >= dmInterval && i % dmInterval === 0) dmGained++;
+  }
+  if(dmGained > 0) game.darkMatter += dmGained;
+
+  for(let gen of game.generators) gen.c = 0;
+  for(let u of game.upgrades) u.b = 0;
+  game.trades.min = {amount:0,totalGains:0,totalLosses:0};
+  game.trades.mid = {amount:0,totalGains:0,totalLosses:0};
+  game.trades.high = {amount:0,totalGains:0,totalLosses:0};
+
+  invalidateCache();
+  log(`⭐ +${prestigeCount}! (Total: ${game.prestige})` + (dmGained > 0 ? ` 🌙 +${dmGained} DM!` : ""));
+  save();
+  updateUI();
+}
+
 function doGalaxy() {
-  let cost = 50 + (game.galaxies * 5);
+  let dmGalaxyCostMod = getDMBoost("dmGalaxyCost");
+  let cost = Math.floor((50 + (game.galaxies * 5)) * dmGalaxyCostMod);
   if(game.stars < cost) return;
   game.stars = 0;
   game.coins = 0;
@@ -1008,10 +1261,17 @@ function doNGP() {
   game.lotteryLog = [];
   for(let gen of game.generators) gen.c = 0;
   for(let u of game.upgrades) u.b = 0;
-  
+
+  // Reset Research (NGP+ only)
+  for(let res of game.research) res.level = 0;
+
+  // Reset Dark Matter Shop (NGP+ only)
+  for(let item of game.shopDM) item.bought = false;
+
   invalidateCache();
   log("🔄 NEW GAME PLUS #" + game.ngpLevel + "! Coût payé! Bonus: +" + (game.ngpLevel * 10) + "%");
   log("💎 +1 Quantum Coin!");
+  log("⚠️ Recherches et Dark Matter Shop réinitialisés!");
   save();
   updateUI();
 }
@@ -1039,6 +1299,59 @@ function getShopBoost(effectType) {
     }
   }
   return boost;
+}
+
+// ========== RESEARCH SYSTEM ==========
+function buyResearch(id) {
+  let research = game.research.find(r => r.id === id);
+  if(!research) return;
+  if(research.level >= research.maxLevel) { alert("❌ Niveau maximum atteint!"); return; }
+
+  let cost = research.baseCost * Math.pow(research.mult, research.level);
+  if(game.coins < cost) { alert("❌ Pas assez de coins!"); return; }
+
+  game.coins -= cost;
+  research.level++;
+
+  log(`🔬 ${research.name} Lvl ${research.level}`);
+  invalidateCache();
+  save();
+  updateUI();
+}
+
+function getResearchBoost(effectType) {
+  let boost = 0;
+  for(let res of game.research) {
+    if(res.effect === effectType && res.level > 0) {
+      boost += res.value * res.level;
+    }
+  }
+  return boost;
+}
+
+// ========== DARK MATTER SHOP ==========
+function buyDMItem(id) {
+  let item = game.shopDM.find(i => i.id === id);
+  if(!item) return;
+  if(item.bought) { alert("❌ Déjà acheté!"); return; }
+  if(game.darkMatter < item.cost) { alert("❌ Pas assez de Dark Matter!"); return; }
+
+  game.darkMatter -= item.cost;
+  item.bought = true;
+
+  log(`🌙 Acheté: ${item.name}`);
+  invalidateCache();
+  save();
+  updateUI();
+}
+
+function getDMBoost(effectType) {
+  for(let item of game.shopDM) {
+    if(item.effect === effectType && item.bought) {
+      return item.value;
+    }
+  }
+  return effectType.includes("Mult") ? 1 : 0;
 }
 
 function investTrade(type) {
@@ -1089,12 +1402,15 @@ function withdrawTrade(type) {
 
 function processTradeGains() {
   let tradeMult = getShopBoost("tradeMult");
+  let resTradeBonus = 1 + getResearchBoost("tradeBonus");
+  let dmTradeMult = getDMBoost("dmTradeMult");
+
   for(let type of ["min","mid","high"]) {
     let trade = game.trades[type];
     if(!trade || trade.amount <= 0) continue;
     let config = getTradeConfig(type);
     let volatilityFactor = 1 + (Math.random() - 0.5) * config.volatility;
-    let actualGain = config.baseGain * volatilityFactor * tradeMult;
+    let actualGain = config.baseGain * volatilityFactor * tradeMult * resTradeBonus * dmTradeMult;
     let gain = trade.amount * actualGain / FPS;
     trade.amount += gain;
     trade.totalGains += gain;
@@ -1152,14 +1468,62 @@ function playLottery() {
   let rand = Math.random();
   let gain = 0, result = "";
   let lotteryMult = getShopBoost("lotteryMult");
-  if(rand < 0.50) { gain = (50 + Math.floor(Math.random() * 50)) * lotteryMult; result = "🟢 Petit: +" + gain; }
-  else if(rand < 0.75) { gain = (500 + Math.floor(Math.random() * 500)) * lotteryMult; result = "🟡 Moyen: +" + gain; }
-  else { gain = (5000 + Math.floor(Math.random() * 5000)) * lotteryMult; result = "🔴 GROS LOT: +" + gain + "! 🎉"; }
+  let resLotteryBonus = 1 + getResearchBoost("lotteryBonus");
+  let dmLotteryMult = getDMBoost("dmLotteryMult");
+  let totalMult = lotteryMult * resLotteryBonus * dmLotteryMult;
+  if(rand < 0.50) { gain = (50 + Math.floor(Math.random() * 50)) * totalMult; result = "🟢 Petit: +" + gain; }
+  else if(rand < 0.75) { gain = (500 + Math.floor(Math.random() * 500)) * totalMult; result = "🟡 Moyen: +" + gain; }
+  else { gain = (5000 + Math.floor(Math.random() * 5000)) * totalMult; result = "🔴 GROS LOT: +" + gain + "! 🎉"; }
   game.coins += gain;
   game.totalCoins += gain;
   game.lotteryLog.unshift(result);
   if(game.lotteryLog.length > 15) game.lotteryLog.pop();
   log(result);
+  save();
+  updateUI();
+}
+
+function playLotteryAll() {
+  if(game.lotteryTickets <= 0) { alert("❌ Aucun ticket!"); return; }
+
+  let ticketsToPlay = game.lotteryTickets;
+  let totalGain = 0;
+  let petits = 0, moyens = 0, grosLots = 0;
+  let lotteryMult = getShopBoost("lotteryMult");
+  let resLotteryBonus = 1 + getResearchBoost("lotteryBonus");
+  let dmLotteryMult = getDMBoost("dmLotteryMult");
+  let totalMult = lotteryMult * resLotteryBonus * dmLotteryMult;
+
+  for(let i = 0; i < ticketsToPlay; i++) {
+    let rand = Math.random();
+    let gain = 0;
+    if(rand < 0.50) {
+      gain = (50 + Math.floor(Math.random() * 50)) * totalMult;
+      petits++;
+    } else if(rand < 0.75) {
+      gain = (500 + Math.floor(Math.random() * 500)) * totalMult;
+      moyens++;
+    } else {
+      gain = (5000 + Math.floor(Math.random() * 5000)) * totalMult;
+      grosLots++;
+    }
+    totalGain += gain;
+  }
+
+  game.lotteryTickets = 0;
+  game.coins += totalGain;
+  game.totalCoins += totalGain;
+
+  let summary = `🎰 ${ticketsToPlay} tickets: `;
+  if(petits > 0) summary += `🟢×${petits} `;
+  if(moyens > 0) summary += `🟡×${moyens} `;
+  if(grosLots > 0) summary += `🔴×${grosLots} `;
+  summary += `= +${fmt(totalGain)} 💰`;
+
+  game.lotteryLog.unshift(summary);
+  if(game.lotteryLog.length > 15) game.lotteryLog.pop();
+  log(summary);
+
   save();
   updateUI();
 }
@@ -1301,16 +1665,28 @@ function updateUI() {
   $("clickDMMult").textContent = clickDMMult.toFixed(2) + "x";
   $("clickAscensionMult").textContent = clickAscMult.toFixed(2) + "x";
   let baseCost = 50000;
-  let nextPrestigeCost = baseCost * Math.pow(1.5, game.prestige);
+  let dmPrestigeCostMod = getDMBoost("dmPrestigeCost");
+  let dmGalaxyCostMod = getDMBoost("dmGalaxyCost");
+  let nextPrestigeCost = (baseCost * Math.pow(1.5, game.prestige)) * dmPrestigeCostMod;
   $("prestigeCost").textContent = fmt(nextPrestigeCost);
   $("prestigeCount").textContent = game.coins >= nextPrestigeCost ? "✅" : "❌";
-  $("galaxyCost").textContent = fmt(50 + (game.galaxies * 5));
+  $("galaxyCost").textContent = fmt(Math.floor((50 + (game.galaxies * 5)) * dmGalaxyCostMod));
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
   $("playTime").textContent = game.playTime + "s";
   $("presCount").textContent = game.prestige;
   $("ascension").textContent = game.ascension || 0;
   $("ascensionBonus").textContent = (game.ascension || 0) * 5;
+
+  // Ascension Tab détails
+  if($("ascensionPoints")) $("ascensionPoints").textContent = game.ascension || 0;
+  if($("ascGalaxies")) $("ascGalaxies").textContent = game.galaxies || 0;
+  if($("nextAscLevel")) $("nextAscLevel").textContent = (game.ascension || 0) + 1;
+  let ascCost = 100 * Math.pow(2, game.ascension || 0);
+  if($("ascCost")) $("ascCost").textContent = fmt(ascCost);
+  if($("ascHas")) $("ascHas").textContent = game.galaxies || 0;
+  if($("nextAscBonus")) $("nextAscBonus").textContent = ((game.ascension || 0) + 1) * 5;
+
   $("ngpLevelDisplay").textContent = game.ngpLevel || 0;
   $("ngpBonusDisplay").textContent = (game.ngpLevel || 0) * 10;
   
@@ -1327,7 +1703,7 @@ function updateUI() {
   $("yourStars").textContent = game.stars;
   $("yourDM").textContent = game.darkMatter;
   $("bankInvested").textContent = fmt(game.bankInvested || 0);
-  let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
+  let bankGains = ((game.bankInvested || 0) * 0.00005) / FPS;
   $("bankGains").textContent = fmt(bankGains);
   $("bankGenerated").textContent = fmt(game.bankGenerated || 0);
   $("lotteryTickets").textContent = game.lotteryTickets || 0;
@@ -1480,7 +1856,68 @@ function updateUI() {
   $("graphCPS").textContent = fmt(getProd());
   let maxCPS = Math.max(...(game.graphData.map(d => d.cps) || [0]));
   $("graphMax").textContent = fmt(maxCPS);
-  
+
+  // ========== RESEARCH UI ==========
+  if($("researchList") && game.research) {
+    let researchHtml = "";
+    for(let res of game.research) {
+      let cost = res.baseCost * Math.pow(res.mult, res.level);
+      let canBuy = game.coins >= cost && res.level < res.maxLevel;
+      let maxReached = res.level >= res.maxLevel;
+      let bonusText = `+${(res.value * 100).toFixed(0)}%`;
+      if(res.effect === "dmGen") bonusText = `+${res.value} DM`;
+      let currentBonus = res.level > 0 ? `(Total: ${bonusText} × ${res.level})` : "";
+
+      let resDiv = `<div class="trade-card" style="border-color:${maxReached ? '#0f0' : '#0af'}">
+        <div class="trade-header">
+          <div>
+            <h4>${res.name}</h4>
+            <p style="color:#aaa;font-size:0.9rem">${res.desc} ${currentBonus}</p>
+          </div>
+        </div>
+        <div class="trade-stats">
+          <div class="trade-stat"><div>💰 Coût</div><div class="trade-stat-val">${fmt(cost)}</div></div>
+          <div class="trade-stat"><div>📊 Niveau</div><div class="trade-stat-val">${res.level}/${res.maxLevel}</div></div>
+        </div>
+        <button class="btn" onclick="buyResearch('${res.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem;background:${maxReached ? '#0f0' : '#0af'}">${maxReached ? "✅ MAX" : "🔬 RECHERCHER"}</button>
+      </div>`;
+      researchHtml += resDiv;
+    }
+    $("researchList").innerHTML = researchHtml;
+  }
+
+  // ========== DARK MATTER SHOP UI ==========
+  // Show/hide DM shop tab based on DM amount
+  if(game.darkMatter >= 10) {
+    if($("shopDMBtn")) $("shopDMBtn").style.display = "block";
+  } else {
+    if($("shopDMBtn")) $("shopDMBtn").style.display = "none";
+  }
+
+  if($("dmDisplay")) $("dmDisplay").textContent = game.darkMatter || 0;
+
+  if($("shopDMList") && game.shopDM) {
+    let dmShopHtml = "";
+    for(let item of game.shopDM) {
+      let canBuy = game.darkMatter >= item.cost && !item.bought;
+      let itemDiv = `<div class="trade-card" style="border-color:${item.bought ? '#0f0' : '#f0f'}">
+        <div class="trade-header">
+          <div>
+            <h4>${item.name}</h4>
+            <p style="color:#aaa;font-size:0.9rem">${item.desc}</p>
+          </div>
+        </div>
+        <div class="trade-stats">
+          <div class="trade-stat"><div>🌙 Coût</div><div class="trade-stat-val">${item.cost} DM</div></div>
+          <div class="trade-stat"><div>📊 Status</div><div class="trade-stat-val">${item.bought ? "✅ Actif" : "❌ Inactif"}</div></div>
+        </div>
+        <button class="btn" onclick="buyDMItem('${item.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem;background:${item.bought ? '#0f0' : '#f0f'};color:#fff">${item.bought ? "✅ ACHETÉ" : "🌙 ACHETER"}</button>
+      </div>`;
+      dmShopHtml += itemDiv;
+    }
+    $("shopDMList").innerHTML = dmShopHtml;
+  }
+
   save();
 }
 
@@ -1591,9 +2028,19 @@ document.addEventListener("DOMContentLoaded", function() {
       let p = getProd();
       game.coins += p / FPS;
       game.totalCoins += p / FPS;
+
+      // Auto-Clicker from DM shop
+      let dmAutoClick = getDMBoost("dmAutoClick");
+      if(dmAutoClick > 0) {
+        game.coins += dmAutoClick / FPS;
+        game.totalCoins += dmAutoClick / FPS;
+      }
+
       if(game.bankInvested > 0) {
         let bankBoost = getShopBoost("bankBonus");
-        let bankRate = 0.001 + bankBoost;
+        let resBankBonus = getResearchBoost("bankBonus");
+        let dmBankMult = getDMBoost("dmBankMult");
+        let bankRate = (0.00005 + bankBoost) * (1 + resBankBonus) * dmBankMult;
         let bankGains = (game.bankInvested * bankRate) / FPS;
         game.bankInvested += bankGains;
         game.bankGenerated += bankGains;
@@ -1613,9 +2060,21 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   requestAnimationFrame(gameLoop);
   
+  let qcRainCounter = 0;
   setInterval(() => {
     game.playTime++;
     updateGraph();
+
+    // Quantum Rain from DM shop (1 QC per minute)
+    let dmQCRain = getDMBoost("dmQCRain");
+    if(dmQCRain > 0) {
+      qcRainCounter++;
+      if(qcRainCounter >= 60) {
+        game.quantumCoins += dmQCRain;
+        log("💎 +1 Quantum Coin (Quantum Rain)");
+        qcRainCounter = 0;
+      }
+    }
   }, 1000);
   
   updateMarketStatus();
