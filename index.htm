@@ -617,10 +617,13 @@ function getProd() {
   }
   
   let sy = 1;
-  let r=game.generators[0], us=game.generators[1], p=game.generators[2], l=game.generators[3], s=game.generators[4];
-  if(r && us && r.c >= 5 && us.c >= 3) sy *= 1.3;
-  if(p && s && p.c >= 3 && s.c >= 2) sy *= 1.4;
-  if(l && us && l.c >= 2 && us.c >= 5) sy *= 1.2;
+  // Synergies entre générateurs avec vérifications de sécurité
+  if(game.generators && game.generators.length >= 5) {
+    let r=game.generators[0], us=game.generators[1], p=game.generators[2], l=game.generators[3], s=game.generators[4];
+    if(r && us && r.c >= 5 && us.c >= 3) sy *= 1.3;
+    if(p && s && p.c >= 3 && s.c >= 2) sy *= 1.4;
+    if(l && us && l.c >= 2 && us.c >= 5) sy *= 1.2;
+  }
 
   cache.starsMultiplier = Math.pow(1.03, game.stars);
   cache.galaxiesMultiplier = Math.pow(1.01, game.galaxies);
@@ -892,16 +895,16 @@ function processTradeGains() {
     let config = getTradeConfig(type);
     let volatilityFactor = 1 + (Math.random() - 0.5) * config.volatility;
     let actualGain = config.baseGain * volatilityFactor;
-    let gain = trade.amount * actualGain / 60;
+    let gain = trade.amount * actualGain / FPS;
     trade.amount += gain;
     trade.totalGains += gain;
     let rand = Math.random();
-    if(type === "high" && rand < config.riskAll) {
+    if(type === "high" && rand < (config.riskAll / FPS)) {
       tradeLog("💥 TOUT PERDU!", "loss");
       trade.amount = 0;
       trade.totalGains = 0;
       trade.totalLosses = 0;
-    } else if(rand < config.lossChance) {
+    } else if(rand < (config.lossChance / FPS)) {
       let loss = trade.amount * config.lossRate;
       trade.amount = Math.max(0, trade.amount - loss);
       trade.totalLosses += loss;
@@ -1134,8 +1137,16 @@ function updateUI() {
   for(let g of game.generators) {
     let cost = g.p * Math.pow(g.m, g.c);
     let upgMultiplier = 1;
-    for(let u of game.upgrades) if(u.t === g.id && u.b) upgMultiplier *= u.e;
-    let gainPerSec = g.c * g.b * upgMultiplier * Math.pow(1.25, game.stars) * Math.pow(1.6, game.galaxies) * (1 + game.darkMatter * 0.05);
+    for(let u of game.upgrades) if(u.t === g.id && u.b) upgMultiplier *= Math.pow(u.e, u.b);
+
+    // Utiliser les vrais multiplicateurs comme dans getProd()
+    let starsMult = cache.starsMultiplier || Math.pow(1.03, game.stars);
+    let galaxiesMult = cache.galaxiesMultiplier || Math.pow(1.01, game.galaxies);
+    let ascensionMult = cache.ascensionMultiplier || (1 + (game.ascension * 0.05));
+    let ngpMult = Math.pow(1.10, game.ngpLevel || 0);
+    let dmMult = 1 + (game.darkMatter || 0) * 0.05;
+
+    let gainPerSec = g.c * g.b * upgMultiplier * starsMult * galaxiesMult * dmMult * ascensionMult * ngpMult;
     genHtml += `<div class="item"><strong>${g.n}</strong> ×${g.c} <span style="color:#0f0">(${fmt(gainPerSec)}/s)</span><button class="btn" onclick="buyGen('${g.id}')" ${game.coins < cost ? "disabled" : ""}>+1 (${fmt(cost)})</button><button class="btn" style="background:#0f0; color:#000" onclick="buyGenMax('${g.id}')">MAX</button></div>`;
   }
   $("gensList").innerHTML = genHtml;
@@ -1240,17 +1251,27 @@ document.addEventListener("DOMContentLoaded", function() {
   updateTradeLog();
   
   let lastUIUpdate = 0;
+  let lastGameUpdate = 0;
+  const gameUpdateInterval = 1000 / FPS; // 100ms pour FPS=10
+
   function gameLoop(currentTime) {
-    let p = getProd();
-    game.coins += p / FPS;
-    game.totalCoins += p / FPS;
-    if(game.bankInvested > 0) {
-      let bankGains = (game.bankInvested * 0.001) / FPS;
-      game.bankInvested += bankGains;
-      game.bankGenerated += bankGains;
+    // Calculs de jeu à FPS=10
+    if(currentTime - lastGameUpdate >= gameUpdateInterval) {
+      let p = getProd();
+      game.coins += p / FPS;
+      game.totalCoins += p / FPS;
+      if(game.bankInvested > 0) {
+        let bankGains = (game.bankInvested * 0.001) / FPS;
+        game.bankInvested += bankGains;
+        game.bankGenerated += bankGains;
+      }
+      processTradeGains();
+      lastGameUpdate = currentTime;
     }
-    processTradeGains();
+
     updateMarketStatus();
+
+    // UI update à 10fps aussi
     if(currentTime - lastUIUpdate >= 100) {
       updateUI();
       lastUIUpdate = currentTime;
