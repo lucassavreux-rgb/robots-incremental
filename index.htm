@@ -483,6 +483,21 @@ function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
   {
+    version: "v4.2.1 BUGFIX",
+    date: "Nov 03, 2025",
+    title: "CORRECTIONS CRITIQUES - PRESTIGE & RESET",
+    changes: [
+      "🐛 FIX CRITIQUE: Prestige coûtait 0 coins au lieu du coût normal!",
+      "🐛 Cause: getDMBoost() retournait 0 pour les modificateurs de coût",
+      "🐛 Fix: Modificateurs de coût retournent maintenant 1 par défaut",
+      "🐛 FIX: Bouton reset ne fonctionnait pas correctement",
+      "🐛 Cause: Manquait les tableaux research et shopDM lors du reset",
+      "🐛 Fix: Reset réinitialise maintenant tous les systèmes v4.2",
+      "✅ Prestige nécessite maintenant les coins corrects!",
+      "✅ Reset fonctionne parfaitement avec tous les nouveaux systèmes!"
+    ]
+  },
+  {
     version: "v4.2 RESEARCH",
     date: "Nov 03, 2025",
     title: "SYSTÈMES DE RECHERCHE + DARK MATTER SHOP - PROGRESSION LONGUE",
@@ -1351,7 +1366,10 @@ function getDMBoost(effectType) {
       return item.value;
     }
   }
-  return effectType.includes("Mult") ? 1 : 0;
+  // Cost modifiers default to 1, multipliers default to 1, additive bonuses default to 0
+  if(effectType.includes("Cost")) return 1;
+  if(effectType.includes("Mult")) return 1;
+  return 0;
 }
 
 function investTrade(type) {
@@ -2005,9 +2023,39 @@ document.addEventListener("DOMContentLoaded", function() {
       generators: [{ id: "r", n: "Robot", b: 5, c: 0, p: 50, m: 1.2, unlock: {type:"none"}}, {id:"u",n:"Usine",b:15,c:0,p:500,m:1.2,unlock:{type:"prestige",val:1}}, {id:"po",n:"Port",b:50,c:0,p:5e3,m:1.2,unlock:{type:"stars",val:5}}, {id:"l",n:"Labo",b:200,c:0,p:50e3,m:1.2,unlock:{type:"prestige",val:3}}, {id:"s",n:"Satellite",b:1500,c:0,p:500e3,m:1.2,unlock:{type:"galaxies",val:1}}],
       upgrades: [{id:"c1",n:"Clic +50%",p:100,e:1.02,b:0,t:"c",unlock:{type:"none"}}, {id:"r1",n:"Robot ×2",p:2e3,e:2,b:0,t:"r",unlock:{type:"prestige",val:1}}, {id:"r2",n:"Robot ×3",p:50e3,e:3,b:0,t:"r",unlock:{type:"stars",val:10}}, {id:"u1",n:"Usine ×2",p:50e3,e:2,b:0,t:"u",unlock:{type:"prestige",val:2}}, {id:"u2",n:"Usine ×3",p:500e3,e:3,b:0,t:"u",unlock:{type:"prestige",val:5}}, {id:"po1",n:"Port ×2",p:500e3,e:2,b:0,t:"po",unlock:{type:"stars",val:20}}, {id:"l1",n:"Labo ×2",p:5e6,e:2,b:0,t:"l",unlock:{type:"prestige",val:4}}, {id:"s1",n:"Satellite ×2",p:50e6,e:2,b:0,t:"s",unlock:{type:"galaxies",val:1}}],
       trades: {min:{amount:0,totalGains:0,totalLosses:0}, mid:{amount:0,totalGains:0,totalLosses:0}, high:{amount:0,totalGains:0,totalLosses:0}},
-      graphData:[], boosts:[], lotteryLog:[], lotteryTickets:0, bankInvested:0, bankGenerated:0, ascension:0, achievements: getDefaultAchievements(), milestones: getDefaultMilestones()
+      graphData:[], boosts:[], lotteryLog:[], lotteryTickets:0, bankInvested:0, bankGenerated:0, ascension:0, achievements: getDefaultAchievements(), milestones: getDefaultMilestones(),
+      research: [
+        { id: "res1", name: "🚀 Production I", desc: "+15% production générateurs", level: 0, maxLevel: 10, baseCost: 10000, mult: 1.8, effect: "prodBonus", value: 0.15 },
+        { id: "res2", name: "💰 Clics I", desc: "+20% gains par clic", level: 0, maxLevel: 10, baseCost: 5000, mult: 1.8, effect: "clickBonus", value: 0.20 },
+        { id: "res3", name: "⭐ Prestige Boost", desc: "+10% gains étoiles", level: 0, maxLevel: 5, baseCost: 50000, mult: 2.0, effect: "starBonus", value: 0.10 },
+        { id: "res4", name: "💸 Trading Pro", desc: "+25% gains trading", level: 0, maxLevel: 8, baseCost: 25000, mult: 1.9, effect: "tradeBonus", value: 0.25 },
+        { id: "res5", name: "🏦 Intérêts Bancaires", desc: "+50% gains banque", level: 0, maxLevel: 6, baseCost: 30000, mult: 2.0, effect: "bankBonus", value: 0.50 },
+        { id: "res6", name: "🎰 Chance Lotterie", desc: "+30% gains lotterie", level: 0, maxLevel: 5, baseCost: 15000, mult: 1.7, effect: "lotteryBonus", value: 0.30 },
+        { id: "res7", name: "🚀 Production II", desc: "+20% production générateurs", level: 0, maxLevel: 10, baseCost: 100000, mult: 2.2, effect: "prodBonus", value: 0.20 },
+        { id: "res8", name: "💰 Clics II", desc: "+25% gains par clic", level: 0, maxLevel: 10, baseCost: 75000, mult: 2.2, effect: "clickBonus", value: 0.25 },
+        { id: "res9", name: "🌀 Galaxie Efficiency", desc: "+5% bonus galaxies", level: 0, maxLevel: 5, baseCost: 500000, mult: 2.5, effect: "galaxyBonus", value: 0.05 },
+        { id: "res10", name: "🌙 Dark Matter Gen", desc: "+1 DM par 9 Prestige", level: 0, maxLevel: 1, baseCost: 1000000, mult: 1.0, effect: "dmGen", value: 1 },
+        { id: "res11", name: "⚡ Ascension Power", desc: "+10% bonus ascension", level: 0, maxLevel: 5, baseCost: 2000000, mult: 3.0, effect: "ascBonus", value: 0.10 },
+        { id: "res12", name: "🚀 Production III", desc: "+30% production générateurs", level: 0, maxLevel: 10, baseCost: 5000000, mult: 2.5, effect: "prodBonus", value: 0.30 },
+        { id: "res13", name: "💰 Clics III", desc: "+35% gains par clic", level: 0, maxLevel: 10, baseCost: 3000000, mult: 2.5, effect: "clickBonus", value: 0.35 },
+        { id: "res14", name: "♾️ NGP+ Efficiency", desc: "+5% bonus NGP+", level: 0, maxLevel: 5, baseCost: 10000000, mult: 3.0, effect: "ngpBonus", value: 0.05 },
+        { id: "res15", name: "🏭 Synergies", desc: "+50% bonus synergies", level: 0, maxLevel: 3, baseCost: 20000000, mult: 4.0, effect: "synergyBonus", value: 0.50 }
+      ],
+      shopDM: [
+        { id: "dm1", name: "⚡ Mega Production", desc: "×3 production", cost: 5, bought: false, effect: "dmProdMult", value: 3 },
+        { id: "dm2", name: "💰 Super Clics", desc: "×5 gains clics", cost: 8, bought: false, effect: "dmClickMult", value: 5 },
+        { id: "dm3", name: "⭐ Prestige Rapide", desc: "÷2 coût Prestige", cost: 10, bought: false, effect: "dmPrestigeCost", value: 0.5 },
+        { id: "dm4", name: "🌀 Galaxie Discount", desc: "÷2 coût Galaxies", cost: 15, bought: false, effect: "dmGalaxyCost", value: 0.5 },
+        { id: "dm5", name: "💸 Trading x10", desc: "×10 gains trading", cost: 12, bought: false, effect: "dmTradeMult", value: 10 },
+        { id: "dm6", name: "🏦 Banque x20", desc: "×20 gains banque", cost: 18, bought: false, effect: "dmBankMult", value: 20 },
+        { id: "dm7", name: "🎰 Jackpot", desc: "×100 gains lotterie", cost: 20, bought: false, effect: "dmLotteryMult", value: 100 },
+        { id: "dm8", name: "🤖 Auto-Clicker", desc: "+5 coins/sec automatique", cost: 25, bought: false, effect: "dmAutoClick", value: 5 },
+        { id: "dm9", name: "⚡ Time Warp", desc: "×2 vitesse jeu", cost: 30, bought: false, effect: "dmTimeWarp", value: 2 },
+        { id: "dm10", name: "💎 Quantum Rain", desc: "+1 QC par minute", cost: 50, bought: false, effect: "dmQCRain", value: 1 }
+      ]
     };
     localStorage.removeItem(SAVE_KEY);
+    invalidateCache();
     updateUI();
   });
   $("nextBtn").addEventListener("click", () => { if(tutPage < 17) { tutPage++; updateTutorial(); } });
