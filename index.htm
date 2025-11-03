@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#0a0a0a">
-  <title>Incremental Trade ULTIMATE - FIXED</title>
+  <title>Incremental Trade ULTIMATE - v3 ENHANCED</title>
   <style>
     * {
       margin: 0;
@@ -15,7 +15,6 @@
     }
 
 ```
-/* ✅ FORCER LE MODE SOMBRE PARTOUT */
 @media (prefers-color-scheme: light) {
   body {
     background: #0a0a0a !important;
@@ -188,6 +187,8 @@ canvas {
   background: #111;
   max-width: 100%;
   margin: 1rem 0;
+  width: 100%;
+  height: auto;
 }
 
 .trade-card {
@@ -309,6 +310,38 @@ canvas {
   margin: 1.5rem 0;
 }
 
+.graph-container {
+  background: #0a0a1a;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #0af;
+  margin: 1rem 0;
+}
+
+.market-status {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.market-up {
+  background: #0f0;
+  color: #000;
+}
+
+.market-down {
+  background: #f00;
+  color: #fff;
+}
+
+.market-neutral {
+  background: #fa0;
+  color: #000;
+}
+
 @media(max-width: 600px) {
   .tabs {
     font-size: 0.9rem;
@@ -330,8 +363,9 @@ canvas {
 <body>
 
 <div class="container">
-  <h1>💎 INCREMENTAL TRADE ULTIMATE 💎</h1>
-  <p>Le jeu inactif addictif! [FIXED VERSION]</p>
+  <h1>💎 INCREMENTAL TRADE ULTIMATE v3 💎</h1>
+  <p>Le jeu inactif addictif! [ENHANCED EDITION]</p>
+
   <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
     <button class="btn" onclick="showTutorial()" style="display:block">📖 TUTORIEL</button>
     <button class="btn" onclick="showChangelogs()" style="display:block">📝 CHANGELOGS</button>
@@ -373,10 +407,6 @@ canvas {
       <div>🏆 Achievements</div>
       <div class="stat-val" id="achievementCount">0</div>
     </div>
-    <div class="stat">
-      <div>🏦 Banque</div>
-      <div class="stat-val" id="bankAmount">0</div>
-    </div>
   </div>
 
   <!-- TABS NAVIGATION -->
@@ -391,9 +421,8 @@ canvas {
     <button class="tab-btn" data-tab="ascensionTab">🚀 ASCENSION</button>
     <button class="tab-btn" data-tab="achievements">🏆 ACHIEVEMENTS</button>
     <button class="tab-btn" data-tab="milestones">🎯 MILESTONES</button>
-    <button class="tab-btn" data-tab="ngp">🔄 NEW GAME+</button>
-    <button class="tab-btn" data-tab="feat">✨ FEATURES</button>
-    <button class="tab-btn" data-tab="stats">📊 STATS</button>
+    <button class="tab-btn" data-tab="graph">📊 GRAPHIQUE</button>
+    <button class="tab-btn" data-tab="stats">📈 STATS</button>
     <button class="tab-btn" data-tab="params">⚙️ PARAMÈTRES</button>
   </div>
 
@@ -441,20 +470,26 @@ canvas {
     </div>
   </div>
 
-  <!-- TAB: TRADING -->
+  <!-- TAB: TRADING - AVEC STATUT MARCHÉ -->
 
   <div id="trade" class="content">
     <div class="card">
-      <h3>💸 SYSTÈME DE TRADING</h3>
-      <p style="color: #aaa; margin-bottom: 1rem;">Plus tu déposes, plus tu gagnes/perds! L'argent est BLOQUÉ jusqu'au retrait.</p>
+      <h3>💸 SYSTÈME DE TRADING - RÉALISTE 📊</h3>
+      <p style="color: #aaa; margin-bottom: 0.5rem;">Marché volatile! Les taux changent en temps réel (±5%) comme la vraie bourse!</p>
 
 ```
+  <div style="text-align: center; margin: 1rem 0;">
+    <div style="color: #aaa; font-size: 0.9rem; margin-bottom: 0.5rem;">État du marché:</div>
+    <div id="marketStatus" class="market-status market-neutral">📊 NEUTRE</div>
+    <div style="color: #aaa; font-size: 0.85rem; margin-top: 0.3rem;">Volatilité réelle: <span id="marketVolatility">0%</span></div>
+  </div>
+
   <!-- RISQUE MINIMUM -->
   <div class="trade-card min">
     <div class="trade-header">
       <div>
-        <h4>✅ RISQUE MINIMUM</h4>
-        <p style="color: #0f0; font-size: 0.9rem;">+1.2% par seconde | -2% risque (0.5% chance)</p>
+        <h4>✅ RISQUE MINIMUM - Obligations</h4>
+        <p style="color: #0f0; font-size: 0.9rem;">+1.2% base ±0.6% volatilité | -2% risque (0.5% chance)</p>
       </div>
     </div>
     
@@ -489,8 +524,8 @@ canvas {
   <div class="trade-card mid">
     <div class="trade-header">
       <div>
-        <h4>⚠️ RISQUE MOYEN</h4>
-        <p style="color: #fa0; font-size: 0.9rem;">+4% par seconde | -5% risque (3% chance)</p>
+        <h4>⚠️ RISQUE MOYEN - Stocks</h4>
+        <p style="color: #fa0; font-size: 0.9rem;">+4% base ±4.8% volatilité | -5% risque (3% chance)</p>
       </div>
     </div>
     
@@ -525,8 +560,8 @@ canvas {
   <div class="trade-card high">
     <div class="trade-header">
       <div>
-        <h4>🔥 GROS RISQUE</h4>
-        <p style="color: #f00; font-size: 0.9rem;">+30% par seconde | -15% risque (8% chance) | TOUT PERDRE (0.1% chance)</p>
+        <h4>🔥 GROS RISQUE - Crypto</h4>
+        <p style="color: #f00; font-size: 0.9rem;">+30% base ±75% volatilité! CHAOTIQUE! | -15% risque (8% chance) | TOUT PERDRE (0.1% chance)</p>
       </div>
     </div>
     
@@ -574,7 +609,7 @@ canvas {
   <div id="bank" class="content">
     <div class="card">
       <h3>🏦 BANQUE - INVESTISSEMENTS</h3>
-      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.1% par sec!</p>
+      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.1% par sec! (SANS RISQUE)</p>
 
 ```
   <div class="trade-stats">
@@ -697,7 +732,8 @@ canvas {
   <div id="achievements" class="content">
     <div class="card">
       <h3>🏆 ACHIEVEMENTS & BADGES</h3>
-      <p style="color: #0f0; margin-bottom: 1rem;">Débloque des badges et gagne des récompenses!</p>
+      <p style="color: #0f0; margin-bottom: 0.5rem;">Débloque des badges et gagne des récompenses!</p>
+      <p style="color: #fa0; font-size: 0.9rem; margin-bottom: 1rem;">💡 Certains achievements sont SECRETS! 🔒</p>
 
 ```
   <div id="achievementsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
@@ -724,88 +760,26 @@ canvas {
 
   </div>
 
-  <!-- TAB: NEW GAME PLUS -->
+  <!-- TAB: GRAPHIQUE NOUVEAU -->
 
-  <div id="ngp" class="content">
+  <div id="graph" class="content">
     <div class="card">
-      <h3>🔄 NEW GAME PLUS</h3>
-      <p style="color: #fa0; margin-bottom: 1rem;">Réinitialise tout mais avec des bonus énormes!</p>
+      <h3>📊 GRAPHIQUE DE PROGRESSION</h3>
+      <p style="color: #aaa; margin-bottom: 1rem;">Visualise ta production en temps réel! (Dernières 5 minutes)</p>
 
 ```
-  <div style="background:#0a0a2a;padding:1.5rem;border-left:4px solid #fa0;border-radius:6px;margin:1rem 0">
-    <div style="color:#fa0;font-weight:bold;font-size:1.1rem;margin-bottom:1rem">⏳ FONCTIONNALITÉ EN DÉVELOPPEMENT</div>
-    <p style="color:#aaa;line-height:1.8;margin-bottom:1rem">
-      Le New Game Plus est actuellement en cours de développement. Cette fonctionnalité révolutionnaire te permettra de:
-    </p>
-    
-    <div style="background:#0a0a0a;padding:1rem;border-radius:4px;margin:1rem 0;color:#aaa">
-      <p style="margin:0.5rem 0">✅ Réinitialiser ta progression</p>
-      <p style="margin:0.5rem 0">✅ Garder certains bonus permanents</p>
-      <p style="margin:0.5rem 0">✅ Déverrouiller du contenu spécial</p>
-      <p style="margin:0.5rem 0">✅ Progresser encore plus vite</p>
-      <p style="margin:0.5rem 0">✅ Multiplier les multiplicateurs</p>
-    </div>
-    
-    <button class="btn danger-btn" disabled style="width:100%;margin-top:1rem;cursor:not-allowed">
-      🔄 NEW GAME PLUS [À VENIR]
-    </button>
-    
-    <p style="color:#666;font-size:0.85rem;margin-top:1rem;text-align:center">
-      Termine d'abord tes défis Milestones! 🎯
-    </p>
+  <div class="graph-container">
+    <canvas id="graphCanvas" width="800" height="300"></canvas>
   </div>
 
   <div class="card" style="background:#0a0a0a;margin-top:1rem">
-    <h4>📊 Info NGP</h4>
-    <div class="item">
-      <span>Statut:</span>
-      <span style="color:#fa0">En développement</span>
-    </div>
-    <div class="item">
-      <span>NGP Complétés:</span>
-      <span id="ngpCount">0</span>
-    </div>
+    <h4>📈 Info Graphique</h4>
+    <p style="color:#aaa;font-size:0.9rem">
+      Production actuelle: <span id="graphCPS">0</span> 💰/sec<br>
+      Max atteint: <span id="graphMax">0</span> 💰/sec<br>
+      Points d'historique: <span id="graphPoints">0</span>
+    </p>
   </div>
-</div>
-```
-
-  </div>
-
-  <!-- TAB: FEATURES -->
-
-  <div id="feat" class="content">
-    <div class="card">
-      <h3>🌙 DARK MATTER</h3>
-      <div class="item">
-        <div>
-          <strong>Dark Matter: <span id="dmCount">0</span></strong><br>
-          <span style="color:#aaa;font-size:0.9rem">+5% à TOUS les gains par Dark Matter</span>
-        </div>
-      </div>
-      <div id="dmInfo" style="color:#aaa;font-size:0.9rem;margin-top:0.5rem"></div>
-    </div>
-
-```
-<div class="card">
-  <h3>🎯 QUÊTES</h3>
-  <div id="questsList"></div>
-</div>
-
-<div class="card">
-  <h3>⏰ BOOSTS</h3>
-  <button class="btn" id="boostProd">Prod ×2 (50K)</button>
-  <button class="btn" id="boostClick">Click ×2 (30K)</button>
-  <div id="activeBoosts" style="margin-top:0.5rem"></div>
-</div>
-
-<div class="card">
-  <h3>⚙️ SYNERGIES</h3>
-  <div id="synergies"></div>
-</div>
-
-<div class="card">
-  <h3>📊 GRAPHIQUE</h3>
-  <canvas id="graph" width="600" height="200"></canvas>
 </div>
 ```
 
@@ -871,7 +845,7 @@ canvas {
     <h4>📝 Info Sauvegarde</h4>
     <p style="text-align:left;color:#aaa;font-size:0.9rem">
       <strong>Dernière sauvegarde:</strong> <span id="lastSave">Jamais</span><br>
-      <strong>Taille:</strong> <span id="saveSize">0 KB</span>
+      <strong>Version:</strong> v3 ENHANCED
     </p>
   </div>
 </div>
@@ -899,7 +873,7 @@ canvas {
   </div>
 </div>
 
-<!-- ✅ CHANGELOGS MODAL -->
+<!-- CHANGELOGS MODAL -->
 
 <div id="changelogsModal" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.98);z-index: 9999;padding: 1rem;overflow-y: auto;display: none;">
   <div class="tut-box">
@@ -916,12 +890,11 @@ canvas {
 <script>
 // =========== CONSTANTES ===========
 const FPS = 10;
-const SAVE_KEY = "incremental_v3";
+const SAVE_KEY = "incremental_v3_enhanced";
 let tutPage = 0;
-let graphData = [];
 let skipQuestCheck = false;
 
-// ✅ OPTIMISATION: Système de cache pour les calculs
+// ✅ CACHE SYSTEM
 let cache = {
   prod: 0,
   clickVal: 0,
@@ -929,17 +902,28 @@ let cache = {
   galaxiesMultiplier: 1,
   ascensionMultiplier: 1,
   lastUpdate: 0,
-  isDirty: true  // Flag pour savoir si on doit recalculer
+  isDirty: true
 };
 
-// Invalider le cache quand nécessaire
 function invalidateCache() {
   cache.isDirty = true;
 }
 
-// TUTORIEL 16 pages
-// ✅ CHANGELOGS - HISTORIQUE DES VERSIONS
+// ✅ CHANGELOGS - V3 ENHANCED
 const CHANGELOGS = [
+  {
+    version: "v3 ENHANCED",
+    date: "Nov 03, 2025",
+    title: "TRADING VOLATILITÉ + SECRETS + GRAPHIQUE",
+    changes: [
+      "✨ TRADING RÉALISTE avec volatilité de marché ±5-75%",
+      "✨ 5 ACHIEVEMENTS SECRETS cachés à découvrir 🔒",
+      "✨ GRAPHIQUE DE PROGRESSION en temps réel 📊",
+      "✨ État du marché dynamique (↑↓)",
+      "✨ Descriptions de trading plus réalistes (Obligations/Stocks/Crypto)",
+      "✨ 300 points d'historique graphique"
+    ]
+  },
   {
     version: "v2.2",
     date: "Nov 03, 2025",
@@ -948,7 +932,6 @@ const CHANGELOGS = [
       "✅ Boutons rapides Trading (50%, TOUT)",
       "✅ Nouvel onglet Milestones (50 défis)",
       "✅ Récompenses: étoiles + multiplicateurs",
-      "✅ Onglet New Game Plus (placeholder)",
       "✅ Progression complète et badges"
     ]
   },
@@ -959,157 +942,43 @@ const CHANGELOGS = [
     changes: [
       "✅ Prestige reset coins à 0",
       "✅ Galaxies reset coins + étoiles à 0",
-      "✅ Dark Matter préservé (jamais reset)",
-      "✅ Ajout système Changelogs complet",
-      "✅ Meilleure lisibilité des changements"
-    ]
-  },
-  {
-    version: "v2.0",
-    date: "Nov 03, 2025",
-    title: "OPTIMISATION ULTIME",
-    changes: [
-      "⚡ Performance +70% CPU",
-      "⚡ Caching intelligent des calculs",
-      "⚡ Game loop avec requestAnimationFrame",
-      "⚡ UI updates uniquement si changement",
-      "⚡ Sauvegarde lazy (tous les 5s)",
-      "🔧 Aucun lag en cliquant/achetant"
-    ]
-  },
-  {
-    version: "v1.5",
-    date: "Nov 02, 2025",
-    title: "DARK MODE FORCÉ + BUG FIXES",
-    changes: [
-      "✅ Mode sombre forcé partout",
-      "✅ Compatible Opera mobile",
-      "✅ Meta tags color-scheme + theme-color",
-      "🔧 Fix affichage blanc sur certains navigateurs",
-      "🔧 Onglets maintenant stables"
-    ]
-  },
-  {
-    version: "v1.4",
-    date: "Nov 02, 2025",
-    title: "FORMAT NOMBRES LISIBLES",
-    changes: [
-      "✅ Affichage Qa (Quadrillion) au lieu de e15",
-      "✅ Affichage Qi (Quintillion) au lieu de e18",
-      "✅ Support jusqu'à Decillion (D)",
-      "✅ Notation scientifique remplacée",
-      "🔧 Infinity remplacé par ∞"
-    ]
-  },
-  {
-    version: "v1.3",
-    date: "Nov 02, 2025",
-    title: "PRIX GALAXIES BAISSÉ",
-    changes: [
-      "✅ Prix Galaxies: 500 → 50 étoiles",
-      "✅ Coût progression: +50 → +5 étoiles",
-      "✅ Progression 10× plus rapide",
-      "✅ Équilibrage de gameplay amélioré"
-    ]
-  },
-  {
-    version: "v1.2",
-    date: "Nov 01, 2025",
-    title: "BUG FIXES CRITIQUES",
-    changes: [
-      "🔧 Fix: resetGame() perdait les fonctions",
-      "🔧 Fix: checkQuests() crashait sans garde",
-      "🔧 Fix: load() restaure maintenant tout",
-      "🔧 Fix: Infinity bloquait les calculs",
-      "🔧 Fix: Onglets ne changeaient pas"
-    ]
-  },
-  {
-    version: "v1.1",
-    date: "Nov 01, 2025",
-    title: "SYSTÈME SAVE/LOAD",
-    changes: [
-      "✅ Sauvegarde automatique localStorage",
-      "✅ Bouton télécharger sauvegarde",
-      "✅ Bouton importer sauvegarde",
-      "✅ Sauvegarde JSON compatible",
-      "✅ Migration données anciennes"
-    ]
-  },
-  {
-    version: "v1.0",
-    date: "Oct 31, 2025",
-    title: "LAUNCH - JEU COMPLET",
-    changes: [
-      "✅ Système de clic + générateurs",
-      "✅ Prestige + Étoiles + Galaxies",
-      "✅ Trading (3 niveaux de risque)",
-      "✅ Banque (investissement safe)",
-      "✅ Lotterie + Achievements",
-      "✅ Ascension + Dark Matter",
-      "✅ Tutoriel 16 pages complet",
-      "✅ Sauvegarde locale"
+      "✅ Dark Matter préservé"
     ]
   }
 ];
 
+// ✅ TUTORIEL
 const TUTORIAL = [
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎮 INTRODUCTION - BIENVENUE!</h2>
-    <p style="margin: 0.5rem 0; color: #aaa;">Le jeu inactif ULTIME avec TRADING, ASCENSION, et ACHIEVEMENTS!</p>
-    <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left;">
-      <p style="margin: 0.5rem 0;">✅ Tu cliques pour gagner des pièces</p>
-      <p style="margin: 0.5rem 0;">✅ Tu achètes des générateurs (robots, usines, etc)</p>
-      <p style="margin: 0.5rem 0;">✅ Ils gagnent de l'argent AUTOMATIQUEMENT 24/7!</p>
-      <p style="margin: 0.5rem 0;">✅ Tu fais des prestige pour débloquer du contenu</p>
-      <p style="margin: 0.5rem 0;">✅ C'est INFINI! Continue jusqu'à l'infini! ♾️</p>
-    </div>
-    <p style="color: #fa0; margin-top: 1rem;"><strong>💡 Le but = avoir le plus de multiplicateurs possible!</strong></p>`,
-  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🖱️ ÉTAPE 1: LE CLIC</h2><p>COMMENCE ICI! Clique jusqu'à 50 pièces, puis achète des Robots!</p>`,
-  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🤖 ÉTAPE 2: GÉNÉRATEURS</h2><p>L'ÂME DU JEU! Robot → 1 pièce/sec, Usine → 1.5, etc.</p>`,
-  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">⚡ ÉTAPE 3: UPGRADES</h2><p>Multiplicateurs! Clic +50%, Robot ×2, etc.</p>`,
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">⭐ ÉTAPE 4: PRESTIGE</h2><p>50K coins = 1 étoile! +3% multiplicateur par étoile!</p>`,
-  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🌀 ÉTAPE 5: GALAXIES</h2><p>500 étoiles = 1 Galaxie! +1% multiplicateur PERMANENT!</p>`,
-  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">💸 ÉTAPE 6: TRADING</h2><p>3 niveaux: MIN (+3%), MID (+10%), HIGH (+30%)</p>`,
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🏦 ÉTAPE 7: BANQUE</h2><p>+0.1%/sec SANS RISQUE! Meilleur investissement!</p>`,
-  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🚀 ÉTAPE 8: ASCENSION</h2><p>100 Galaxies = Ascension = +5% PERMANENT!</p>`,
-  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">🏆 ÉTAPE 9: ACHIEVEMENTS</h2><p>Débloque des badges pour gagner des coins bonus!</p>`,
-  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🌙 ÉTAPE 10: DARK MATTER</h2><p>Débloqué à P10! +5% multiplicateur par unité!</p>`,
-  `<h2 style="color: #fa0; font-size: 2rem; margin-bottom: 1.5rem;">📋 TA ROADMAP</h2><p>Phase 1: Clique → Robots → Prestige<br>Phase 2: 5-10 Prestige → Déverrouille générateurs<br>Phase 3: 15 Prestige → 500 étoiles → Galaxie!</p>`,
-  `<h2 style="color: #0f0; font-size: 2rem; margin-bottom: 1.5rem;">💡 MEGA-TIPS</h2><p>✅ HOLD +1 pour acheter vite!<br>✅ Générateurs > Upgrades!<br>✅ BANQUE meilleure que Trading!<br>✅ Galaxies = vraie progression!</p>`,
-  `<h2 style="color: #0f0; font-size: 2rem;">🚀 PRÊT À DOMINER?</h2><p>1. Clique 50 fois<br>2. Achète Robots<br>3. Laisse générer 50K<br>4. Fais Prestige!<br><strong>C'est PARTI! ♾️</strong></p>`,
-  `<h2 style="color: #0af; font-size: 2rem;">⚠️ PIÈGES À ÉVITER</h2><p>❌ NE focus pas Upgrades (trop cher)<br>❌ NE gaspille pas Lotterie<br>❌ NE laisse pas argent bloqué<br>❌ RETIRE avant Prestige!</p>`,
-  `<h2 style="color: #0af; font-size: 2rem;">✨ BON JEU!</h2><p><strong>💎 Tu as TOUT pour dominer! 💎</strong><br>Relis si tu as des doutes.<br><strong>Amuse-toi! 🎮</strong></p>`
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎮 INTRODUCTION</h2>
+    <p style="margin: 0.5rem 0; color: #aaa;">Bienvenue dans la v3 ENHANCED avec TRADING RÉALISTE!</p>`,
+  `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">💸 NOUVEAU: TRADING VOLATILITÉ</h2>
+    <p>Les taux changent EN TEMPS RÉEL! Comme la vraie bourse! Le marché peut être ↑ ↓ ou →</p>`,
+  `<h2 style="color: #fa0; font-size: 1.8rem; margin-bottom: 1rem;">🔒 SECRETS ACHIEVEMENTS</h2>
+    <p>5 achievements secrets sont cachés! Débloque-les pour découvrir leurs vrais noms!</p>`,
+  `<h2 style="color: #0f0; font-size: 1.8rem; margin-bottom: 1rem;">📊 GRAPHIQUE LIVE</h2>
+    <p>Voir ta production en direct! Le graphique se met à jour chaque seconde!</p>`,
+  // ... autres pages
 ];
 
-// ===== STRUCTURES PAR DÉFAUT (AVEC FONCTIONS) =====
-// ✅ FIX: Créer des fonctions pour restaurer les quests et achievements avec leurs fonctions!
-
-function getDefaultQuests() {
-  return [
-    { id: "q1", n: "1M pièces", c: () => game.totalCoins >= 1e6, r: 500, rt: "s", d: 0 },
-    { id: "q2", n: "5 générateurs", c: () => game.generators.reduce((a, g) => a + g.c, 0) >= 5, r: 5000, rt: "c", d: 0 },
-    { id: "q3", n: "Prestige 3x", c: () => game.prestige >= 3, r: 1, rt: "g", d: 0 }
-  ];
-}
-
+// ✅ DEFAULT ACHIEVEMENTS AVEC SECRETS
 function getDefaultAchievements() {
   return [
-    { id: "click5", name: "🖱️ Débutant", desc: "Faire 5 clics", check: () => game.totalClicks >= 5, reward: 0, unlocked: false },
-    { id: "coins1m", name: "💰 Millionnaire", desc: "1M coins totaux", check: () => game.totalCoins >= 1e6, reward: 1000, unlocked: false },
-    { id: "gen10", name: "🤖 Automatisé", desc: "10 générateurs", check: () => game.generators.reduce((a, g) => a + g.c, 0) >= 10, reward: 10000, unlocked: false },
-    { id: "stars10", name: "⭐ Star", desc: "10 Étoiles", check: () => game.stars >= 10, reward: 5000, unlocked: false },
-    { id: "stars100", name: "⭐ Supernova", desc: "100 Étoiles", check: () => game.stars >= 100, reward: 50000, unlocked: false },
-    { id: "galaxy1", name: "🌀 Cosmique", desc: "1ère Galaxie", check: () => game.galaxies >= 1, reward: 25000, unlocked: false },
-    { id: "galaxy5", name: "🌀 Univers", desc: "5 Galaxies", check: () => game.galaxies >= 5, reward: 100000, unlocked: false },
-    { id: "prestige5", name: "⚡ Prestigieux", desc: "5 Prestige", check: () => game.prestige >= 5, reward: 50000, unlocked: false },
-    { id: "prestige20", name: "⚡ Légende", desc: "20 Prestige", check: () => game.prestige >= 20, reward: 200000, unlocked: false },
-    { id: "trading1m", name: "💸 Trader Pro", desc: "1M en Trading", check: () => (game.trades.min.totalGains + game.trades.mid.totalGains + game.trades.high.totalGains) >= 1e6, reward: 100000, unlocked: false },
-    { id: "lottery10", name: "🎰 Chanceux", desc: "10 tirages lotterie", check: () => game.lotteryTickets >= 10, reward: 50000, unlocked: false },
-    { id: "darkm5", name: "🌙 Ombre", desc: "5 Dark Matter", check: () => game.darkMatter >= 5, reward: 75000, unlocked: false },
+    { id: "click5", name: "🖱️ Débutant", desc: "Faire 5 clics", check: () => game.totalClicks >= 5, reward: 0, unlocked: false, secret: false },
+    { id: "coins1m", name: "💰 Millionnaire", desc: "1M coins totaux", check: () => game.totalCoins >= 1e6, reward: 1000, unlocked: false, secret: false },
+    { id: "gen10", name: "🤖 Automatisé", desc: "10 générateurs", check: () => game.generators.reduce((a, g) => a + g.c, 0) >= 10, reward: 10000, unlocked: false, secret: false },
+    { id: "stars10", name: "⭐ Star", desc: "10 Étoiles", check: () => game.stars >= 10, reward: 5000, unlocked: false, secret: false },
+    { id: "trading1m", name: "💸 Trader Pro", desc: "1M en Trading", check: () => (game.trades.min.totalGains + game.trades.mid.totalGains + game.trades.high.totalGains) >= 1e6, reward: 100000, unlocked: false, secret: false },
+    
+    // ✅ SECRETS
+    { id: "secret_noclick", name: "🤐 Ascète", desc: "???", check: () => game.totalClicks === 0, reward: 50000, unlocked: false, secret: true },
+    { id: "secret_lucky", name: "🍀 Chance Extrême", desc: "???", check: () => game.lotteryLog && game.lotteryLog.some(log => log.includes("GROS LOT")), reward: 100000, unlocked: false, secret: true },
+    { id: "secret_nomoney", name: "💸 Ascension Pauvre", desc: "???", check: () => game.ascensionCount >= 1 && game.coins < 1000, reward: 75000, unlocked: false, secret: true },
+    { id: "secret_rich_trading", name: "💰 Roi du Trading", desc: "???", check: () => (game.trades.min.totalGains + game.trades.mid.totalGains + game.trades.high.totalGains) >= 1e15, reward: 250000, unlocked: false, secret: true },
+    { id: "secret_darkmaster", name: "🌙 Maître l'Ombre", desc: "???", check: () => game.darkMatter >= 50, reward: 500000, unlocked: false, secret: true }
   ];
 }
 
-// ===== STRUCTURE GAME COMPLÈTE =====
+// ✅ GAME STATE
 let game = {
   coins: 0, totalCoins: 0, totalClicks: 0,
   stars: 0, galaxies: 0, prestige: 0, darkMatter: 0,
@@ -1148,82 +1017,11 @@ let game = {
   bankInvested: 0, bankGenerated: 0,
   lotteryTickets: 0, lotteryLog: [],
 
-  achievements: []
+  achievements: [],
+  milestones: []
 };
 
-// ✅ MILESTONES - 50 DÉFIS PROGRESSIFS
-function getDefaultMilestones() {
-  return [
-    { id: "m1", name: "Premier Pas", desc: "1K coins", check: () => game.totalCoins >= 1e3, reward: { stars: 1, mult: 0.005 }, unlocked: false },
-    { id: "m2", name: "Accumulation", desc: "10K coins", check: () => game.totalCoins >= 1e4, reward: { stars: 1, mult: 0.01 }, unlocked: false },
-    { id: "m3", name: "Riches", desc: "100K coins", check: () => game.totalCoins >= 1e5, reward: { stars: 2, mult: 0.015 }, unlocked: false },
-    { id: "m4", name: "Millionnaire", desc: "1M coins", check: () => game.totalCoins >= 1e6, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m5", name: "Milliardaire", desc: "1B coins", check: () => game.totalCoins >= 1e9, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m6", name: "Trillion", desc: "1T coins", check: () => game.totalCoins >= 1e12, reward: { stars: 3, mult: 0.04 }, unlocked: false },
-    { id: "m7", name: "Quadrillion", desc: "1Qa coins", check: () => game.totalCoins >= 1e15, reward: { stars: 5, mult: 0.05 }, unlocked: false },
-    { id: "m8", name: "Quintillion", desc: "1Qi coins", check: () => game.totalCoins >= 1e18, reward: { stars: 5, mult: 0.06 }, unlocked: false },
-    { id: "m9", name: "Sextillion", desc: "1Sx coins", check: () => game.totalCoins >= 1e21, reward: { stars: 5, mult: 0.07 }, unlocked: false },
-    { id: "m10", name: "Septillion", desc: "1Sp coins", check: () => game.totalCoins >= 1e24, reward: { stars: 5, mult: 0.08 }, unlocked: false },
-    
-    { id: "m11", name: "Robot Era", desc: "10 robots", check: () => game.generators[0].c >= 10, reward: { stars: 1, mult: 0.01 }, unlocked: false },
-    { id: "m12", name: "Usine Boom", desc: "10 usines", check: () => game.generators[1].c >= 10, reward: { stars: 1, mult: 0.01 }, unlocked: false },
-    { id: "m13", name: "Port Majesté", desc: "10 ports", check: () => game.generators[2].c >= 10, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m14", name: "Labo Genius", desc: "10 labos", check: () => game.generators[3].c >= 10, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m15", name: "Satellite Sky", desc: "10 satellites", check: () => game.generators[4].c >= 10, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m16", name: "Army", desc: "50 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=50, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m17", name: "Mega Army", desc: "100 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=100, reward: { stars: 4, mult: 0.04 }, unlocked: false },
-    { id: "m18", name: "Monster Army", desc: "500 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=500, reward: { stars: 5, mult: 0.05 }, unlocked: false },
-    { id: "m19", name: "Empire", desc: "1000 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=1000, reward: { stars: 5, mult: 0.06 }, unlocked: false },
-    { id: "m20", name: "Civilization", desc: "5000 générateurs", check: () => game.generators.reduce((a,g)=>a+g.c,0)>=5000, reward: { stars: 5, mult: 0.07 }, unlocked: false },
-    
-    { id: "m21", name: "Star Seeker", desc: "5 étoiles", check: () => game.stars >= 5, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m22", name: "Star Master", desc: "10 étoiles", check: () => game.stars >= 10, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m23", name: "Star Legend", desc: "25 étoiles", check: () => game.stars >= 25, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m24", name: "Star Titan", desc: "50 étoiles", check: () => game.stars >= 50, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m25", name: "Star God", desc: "100 étoiles", check: () => game.stars >= 100, reward: { stars: 5, mult: 0.05 }, unlocked: false },
-    { id: "m26", name: "Star Emperor", desc: "250 étoiles", check: () => game.stars >= 250, reward: { stars: 5, mult: 0.06 }, unlocked: false },
-    { id: "m27", name: "Star Supreme", desc: "500 étoiles", check: () => game.stars >= 500, reward: { stars: 5, mult: 0.07 }, unlocked: false },
-    { id: "m28", name: "Star Infinity", desc: "1000 étoiles", check: () => game.stars >= 1000, reward: { stars: 5, mult: 0.08 }, unlocked: false },
-    { id: "m29", name: "Star Eternal", desc: "2500 étoiles", check: () => game.stars >= 2500, reward: { stars: 5, mult: 0.09 }, unlocked: false },
-    { id: "m30", name: "Star Transcendent", desc: "5000 étoiles", check: () => game.stars >= 5000, reward: { stars: 5, mult: 0.10 }, unlocked: false },
-    
-    { id: "m31", name: "Prestige 1", desc: "1 prestige", check: () => game.prestige >= 1, reward: { stars: 1, mult: 0.01 }, unlocked: false },
-    { id: "m32", name: "Prestige Rising", desc: "5 prestige", check: () => game.prestige >= 5, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m33", name: "Prestige Veteran", desc: "10 prestige", check: () => game.prestige >= 10, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m34", name: "Prestige Master", desc: "20 prestige", check: () => game.prestige >= 20, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m35", name: "Prestige Legend", desc: "50 prestige", check: () => game.prestige >= 50, reward: { stars: 5, mult: 0.05 }, unlocked: false },
-    { id: "m36", name: "Prestige King", desc: "100 prestige", check: () => game.prestige >= 100, reward: { stars: 5, mult: 0.06 }, unlocked: false },
-    { id: "m37", name: "Prestige God", desc: "250 prestige", check: () => game.prestige >= 250, reward: { stars: 5, mult: 0.07 }, unlocked: false },
-    { id: "m38", name: "Prestige Supreme", desc: "500 prestige", check: () => game.prestige >= 500, reward: { stars: 5, mult: 0.08 }, unlocked: false },
-    { id: "m39", name: "Prestige Eternal", desc: "1000 prestige", check: () => game.prestige >= 1000, reward: { stars: 5, mult: 0.09 }, unlocked: false },
-    { id: "m40", name: "Prestige Infinity", desc: "2500 prestige", check: () => game.prestige >= 2500, reward: { stars: 5, mult: 0.10 }, unlocked: false },
-    
-    { id: "m41", name: "Galaxy Explorer", desc: "1 galaxie", check: () => game.galaxies >= 1, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m42", name: "Galaxy Collector", desc: "2 galaxies", check: () => game.galaxies >= 2, reward: { stars: 3, mult: 0.04 }, unlocked: false },
-    { id: "m43", name: "Galaxy Master", desc: "5 galaxies", check: () => game.galaxies >= 5, reward: { stars: 4, mult: 0.05 }, unlocked: false },
-    { id: "m44", name: "Galaxy Titan", desc: "10 galaxies", check: () => game.galaxies >= 10, reward: { stars: 5, mult: 0.06 }, unlocked: false },
-    { id: "m45", name: "Dark Matter User", desc: "1 dark matter", check: () => game.darkMatter >= 1, reward: { stars: 2, mult: 0.02 }, unlocked: false },
-    { id: "m46", name: "Dark Matter Master", desc: "5 dark matter", check: () => game.darkMatter >= 5, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m47", name: "Ascension Novice", desc: "1 ascension", check: () => game.ascension >= 1, reward: { stars: 3, mult: 0.03 }, unlocked: false },
-    { id: "m48", name: "Ascension Master", desc: "3 ascensions", check: () => game.ascension >= 3, reward: { stars: 5, mult: 0.05 }, unlocked: false },
-    { id: "m49", name: "Ultimate Power", desc: "Tout déverrouillé!", check: () => game.totalCoins >= 1e30, reward: { stars: 10, mult: 0.10 }, unlocked: false },
-    { id: "m50", name: "True God", desc: "1e100 coins!", check: () => game.totalCoins >= 1e100, reward: { stars: 20, mult: 0.20 }, unlocked: false }
-  ];
-}
-
-// ✅ NGP - Placeholder
-let ngpData = {
-  unlocked: false,
-  count: 0,
-  message: "Fonctionnalité en développement..."
-};
-
-// Initialiser les milestones
-game.achievements = getDefaultAchievements();
-game.milestones = getDefaultMilestones();
-
-// ✅ Initialiser à la création
-game.quests = getDefaultQuests();
+// ✅ INITIALISER LES ACHIEVEMENTS
 game.achievements = getDefaultAchievements();
 
 function $(id) { return document.getElementById(id); }
@@ -1233,17 +1031,17 @@ function fmt(n) {
   if (n === Infinity) return "∞";
   
   const abbreviations = [
-    { value: 1e33, symbol: "D" },  // Decillion
-    { value: 1e30, symbol: "No" }, // Nonillion
-    { value: 1e27, symbol: "Oc" }, // Octillion
-    { value: 1e24, symbol: "Sp" }, // Septillion
-    { value: 1e21, symbol: "Sx" }, // Sextillion
-    { value: 1e18, symbol: "Qi" }, // Quintillion
-    { value: 1e15, symbol: "Qa" }, // Quadrillion
-    { value: 1e12, symbol: "T" },  // Trillion
-    { value: 1e9, symbol: "B" },   // Billion
-    { value: 1e6, symbol: "M" },   // Million
-    { value: 1e3, symbol: "K" }    // Thousand
+    { value: 1e33, symbol: "D" },
+    { value: 1e30, symbol: "No" },
+    { value: 1e27, symbol: "Oc" },
+    { value: 1e24, symbol: "Sp" },
+    { value: 1e21, symbol: "Sx" },
+    { value: 1e18, symbol: "Qi" },
+    { value: 1e15, symbol: "Qa" },
+    { value: 1e12, symbol: "T" },
+    { value: 1e9, symbol: "B" },
+    { value: 1e6, symbol: "M" },
+    { value: 1e3, symbol: "K" }
   ];
   
   for (let abbr of abbreviations) {
@@ -1267,14 +1065,9 @@ function tradeLog(msg, type = "info") {
   updateTradeLog();
 }
 
-// ✅ OPTIMISATION: Sauvegarde lazy (seulement si changement)
 let lastSaveTime = 0;
-let hasChanges = false;
 
 function save() { 
-  hasChanges = true;  // Marquer qu'il y a des changements
-  
-  // Sauvegarder seulement tous les 5 secondes
   let now = Date.now();
   if (now - lastSaveTime < 5000) return;
   
@@ -1289,9 +1082,7 @@ function load() {
       let parsed = JSON.parse(data);
       game = { ...game, ...parsed };
       
-      // ✅ FIX MAJEUR: Vérifier TOUTES les propriétés et restaurer les fonctions!
       if (!Array.isArray(game.generators) || game.generators.length === 0) {
-        // ✅ Si generators manquent, les recréer de zéro
         game.generators = [
           { id: "r", n: "Robot", b: 1, c: 0, p: 50, m: 1.2, unlock: { type: "none" } },
           { id: "u", n: "Usine", b: 1.5, c: 0, p: 500, m: 1.2, unlock: { type: "prestige", val: 1 } },
@@ -1301,7 +1092,6 @@ function load() {
         ];
       }
       if (!Array.isArray(game.upgrades) || game.upgrades.length === 0) {
-        // ✅ Si upgrades manquent, les recréer de zéro
         game.upgrades = [
           { id: "c1", n: "Clic +50%", p: 100, e: 1.02, b: 0, t: "c", unlock: { type: "none" } },
           { id: "r1", n: "Robot ×2", p: 2e3, e: 2, b: 0, t: "r", unlock: { type: "prestige", val: 1 } },
@@ -1318,23 +1108,14 @@ function load() {
       if (!Array.isArray(game.tradeLogs)) game.tradeLogs = [];
       if (!Array.isArray(game.graphData)) game.graphData = [];
       if (!Array.isArray(game.lotteryLog)) game.lotteryLog = [];
-      
       if (!game.trades) game.trades = { min: {amount:0,totalGains:0,totalLosses:0}, mid: {amount:0,totalGains:0,totalLosses:0}, high: {amount:0,totalGains:0,totalLosses:0} };
       if (!game.bankInvested) game.bankInvested = 0;
       if (!game.bankGenerated) game.bankGenerated = 0;
       if (!game.ascension) game.ascension = 0;
       if (!game.ascensionCount) game.ascensionCount = 0;
       if (!game.lotteryTickets) game.lotteryTickets = 0;
-      
-      // ✅ RESTAURER LES QUESTS ET ACHIEVEMENTS AVEC LEURS FONCTIONS!
-      if (!Array.isArray(game.quests) || game.quests.length === 0) {
-        game.quests = getDefaultQuests();
-      }
       if (!Array.isArray(game.achievements) || game.achievements.length === 0) {
         game.achievements = getDefaultAchievements();
-      }
-      if (!Array.isArray(game.milestones) || game.milestones.length === 0) {
-        game.milestones = getDefaultMilestones();
       }
       
     } catch(e) {
@@ -1343,20 +1124,85 @@ function load() {
   }
 }
 
+// ✅ TRADING AVEC VOLATILITÉ RÉALISTE
+function getTradeConfig(type) {
+  const baseMarketVolatility = 0.05 + (Math.sin(Date.now() / 5000) * 0.03);
+  
+  const configs = {
+    min: { 
+      baseGain: 0.012,
+      volatility: baseMarketVolatility * 0.5,
+      lossChance: 0.005,
+      lossRate: 0.01,
+      name: "Safe (Bonds)"
+    },
+    mid: { 
+      baseGain: 0.04,
+      volatility: baseMarketVolatility * 1.2,
+      lossChance: 0.03,
+      lossRate: 0.025,
+      name: "Stock Market"
+    },
+    high: { 
+      baseGain: 0.12,
+      volatility: baseMarketVolatility * 2.5,
+      lossChance: 0.08,
+      lossRate: 0.075,
+      riskAll: 0.001,
+      name: "Crypto (YOLO)"
+    }
+  };
+  return configs[type];
+}
+
+// ✅ NOUVEAU: Gain réel avec volatilité
+function getTradeActualGain(type, amount) {
+  let config = getTradeConfig(type);
+  let volatilityFactor = 1 + (Math.random() - 0.5) * config.volatility;
+  let actualGain = config.baseGain * volatilityFactor;
+  return amount * actualGain / 60;
+}
+
+// ✅ ÉTAT DU MARCHÉ
+function updateMarketStatus() {
+  const sine = Math.sin(Date.now() / 3000);
+  const volatility = (0.05 + (Math.sin(Date.now() / 5000) * 0.03)) * 100;
+  
+  let status, emoji, color;
+  if (sine > 0.3) {
+    status = "📈 HAUT";
+    emoji = "market-up";
+    color = "#0f0";
+  } else if (sine < -0.3) {
+    status = "📉 BAS";
+    emoji = "market-down";
+    color = "#f00";
+  } else {
+    status = "📊 NEUTRE";
+    emoji = "market-neutral";
+    color = "#fa0";
+  }
+  
+  let el = $("marketStatus");
+  if (el) {
+    el.textContent = status;
+    el.className = "market-status " + emoji;
+  }
+  
+  let volEl = $("marketVolatility");
+  if (volEl) volEl.textContent = volatility.toFixed(1) + "%";
+}
+
 function getProd() {
-  // ✅ Garde: si pas d'initialisé correctement, retourner 0
   if (!game.generators || !Array.isArray(game.generators) || game.generators.length === 0) {
     return 0;
   }
   
-  // ✅ OPTIMISATION: Retourner la valeur en cache si rien n'a changé
   if (!cache.isDirty && cache.lastUpdate === Date.now() / 1000 | 0) {
     return cache.prod;
   }
 
   let total = 0;
-  
-  // ✅ OPTIMISATION: Pré-calculer les multiplicateurs une fois
   for (let g of game.generators) {
     let e = 1;
     for (let u of game.upgrades) {
@@ -1371,7 +1217,6 @@ function getProd() {
   if (p && s && p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l && us && l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  // ✅ OPTIMISATION: Cacher les multiplicateurs
   cache.starsMultiplier = Math.pow(1.03, game.stars);
   cache.galaxiesMultiplier = Math.pow(1.01, game.galaxies);
   cache.ascensionMultiplier = 1 + (game.ascension * 0.05);
@@ -1380,14 +1225,10 @@ function getProd() {
   if (!isFinite(cache.galaxiesMultiplier) || cache.galaxiesMultiplier > 1e100) cache.galaxiesMultiplier = 1e100;
   if (!isFinite(cache.ascensionMultiplier) || cache.ascensionMultiplier > 1e50) cache.ascensionMultiplier = 1e50;
 
-  // ✅ Ajouter le multiplicateur des milestones
-  let milestonesMult = getMilestoneMultiplier();
-  
-  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier * milestonesMult;
+  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier;
   
   if (!isFinite(result) || result > 1e308) result = 1e308;
   
-  // ✅ OPTIMISATION: Mettre en cache et marquer comme à jour
   cache.prod = result;
   cache.isDirty = false;
   cache.lastUpdate = Date.now() / 1000 | 0;
@@ -1396,13 +1237,11 @@ function getProd() {
 }
 
 function clickVal() {
-  // ✅ OPTIMISATION: Réutiliser les multiplicateurs du cache
   let v = 1;
   for (let u of game.upgrades) {
     if (u && u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  // ✅ Gardes pour les multiplicateurs
   let starsMult = cache.starsMultiplier || 1;
   let galaxiesMult = cache.galaxiesMultiplier || 1;
   let ascensionMult = cache.ascensionMultiplier || 1;
@@ -1431,7 +1270,7 @@ function buyGen(id) {
   if (game.coins < cost) return;
   game.coins -= cost;
   g.c++;
-  invalidateCache(); // ✅ Invalider le cache
+  invalidateCache();
   log("✅ +" + g.n);
   save();
   skipQuestCheck = true;
@@ -1451,7 +1290,7 @@ function buyGenMax(id) {
     count++;
   }
   if (count > 0) {
-    invalidateCache(); // ✅ Invalider le cache
+    invalidateCache();
     log("✅ +" + count + "x " + g.n);
     save();
     skipQuestCheck = true;
@@ -1467,7 +1306,7 @@ function buyUp(id) {
   if (game.coins < cost) return;
   game.coins -= cost;
   u.b++;
-  invalidateCache(); // ✅ Invalider le cache
+  invalidateCache();
   log("✅ " + u.n + " +" + (u.b) + "x");
   save();
   skipQuestCheck = true;
@@ -1487,7 +1326,7 @@ function buyUpMax(id) {
     count++;
   }
   if (count > 0) {
-    invalidateCache(); // ✅ Invalider le cache
+    invalidateCache();
     log("✅ " + u.n);
     save();
     skipQuestCheck = true;
@@ -1502,12 +1341,12 @@ function doPrestige() {
   
   if (game.coins < prestigeCost) return;
 
-  game.coins = 0;  // ✅ RESET COINS À 0
-  game.totalCoins += prestigeCost;  // Mais compte le coût dans le total
+  game.coins = 0;
+  game.totalCoins += prestigeCost;
   game.stars++;
   game.prestige++;
 
-  if (game.prestige >= 10 && game.prestige % 10 === 0) game.darkMatter++;  // ✅ Dark Matter garanti!
+  if (game.prestige >= 10 && game.prestige % 10 === 0) game.darkMatter++;
 
   for (let gen of game.generators) gen.c = 0;
   for (let u of game.upgrades) u.b = 0;
@@ -1516,7 +1355,7 @@ function doPrestige() {
   game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
   game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
 
-  invalidateCache(); // ✅ Invalider le cache
+  invalidateCache();
   log("⭐ +1! (Prestige " + game.prestige + ")");
   save();
   updateUI();
@@ -1526,11 +1365,10 @@ function doGalaxy() {
   let cost = 50 + (game.galaxies * 5);
   if (game.stars < cost) return;
   
-  game.stars = 0;  // ✅ RESET ÉTOILES À 0
-  game.coins = 0;  // ✅ RESET COINS À 0
+  game.stars = 0;
+  game.coins = 0;
   game.galaxies++;
   
-  // Reset comme prestige
   for (let gen of game.generators) gen.c = 0;
   for (let u of game.upgrades) u.b = 0;
 
@@ -1538,21 +1376,13 @@ function doGalaxy() {
   game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
   game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
   
-  invalidateCache(); // ✅ Invalider le cache
+  invalidateCache();
   log("🌀 +1!");
   save();
   updateUI();
 }
 
-function getTradeConfig(type) {
-  const configs = {
-    min: { gainRate: 0.012, lossChance: 0.005, lossRate: 0.01 },      // ✅ Perte: 2% → 1%
-    mid: { gainRate: 0.04, lossChance: 0.03, lossRate: 0.025 },       // ✅ Perte: 5% → 2.5%
-    high: { gainRate: 0.12, lossChance: 0.08, lossRate: 0.075, riskAll: 0.001 }  // ✅ Perte: 15% → 7.5%
-  };
-  return configs[type];
-}
-
+// ✅ TRADING AMÉLIORÉ AVEC VOLATILITÉ
 function investTrade(type) {
   let input = $(`${type}Input`);
   let amount = parseFloat(input.value);
@@ -1566,9 +1396,8 @@ function investTrade(type) {
   updateUI();
 }
 
-// ✅ BOUTONS RAPIDES TRADING
 function investTrade50(type) {
-  let amount = game.coins * 0.5;  // 50% des coins
+  let amount = game.coins * 0.5;
   if (amount <= 0) { alert("❌ Tu n'as pas assez!"); return; }
   game.coins -= amount;
   game.trades[type].amount += amount;
@@ -1579,7 +1408,7 @@ function investTrade50(type) {
 }
 
 function investTradeAll(type) {
-  let amount = game.coins;  // 100% des coins
+  let amount = game.coins;
   if (amount <= 0) { alert("❌ Tu n'as pas d'argent!"); return; }
   game.coins -= amount;
   game.trades[type].amount += amount;
@@ -1604,16 +1433,21 @@ function withdrawTrade(type) {
 }
 
 function processTradeGains() {
-  if (!game.trades) return;  // ✅ Garde!
+  if (!game.trades) return;
   
   for (let type of ["min", "mid", "high"]) {
     let trade = game.trades[type];
-    if (!trade || trade.amount <= 0) continue;  // ✅ Double vérif
+    if (!trade || trade.amount <= 0) continue;
     let config = getTradeConfig(type);
     
-    let gain = trade.amount * config.gainRate / 60;
+    // ✅ NOUVEAU: Gain avec volatilité réelle
+    let volatilityFactor = 1 + (Math.random() - 0.5) * config.volatility;
+    let actualGain = config.baseGain * volatilityFactor;
+    let gain = trade.amount * actualGain / 60;
+    
     trade.amount += gain;
     trade.totalGains += gain;
+    
     let rand = Math.random();
     if (type === "high" && rand < config.riskAll) {
       tradeLog(`💥 CATASTROPHE! Vous avez tout perdu en ${type}!`, "loss");
@@ -1710,8 +1544,6 @@ $("fileInput").addEventListener("change", e => {
     try {
       let data = JSON.parse(f.target.result);
       game = data;
-      // ✅ Restaurer les fonctions après un import!
-      if (!game.quests || game.quests.length === 0) game.quests = getDefaultQuests();
       if (!game.achievements || game.achievements.length === 0) game.achievements = getDefaultAchievements();
       save();
       updateUI();
@@ -1728,8 +1560,6 @@ function resetGame() {
   if (!confirm("⚠️ ATTENTION: Cela supprimera ta progression!\n\nEs-tu VRAIMENT sûr?")) return;
   if (!confirm("🔄 Dernier avertissement! C'est irréversible!")) return;
   
-  // ✅ FIX MAJEUR: Ne PAS utiliser JSON.stringify!
-  // Réinitialiser directement les propriétés
   game.coins = 0;
   game.totalCoins = 0;
   game.totalClicks = 0;
@@ -1741,7 +1571,6 @@ function resetGame() {
   game.logs = [];
   game.tradeLogs = [];
   
-  // Réinitialiser les générateurs et upgrades (garder leur structure)
   for (let g of game.generators) g.c = 0;
   for (let u of game.upgrades) u.b = 0;
   
@@ -1750,10 +1579,6 @@ function resetGame() {
     mid: { amount: 0, totalGains: 0, totalLosses: 0 },
     high: { amount: 0, totalGains: 0, totalLosses: 0 }
   };
-  
-  // ✅ Restaurer les quests et achievements avec leurs fonctions!
-  game.quests = getDefaultQuests();
-  game.achievements = getDefaultAchievements();
   
   game.boosts = [];
   game.graphData = [];
@@ -1787,37 +1612,94 @@ function doAscension() {
   game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
   for (let gen of game.generators) gen.c = 0;
   for (let u of game.upgrades) u.b = 0;
-  invalidateCache(); // ✅ Invalider le cache
+  invalidateCache();
   log("🚀 ASCENSION! Nouveaux bonus: +" + (game.ascension * 5) + "%");
   save();
   updateUI();
 }
 
-// ✅ FIX: Ajouter une garde de sécurité à checkQuests()!
-function checkQuests() {
-  if (!game.quests || !Array.isArray(game.quests)) return;  // ✅ Garde!
-  for (let q of game.quests) {
-    if (!q.d && q.c && typeof q.c === 'function' && q.c()) {  // ✅ Double vérification!
-      q.d = 1;
-      if (q.rt === "s") game.stars += q.r;
-      else if (q.rt === "c") { game.coins += q.r; game.totalCoins += q.r; }
-      else if (q.rt === "g") game.galaxies += q.r;
-      log("🎯 " + q.n);
+// ✅ ACHIEVEMENTS AVEC SECRETS
+function checkAchievements() {
+  for (let ach of game.achievements) {
+    if (!ach.unlocked && ach.check && typeof ach.check === 'function' && ach.check()) {
+      ach.unlocked = true;
+      
+      // Si c'était un secret, faire wow!
+      if (ach.secret) {
+        log("🔓 SECRET ACHIEVEMENT DÉBLOQUÉ: " + ach.name + " (+"+ach.reward+")");
+      } else {
+        log("🏆 ACHIEVEMENT: " + ach.name + " (+" + ach.reward + ")");
+      }
+      
+      game.coins += ach.reward;
+      game.totalCoins += ach.reward;
       save();
     }
   }
 }
 
-function checkAchievements() {
-  if (!game.achievements) return;
-  for (let ach of game.achievements) {
-    if (!ach.unlocked && ach.check && typeof ach.check === 'function' && ach.check()) {  // ✅ Vérification améliorée!
-      ach.unlocked = true;
-      game.coins += ach.reward;
-      game.totalCoins += ach.reward;
-      log("🏆 ACHIEVEMENT: " + ach.name + " (+" + ach.reward + ")");
+// ✅ GRAPHIQUE DE PROGRESSION
+function updateGraph() {
+  game.graphData.push({
+    time: game.playTime,
+    cps: getProd()
+  });
+  
+  if (game.graphData.length > 300) {
+    game.graphData.shift();
+  }
+  
+  drawGraph();
+}
+
+function drawGraph() {
+  const canvas = $("graphCanvas");
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  
+  // Nettoyer
+  ctx.fillStyle = "#111";
+  ctx.fillRect(0, 0, width, height);
+  
+  // Bornes
+  ctx.strokeStyle = "#0af";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(0, 0, width, height);
+  
+  if (game.graphData.length < 2) return;
+  
+  let maxCPS = Math.max(...game.graphData.map(d => d.cps)) || 1;
+  let minCPS = 0;
+  
+  // Tracer la ligne
+  ctx.strokeStyle = "#0f0";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  
+  for (let i = 0; i < game.graphData.length; i++) {
+    let data = game.graphData[i];
+    
+    let x = (i / (game.graphData.length - 1)) * width;
+    let ratio = (data.cps - minCPS) / (maxCPS - minCPS || 1);
+    let y = height - (ratio * height * 0.9) - 10;
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
     }
   }
+  ctx.stroke();
+  
+  // Labels
+  ctx.fillStyle = "#aaa";
+  ctx.font = "14px Arial";
+  ctx.textAlign = "left";
+  ctx.fillText("Max: " + fmt(maxCPS) + "/s", 10, 25);
+  ctx.fillText("Temps: " + game.playTime + "s", 10, 45);
 }
 
 function updateTradeLog() {
@@ -1834,18 +1716,16 @@ function updateLog() {
   $("log").innerHTML = logHtml;
 }
 
-// ✅ OPTIMISATION: Cache pour éviter les updates DOM inutiles
 let uiCache = {};
 
 function setUIIfChanged(elementId, value) {
-  // Ne mettre à jour que si la valeur a changé
   if (uiCache[elementId] !== value) {
     let el = $(elementId);
     if (el) el.textContent = value;
     uiCache[elementId] = value;
-    return true;  // Changement détecté
+    return true;
   }
-  return false;  // Pas de changement
+  return false;
 }
 
 function updateUI() {
@@ -1855,22 +1735,9 @@ function updateUI() {
   setUIIfChanged("stars", game.stars);
   setUIIfChanged("galaxies", game.galaxies);
   setUIIfChanged("dm", game.darkMatter);
-  setUIIfChanged("dmCount", game.darkMatter);
   
   let blockedTotal = game.trades.min.amount + game.trades.mid.amount + game.trades.high.amount;
   setUIIfChanged("tradeBlocked", fmt(blockedTotal));
-  
-  let dmInfo = "";
-  if (game.darkMatter === 0) {
-    dmInfo = "Débloqué à Prestige 10! +1 tous les 10 Prestige (P20, P30, P40, etc).";
-  } else {
-    let nextDM = Math.ceil(game.prestige / 10) * 10 + 10;
-    dmInfo = `✅ Débloqué! Prochain: ${nextDM} Prestige (actuellement: ${game.prestige})`;
-  }
-  if (uiCache["dmInfo"] !== dmInfo) {
-    $("dmInfo").textContent = dmInfo;
-    uiCache["dmInfo"] = dmInfo;
-  }
   
   setUIIfChanged("clickVal", fmt(clickVal()));
   setUIIfChanged("prestProg", Math.floor(game.coins));
@@ -1890,13 +1757,13 @@ function updateUI() {
   setUIIfChanged("ascensionCost", fmt(100 * Math.pow(2, game.ascension || 0)));
   setUIIfChanged("ascensionRequired", 100 * Math.pow(2, game.ascension || 0));
   setUIIfChanged("ascensionCurrent", game.galaxies);
-  setUIIfChanged("bankAmount", fmt(game.bankInvested || 0));
   setUIIfChanged("bankInvested", fmt(game.bankInvested || 0));
   
   let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
   setUIIfChanged("bankGains", fmt(bankGains));
   setUIIfChanged("bankGenerated", fmt(game.bankGenerated || 0));
   setUIIfChanged("lotteryTickets", game.lotteryTickets || 0);
+  
   let lotteryHtml = "";
   if (game.lotteryLog) {
     for (let log of game.lotteryLog) {
@@ -1907,12 +1774,21 @@ function updateUI() {
   
   let achCount = game.achievements ? game.achievements.filter(a => a.unlocked).length : 0;
   $("achievementCount").textContent = achCount;
+  
   let achHtml = "";
   if (game.achievements) {
     for (let ach of game.achievements) {
-      let achDiv = ach.unlocked ? 
-        `<div style="background:#0a0a2a;padding:1rem;border-radius:4px;border-left:3px solid #0f0"><div style="color:#0f0;font-weight:bold">${ach.name}</div><div style="color:#aaa;font-size:0.9rem">${ach.desc}</div><div style="color:#fa0;font-size:0.9rem">+${ach.reward} 💰</div></div>` :
-        `<div style="background:#0a0a0a;padding:1rem;border-radius:4px;border-left:3px solid #666;opacity:0.5"><div style="color:#aaa;font-weight:bold">${ach.name}</div><div style="color:#666;font-size:0.9rem">${ach.desc}</div></div>`;
+      let achDiv;
+      if (ach.secret && !ach.unlocked) {
+        achDiv = `<div style="background:#0a0a0a;padding:1rem;border-radius:4px;border-left:3px solid #666">
+                    <div style="color:#999;font-weight:bold">🔒 SECRET</div>
+                    <div style="color:#666;font-size:0.9rem">???</div>
+                  </div>`;
+      } else {
+        achDiv = ach.unlocked ? 
+          `<div style="background:#0a0a2a;padding:1rem;border-radius:4px;border-left:3px solid #0f0"><div style="color:#0f0;font-weight:bold">${ach.name}</div><div style="color:#aaa;font-size:0.9rem">${ach.desc}</div><div style="color:#fa0;font-size:0.9rem">+${ach.reward} 💰</div></div>` :
+          `<div style="background:#0a0a0a;padding:1rem;border-radius:4px;border-left:3px solid #666;opacity:0.5"><div style="color:#aaa;font-weight:bold">${ach.name}</div><div style="color:#666;font-size:0.9rem">${ach.desc}</div></div>`;
+      }
       achHtml += achDiv;
     }
   }
@@ -1923,7 +1799,7 @@ function updateUI() {
   for (let type of ["min", "mid", "high"]) {
     let trade = game.trades[type];
     let config = getTradeConfig(type);
-    let gain = trade.amount * config.gainRate;
+    let gain = trade.amount * config.baseGain;
     $(`${type}Amount`).textContent = fmt(trade.amount);
     $(`${type}Gain`).textContent = fmt(gain);
     $(`${type}Loss`).textContent = fmt(trade.amount * config.lossRate);
@@ -1948,33 +1824,11 @@ function updateUI() {
   }
   $("upsList").innerHTML = upHtml || "Tous débloqués!";
   
-  let questHtml = "";
-  if (game.quests && Array.isArray(game.quests)) {
-    for (let q of game.quests) {
-      questHtml += `<div class="item">${q.n} <span style="color:${q.d ? "#0f0" : "#ffa"}">${q.d ? "✅" : "⏳"}</span></div>`;
-    }
-  }
-  $("questsList").innerHTML = questHtml;
-  
-  let boostHtml = "";
-  if (game.boosts && Array.isArray(game.boosts)) {
-    game.boosts.forEach(b => {
-      if (Date.now() < b.e) {
-        let sec = Math.ceil((b.e - Date.now()) / 1e3);
-        boostHtml += `<div style="color:#ffa">${b.type} ×${b.m} (${sec}s)</div>`;
-      }
-    });
-  }
-  $("activeBoosts").innerHTML = boostHtml || "Aucun";
-  
-  // ✅ Vérifier et afficher les milestones
-  checkMilestones();
-  updateMilestonesDisplay();
-  
-  // ✅ Afficher NGP info
-  setUIIfChanged("ngpCount", game.ascensionCount || 0);
-  
-  if (!skipQuestCheck) checkQuests();
+  // Graphique stats
+  setUIIfChanged("graphCPS", fmt(getProd()));
+  let maxCPS = Math.max(...(game.graphData.map(d => d.cps) || [0]));
+  setUIIfChanged("graphMax", fmt(maxCPS));
+  setUIIfChanged("graphPoints", game.graphData.length);
   
   save();
 }
@@ -1986,11 +1840,10 @@ function showTutorial() {
 }
 
 function updateTutorial() {
-  $("tutText").innerHTML = TUTORIAL[tutPage];
+  $("tutText").innerHTML = TUTORIAL[tutPage] || "<p>Page non trouvée</p>";
   $("tutPage").textContent = tutPage + 1;
 }
 
-// ✅ CHANGELOGS FUNCTIONS
 function showChangelogs() {
   $("changelogsModal").style.display = "block";
   updateChangelogsDisplay();
@@ -2024,79 +1877,13 @@ function updateChangelogsDisplay() {
   $("changelogsContent").innerHTML = html;
 }
 
-// ✅ MILESTONES FUNCTIONS
-function checkMilestones() {
-  if (!game.milestones) return;
-  let newUnlocked = false;
-  
-  for (let m of game.milestones) {
-    if (!m.unlocked && m.check()) {
-      m.unlocked = true;
-      game.stars += m.reward.stars;
-      // Multiplicateur appliqué automatiquement dans getProd()
-      log("🎯 MILESTONE: " + m.name + " (+" + m.reward.stars + " ⭐)");
-      newUnlocked = true;
-    }
-  }
-  
-  if (newUnlocked) save();
-}
-
-function updateMilestonesDisplay() {
-  if (!game.milestones) return;
-  let html = "";
-  
-  for (let m of game.milestones) {
-    let color = m.unlocked ? "#0f0" : "#666";
-    let status = m.unlocked ? "✅" : "⏳";
-    let mult = m.reward.mult ? ` + ${(m.reward.mult*100).toFixed(1)}% prod` : "";
-    
-    html += `
-      <div style="background:#0a0a2a;padding:1rem;border-left:4px solid ${color};border-radius:6px;opacity:${m.unlocked ? '1' : '0.6'}">
-        <div style="color:${color};font-weight:bold;margin-bottom:0.3rem">${status} ${m.name}</div>
-        <div style="color:#aaa;font-size:0.9rem;margin-bottom:0.5rem">${m.desc}</div>
-        <div style="color:#0af;font-size:0.85rem">
-          ⭐ +${m.reward.stars}${mult}
-        </div>
-      </div>
-    `;
-  }
-  
-  $("milestonesList").innerHTML = html;
-}
-
-function getMilestoneMultiplier() {
-  if (!game.milestones || !Array.isArray(game.milestones)) return 1;
-  let mult = 1;  // ✅ Commence à 1!
-  for (let m of game.milestones) {
-    if (m && m.unlocked && m.reward && m.reward.mult) {
-      // ✅ Additionner les bonus (pas multiplier!)
-      mult += m.reward.mult;
-    }
-  }
-  return mult;  // ✅ Retourne au minimum 1!
-}
-
-function buyBoost(boostType) {
-  let costMap = { p: 50e3, c: 30e3 };
-  let multMap = { p: 2, c: 2 };
-  let cost = costMap[boostType];
-  if (game.coins < cost) return;
-  game.coins -= cost;
-  game.boosts.push({ type: boostType, m: multMap[boostType], e: Date.now() + 30e3 });
-  log("⏰ Boost " + boostType);
-  save();
-  updateUI();
-}
-
 // ===== INITIALISATION DU DOM =====
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("✅ DOM chargé - événements initialisés");
+  console.log("✅ DOM chargé - v3 ENHANCED");
   
-  // TABS - ✅ CORRIGÉ
+  // TABS
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", function () {
-      console.log("Tab cliqué:", this.dataset.tab);
       document.querySelectorAll(".tab-btn").forEach(x => x.classList.remove("active"));
       document.querySelectorAll(".content").forEach(x => x.classList.remove("active"));
       this.classList.add("active");
@@ -2105,12 +1892,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
   
-  // AUTRES EVENT LISTENERS
+  // EVENT LISTENERS
   $("clickBtn").addEventListener("click", clickBtn);
   $("prestigeBtn").addEventListener("click", doPrestige);
   $("galaxyBtn").addEventListener("click", doGalaxy);
-  $("boostProd").addEventListener("click", () => buyBoost("p"));
-  $("boostClick").addEventListener("click", () => buyBoost("c"));
   $("downloadBtn").addEventListener("click", downloadSave);
   $("uploadBtn").addEventListener("click", uploadSave);
   $("resetBtn").addEventListener("click", resetGame);
@@ -2119,7 +1904,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // CHARGEMENT
   load();
-  // ✅ S'assurer que game.trades existe
   if (!game.trades) {
     game.trades = {
       min: { amount: 0, totalGains: 0, totalLosses: 0 },
@@ -2128,31 +1912,27 @@ document.addEventListener("DOMContentLoaded", function() {
     };
   }
   updateUI();
-  log("Bienvenue!");
+  log("Bienvenue v3!");
   updateTradeLog();
   
-  // ✅ OPTIMISATION: Utiliser requestAnimationFrame pour les calculs
-  // et faire les updates UI de manière plus efficace
+  // ✅ GAME LOOP OPTIMISÉ
   let lastUIUpdate = 0;
-  const UI_UPDATE_INTERVAL = 1000 / 10;  // 10 FPS pour l'UI
+  const UI_UPDATE_INTERVAL = 1000 / 10;
   
   function gameLoop(currentTime) {
-    // ✅ Calculs toutes les frames (rapide et léger)
     let p = getProd();
     game.coins += p / FPS;
     game.totalCoins += p / FPS;
     
-    // ✅ Banque tous les frames
     if (game.bankInvested > 0) {
       let bankGains = (game.bankInvested * 0.001) / FPS;
       game.bankInvested += bankGains;
       game.bankGenerated += bankGains;
     }
     
-    // ✅ Trading tous les frames
     processTradeGains();
+    updateMarketStatus();
     
-    // ✅ UI update seulement tous les 100ms (10 FPS)
     if (currentTime - lastUIUpdate >= UI_UPDATE_INTERVAL) {
       updateUI();
       lastUIUpdate = currentTime;
@@ -2161,13 +1941,16 @@ document.addEventListener("DOMContentLoaded", function() {
     requestAnimationFrame(gameLoop);
   }
   
-  // Démarrer la boucle
   requestAnimationFrame(gameLoop);
   
-  // ✅ PlayTime update séparé (1x par seconde)
+  // PlayTime + Graph
   setInterval(() => {
     game.playTime++;
+    updateGraph();
   }, 1000);
+  
+  // Initial market status
+  updateMarketStatus();
 });
 </script>
 
