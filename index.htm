@@ -105,20 +105,34 @@
   <div id="main" class="content active">
     <div class="card" style="text-align:center">
       <button class="btn big-btn" id="clickBtn">🖱️ CLIQUER</button>
-      <p>Gain: <span id="clickVal">0</span> par clic</p>
-    </div>
-    <div class="card">
-      <h3>⏱️ PRESTIGE</h3>
-      <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
-      <p>Progression: <span id="prestProg">0</span></p>
-      <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
-      <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
-    </div>
-    <div class="card">
-      <h3>🌀 GALAXIES</h3>
-      <p>Coût: <span id="galaxyCost">500</span> ⭐</p>
-      <button class="btn" id="galaxyBtn">🌀 SUPER PRESTIGE (×1.6)</button>
-    </div>
+      <p style="font-size: 1.2rem; color: #0f0;"><strong>Gain: <span id="clickVal">0</span> par clic</strong></p>
+
+```
+  <div style="background: #0a0a1a; padding: 1rem; margin: 1rem 0; border-left: 3px solid #0af; border-radius: 4px; text-align: left; font-size: 0.9rem;">
+    <p style="margin: 0.3rem 0; color: #aaa;"><strong>Décomposition:</strong></p>
+    <p style="margin: 0.3rem 0; color: #0f0;">Base: 1</p>
+    <p style="margin: 0.3rem 0; color: #0af;">× Upgrades Clic: <span id="clickUpgradesMult">1x</span></p>
+    <p style="margin: 0.3rem 0; color: #fa0;">× Étoiles: <span id="clickStarsMult">1x</span></p>
+    <p style="margin: 0.3rem 0; color: #fa0;">× Galaxies: <span id="clickGalaxiesMult">1x</span></p>
+    <p style="margin: 0.3rem 0; color: #f0f;">× NGP+ Level <span id="clickNGPLevel">0</span>: <span id="clickNGPMult">1x</span></p>
+    <p style="margin: 0.3rem 0; color: #0f0;">× Dark Matter: <span id="clickDMMult">1x</span></p>
+    <p style="margin: 0.3rem 0; color: #f0f;">× Ascension: <span id="clickAscensionMult">1x</span></p>
+  </div>
+</div>
+<div class="card">
+  <h3>⏱️ PRESTIGE</h3>
+  <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
+  <p>Progression: <span id="prestProg">0</span></p>
+  <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
+  <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
+</div>
+<div class="card">
+  <h3>🌀 GALAXIES</h3>
+  <p>Coût: <span id="galaxyCost">500</span> ⭐</p>
+  <button class="btn" id="galaxyBtn">🌀 SUPER PRESTIGE (×1.6)</button>
+</div>
+```
+
   </div>
 
   <div id="gens" class="content">
@@ -1027,6 +1041,27 @@ function updateUI() {
   $("ngpLevel").textContent = game.ngpLevel;
   $("tradeBlocked").textContent = fmt(game.trades.min.amount + game.trades.mid.amount + game.trades.high.amount);
   $("clickVal").textContent = fmt(clickVal());
+  
+  // Afficher la décomposition des multiplicateurs
+  let clickUpgMult = 1;
+  for(let u of game.upgrades) if(u && u.t === "c" && u.b > 0) clickUpgMult *= Math.pow(u.e, u.b);
+  let clickStarsMult = Math.pow(1.03, game.stars);
+  let clickGalaxiesMult = Math.pow(1.01, game.galaxies);
+  let clickNGPMult = Math.pow(1.10, game.ngpLevel || 0);
+  let clickDMMult = 1 + (game.darkMatter || 0) * 0.05;
+  let clickAscMult = 1 + (game.ascension || 0) * 0.05;
+  
+  if(!isFinite(clickStarsMult) || clickStarsMult > 1e100) clickStarsMult = 1e100;
+  if(!isFinite(clickGalaxiesMult) || clickGalaxiesMult > 1e100) clickGalaxiesMult = 1e100;
+  if(!isFinite(clickNGPMult) || clickNGPMult > 1e50) clickNGPMult = 1e50;
+  
+  $("clickUpgradesMult").textContent = clickUpgMult.toFixed(2) + "x";
+  $("clickStarsMult").textContent = clickStarsMult.toFixed(2) + "x";
+  $("clickGalaxiesMult").textContent = clickGalaxiesMult.toFixed(2) + "x";
+  $("clickNGPLevel").textContent = game.ngpLevel || 0;
+  $("clickNGPMult").textContent = clickNGPMult.toFixed(2) + "x";
+  $("clickDMMult").textContent = clickDMMult.toFixed(2) + "x";
+  $("clickAscensionMult").textContent = clickAscMult.toFixed(2) + "x";
   let baseCost = 50000;
   let nextPrestigeCost = baseCost * Math.pow(1.5, game.prestige);
   $("prestigeCost").textContent = fmt(nextPrestigeCost);
