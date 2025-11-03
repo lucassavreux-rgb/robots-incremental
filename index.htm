@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -11,302 +12,305 @@
       box-sizing: border-box;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #0a0a0a;
-      color: #eee;
-      padding: 1rem;
-    }
+```
+body {
+  font-family: Arial, sans-serif;
+  background: #0a0a0a;
+  color: #eee;
+  padding: 1rem;
+}
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
 
-    h1 {
-      color: #0af;
-      text-align: center;
-      margin: 1rem 0;
-      font-size: 2.2rem;
-    }
+h1 {
+  color: #0af;
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 2.2rem;
+}
 
-    h3, h4 {
-      color: #0af;
-      margin: 0.5rem 0;
-    }
+h3, h4 {
+  color: #0af;
+  margin: 0.5rem 0;
+}
 
-    p {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 1rem;
-    }
+p {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 1rem;
+}
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-      margin: 1rem 0;
-    }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
 
-    .stat {
-      background: #1a1a1a;
-      padding: 1rem;
-      border-radius: 6px;
-      border: 1px solid #0af;
-      text-align: center;
-    }
+.stat {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #0af;
+  text-align: center;
+}
 
-    .stat-val {
-      font-size: 1.4rem;
-      color: #0f0;
-      font-weight: bold;
-    }
+.stat-val {
+  font-size: 1.4rem;
+  color: #0f0;
+  font-weight: bold;
+}
 
-    .tabs {
-      display: flex;
-      gap: 0.3rem;
-      margin: 1rem 0;
-      flex-wrap: wrap;
-      background: #111;
-      padding: 0.5rem;
-      border-radius: 6px;
-    }
+.tabs {
+  display: flex;
+  gap: 0.3rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  background: #111;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
 
-    .tab-btn {
-      padding: 0.6rem 1rem;
-      background: #222;
-      color: #aaa;
-      border: 1px solid #333;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: 0.3s;
-    }
+.tab-btn {
+  padding: 0.6rem 1rem;
+  background: #222;
+  color: #aaa;
+  border: 1px solid #333;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.3s;
+}
 
-    .tab-btn:hover {
-      background: #333;
-    }
+.tab-btn:hover {
+  background: #333;
+}
 
-    .tab-btn.active {
-      background: #0af;
-      color: #000;
-      border-color: #0af;
-    }
+.tab-btn.active {
+  background: #0af;
+  color: #000;
+  border-color: #0af;
+}
 
-    .content {
-      display: none;
-    }
+.content {
+  display: none;
+}
 
-    .content.active {
-      display: block;
-    }
+.content.active {
+  display: block;
+}
 
-    .card {
-      background: #1a1a1a;
-      padding: 1rem;
-      margin: 1rem 0;
-      border-radius: 6px;
-      border: 1px solid #333;
-    }
+.card {
+  background: #1a1a1a;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
 
-    .btn {
-      padding: 0.6rem 1rem;
-      background: #0af;
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      margin: 0.3rem 0.3rem 0.3rem 0;
-      transition: 0.2s;
-    }
+.btn {
+  padding: 0.6rem 1rem;
+  background: #0af;
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 0.3rem 0.3rem 0.3rem 0;
+  transition: 0.2s;
+}
 
-    .btn:hover:not(:disabled) {
-      transform: scale(1.05);
-    }
+.btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
 
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
-    .danger-btn {
-      background: #f00;
-      color: #fff;
-    }
+.danger-btn {
+  background: #f00;
+  color: #fff;
+}
 
-    .danger-btn:hover:not(:disabled) {
-      background: #c00;
-    }
+.danger-btn:hover:not(:disabled) {
+  background: #c00;
+}
 
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.6rem;
-      background: #0a0a0a;
-      margin: 0.4rem 0;
-      border-left: 3px solid #0af;
-    }
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem;
+  background: #0a0a0a;
+  margin: 0.4rem 0;
+  border-left: 3px solid #0af;
+}
 
-    .big-btn {
-      width: 100%;
-      max-width: 280px;
-      padding: 1.2rem;
-      font-size: 1.1rem;
-      margin: 1rem auto;
-      display: block;
-    }
+.big-btn {
+  width: 100%;
+  max-width: 280px;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  margin: 1rem auto;
+  display: block;
+}
 
-    .log {
-      background: #000;
-      border-left: 3px solid #0af;
-      padding: 0.8rem;
-      max-height: 120px;
-      overflow-y: auto;
-      margin: 1rem 0;
-      font-size: 0.85rem;
-    }
+.log {
+  background: #000;
+  border-left: 3px solid #0af;
+  padding: 0.8rem;
+  max-height: 120px;
+  overflow-y: auto;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
 
-    canvas {
-      border: 1px solid #0af;
-      background: #111;
-      max-width: 100%;
-      margin: 1rem 0;
-    }
+canvas {
+  border: 1px solid #0af;
+  background: #111;
+  max-width: 100%;
+  margin: 1rem 0;
+}
 
-    .trade-card {
-      background: #1a1a2a;
-      border: 2px solid #0af;
-      padding: 1rem;
-      margin: 1rem 0;
-      border-radius: 6px;
-    }
+.trade-card {
+  background: #1a1a2a;
+  border: 2px solid #0af;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+}
 
-    .trade-card.min {
-      border-color: #0f0;
-    }
+.trade-card.min {
+  border-color: #0f0;
+}
 
-    .trade-card.mid {
-      border-color: #fa0;
-    }
+.trade-card.mid {
+  border-color: #fa0;
+}
 
-    .trade-card.high {
-      border-color: #f00;
-    }
+.trade-card.high {
+  border-color: #f00;
+}
 
-    .trade-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+.trade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
 
-    .trade-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 0.5rem;
-      margin: 0.5rem 0;
-    }
+.trade-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
 
-    .trade-stat {
-      background: #0a0a1a;
-      padding: 0.5rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      border-left: 2px solid #0af;
-    }
+.trade-stat {
+  background: #0a0a1a;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  border-left: 2px solid #0af;
+}
 
-    .trade-stat-val {
-      font-weight: bold;
-      color: #0f0;
-      font-size: 1.1rem;
-    }
+.trade-stat-val {
+  font-weight: bold;
+  color: #0f0;
+  font-size: 1.1rem;
+}
 
-    .trade-input-group {
-      display: flex;
-      gap: 0.5rem;
-      margin: 0.5rem 0;
-      flex-wrap: wrap;
-    }
+.trade-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
 
-    .trade-input {
-      flex: 1;
-      min-width: 100px;
-      padding: 0.5rem;
-      background: #0a0a0a;
-      border: 1px solid #333;
-      color: #0f0;
-      border-radius: 4px;
-      font-size: 0.9rem;
-    }
+.trade-input {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.5rem;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  color: #0f0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
 
-    .trade-log-event {
-      padding: 0.5rem;
-      margin: 0.3rem 0;
-      background: #000;
-      border-left: 2px solid #0af;
-      font-size: 0.85rem;
-    }
+.trade-log-event {
+  padding: 0.5rem;
+  margin: 0.3rem 0;
+  background: #000;
+  border-left: 2px solid #0af;
+  font-size: 0.85rem;
+}
 
-    .trade-log-event.gain {
-      border-left-color: #0f0;
-      color: #0f0;
-    }
+.trade-log-event.gain {
+  border-left-color: #0f0;
+  color: #0f0;
+}
 
-    .trade-log-event.loss {
-      border-left-color: #f00;
-      color: #f00;
-    }
+.trade-log-event.loss {
+  border-left-color: #f00;
+  color: #f00;
+}
 
-    #tutorialModal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.98);
-      z-index: 9999;
-      padding: 1rem;
-      overflow-y: auto;
-      display: none;
-    }
+#tutorialModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.98);
+  z-index: 9999;
+  padding: 1rem;
+  overflow-y: auto;
+  display: none;
+}
 
-    .tut-box {
-      max-width: 700px;
-      margin: 0 auto;
-      background: #1a1a1a;
-      padding: 1.5rem;
-      border: 2px solid #0af;
-      border-radius: 6px;
-    }
+.tut-box {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #1a1a1a;
+  padding: 1.5rem;
+  border: 2px solid #0af;
+  border-radius: 6px;
+}
 
-    .tut-box h1 {
-      margin-top: 0;
-    }
+.tut-box h1 {
+  margin-top: 0;
+}
 
-    .tut-btns {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: center;
-      margin: 1.5rem 0;
-    }
+.tut-btns {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
 
-    @media(max-width: 600px) {
-      .tabs {
-        font-size: 0.9rem;
-      }
+@media(max-width: 600px) {
+  .tabs {
+    font-size: 0.9rem;
+  }
 
-      .stat {
-        padding: 0.6rem;
-      }
+  .stat {
+    padding: 0.6rem;
+  }
 
-      .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-      }
-    }
+  .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+```
+
   </style>
 </head>
 <body>
@@ -320,6 +324,7 @@
   </div>
 
   <!-- STATS AFFICHAGE -->
+
   <div class="stats">
     <div class="stat">
       <div>💰 Pièces</div>
@@ -360,6 +365,7 @@
   </div>
 
   <!-- TABS NAVIGATION -->
+
   <div class="tabs">
     <button class="tab-btn active" data-tab="main">🎮 JEU</button>
     <button class="tab-btn" data-tab="gens">🤖 GÉNÉRATEURS</button>
@@ -375,28 +381,33 @@
   </div>
 
   <!-- TAB: MAIN GAME -->
+
   <div id="main" class="content active">
     <div class="card" style="text-align:center">
       <button class="btn big-btn" id="clickBtn">🖱️ CLIQUER</button>
       <p>Gain: <span id="clickVal">0</span> par clic</p>
     </div>
 
-    <div class="card">
-      <h3>⏱️ PRESTIGE</h3>
-      <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
-      <p>Progression: <span id="prestProg">0</span></p>
-      <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
-      <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
-    </div>
+```
+<div class="card">
+  <h3>⏱️ PRESTIGE</h3>
+  <p>Coût: <span id="prestigeCost">50000</span> 💰</p>
+  <p>Progression: <span id="prestProg">0</span></p>
+  <p style="color: #0f0; font-size: 1.1rem;"><strong>Possible: <span id="prestigeCount">0</span>×</strong></p>
+  <button class="btn" id="prestigeBtn">⚡ PRESTIGE (+10% par prestige)</button>
+</div>
 
-    <div class="card">
-      <h3>🌀 GALAXIES</h3>
-      <p>Coût: <span id="galaxyCost">500</span> ⭐</p>
-      <button class="btn" id="galaxyBtn">🌀 SUPER PRESTIGE (×1.6)</button>
-    </div>
+<div class="card">
+  <h3>🌀 GALAXIES</h3>
+  <p>Coût: <span id="galaxyCost">500</span> ⭐</p>
+  <button class="btn" id="galaxyBtn">🌀 SUPER PRESTIGE (×1.6)</button>
+</div>
+```
+
   </div>
 
   <!-- TAB: GENERATORS -->
+
   <div id="gens" class="content">
     <div class="card">
       <h3>🤖 GÉNÉRATEURS AUTOMATIQUES</h3>
@@ -405,6 +416,7 @@
   </div>
 
   <!-- TAB: UPGRADES -->
+
   <div id="ups" class="content">
     <div class="card">
       <h3>⚡ AMÉLIORATIONS</h3>
@@ -413,238 +425,259 @@
   </div>
 
   <!-- TAB: TRADING -->
+
   <div id="trade" class="content">
     <div class="card">
       <h3>💸 SYSTÈME DE TRADING</h3>
       <p style="color: #aaa; margin-bottom: 1rem;">Plus tu déposes, plus tu gagnes/perds! L'argent est BLOQUÉ jusqu'au retrait.</p>
 
-      <!-- RISQUE MINIMUM -->
-      <div class="trade-card min">
-        <div class="trade-header">
-          <div>
-            <h4>✅ RISQUE MINIMUM</h4>
-            <p style="color: #0f0; font-size: 0.9rem;">+3% par seconde | -2% risque (0.5% chance)</p>
-          </div>
-        </div>
-        
-        <div class="trade-stats">
-          <div class="trade-stat">
-            <div>💰 Investi</div>
-            <div class="trade-stat-val" id="minAmount">0</div>
-          </div>
-          <div class="trade-stat">
-            <div>⚡ +/sec</div>
-            <div class="trade-stat-val" id="minGain">0</div>
-          </div>
-          <div class="trade-stat">
-            <div>📉 Risque</div>
-            <div class="trade-stat-val" id="minLoss">0</div>
-          </div>
-        </div>
-
-        <div class="trade-input-group">
-          <input type="number" class="trade-input" id="minInput" placeholder="Montant à déposer" min="0">
-          <button class="btn" onclick="investTrade('min')">📤 DÉPOSER</button>
-          <button class="btn danger-btn" onclick="withdrawTrade('min')">📥 RETIRER</button>
-        </div>
+```
+  <!-- RISQUE MINIMUM -->
+  <div class="trade-card min">
+    <div class="trade-header">
+      <div>
+        <h4>✅ RISQUE MINIMUM</h4>
+        <p style="color: #0f0; font-size: 0.9rem;">+3% par seconde | -2% risque (0.5% chance)</p>
       </div>
-
-      <!-- RISQUE MOYEN -->
-      <div class="trade-card mid">
-        <div class="trade-header">
-          <div>
-            <h4>⚠️ RISQUE MOYEN</h4>
-            <p style="color: #fa0; font-size: 0.9rem;">+10% par seconde | -5% risque (3% chance)</p>
-          </div>
-        </div>
-        
-        <div class="trade-stats">
-          <div class="trade-stat">
-            <div>💰 Investi</div>
-            <div class="trade-stat-val" id="midAmount">0</div>
-          </div>
-          <div class="trade-stat">
-            <div>⚡ +/sec</div>
-            <div class="trade-stat-val" id="midGain">0</div>
-          </div>
-          <div class="trade-stat">
-            <div>📉 Risque</div>
-            <div class="trade-stat-val" id="midLoss">0</div>
-          </div>
-        </div>
-
-        <div class="trade-input-group">
-          <input type="number" class="trade-input" id="midInput" placeholder="Montant à déposer" min="0">
-          <button class="btn" onclick="investTrade('mid')">📤 DÉPOSER</button>
-          <button class="btn danger-btn" onclick="withdrawTrade('mid')">📥 RETIRER</button>
-        </div>
+    </div>
+    
+    <div class="trade-stats">
+      <div class="trade-stat">
+        <div>💰 Investi</div>
+        <div class="trade-stat-val" id="minAmount">0</div>
       </div>
-
-      <!-- GROS RISQUE -->
-      <div class="trade-card high">
-        <div class="trade-header">
-          <div>
-            <h4>🔥 GROS RISQUE</h4>
-            <p style="color: #f00; font-size: 0.9rem;">+30% par seconde | -15% risque (8% chance) | TOUT PERDRE (0.1% chance)</p>
-          </div>
-        </div>
-        
-        <div class="trade-stats">
-          <div class="trade-stat">
-            <div>💰 Investi</div>
-            <div class="trade-stat-val" id="highAmount">0</div>
-          </div>
-          <div class="trade-stat">
-            <div>⚡ +/sec</div>
-            <div class="trade-stat-val" id="highGain">0</div>
-          </div>
-          <div class="trade-stat">
-            <div>📉 Risque</div>
-            <div class="trade-stat-val" id="highLoss">0</div>
-          </div>
-        </div>
-
-        <div class="trade-input-group">
-          <input type="number" class="trade-input" id="highInput" placeholder="Montant à déposer" min="0">
-          <button class="btn" onclick="investTrade('high')">📤 DÉPOSER</button>
-          <button class="btn danger-btn" onclick="withdrawTrade('high')">📥 RETIRER</button>
-        </div>
+      <div class="trade-stat">
+        <div>⚡ +/sec</div>
+        <div class="trade-stat-val" id="minGain">0</div>
       </div>
-
-      <!-- TRADE LOG -->
-      <div class="card">
-        <h4>📊 LOG TRADING</h4>
-        <div id="tradeLog" style="max-height: 200px; overflow-y: auto;">
-          <div class="trade-log-event">En attente...</div>
-        </div>
+      <div class="trade-stat">
+        <div>📉 Risque</div>
+        <div class="trade-stat-val" id="minLoss">0</div>
       </div>
+    </div>
+
+    <div class="trade-input-group">
+      <input type="number" class="trade-input" id="minInput" placeholder="Montant à déposer" min="0">
+      <button class="btn" onclick="investTrade('min')">📤 DÉPOSER</button>
+      <button class="btn danger-btn" onclick="withdrawTrade('min')">📥 RETIRER</button>
     </div>
   </div>
 
+  <!-- RISQUE MOYEN -->
+  <div class="trade-card mid">
+    <div class="trade-header">
+      <div>
+        <h4>⚠️ RISQUE MOYEN</h4>
+        <p style="color: #fa0; font-size: 0.9rem;">+10% par seconde | -5% risque (3% chance)</p>
+      </div>
+    </div>
+    
+    <div class="trade-stats">
+      <div class="trade-stat">
+        <div>💰 Investi</div>
+        <div class="trade-stat-val" id="midAmount">0</div>
+      </div>
+      <div class="trade-stat">
+        <div>⚡ +/sec</div>
+        <div class="trade-stat-val" id="midGain">0</div>
+      </div>
+      <div class="trade-stat">
+        <div>📉 Risque</div>
+        <div class="trade-stat-val" id="midLoss">0</div>
+      </div>
+    </div>
+
+    <div class="trade-input-group">
+      <input type="number" class="trade-input" id="midInput" placeholder="Montant à déposer" min="0">
+      <button class="btn" onclick="investTrade('mid')">📤 DÉPOSER</button>
+      <button class="btn danger-btn" onclick="withdrawTrade('mid')">📥 RETIRER</button>
+    </div>
+  </div>
+
+  <!-- GROS RISQUE -->
+  <div class="trade-card high">
+    <div class="trade-header">
+      <div>
+        <h4>🔥 GROS RISQUE</h4>
+        <p style="color: #f00; font-size: 0.9rem;">+30% par seconde | -15% risque (8% chance) | TOUT PERDRE (0.1% chance)</p>
+      </div>
+    </div>
+    
+    <div class="trade-stats">
+      <div class="trade-stat">
+        <div>💰 Investi</div>
+        <div class="trade-stat-val" id="highAmount">0</div>
+      </div>
+      <div class="trade-stat">
+        <div>⚡ +/sec</div>
+        <div class="trade-stat-val" id="highGain">0</div>
+      </div>
+      <div class="trade-stat">
+        <div>📉 Risque</div>
+        <div class="trade-stat-val" id="highLoss">0</div>
+      </div>
+    </div>
+
+    <div class="trade-input-group">
+      <input type="number" class="trade-input" id="highInput" placeholder="Montant à déposer" min="0">
+      <button class="btn" onclick="investTrade('high')">📤 DÉPOSER</button>
+      <button class="btn danger-btn" onclick="withdrawTrade('high')">📥 RETIRER</button>
+    </div>
+  </div>
+
+  <!-- TRADE LOG -->
+  <div class="card">
+    <h4>📊 LOG TRADING</h4>
+    <div id="tradeLog" style="max-height: 200px; overflow-y: auto;">
+      <div class="trade-log-event">En attente...</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
   <!-- TAB: BANQUE -->
+
   <div id="bank" class="content">
     <div class="card">
       <h3>🏦 BANQUE - INVESTISSEMENTS</h3>
       <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.1% par sec!</p>
-      
-      <div class="trade-stats">
-        <div class="trade-stat">
-          <div>💰 Investi</div>
-          <div class="trade-stat-val" id="bankInvested">0</div>
-        </div>
-        <div class="trade-stat">
-          <div>⚡ +/sec</div>
-          <div class="trade-stat-val" id="bankGains">0</div>
-        </div>
-      </div>
 
-      <div class="trade-input-group">
-        <input type="number" class="trade-input" id="bankInput" placeholder="Montant à déposer" min="0">
-        <button class="btn" onclick="depositBank()">📤 DÉPOSER</button>
-        <button class="btn danger-btn" onclick="withdrawBank()">📥 RETIRER</button>
-      </div>
-
-      <div class="card" style="background:#0a0a0a;margin-top:1rem">
-        <h4>📊 Info Banque</h4>
-        <p style="color:#aaa;font-size:0.9rem">
-          Total généré: <span id="bankGenerated">0</span> 💰
-        </p>
-      </div>
+```
+  <div class="trade-stats">
+    <div class="trade-stat">
+      <div>💰 Investi</div>
+      <div class="trade-stat-val" id="bankInvested">0</div>
+    </div>
+    <div class="trade-stat">
+      <div>⚡ +/sec</div>
+      <div class="trade-stat-val" id="bankGains">0</div>
     </div>
   </div>
 
+  <div class="trade-input-group">
+    <input type="number" class="trade-input" id="bankInput" placeholder="Montant à déposer" min="0">
+    <button class="btn" onclick="depositBank()">📤 DÉPOSER</button>
+    <button class="btn danger-btn" onclick="withdrawBank()">📥 RETIRER</button>
+  </div>
+
+  <div class="card" style="background:#0a0a0a;margin-top:1rem">
+    <h4>📊 Info Banque</h4>
+    <p style="color:#aaa;font-size:0.9rem">
+      Total généré: <span id="bankGenerated">0</span> 💰
+    </p>
+  </div>
+</div>
+```
+
+  </div>
+
   <!-- TAB: LOTTERIE -->
+
   <div id="lottery" class="content">
     <div class="card">
       <h3>🎰 LOTTERIE - TENTEZ VOTRE CHANCE!</h3>
       <p style="color: #aaa; margin-bottom: 1rem;">Achetez des tickets et tentez votre chance!</p>
-      
-      <div class="trade-stats">
-        <div class="trade-stat">
-          <div>🎟️ Tickets</div>
-          <div class="trade-stat-val" id="lotteryTickets">0</div>
-        </div>
-        <div class="trade-stat">
-          <div>💰 Coût</div>
-          <div class="trade-stat-val">100</div>
-        </div>
-      </div>
 
-      <div class="trade-input-group">
-        <button class="btn" onclick="buyLotteryTicket(1)">🎟️ 1 Ticket (100)</button>
-        <button class="btn" onclick="buyLotteryTicket(10)">🎟️ 10 Tickets (1K)</button>
-        <button class="btn" onclick="buyLotteryTicket(100)">🎟️ 100 Tickets (10K)</button>
-      </div>
-
-      <div style="margin-top: 1rem;">
-        <button class="btn big-btn" onclick="playLottery()" style="max-width: 100%; width: 100%;">🎰 JOUER!</button>
-      </div>
-
-      <div class="card" style="background:#0a0a0a;margin-top:1rem">
-        <h4>🎲 Résultats</h4>
-        <div id="lotteryLog" style="max-height: 200px; overflow-y: auto;">
-          <div style="color:#aaa;font-size:0.9rem">En attente...</div>
-        </div>
-      </div>
+```
+  <div class="trade-stats">
+    <div class="trade-stat">
+      <div>🎟️ Tickets</div>
+      <div class="trade-stat-val" id="lotteryTickets">0</div>
+    </div>
+    <div class="trade-stat">
+      <div>💰 Coût</div>
+      <div class="trade-stat-val">100</div>
     </div>
   </div>
 
+  <div class="trade-input-group">
+    <button class="btn" onclick="buyLotteryTicket(1)">🎟️ 1 Ticket (100)</button>
+    <button class="btn" onclick="buyLotteryTicket(10)">🎟️ 10 Tickets (1K)</button>
+    <button class="btn" onclick="buyLotteryTicket(100)">🎟️ 100 Tickets (10K)</button>
+  </div>
+
+  <div style="margin-top: 1rem;">
+    <button class="btn big-btn" onclick="playLottery()" style="max-width: 100%; width: 100%;">🎰 JOUER!</button>
+  </div>
+
+  <div class="card" style="background:#0a0a0a;margin-top:1rem">
+    <h4>🎲 Résultats</h4>
+    <div id="lotteryLog" style="max-height: 200px; overflow-y: auto;">
+      <div style="color:#aaa;font-size:0.9rem">En attente...</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
   <!-- TAB: ASCENSION -->
+
   <div id="ascensionTab" class="content">
     <div class="card">
       <h3>🚀 ASCENSION - META PRESTIGE</h3>
       <p style="color: #fa0; margin-bottom: 1rem;">Réinitialise TOUT mais donne des bonus permanents énormes!</p>
-      
-      <div class="trade-stats">
-        <div class="trade-stat">
-          <div>🚀 Points</div>
-          <div class="trade-stat-val" id="ascensionPoints">0</div>
-        </div>
-        <div class="trade-stat">
-          <div>⚡ Bonus</div>
-          <div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div>
-        </div>
-        <div class="trade-stat">
-          <div>🌀 Coût</div>
-          <div class="trade-stat-val" id="ascensionCost">100</div>
-        </div>
-      </div>
 
-      <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
-        <p style="color:#fa0;margin:0.5rem 0"><strong>⚠️ ATTENTION!</strong></p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">L'Ascension va:</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les générateurs</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les upgrades</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser les étoiles et prestige</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✅ Garder les Galaxies</p>
-        <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✅ Garder les points d'Ascension</p>
-      </div>
-
-      <button class="btn big-btn danger-btn" onclick="doAscension()" style="max-width: 100%; width: 100%;">🚀 ASCENSIONNER!</button>
-
-      <div class="card" style="background:#0a0a0a;margin-top:1rem">
-        <h4>📊 Info Ascension</h4>
-        <p style="color:#aaa;font-size:0.9rem">
-          Galaxies nécessaires: <span id="ascensionRequired">100</span><br>
-          Galaxies actuelles: <span id="ascensionCurrent">0</span>
-        </p>
-      </div>
+```
+  <div class="trade-stats">
+    <div class="trade-stat">
+      <div>🚀 Points</div>
+      <div class="trade-stat-val" id="ascensionPoints">0</div>
+    </div>
+    <div class="trade-stat">
+      <div>⚡ Bonus</div>
+      <div class="trade-stat-val">+<span id="ascensionBonus">0</span>%</div>
+    </div>
+    <div class="trade-stat">
+      <div>🌀 Coût</div>
+      <div class="trade-stat-val" id="ascensionCost">100</div>
     </div>
   </div>
 
+  <div style="background:#0a0a1a;padding:1rem;margin:1rem 0;border-left:3px solid #fa0;border-radius:4px;">
+    <p style="color:#fa0;margin:0.5rem 0"><strong>⚠️ ATTENTION!</strong></p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">L'Ascension va:</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les générateurs</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser TOUS les upgrades</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">❌ Réinitialiser les étoiles et prestige</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✅ Garder les Galaxies</p>
+    <p style="color:#aaa;font-size:0.9rem;margin:0.5rem 0">✅ Garder les points d'Ascension</p>
+  </div>
+
+  <button class="btn big-btn danger-btn" onclick="doAscension()" style="max-width: 100%; width: 100%;">🚀 ASCENSIONNER!</button>
+
+  <div class="card" style="background:#0a0a0a;margin-top:1rem">
+    <h4>📊 Info Ascension</h4>
+    <p style="color:#aaa;font-size:0.9rem">
+      Galaxies nécessaires: <span id="ascensionRequired">100</span><br>
+      Galaxies actuelles: <span id="ascensionCurrent">0</span>
+    </p>
+  </div>
+</div>
+```
+
+  </div>
+
   <!-- TAB: ACHIEVEMENTS -->
+
   <div id="achievements" class="content">
     <div class="card">
       <h3>🏆 ACHIEVEMENTS & BADGES</h3>
       <p style="color: #0f0; margin-bottom: 1rem;">Débloque des badges et gagne des récompenses!</p>
-      
-      <div id="achievementsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <!-- Les achievements s'affichent ici -->
-      </div>
-    </div>
+
+```
+  <div id="achievementsList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+    <!-- Les achievements s'affichent ici -->
+  </div>
+</div>
+```
+
   </div>
 
   <!-- TAB: FEATURES -->
+
   <div id="feat" class="content">
     <div class="card">
       <h3>🌙 DARK MATTER</h3>
@@ -657,30 +690,34 @@
       <div id="dmInfo" style="color:#aaa;font-size:0.9rem;margin-top:0.5rem"></div>
     </div>
 
-    <div class="card">
-      <h3>🎯 QUÊTES</h3>
-      <div id="questsList"></div>
-    </div>
+```
+<div class="card">
+  <h3>🎯 QUÊTES</h3>
+  <div id="questsList"></div>
+</div>
 
-    <div class="card">
-      <h3>⏰ BOOSTS</h3>
-      <button class="btn" id="boostProd">Prod ×2 (50K)</button>
-      <button class="btn" id="boostClick">Click ×2 (30K)</button>
-      <div id="activeBoosts" style="margin-top:0.5rem"></div>
-    </div>
+<div class="card">
+  <h3>⏰ BOOSTS</h3>
+  <button class="btn" id="boostProd">Prod ×2 (50K)</button>
+  <button class="btn" id="boostClick">Click ×2 (30K)</button>
+  <div id="activeBoosts" style="margin-top:0.5rem"></div>
+</div>
 
-    <div class="card">
-      <h3>⚙️ SYNERGIES</h3>
-      <div id="synergies"></div>
-    </div>
+<div class="card">
+  <h3>⚙️ SYNERGIES</h3>
+  <div id="synergies"></div>
+</div>
 
-    <div class="card">
-      <h3>📊 GRAPHIQUE</h3>
-      <canvas id="graph" width="600" height="200"></canvas>
-    </div>
+<div class="card">
+  <h3>📊 GRAPHIQUE</h3>
+  <canvas id="graph" width="600" height="200"></canvas>
+</div>
+```
+
   </div>
 
   <!-- TAB: STATS -->
+
   <div id="stats" class="content">
     <div class="card">
       <h3>📈 STATISTIQUES</h3>
@@ -704,50 +741,56 @@
   </div>
 
   <!-- TAB: PARAMETRES -->
+
   <div id="params" class="content">
     <div class="card">
       <h3>⚙️ PARAMÈTRES</h3>
       <p style="color:#aaa;margin-bottom:1rem">Gère ta partie ici</p>
 
-      <div class="item" style="border-left:3px solid #0f0;padding:1rem">
-        <div>
-          <strong>💾 Sauvegarder</strong><br>
-          <span style="color:#aaa;font-size:0.9rem">Télécharge une copie de ta progression</span>
-        </div>
-        <button class="btn" id="downloadBtn">📥 TÉLÉCHARGER</button>
-      </div>
-
-      <div class="item" style="border-left:3px solid #0af;padding:1rem">
-        <div>
-          <strong>📂 Charger</strong><br>
-          <span style="color:#aaa;font-size:0.9rem">Importe une sauvegarde</span>
-        </div>
-        <button class="btn" id="uploadBtn">📤 IMPORTER</button>
-      </div>
-
-      <div class="item" style="border-left:3px solid #fa0;padding:1rem">
-        <div>
-          <strong>🗑️ Réinitialiser</strong><br>
-          <span style="color:#aaa;font-size:0.9rem">Recommence à zéro (attention!)</span>
-        </div>
-        <button class="btn danger-btn" id="resetBtn">🔄 RESET</button>
-      </div>
-
-      <div class="card" style="background:#0a0a0a;margin-top:1rem">
-        <h4>📝 Info Sauvegarde</h4>
-        <p style="text-align:left;color:#aaa;font-size:0.9rem">
-          <strong>Dernière sauvegarde:</strong> <span id="lastSave">Jamais</span><br>
-          <strong>Taille:</strong> <span id="saveSize">0 KB</span>
-        </p>
-      </div>
+```
+  <div class="item" style="border-left:3px solid #0f0;padding:1rem">
+    <div>
+      <strong>💾 Sauvegarder</strong><br>
+      <span style="color:#aaa;font-size:0.9rem">Télécharge une copie de ta progression</span>
     </div>
+    <button class="btn" id="downloadBtn">📥 TÉLÉCHARGER</button>
+  </div>
+
+  <div class="item" style="border-left:3px solid #0af;padding:1rem">
+    <div>
+      <strong>📂 Charger</strong><br>
+      <span style="color:#aaa;font-size:0.9rem">Importe une sauvegarde</span>
+    </div>
+    <button class="btn" id="uploadBtn">📤 IMPORTER</button>
+  </div>
+
+  <div class="item" style="border-left:3px solid #fa0;padding:1rem">
+    <div>
+      <strong>🗑️ Réinitialiser</strong><br>
+      <span style="color:#aaa;font-size:0.9rem">Recommence à zéro (attention!)</span>
+    </div>
+    <button class="btn danger-btn" id="resetBtn">🔄 RESET</button>
+  </div>
+
+  <div class="card" style="background:#0a0a0a;margin-top:1rem">
+    <h4>📝 Info Sauvegarde</h4>
+    <p style="text-align:left;color:#aaa;font-size:0.9rem">
+      <strong>Dernière sauvegarde:</strong> <span id="lastSave">Jamais</span><br>
+      <strong>Taille:</strong> <span id="saveSize">0 KB</span>
+    </p>
+  </div>
+</div>
+```
+
   </div>
 </div>
 
 <!-- FILE INPUT HIDDEN -->
+
 <input type="file" id="fileInput" style="display:none" accept=".json">
 
 <!-- TUTORIAL MODAL -->
+
 <div id="tutorialModal">
   <div class="tut-box">
     <h1>📖 TUTORIEL COMPLET</h1>
@@ -762,6 +805,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
 <script>
 // =========== CONSTANTES ===========
 const FPS = 10;
@@ -876,12 +920,29 @@ game.achievements = getDefaultAchievements();
 function $(id) { return document.getElementById(id); }
 
 function fmt(n) {
-  if (!isFinite(n) || isNaN(n)) return "0";
-  if (n >= 1e15) { let exp = Math.floor(Math.log10(n)); let mantissa = (n / Math.pow(10, exp)).toFixed(2); return mantissa + "e" + exp; }
-  if (n >= 1e12) return (n / 1e12).toFixed(1) + "T";
-  if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
-  if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
-  if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  if (!isFinite(n) || isNaN(n)) return "∞";
+  if (n === Infinity) return "∞";
+  
+  const abbreviations = [
+    { value: 1e33, symbol: "D" },  // Decillion
+    { value: 1e30, symbol: "No" }, // Nonillion
+    { value: 1e27, symbol: "Oc" }, // Octillion
+    { value: 1e24, symbol: "Sp" }, // Septillion
+    { value: 1e21, symbol: "Sx" }, // Sextillion
+    { value: 1e18, symbol: "Qi" }, // Quintillion
+    { value: 1e15, symbol: "Qa" }, // Quadrillion
+    { value: 1e12, symbol: "T" },  // Trillion
+    { value: 1e9, symbol: "B" },   // Billion
+    { value: 1e6, symbol: "M" },   // Million
+    { value: 1e3, symbol: "K" }    // Thousand
+  ];
+  
+  for (let abbr of abbreviations) {
+    if (n >= abbr.value) {
+      return (n / abbr.value).toFixed(2).replace(/\.?0+$/, "") + abbr.symbol;
+    }
+  }
+  
   return Math.round(n).toString();
 }
 
@@ -958,10 +1019,17 @@ function getProd() {
   let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
   let ascensionMultiplier = 1 + (game.ascension * 0.05);
 
-  if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
-  if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
+  // ✅ FIX: Capper les multiplicateurs pour éviter l'Infinity
+  if (!isFinite(starsMultiplier) || starsMultiplier > 1e100) starsMultiplier = 1e100;
+  if (!isFinite(galaxiesMultiplier) || galaxiesMultiplier > 1e100) galaxiesMultiplier = 1e100;
+  if (!isFinite(ascensionMultiplier) || ascensionMultiplier > 1e50) ascensionMultiplier = 1e50;
 
-  return (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
+  let result = (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
+  
+  // ✅ Si le résultat est trop grand, le capper
+  if (!isFinite(result) || result > 1e308) return 1e308;
+  
+  return result;
 }
 
 function clickVal() {
@@ -974,10 +1042,17 @@ function clickVal() {
   let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
   let ascensionMultiplier = 1 + (game.ascension * 0.05);
   
-  if (!isFinite(starsMultiplier)) starsMultiplier = 1e308;
-  if (!isFinite(galaxiesMultiplier)) galaxiesMultiplier = 1e308;
+  // ✅ FIX: Capper les multiplicateurs
+  if (!isFinite(starsMultiplier) || starsMultiplier > 1e100) starsMultiplier = 1e100;
+  if (!isFinite(galaxiesMultiplier) || galaxiesMultiplier > 1e100) galaxiesMultiplier = 1e100;
+  if (!isFinite(ascensionMultiplier) || ascensionMultiplier > 1e50) ascensionMultiplier = 1e50;
   
-  return v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
+  let result = v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
+  
+  // ✅ Si le résultat est trop grand, le capper
+  if (!isFinite(result) || result > 1e308) return 1e308;
+  
+  return result;
 }
 
 function clickBtn() {
@@ -1084,7 +1159,7 @@ function doPrestige() {
 }
 
 function doGalaxy() {
-  let cost = 500 + (game.galaxies * 50);
+  let cost = 50 + (game.galaxies * 5);
   if (game.stars < cost) return;
   game.stars -= cost;
   game.galaxies++;
@@ -1383,7 +1458,7 @@ function updateUI() {
   let prestigePossible = game.coins >= nextPrestigeCost ? 1 : 0;
   $("prestigeCost").textContent = fmt(nextPrestigeCost);
   $("prestigeCount").textContent = prestigePossible > 0 ? "✅ OUI" : "❌ NON";
-  $("galaxyCost").textContent = fmt(500 + (game.galaxies * 50));
+  $("galaxyCost").textContent = fmt(50 + (game.galaxies * 5));
   $("totalCoins").textContent = fmt(game.totalCoins);
   $("totalClicks").textContent = game.totalClicks;
   $("playTime").textContent = game.playTime + "s";
