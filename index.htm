@@ -266,7 +266,7 @@
   <div id="bank" class="content">
     <div class="card">
       <h3>🏦 BANQUE - INVESTISSEMENTS</h3>
-      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.005% par sec! (SANS RISQUE)</p>
+      <p style="color: #0f0; margin-bottom: 1rem;">Dépose des pièces pour +0.00001% par sec! (SANS RISQUE)</p>
       <div class="trade-stats">
         <div class="trade-stat"><div>💰 Investi</div><div class="trade-stat-val" id="bankInvested">0</div></div>
         <div class="trade-stat"><div>⚡ +/sec</div><div class="trade-stat-val" id="bankGains">0</div></div>
@@ -482,6 +482,34 @@ let cache = { prod: 0, clickVal: 0, starsMultiplier: 1, galaxiesMultiplier: 1, a
 function invalidateCache() { cache.isDirty = true; }
 
 const CHANGELOGS = [
+  {
+    version: "v4.2.2 BALANCE",
+    date: "Nov 03, 2025",
+    title: "RÉÉQUILIBRAGES MAJEURS - BANQUE, LOTTERIE, TRADING, RECHERCHES",
+    changes: [
+      "⚖️ BANQUE ULTRA NERF: 0.00001% par sec (au lieu de 0.005%)",
+      "⚖️ Avec tous les boosts MAX: ~0.005%/sec au lieu de 80%/sec!",
+      "⚖️ Recherche Bank: +10% au lieu de +50%, coût ×10",
+      "⚖️ DM Shop Bank: ×3 au lieu de ×20",
+      "⚖️ LOTTERIE NERF: Gains ÷5 sur tous les tiers",
+      "⚖️ Petit: 10-30 (au lieu de 50-100)",
+      "⚖️ Moyen: 100-300 (au lieu de 500-1000)",
+      "⚖️ Gros: 1000-3000 (au lieu de 5000-10000)",
+      "⚖️ Recherche Lotterie: +10% au lieu de +30%, coût ×10",
+      "⚖️ DM Shop Lotterie: ×5 au lieu de ×100",
+      "⚖️ TRADING HIGH NERF: 5%/sec au lieu de 24%/sec",
+      "⚖️ Recherche Trading: +10% au lieu de +25%, coût ×10",
+      "⚖️ DM Shop Trading: ×3 au lieu de ×10",
+      "✅ FIX: Prestige counter reset sur Galaxy (prix revient à la base)",
+      "💰 RECHERCHES COÛTS AUGMENTÉS: ×10 à ×100 selon le niveau!",
+      "💰 Production I: 100K (au lieu de 10K)",
+      "💰 Production III: 100M (au lieu de 5M)",
+      "💰 Synergies: 1B (au lieu de 20M)",
+      "🖱️ FIX: Boutons Recherche + DM Shop plus gros et faciles à cliquer!",
+      "🖱️ Boutons: min-height 50px, padding 1rem, font-size 1rem",
+      "✨ Progression beaucoup plus équilibrée et moins broken!"
+    ]
+  },
   {
     version: "v4.2.1 BUGFIX",
     date: "Nov 03, 2025",
@@ -808,21 +836,21 @@ let game = {
   bankInvested: 0, bankGenerated: 0, ascension: 0, achievements: [], milestones: [],
 
   research: [
-    { id: "res1", name: "🚀 Production I", desc: "+15% production générateurs", level: 0, maxLevel: 10, baseCost: 10000, mult: 1.8, effect: "prodBonus", value: 0.15 },
-    { id: "res2", name: "💰 Clics I", desc: "+20% gains par clic", level: 0, maxLevel: 10, baseCost: 5000, mult: 1.8, effect: "clickBonus", value: 0.20 },
-    { id: "res3", name: "⭐ Prestige Boost", desc: "+10% gains étoiles", level: 0, maxLevel: 5, baseCost: 50000, mult: 2.0, effect: "starBonus", value: 0.10 },
-    { id: "res4", name: "💸 Trading Pro", desc: "+25% gains trading", level: 0, maxLevel: 8, baseCost: 25000, mult: 1.9, effect: "tradeBonus", value: 0.25 },
-    { id: "res5", name: "🏦 Intérêts Bancaires", desc: "+50% gains banque", level: 0, maxLevel: 6, baseCost: 30000, mult: 2.0, effect: "bankBonus", value: 0.50 },
-    { id: "res6", name: "🎰 Chance Lotterie", desc: "+30% gains lotterie", level: 0, maxLevel: 5, baseCost: 15000, mult: 1.7, effect: "lotteryBonus", value: 0.30 },
-    { id: "res7", name: "🚀 Production II", desc: "+20% production générateurs", level: 0, maxLevel: 10, baseCost: 100000, mult: 2.2, effect: "prodBonus", value: 0.20 },
-    { id: "res8", name: "💰 Clics II", desc: "+25% gains par clic", level: 0, maxLevel: 10, baseCost: 75000, mult: 2.2, effect: "clickBonus", value: 0.25 },
-    { id: "res9", name: "🌀 Galaxie Efficiency", desc: "+5% bonus galaxies", level: 0, maxLevel: 5, baseCost: 500000, mult: 2.5, effect: "galaxyBonus", value: 0.05 },
-    { id: "res10", name: "🌙 Dark Matter Gen", desc: "+1 DM par 9 Prestige", level: 0, maxLevel: 1, baseCost: 1000000, mult: 1.0, effect: "dmGen", value: 1 },
-    { id: "res11", name: "⚡ Ascension Power", desc: "+10% bonus ascension", level: 0, maxLevel: 5, baseCost: 2000000, mult: 3.0, effect: "ascBonus", value: 0.10 },
-    { id: "res12", name: "🚀 Production III", desc: "+30% production générateurs", level: 0, maxLevel: 10, baseCost: 5000000, mult: 2.5, effect: "prodBonus", value: 0.30 },
-    { id: "res13", name: "💰 Clics III", desc: "+35% gains par clic", level: 0, maxLevel: 10, baseCost: 3000000, mult: 2.5, effect: "clickBonus", value: 0.35 },
-    { id: "res14", name: "♾️ NGP+ Efficiency", desc: "+5% bonus NGP+", level: 0, maxLevel: 5, baseCost: 10000000, mult: 3.0, effect: "ngpBonus", value: 0.05 },
-    { id: "res15", name: "🏭 Synergies", desc: "+50% bonus synergies", level: 0, maxLevel: 3, baseCost: 20000000, mult: 4.0, effect: "synergyBonus", value: 0.50 }
+    { id: "res1", name: "🚀 Production I", desc: "+15% production générateurs", level: 0, maxLevel: 10, baseCost: 100000, mult: 1.8, effect: "prodBonus", value: 0.15 },
+    { id: "res2", name: "💰 Clics I", desc: "+20% gains par clic", level: 0, maxLevel: 10, baseCost: 50000, mult: 1.8, effect: "clickBonus", value: 0.20 },
+    { id: "res3", name: "⭐ Prestige Boost", desc: "+10% gains étoiles", level: 0, maxLevel: 5, baseCost: 500000, mult: 2.0, effect: "starBonus", value: 0.10 },
+    { id: "res4", name: "💸 Trading Pro", desc: "+10% gains trading", level: 0, maxLevel: 8, baseCost: 250000, mult: 1.9, effect: "tradeBonus", value: 0.10 },
+    { id: "res5", name: "🏦 Intérêts Bancaires", desc: "+10% gains banque", level: 0, maxLevel: 6, baseCost: 300000, mult: 2.0, effect: "bankBonus", value: 0.10 },
+    { id: "res6", name: "🎰 Chance Lotterie", desc: "+10% gains lotterie", level: 0, maxLevel: 5, baseCost: 150000, mult: 1.7, effect: "lotteryBonus", value: 0.10 },
+    { id: "res7", name: "🚀 Production II", desc: "+20% production générateurs", level: 0, maxLevel: 10, baseCost: 1000000, mult: 2.2, effect: "prodBonus", value: 0.20 },
+    { id: "res8", name: "💰 Clics II", desc: "+25% gains par clic", level: 0, maxLevel: 10, baseCost: 750000, mult: 2.2, effect: "clickBonus", value: 0.25 },
+    { id: "res9", name: "🌀 Galaxie Efficiency", desc: "+5% bonus galaxies", level: 0, maxLevel: 5, baseCost: 5000000, mult: 2.5, effect: "galaxyBonus", value: 0.05 },
+    { id: "res10", name: "🌙 Dark Matter Gen", desc: "+1 DM par 9 Prestige", level: 0, maxLevel: 1, baseCost: 10000000, mult: 1.0, effect: "dmGen", value: 1 },
+    { id: "res11", name: "⚡ Ascension Power", desc: "+10% bonus ascension", level: 0, maxLevel: 5, baseCost: 50000000, mult: 3.0, effect: "ascBonus", value: 0.10 },
+    { id: "res12", name: "🚀 Production III", desc: "+30% production générateurs", level: 0, maxLevel: 10, baseCost: 100000000, mult: 2.5, effect: "prodBonus", value: 0.30 },
+    { id: "res13", name: "💰 Clics III", desc: "+35% gains par clic", level: 0, maxLevel: 10, baseCost: 75000000, mult: 2.5, effect: "clickBonus", value: 0.35 },
+    { id: "res14", name: "♾️ NGP+ Efficiency", desc: "+5% bonus NGP+", level: 0, maxLevel: 5, baseCost: 500000000, mult: 3.0, effect: "ngpBonus", value: 0.05 },
+    { id: "res15", name: "🏭 Synergies", desc: "+50% bonus synergies", level: 0, maxLevel: 3, baseCost: 1000000000, mult: 4.0, effect: "synergyBonus", value: 0.50 }
   ],
 
   shopDM: [
@@ -830,9 +858,9 @@ let game = {
     { id: "dm2", name: "💰 Super Clics", desc: "×5 gains clics", cost: 8, bought: false, effect: "dmClickMult", value: 5 },
     { id: "dm3", name: "⭐ Prestige Rapide", desc: "÷2 coût Prestige", cost: 10, bought: false, effect: "dmPrestigeCost", value: 0.5 },
     { id: "dm4", name: "🌀 Galaxie Discount", desc: "÷2 coût Galaxies", cost: 15, bought: false, effect: "dmGalaxyCost", value: 0.5 },
-    { id: "dm5", name: "💸 Trading x10", desc: "×10 gains trading", cost: 12, bought: false, effect: "dmTradeMult", value: 10 },
-    { id: "dm6", name: "🏦 Banque x20", desc: "×20 gains banque", cost: 18, bought: false, effect: "dmBankMult", value: 20 },
-    { id: "dm7", name: "🎰 Jackpot", desc: "×100 gains lotterie", cost: 20, bought: false, effect: "dmLotteryMult", value: 100 },
+    { id: "dm5", name: "💸 Trading x3", desc: "×3 gains trading", cost: 12, bought: false, effect: "dmTradeMult", value: 3 },
+    { id: "dm6", name: "🏦 Banque x3", desc: "×3 gains banque", cost: 18, bought: false, effect: "dmBankMult", value: 3 },
+    { id: "dm7", name: "🎰 Jackpot", desc: "×5 gains lotterie", cost: 20, bought: false, effect: "dmLotteryMult", value: 5 },
     { id: "dm8", name: "🤖 Auto-Clicker", desc: "+5 coins/sec automatique", cost: 25, bought: false, effect: "dmAutoClick", value: 5 },
     { id: "dm9", name: "⚡ Time Warp", desc: "×2 vitesse jeu", cost: 30, bought: false, effect: "dmTimeWarp", value: 2 },
     { id: "dm10", name: "💎 Quantum Rain", desc: "+1 QC par minute", cost: 50, bought: false, effect: "dmQCRain", value: 1 }
@@ -959,7 +987,7 @@ function getTradeConfig(type) {
   return {
     min: { baseGain: 0.024, volatility: baseMarketVolatility * 0.5, lossChance: 0.0025, lossRate: 0.005 },
     mid: { baseGain: 0.08, volatility: baseMarketVolatility * 1.2, lossChance: 0.015, lossRate: 0.0125 },
-    high: { baseGain: 0.24, volatility: baseMarketVolatility * 2.5, lossChance: 0.04, lossRate: 0.0375, riskAll: 0.0005 }
+    high: { baseGain: 0.05, volatility: baseMarketVolatility * 2.5, lossChance: 0.04, lossRate: 0.0375, riskAll: 0.0005 }
   }[type];
 }
 
@@ -1193,6 +1221,7 @@ function doGalaxy() {
   if(game.stars < cost) return;
   game.stars = 0;
   game.coins = 0;
+  game.prestige = 0; // Reset prestige counter to reset prestige cost
   game.galaxies++;
   for(let gen of game.generators) gen.c = 0;
   for(let u of game.upgrades) u.b = 0;
@@ -1489,9 +1518,9 @@ function playLottery() {
   let resLotteryBonus = 1 + getResearchBoost("lotteryBonus");
   let dmLotteryMult = getDMBoost("dmLotteryMult");
   let totalMult = lotteryMult * resLotteryBonus * dmLotteryMult;
-  if(rand < 0.50) { gain = (50 + Math.floor(Math.random() * 50)) * totalMult; result = "🟢 Petit: +" + gain; }
-  else if(rand < 0.75) { gain = (500 + Math.floor(Math.random() * 500)) * totalMult; result = "🟡 Moyen: +" + gain; }
-  else { gain = (5000 + Math.floor(Math.random() * 5000)) * totalMult; result = "🔴 GROS LOT: +" + gain + "! 🎉"; }
+  if(rand < 0.50) { gain = (10 + Math.floor(Math.random() * 20)) * totalMult; result = "🟢 Petit: +" + gain; }
+  else if(rand < 0.75) { gain = (100 + Math.floor(Math.random() * 200)) * totalMult; result = "🟡 Moyen: +" + gain; }
+  else { gain = (1000 + Math.floor(Math.random() * 2000)) * totalMult; result = "🔴 GROS LOT: +" + gain + "! 🎉"; }
   game.coins += gain;
   game.totalCoins += gain;
   game.lotteryLog.unshift(result);
@@ -1516,13 +1545,13 @@ function playLotteryAll() {
     let rand = Math.random();
     let gain = 0;
     if(rand < 0.50) {
-      gain = (50 + Math.floor(Math.random() * 50)) * totalMult;
+      gain = (10 + Math.floor(Math.random() * 20)) * totalMult;
       petits++;
     } else if(rand < 0.75) {
-      gain = (500 + Math.floor(Math.random() * 500)) * totalMult;
+      gain = (100 + Math.floor(Math.random() * 200)) * totalMult;
       moyens++;
     } else {
-      gain = (5000 + Math.floor(Math.random() * 5000)) * totalMult;
+      gain = (1000 + Math.floor(Math.random() * 2000)) * totalMult;
       grosLots++;
     }
     totalGain += gain;
@@ -1721,7 +1750,7 @@ function updateUI() {
   $("yourStars").textContent = game.stars;
   $("yourDM").textContent = game.darkMatter;
   $("bankInvested").textContent = fmt(game.bankInvested || 0);
-  let bankGains = ((game.bankInvested || 0) * 0.00005) / FPS;
+  let bankGains = ((game.bankInvested || 0) * 0.0000001) / FPS;
   $("bankGains").textContent = fmt(bankGains);
   $("bankGenerated").textContent = fmt(game.bankGenerated || 0);
   $("lotteryTickets").textContent = game.lotteryTickets || 0;
@@ -1897,7 +1926,7 @@ function updateUI() {
           <div class="trade-stat"><div>💰 Coût</div><div class="trade-stat-val">${fmt(cost)}</div></div>
           <div class="trade-stat"><div>📊 Niveau</div><div class="trade-stat-val">${res.level}/${res.maxLevel}</div></div>
         </div>
-        <button class="btn" onclick="buyResearch('${res.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem;background:${maxReached ? '#0f0' : '#0af'}">${maxReached ? "✅ MAX" : "🔬 RECHERCHER"}</button>
+        <button class="btn" onclick="buyResearch('${res.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem;background:${maxReached ? '#0f0' : '#0af'};min-height:50px;padding:1rem;font-size:1rem;cursor:pointer">${maxReached ? "✅ MAX" : "🔬 RECHERCHER"}</button>
       </div>`;
       researchHtml += resDiv;
     }
@@ -1929,7 +1958,7 @@ function updateUI() {
           <div class="trade-stat"><div>🌙 Coût</div><div class="trade-stat-val">${item.cost} DM</div></div>
           <div class="trade-stat"><div>📊 Status</div><div class="trade-stat-val">${item.bought ? "✅ Actif" : "❌ Inactif"}</div></div>
         </div>
-        <button class="btn" onclick="buyDMItem('${item.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem;background:${item.bought ? '#0f0' : '#f0f'};color:#fff">${item.bought ? "✅ ACHETÉ" : "🌙 ACHETER"}</button>
+        <button class="btn" onclick="buyDMItem('${item.id}')" ${!canBuy ? "disabled" : ""} style="width:100%;margin-top:0.5rem;background:${item.bought ? '#0f0' : '#f0f'};color:#fff;min-height:50px;padding:1rem;font-size:1rem;cursor:pointer">${item.bought ? "✅ ACHETÉ" : "🌙 ACHETER"}</button>
       </div>`;
       dmShopHtml += itemDiv;
     }
@@ -2028,9 +2057,9 @@ document.addEventListener("DOMContentLoaded", function() {
         { id: "res1", name: "🚀 Production I", desc: "+15% production générateurs", level: 0, maxLevel: 10, baseCost: 10000, mult: 1.8, effect: "prodBonus", value: 0.15 },
         { id: "res2", name: "💰 Clics I", desc: "+20% gains par clic", level: 0, maxLevel: 10, baseCost: 5000, mult: 1.8, effect: "clickBonus", value: 0.20 },
         { id: "res3", name: "⭐ Prestige Boost", desc: "+10% gains étoiles", level: 0, maxLevel: 5, baseCost: 50000, mult: 2.0, effect: "starBonus", value: 0.10 },
-        { id: "res4", name: "💸 Trading Pro", desc: "+25% gains trading", level: 0, maxLevel: 8, baseCost: 25000, mult: 1.9, effect: "tradeBonus", value: 0.25 },
-        { id: "res5", name: "🏦 Intérêts Bancaires", desc: "+50% gains banque", level: 0, maxLevel: 6, baseCost: 30000, mult: 2.0, effect: "bankBonus", value: 0.50 },
-        { id: "res6", name: "🎰 Chance Lotterie", desc: "+30% gains lotterie", level: 0, maxLevel: 5, baseCost: 15000, mult: 1.7, effect: "lotteryBonus", value: 0.30 },
+        { id: "res4", name: "💸 Trading Pro", desc: "+10% gains trading", level: 0, maxLevel: 8, baseCost: 250000, mult: 1.9, effect: "tradeBonus", value: 0.10 },
+        { id: "res5", name: "🏦 Intérêts Bancaires", desc: "+10% gains banque", level: 0, maxLevel: 6, baseCost: 300000, mult: 2.0, effect: "bankBonus", value: 0.10 },
+        { id: "res6", name: "🎰 Chance Lotterie", desc: "+10% gains lotterie", level: 0, maxLevel: 5, baseCost: 150000, mult: 1.7, effect: "lotteryBonus", value: 0.10 },
         { id: "res7", name: "🚀 Production II", desc: "+20% production générateurs", level: 0, maxLevel: 10, baseCost: 100000, mult: 2.2, effect: "prodBonus", value: 0.20 },
         { id: "res8", name: "💰 Clics II", desc: "+25% gains par clic", level: 0, maxLevel: 10, baseCost: 75000, mult: 2.2, effect: "clickBonus", value: 0.25 },
         { id: "res9", name: "🌀 Galaxie Efficiency", desc: "+5% bonus galaxies", level: 0, maxLevel: 5, baseCost: 500000, mult: 2.5, effect: "galaxyBonus", value: 0.05 },
@@ -2046,9 +2075,9 @@ document.addEventListener("DOMContentLoaded", function() {
         { id: "dm2", name: "💰 Super Clics", desc: "×5 gains clics", cost: 8, bought: false, effect: "dmClickMult", value: 5 },
         { id: "dm3", name: "⭐ Prestige Rapide", desc: "÷2 coût Prestige", cost: 10, bought: false, effect: "dmPrestigeCost", value: 0.5 },
         { id: "dm4", name: "🌀 Galaxie Discount", desc: "÷2 coût Galaxies", cost: 15, bought: false, effect: "dmGalaxyCost", value: 0.5 },
-        { id: "dm5", name: "💸 Trading x10", desc: "×10 gains trading", cost: 12, bought: false, effect: "dmTradeMult", value: 10 },
-        { id: "dm6", name: "🏦 Banque x20", desc: "×20 gains banque", cost: 18, bought: false, effect: "dmBankMult", value: 20 },
-        { id: "dm7", name: "🎰 Jackpot", desc: "×100 gains lotterie", cost: 20, bought: false, effect: "dmLotteryMult", value: 100 },
+        { id: "dm5", name: "💸 Trading x3", desc: "×3 gains trading", cost: 12, bought: false, effect: "dmTradeMult", value: 3 },
+        { id: "dm6", name: "🏦 Banque x3", desc: "×3 gains banque", cost: 18, bought: false, effect: "dmBankMult", value: 3 },
+        { id: "dm7", name: "🎰 Jackpot", desc: "×5 gains lotterie", cost: 20, bought: false, effect: "dmLotteryMult", value: 5 },
         { id: "dm8", name: "🤖 Auto-Clicker", desc: "+5 coins/sec automatique", cost: 25, bought: false, effect: "dmAutoClick", value: 5 },
         { id: "dm9", name: "⚡ Time Warp", desc: "×2 vitesse jeu", cost: 30, bought: false, effect: "dmTimeWarp", value: 2 },
         { id: "dm10", name: "💎 Quantum Rain", desc: "+1 QC par minute", cost: 50, bought: false, effect: "dmQCRain", value: 1 }
@@ -2088,7 +2117,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let bankBoost = getShopBoost("bankBonus");
         let resBankBonus = getResearchBoost("bankBonus");
         let dmBankMult = getDMBoost("dmBankMult");
-        let bankRate = (0.00005 + bankBoost) * (1 + resBankBonus) * dmBankMult;
+        let bankRate = (0.0000001 + bankBoost) * (1 + resBankBonus) * dmBankMult;
         let bankGains = (game.bankInvested * bankRate) / FPS;
         game.bankInvested += bankGains;
         game.bankGenerated += bankGains;
