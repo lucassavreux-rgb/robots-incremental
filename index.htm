@@ -828,6 +828,22 @@ let tutPage = 0;
 let graphData = [];
 let skipQuestCheck = false;
 
+// ✅ OPTIMISATION: Système de cache pour les calculs
+let cache = {
+  prod: 0,
+  clickVal: 0,
+  starsMultiplier: 1,
+  galaxiesMultiplier: 1,
+  ascensionMultiplier: 1,
+  lastUpdate: 0,
+  isDirty: true  // Flag pour savoir si on doit recalculer
+};
+
+// Invalider le cache quand nécessaire
+function invalidateCache() {
+  cache.isDirty = true;
+}
+
 // TUTORIEL 16 pages
 const TUTORIAL = [
   `<h2 style="color: #0af; font-size: 1.8rem; margin-bottom: 1rem;">🎮 INTRODUCTION - BIENVENUE!</h2>
@@ -972,8 +988,19 @@ function tradeLog(msg, type = "info") {
   updateTradeLog();
 }
 
+// ✅ OPTIMISATION: Sauvegarde lazy (seulement si changement)
+let lastSaveTime = 0;
+let hasChanges = false;
+
 function save() { 
-  localStorage.setItem(SAVE_KEY, JSON.stringify(game)); 
+  hasChanges = true;  // Marquer qu'il y a des changements
+  
+  // Sauvegarder seulement tous les 5 secondes
+  let now = Date.now();
+  if (now - lastSaveTime < 5000) return;
+  
+  localStorage.setItem(SAVE_KEY, JSON.stringify(game));
+  lastSaveTime = now;
 }
 
 function load() {
@@ -1014,7 +1041,14 @@ function load() {
 }
 
 function getProd() {
+  // ✅ OPTIMISATION: Retourner la valeur en cache si rien n'a changé
+  if (!cache.isDirty && cache.lastUpdate === Date.now() / 1000 | 0) {
+    return cache.prod;
+  }
+
   let total = 0;
+  
+  // ✅ OPTIMISATION: Pré-calculer les multiplicateurs une fois
   for (let g of game.generators) {
     let e = 1;
     for (let u of game.upgrades) {
@@ -1029,41 +1063,36 @@ function getProd() {
   if (p && s && p.c >= 3 && s.c >= 2) sy *= 1.4;
   if (l && us && l.c >= 2 && us.c >= 5) sy *= 1.2;
 
-  let starsMultiplier = Math.pow(1.03, game.stars);
-  let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
-  let ascensionMultiplier = 1 + (game.ascension * 0.05);
+  // ✅ OPTIMISATION: Cacher les multiplicateurs
+  cache.starsMultiplier = Math.pow(1.03, game.stars);
+  cache.galaxiesMultiplier = Math.pow(1.01, game.galaxies);
+  cache.ascensionMultiplier = 1 + (game.ascension * 0.05);
 
-  // ✅ FIX: Capper les multiplicateurs pour éviter l'Infinity
-  if (!isFinite(starsMultiplier) || starsMultiplier > 1e100) starsMultiplier = 1e100;
-  if (!isFinite(galaxiesMultiplier) || galaxiesMultiplier > 1e100) galaxiesMultiplier = 1e100;
-  if (!isFinite(ascensionMultiplier) || ascensionMultiplier > 1e50) ascensionMultiplier = 1e50;
+  if (!isFinite(cache.starsMultiplier) || cache.starsMultiplier > 1e100) cache.starsMultiplier = 1e100;
+  if (!isFinite(cache.galaxiesMultiplier) || cache.galaxiesMultiplier > 1e100) cache.galaxiesMultiplier = 1e100;
+  if (!isFinite(cache.ascensionMultiplier) || cache.ascensionMultiplier > 1e50) cache.ascensionMultiplier = 1e50;
 
-  let result = (total * sy) * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
+  let result = (total * sy) * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier;
   
-  // ✅ Si le résultat est trop grand, le capper
-  if (!isFinite(result) || result > 1e308) return 1e308;
+  if (!isFinite(result) || result > 1e308) result = 1e308;
+  
+  // ✅ OPTIMISATION: Mettre en cache et marquer comme à jour
+  cache.prod = result;
+  cache.isDirty = false;
+  cache.lastUpdate = Date.now() / 1000 | 0;
   
   return result;
 }
 
 function clickVal() {
+  // ✅ OPTIMISATION: Réutiliser les multiplicateurs du cache
   let v = 1;
   for (let u of game.upgrades) {
     if (u.t === "c" && u.b > 0) v *= Math.pow(u.e, u.b);
   }
   
-  let starsMultiplier = Math.pow(1.03, game.stars);
-  let galaxiesMultiplier = Math.pow(1.01, game.galaxies);
-  let ascensionMultiplier = 1 + (game.ascension * 0.05);
+  let result = v * cache.starsMultiplier * cache.galaxiesMultiplier * (1 + game.darkMatter * 0.05) * cache.ascensionMultiplier;
   
-  // ✅ FIX: Capper les multiplicateurs
-  if (!isFinite(starsMultiplier) || starsMultiplier > 1e100) starsMultiplier = 1e100;
-  if (!isFinite(galaxiesMultiplier) || galaxiesMultiplier > 1e100) galaxiesMultiplier = 1e100;
-  if (!isFinite(ascensionMultiplier) || ascensionMultiplier > 1e50) ascensionMultiplier = 1e50;
-  
-  let result = v * starsMultiplier * galaxiesMultiplier * (1 + game.darkMatter * 0.05) * ascensionMultiplier;
-  
-  // ✅ Si le résultat est trop grand, le capper
   if (!isFinite(result) || result > 1e308) return 1e308;
   
   return result;
@@ -1086,6 +1115,7 @@ function buyGen(id) {
   if (game.coins < cost) return;
   game.coins -= cost;
   g.c++;
+  invalidateCache(); // ✅ Invalider le cache
   log("✅ +" + g.n);
   save();
   skipQuestCheck = true;
@@ -1105,6 +1135,7 @@ function buyGenMax(id) {
     count++;
   }
   if (count > 0) {
+    invalidateCache(); // ✅ Invalider le cache
     log("✅ +" + count + "x " + g.n);
     save();
     skipQuestCheck = true;
@@ -1120,6 +1151,7 @@ function buyUp(id) {
   if (game.coins < cost) return;
   game.coins -= cost;
   u.b++;
+  invalidateCache(); // ✅ Invalider le cache
   log("✅ " + u.n + " +" + (u.b) + "x");
   save();
   skipQuestCheck = true;
@@ -1139,6 +1171,7 @@ function buyUpMax(id) {
     count++;
   }
   if (count > 0) {
+    invalidateCache(); // ✅ Invalider le cache
     log("✅ " + u.n);
     save();
     skipQuestCheck = true;
@@ -1167,6 +1200,7 @@ function doPrestige() {
   game.trades.mid = { amount: 0, totalGains: 0, totalLosses: 0 };
   game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
 
+  invalidateCache(); // ✅ Invalider le cache
   log("⭐ +1! (Prestige " + game.prestige + ")");
   save();
   updateUI();
@@ -1177,6 +1211,7 @@ function doGalaxy() {
   if (game.stars < cost) return;
   game.stars -= cost;
   game.galaxies++;
+  invalidateCache(); // ✅ Invalider le cache
   log("🌀 +1!");
   save();
   updateUI();
@@ -1399,6 +1434,7 @@ function doAscension() {
   game.trades.high = { amount: 0, totalGains: 0, totalLosses: 0 };
   for (let gen of game.generators) gen.c = 0;
   for (let u of game.upgrades) u.b = 0;
+  invalidateCache(); // ✅ Invalider le cache
   log("🚀 ASCENSION! Nouveaux bonus: +" + (game.ascension * 5) + "%");
   save();
   updateUI();
@@ -1445,17 +1481,31 @@ function updateLog() {
   $("log").innerHTML = logHtml;
 }
 
+// ✅ OPTIMISATION: Cache pour éviter les updates DOM inutiles
+let uiCache = {};
+
+function setUIIfChanged(elementId, value) {
+  // Ne mettre à jour que si la valeur a changé
+  if (uiCache[elementId] !== value) {
+    let el = $(elementId);
+    if (el) el.textContent = value;
+    uiCache[elementId] = value;
+    return true;  // Changement détecté
+  }
+  return false;  // Pas de changement
+}
+
 function updateUI() {
   let p = getProd();
-  $("coins").textContent = fmt(game.coins);
-  $("cps").textContent = fmt(p);
-  $("stars").textContent = game.stars;
-  $("galaxies").textContent = game.galaxies;
-  $("dm").textContent = game.darkMatter;
-  $("dmCount").textContent = game.darkMatter;
+  setUIIfChanged("coins", fmt(game.coins));
+  setUIIfChanged("cps", fmt(p));
+  setUIIfChanged("stars", game.stars);
+  setUIIfChanged("galaxies", game.galaxies);
+  setUIIfChanged("dm", game.darkMatter);
+  setUIIfChanged("dmCount", game.darkMatter);
   
   let blockedTotal = game.trades.min.amount + game.trades.mid.amount + game.trades.high.amount;
-  $("tradeBlocked").textContent = fmt(blockedTotal);
+  setUIIfChanged("tradeBlocked", fmt(blockedTotal));
   
   let dmInfo = "";
   if (game.darkMatter === 0) {
@@ -1464,30 +1514,36 @@ function updateUI() {
     let nextDM = Math.ceil(game.prestige / 10) * 10 + 10;
     dmInfo = `✅ Débloqué! Prochain: ${nextDM} Prestige (actuellement: ${game.prestige})`;
   }
-  $("dmInfo").textContent = dmInfo;
-  $("clickVal").textContent = fmt(clickVal());
-  $("prestProg").textContent = Math.floor(game.coins);
+  if (uiCache["dmInfo"] !== dmInfo) {
+    $("dmInfo").textContent = dmInfo;
+    uiCache["dmInfo"] = dmInfo;
+  }
+  
+  setUIIfChanged("clickVal", fmt(clickVal()));
+  setUIIfChanged("prestProg", Math.floor(game.coins));
+  
   let baseCost = 50000;
   let nextPrestigeCost = baseCost * Math.pow(1.5, game.prestige);
   let prestigePossible = game.coins >= nextPrestigeCost ? 1 : 0;
-  $("prestigeCost").textContent = fmt(nextPrestigeCost);
-  $("prestigeCount").textContent = prestigePossible > 0 ? "✅ OUI" : "❌ NON";
-  $("galaxyCost").textContent = fmt(50 + (game.galaxies * 5));
-  $("totalCoins").textContent = fmt(game.totalCoins);
-  $("totalClicks").textContent = game.totalClicks;
-  $("playTime").textContent = game.playTime + "s";
-  $("presCount").textContent = game.prestige;
-  $("ascension").textContent = game.ascension || 0;
-  $("ascensionBonus").textContent = (game.ascension || 0) * 5;
-  $("ascensionCost").textContent = fmt(100 * Math.pow(2, game.ascension || 0));
-  $("ascensionRequired").textContent = 100 * Math.pow(2, game.ascension || 0);
-  $("ascensionCurrent").textContent = game.galaxies;
-  $("bankAmount").textContent = fmt(game.bankInvested || 0);
-  $("bankInvested").textContent = fmt(game.bankInvested || 0);
+  setUIIfChanged("prestigeCost", fmt(nextPrestigeCost));
+  setUIIfChanged("prestigeCount", prestigePossible > 0 ? "✅ OUI" : "❌ NON");
+  setUIIfChanged("galaxyCost", fmt(50 + (game.galaxies * 5)));
+  setUIIfChanged("totalCoins", fmt(game.totalCoins));
+  setUIIfChanged("totalClicks", game.totalClicks);
+  setUIIfChanged("playTime", game.playTime + "s");
+  setUIIfChanged("presCount", game.prestige);
+  setUIIfChanged("ascension", game.ascension || 0);
+  setUIIfChanged("ascensionBonus", (game.ascension || 0) * 5);
+  setUIIfChanged("ascensionCost", fmt(100 * Math.pow(2, game.ascension || 0)));
+  setUIIfChanged("ascensionRequired", 100 * Math.pow(2, game.ascension || 0));
+  setUIIfChanged("ascensionCurrent", game.galaxies);
+  setUIIfChanged("bankAmount", fmt(game.bankInvested || 0));
+  setUIIfChanged("bankInvested", fmt(game.bankInvested || 0));
+  
   let bankGains = ((game.bankInvested || 0) * 0.001) / FPS;
-  $("bankGains").textContent = fmt(bankGains);
-  $("bankGenerated").textContent = fmt(game.bankGenerated || 0);
-  $("lotteryTickets").textContent = game.lotteryTickets || 0;
+  setUIIfChanged("bankGains", fmt(bankGains));
+  setUIIfChanged("bankGenerated", fmt(game.bankGenerated || 0));
+  setUIIfChanged("lotteryTickets", game.lotteryTickets || 0);
   let lotteryHtml = "";
   if (game.lotteryLog) {
     for (let log of game.lotteryLog) {
@@ -1620,23 +1676,42 @@ document.addEventListener("DOMContentLoaded", function() {
   log("Bienvenue!");
   updateTradeLog();
   
-  // GAME LOOPS
-  setInterval(() => {
+  // ✅ OPTIMISATION: Utiliser requestAnimationFrame pour les calculs
+  // et faire les updates UI de manière plus efficace
+  let lastUIUpdate = 0;
+  const UI_UPDATE_INTERVAL = 1000 / 10;  // 10 FPS pour l'UI
+  
+  function gameLoop(currentTime) {
+    // ✅ Calculs toutes les frames (rapide et léger)
     let p = getProd();
     game.coins += p / FPS;
     game.totalCoins += p / FPS;
+    
+    // ✅ Banque tous les frames
     if (game.bankInvested > 0) {
       let bankGains = (game.bankInvested * 0.001) / FPS;
       game.bankInvested += bankGains;
       game.bankGenerated += bankGains;
     }
+    
+    // ✅ Trading tous les frames
     processTradeGains();
-    updateUI();
-  }, 1000 / FPS);
+    
+    // ✅ UI update seulement tous les 100ms (10 FPS)
+    if (currentTime - lastUIUpdate >= UI_UPDATE_INTERVAL) {
+      updateUI();
+      lastUIUpdate = currentTime;
+    }
+    
+    requestAnimationFrame(gameLoop);
+  }
   
+  // Démarrer la boucle
+  requestAnimationFrame(gameLoop);
+  
+  // ✅ PlayTime update séparé (1x par seconde)
   setInterval(() => {
     game.playTime++;
-    updateUI();
   }, 1000);
 });
 </script>
