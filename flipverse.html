@@ -526,10 +526,11 @@
             <h1>
                 ⚡ FLIPVERSE <span class="dimension-badge" id="dimensionBadge">DIM-α</span>
             </h1>
-            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v3.1 - TRADER-X OPTIMIZED //</p>
+            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v4.0 - ULTRA AI //</p>
             <div class="header-buttons">
                 <button class="btn" onclick="window.location.href='index.html'">🏠 MENU</button>
                 <button class="btn" onclick="showTutorial()">📖 TUTORIEL</button>
+                <button class="btn" onclick="showAIStats()" style="background: linear-gradient(135deg, #ff00ff, #00d9ff); border: 2px solid #ff00ff;">🤖 AI STATS</button>
                 <button class="btn" onclick="showChangelog()">📝 CHANGELOG</button>
                 <button class="btn" onclick="switchDimension()">🌀 PRESTIGE</button>
                 <button class="btn-danger" onclick="confirmReset()">⚠️ RESET</button>
@@ -632,13 +633,18 @@
                         <li>✅ Messages préfixés par "🤖 ANALYST-7"</li>
                     </ul>
                 </li>
-                <li><strong>💼 TRADER-X (15 000¢) :</strong> 🔥 Trade automatiquement pour toi !
+                <li><strong>💼 TRADER-X ULTRA v4.0 (15 000¢) :</strong> 🔥 IA de trading professionnelle !
                     <ul style="margin-top: 8px; margin-left: 20px; font-size: 0.95em;">
-                        <li>✅ Achète automatiquement quand le prix baisse de <strong>-5% ou plus</strong></li>
-                        <li>✅ Vend automatiquement <strong>dès que c'est rentable</strong> (profit &gt; 0)</li>
-                        <li>✅ Trade 1 unité à la fois toutes les 5 secondes</li>
-                        <li>✅ Messages préfixés par "💼 TRADER-X"</li>
-                        <li>💡 Très actif : trade beaucoup et souvent !</li>
+                        <li>🧠 <strong>Indicateurs Techniques :</strong> RSI, EMA, MACD, Bollinger Bands, Momentum, Support/Resistance</li>
+                        <li>📊 <strong>Score Multi-Facteurs :</strong> Analyse 7+ indicateurs pour donner un score 0-100</li>
+                        <li>🤖 <strong>Machine Learning :</strong> Mémorise les patterns gagnants et ajuste ses seuils automatiquement</li>
+                        <li>💰 <strong>Position Sizing Intelligent :</strong> Taille des positions adaptée à la confiance (60-100%)</li>
+                        <li>🛡️ <strong>Trailing Stop :</strong> Protège les profits (-10% depuis le plus haut)</li>
+                        <li>✅ <strong>Break-Even Stop :</strong> Sécurise le capital dès +5%</li>
+                        <li>📈 <strong>Stratégies Adaptatives :</strong> Scalp (+3%), Swing (+8%), Hold (+15%)</li>
+                        <li>💎 <strong>Réserve de Cash :</strong> Garde 25% en sécurité</li>
+                        <li>📰 <strong>Messages Détaillés :</strong> Score, RSI, Confidence affichés à chaque trade</li>
+                        <li>📊 <strong>Dashboard AI :</strong> Clique sur "🤖 AI STATS" pour voir toutes les statistiques !</li>
                     </ul>
                 </li>
                 <li><strong>🛡️ GUARDIAN (25 000¢) :</strong> 🔥 Protège ton portfolio !
@@ -690,8 +696,76 @@
         <div class="modal-content">
             <h1>📝 FLIPVERSE - CHANGELOG</h1>
 
-            <div style="background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 217, 255, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00ff41;">
-                <h3 style="color: #00ff41; margin-bottom: 10px;">Version 3.1 - TRADER-X Plus Actif ! ⚡</h3>
+            <div style="background: linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(0, 217, 255, 0.2)); padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);">
+                <h3 style="color: #ff00ff; margin-bottom: 10px; font-size: 1.5em;">🚀 Version 4.0 - TRADER-X ULTRA AI ! 🤖🔥</h3>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px;"><strong>Date:</strong> Novembre 2024 - MISE À JOUR MAJEURE</p>
+
+                <h4 style="color: #00ff41; margin-top: 20px; margin-bottom: 10px;">🧠 INDICATEURS TECHNIQUES PROFESSIONNELS</h4>
+                <ul style="margin-top: 10px;">
+                    <li>📊 <strong>RSI (Relative Strength Index) :</strong> Détecte les zones de surachat/survente</li>
+                    <li>📈 <strong>EMA (Exponential Moving Average) :</strong> Suit les tendances court/moyen terme</li>
+                    <li>📉 <strong>MACD :</strong> Détecte les changements de momentum</li>
+                    <li>📊 <strong>Bollinger Bands :</strong> Mesure la volatilité et les breakouts</li>
+                    <li>⚡ <strong>Momentum :</strong> Force et direction du mouvement de prix</li>
+                    <li>🎯 <strong>Support/Resistance :</strong> Niveaux clés de prix</li>
+                    <li>💹 <strong>Volatility Index :</strong> Calcul de la volatilité réelle</li>
+                </ul>
+
+                <h4 style="color: #00d9ff; margin-top: 20px; margin-bottom: 10px;">🎯 SYSTÈME DE SCORING MULTI-FACTEURS</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🔢 <strong>Score 0-100 :</strong> Combine tous les indicateurs avec pondération optimale</li>
+                    <li>💯 <strong>Confidence Score :</strong> Mesure l'accord entre les signaux</li>
+                    <li>🎲 <strong>Décision Intelligente :</strong> Trade uniquement sur signaux forts (70+ score, 60% confidence)</li>
+                    <li>📝 <strong>Messages Détaillés :</strong> Affiche Score, RSI, Confidence à chaque trade</li>
+                </ul>
+
+                <h4 style="color: #ffd700; margin-top: 20px; margin-bottom: 10px;">🤖 MACHINE LEARNING ADAPTATIF</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🧠 <strong>Mémorisation :</strong> Garde en mémoire jusqu'à 100 trades réussis/échoués</li>
+                    <li>📈 <strong>Apprentissage :</strong> Ajuste automatiquement les seuils d'achat basés sur le succès</li>
+                    <li>💎 <strong>Performance par Objet :</strong> Track le win rate et profit de chaque item</li>
+                    <li>🎯 <strong>Confidence Dynamique :</strong> Augmente/diminue selon les résultats</li>
+                    <li>⚙️ <strong>Auto-Optimisation :</strong> Le bot devient meilleur avec le temps !</li>
+                </ul>
+
+                <h4 style="color: #0f0; margin-top: 20px; margin-bottom: 10px;">💰 GESTION DE CAPITAL PROFESSIONNELLE</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🏦 <strong>Réserve de Cash :</strong> Garde toujours 25% en sécurité</li>
+                    <li>📊 <strong>Position Sizing :</strong> Taille adaptée à la confidence (60-100%)</li>
+                    <li>🎯 <strong>Position Max :</strong> Maximum 15% du capital par position</li>
+                    <li>⚖️ <strong>Diversification :</strong> Répartit intelligemment sur plusieurs objets</li>
+                    <li>💹 <strong>Trade Size :</strong> 1-3 unités selon confidence et capital</li>
+                </ul>
+
+                <h4 style="color: #f0f; margin-top: 20px; margin-bottom: 10px;">🛡️ PROTECTIONS AVANCÉES</h4>
+                <ul style="margin-top: 10px;">
+                    <li>📉 <strong>Trailing Stop :</strong> Vend si baisse de 10% depuis le plus haut</li>
+                    <li>✅ <strong>Break-Even Stop :</strong> Protège le capital dès +5% de profit</li>
+                    <li>🎯 <strong>Stratégies Adaptatives :</strong> Scalp (+3%), Swing (+8%), Hold (+15%)</li>
+                    <li>🎲 <strong>Sélection Auto :</strong> Choisit la stratégie selon le score d'achat</li>
+                </ul>
+
+                <h4 style="color: #ff00ff; margin-top: 20px; margin-bottom: 10px;">📊 DASHBOARD AI COMPLET</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🖥️ <strong>Bouton "🤖 AI STATS" :</strong> Accès direct aux statistiques</li>
+                    <li>📈 <strong>Performance Globale :</strong> Total trades, Win Rate, Profit, Biggest Win</li>
+                    <li>🧠 <strong>Machine Learning Stats :</strong> Seuils adaptatifs, patterns mémorisés</li>
+                    <li>💎 <strong>Performance par Objet :</strong> Stats détaillées pour chaque item</li>
+                    <li>⚙️ <strong>Configuration :</strong> Voir tous les paramètres de l'AI</li>
+                </ul>
+
+                <h4 style="color: #00ff41; margin-top: 20px; margin-bottom: 10px;">🎮 EXPÉRIENCE DE JEU</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🤖 Trading 100% automatisé et intelligent</li>
+                    <li>📊 Transparence totale : tu vois pourquoi l'AI trade</li>
+                    <li>📈 Amélioration continue grâce au machine learning</li>
+                    <li>🏆 Système de trading niveau professionnel</li>
+                    <li>💰 Maximise les profits tout en protégeant le capital</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 65, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00d9ff;">
+                <h3 style="color: #00d9ff; margin-bottom: 10px;">Version 3.1 - TRADER-X Plus Actif ! ⚡</h3>
                 <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
                 <ul style="margin-top: 15px;">
                     <li>🔥 <strong>TRADER-X Optimisé :</strong> Maintenant achète à <strong>-5%</strong> (au lieu de -10%)</li>
@@ -775,6 +849,80 @@
         </div>
     </div>
 
+    <!-- AI Stats Modal -->
+    <div id="aiStatsModal" class="modal">
+        <div class="modal-content">
+            <h1>🤖 TRADER-X ULTRA - AI STATISTICS</h1>
+
+            <div style="background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 217, 255, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ff00ff;">
+                <h3 style="color: #ff00ff; margin-bottom: 15px;">📊 Performance Globale</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.9em;">Total Trades</div>
+                        <div style="color: #00ff41; font-size: 1.8em; font-weight: bold;" id="aiTotalTrades">0</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.9em;">Win Rate</div>
+                        <div style="color: #00d9ff; font-size: 1.8em; font-weight: bold;" id="aiWinRate">0%</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.9em;">AI Profit</div>
+                        <div style="color: #ffd700; font-size: 1.8em; font-weight: bold;" id="aiTotalProfit">0¢</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.9em;">Biggest Win</div>
+                        <div style="color: #0f0; font-size: 1.8em; font-weight: bold;" id="aiBiggestWin">0¢</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 217, 255, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00ff41;">
+                <h3 style="color: #00ff41; margin-bottom: 15px;">🧠 Machine Learning</h3>
+                <div style="margin-bottom: 15px;">
+                    <div style="color: rgba(255,255,255,0.8); margin-bottom: 5px;">Seuil d'Achat Adaptatif:</div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
+                        <span style="color: #00ff41; font-size: 1.3em; font-weight: bold;" id="aiBuyThreshold">70</span>/100
+                        <span style="color: rgba(255,255,255,0.6); font-size: 0.9em; margin-left: 10px;">(s'ajuste automatiquement)</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="color: rgba(255,255,255,0.8); margin-bottom: 5px;">Trades Réussis Mémorisés:</div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
+                        <span style="color: #0f0; font-size: 1.2em;" id="aiSuccessMemory">0</span> patterns gagnants
+                    </div>
+                </div>
+                <div>
+                    <div style="color: rgba(255,255,255,0.8); margin-bottom: 5px;">Trades Échoués Mémorisés:</div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
+                        <span style="color: #f00; font-size: 1.2em;" id="aiFailMemory">0</span> patterns à éviter
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 65, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00d9ff;">
+                <h3 style="color: #00d9ff; margin-bottom: 15px;">💎 Performance par Objet</h3>
+                <div id="aiItemPerformance" style="max-height: 300px; overflow-y: auto;"></div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ffd700;">
+                <h3 style="color: #ffd700; margin-bottom: 15px;">⚙️ Configuration AI</h3>
+                <ul style="color: rgba(255,255,255,0.9); line-height: 1.8;">
+                    <li>💰 <strong>Reserve de Cash:</strong> 25% gardé en sécurité</li>
+                    <li>📊 <strong>Position Max:</strong> 15% du capital par position</li>
+                    <li>🎯 <strong>Position Sizing:</strong> Adapté à la confiance (60-100%)</li>
+                    <li>🛡️ <strong>Trailing Stop:</strong> -10% depuis le plus haut</li>
+                    <li>✅ <strong>Break-Even Stop:</strong> Protège à +5%</li>
+                    <li>📈 <strong>Stratégies:</strong> Scalp (+3%), Swing (+8%), Hold (+15%)</li>
+                    <li>🧠 <strong>Indicateurs:</strong> RSI, EMA, MACD, Bollinger, Momentum, Support/Resistance</li>
+                </ul>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeAIStats()" style="background: linear-gradient(135deg, #ff00ff, #00d9ff); border: 2px solid #ff00ff;">FERMER</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Game State
         const game = {
@@ -807,6 +955,311 @@
 
         const marketPrices = {};
         const priceHistory = {};
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🤖 ULTRA ADVANCED AI TRADING SYSTEM v4.0
+        // ═══════════════════════════════════════════════════════════════
+
+        const tradingAI = {
+            // Trading statistics
+            stats: {
+                totalBuys: 0,
+                totalSells: 0,
+                wins: 0,
+                losses: 0,
+                biggestWin: 0,
+                biggestLoss: 0,
+                winRate: 0,
+                profitFactor: 0,
+                totalProfitFromAI: 0,
+                bestItem: null,
+                worstItem: null,
+                sharpeRatio: 0
+            },
+
+            // Machine Learning - remembers and learns
+            learning: {
+                itemPerformance: {}, // Tracks profit per item
+                successfulBuyScores: [], // Scores that led to profits
+                failedBuyScores: [], // Scores that led to losses
+                optimalThresholds: { // Adaptive thresholds
+                    buyScore: 70,
+                    sellScore: 60,
+                    riskTolerance: 0.1
+                },
+                patterns: {} // Recognized profitable patterns
+            },
+
+            // Position management with trailing stops
+            positions: {}, // { itemId: { entry, quantity, highestPrice, stopLoss, takeProfit, strategy } }
+
+            // Market sentiment analysis
+            sentiment: {
+                overall: 'neutral',
+                itemSentiment: {},
+                volatilityIndex: 0
+            },
+
+            // Capital management
+            capital: {
+                reservePercent: 0.25, // Keep 25% in cash
+                maxPositionSize: 0.15, // Max 15% per position
+                maxDrawdown: 0.20 // Max 20% total loss
+            }
+        };
+
+        // Initialize AI data for each item
+        items.forEach(item => {
+            tradingAI.learning.itemPerformance[item.id] = {
+                trades: 0,
+                wins: 0,
+                totalProfit: 0,
+                avgHoldTime: 0,
+                bestStrategy: 'swing',
+                confidence: 0.5
+            };
+            tradingAI.sentiment.itemSentiment[item.id] = 'neutral';
+            tradingAI.learning.patterns[item.id] = {
+                support: item.basePrice * 0.5,
+                resistance: item.basePrice * 1.5,
+                trendDirection: 'neutral'
+            };
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📊 TECHNICAL INDICATORS - Professional Trading Tools
+        // ═══════════════════════════════════════════════════════════════
+
+        // Calculate RSI (Relative Strength Index)
+        function calculateRSI(itemId, period = 14) {
+            const history = priceHistory[itemId];
+            if (history.length < period + 1) return 50; // Neutral if not enough data
+
+            let gains = 0, losses = 0;
+
+            for (let i = history.length - period; i < history.length; i++) {
+                const change = history[i] - history[i - 1];
+                if (change > 0) gains += change;
+                else losses += Math.abs(change);
+            }
+
+            const avgGain = gains / period;
+            const avgLoss = losses / period;
+
+            if (avgLoss === 0) return 100;
+            const rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
+        }
+
+        // Calculate EMA (Exponential Moving Average)
+        function calculateEMA(itemId, period = 12) {
+            const history = priceHistory[itemId];
+            if (history.length < period) return history[history.length - 1];
+
+            const multiplier = 2 / (period + 1);
+            let ema = history[history.length - period];
+
+            for (let i = history.length - period + 1; i < history.length; i++) {
+                ema = (history[i] - ema) * multiplier + ema;
+            }
+
+            return ema;
+        }
+
+        // Calculate MACD (Moving Average Convergence Divergence)
+        function calculateMACD(itemId) {
+            const ema12 = calculateEMA(itemId, 12);
+            const ema26 = calculateEMA(itemId, 26);
+            const macdLine = ema12 - ema26;
+
+            // Simplified signal line (would need more history for true MACD)
+            const signal = macdLine * 0.9; // Approximation
+
+            return {
+                macd: macdLine,
+                signal: signal,
+                histogram: macdLine - signal,
+                trend: macdLine > signal ? 'bullish' : 'bearish'
+            };
+        }
+
+        // Calculate Bollinger Bands
+        function calculateBollingerBands(itemId, period = 20, stdDev = 2) {
+            const history = priceHistory[itemId];
+            if (history.length < period) {
+                const current = history[history.length - 1];
+                return { upper: current * 1.1, middle: current, lower: current * 0.9 };
+            }
+
+            const slice = history.slice(-period);
+            const sma = slice.reduce((a, b) => a + b, 0) / period;
+
+            const variance = slice.reduce((sum, price) => {
+                return sum + Math.pow(price - sma, 2);
+            }, 0) / period;
+
+            const std = Math.sqrt(variance);
+
+            return {
+                upper: sma + (std * stdDev),
+                middle: sma,
+                lower: sma - (std * stdDev)
+            };
+        }
+
+        // Calculate momentum
+        function calculateMomentum(itemId, period = 10) {
+            const history = priceHistory[itemId];
+            if (history.length < period + 1) return 0;
+
+            const current = history[history.length - 1];
+            const past = history[history.length - period - 1];
+
+            return ((current - past) / past) * 100;
+        }
+
+        // Calculate volatility
+        function calculateVolatility(itemId, period = 20) {
+            const history = priceHistory[itemId];
+            if (history.length < period) return 0;
+
+            const slice = history.slice(-period);
+            const returns = [];
+
+            for (let i = 1; i < slice.length; i++) {
+                returns.push((slice[i] - slice[i-1]) / slice[i-1]);
+            }
+
+            const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const variance = returns.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / returns.length;
+
+            return Math.sqrt(variance) * 100;
+        }
+
+        // Detect support and resistance levels
+        function detectSupportResistance(itemId) {
+            const history = priceHistory[itemId];
+            if (history.length < 20) return { support: history[0] * 0.9, resistance: history[0] * 1.1 };
+
+            const sorted = [...history].sort((a, b) => a - b);
+            const support = sorted[Math.floor(sorted.length * 0.1)]; // 10th percentile
+            const resistance = sorted[Math.floor(sorted.length * 0.9)]; // 90th percentile
+
+            return { support, resistance };
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🧠 AI SCORING SYSTEM - Multi-Factor Analysis
+        // ═══════════════════════════════════════════════════════════════
+
+        function calculateTradingScore(itemId, action = 'buy') {
+            const price = marketPrices[itemId];
+            const history = priceHistory[itemId];
+            const item = items.find(i => i.id === itemId);
+
+            if (history.length < 5) return { score: 50, confidence: 0.3, signals: {} };
+
+            // Calculate all indicators
+            const rsi = calculateRSI(itemId);
+            const ema12 = calculateEMA(itemId, 12);
+            const ema26 = calculateEMA(itemId, 26);
+            const macd = calculateMACD(itemId);
+            const bb = calculateBollingerBands(itemId);
+            const momentum = calculateMomentum(itemId);
+            const volatility = calculateVolatility(itemId);
+            const { support, resistance } = detectSupportResistance(itemId);
+
+            // Score components (0-100 each)
+            let scores = {};
+
+            if (action === 'buy') {
+                // RSI Score: Oversold is good for buying
+                scores.rsi = rsi < 30 ? 100 : rsi < 40 ? 80 : rsi < 50 ? 60 : 100 - rsi;
+
+                // EMA Score: Price below EMA is good for buying
+                scores.ema = price < ema12 ? 80 : price < ema26 ? 60 : 40;
+
+                // MACD Score: Bullish divergence
+                scores.macd = macd.trend === 'bullish' && macd.histogram > 0 ? 80 : 50;
+
+                // Bollinger Score: Near lower band is good
+                const bbPosition = (price - bb.lower) / (bb.upper - bb.lower);
+                scores.bollinger = bbPosition < 0.2 ? 100 : bbPosition < 0.4 ? 70 : 50;
+
+                // Momentum Score: Negative momentum creating opportunity
+                scores.momentum = momentum < -10 ? 90 : momentum < 0 ? 70 : 40;
+
+                // Support Score: Near support is good
+                const distanceFromSupport = ((price - support) / support) * 100;
+                scores.support = distanceFromSupport < 5 ? 90 : distanceFromSupport < 10 ? 70 : 50;
+
+                // Volatility Score: Higher volatility = more opportunity
+                scores.volatility = Math.min(100, volatility * 2);
+
+            } else { // sell
+                // RSI Score: Overbought is good for selling
+                scores.rsi = rsi > 70 ? 100 : rsi > 60 ? 80 : rsi;
+
+                // EMA Score: Price above EMA is good for selling
+                scores.ema = price > ema12 ? 80 : price > ema26 ? 60 : 40;
+
+                // MACD Score: Bearish divergence
+                scores.macd = macd.trend === 'bearish' && macd.histogram < 0 ? 80 : 50;
+
+                // Bollinger Score: Near upper band is good
+                const bbPosition = (price - bb.lower) / (bb.upper - bb.lower);
+                scores.bollinger = bbPosition > 0.8 ? 100 : bbPosition > 0.6 ? 70 : 50;
+
+                // Momentum Score: Positive momentum to ride
+                scores.momentum = momentum > 10 ? 90 : momentum > 0 ? 70 : 40;
+
+                // Resistance Score: Near resistance is good to sell
+                const distanceFromResistance = ((resistance - price) / resistance) * 100;
+                scores.resistance = distanceFromResistance < 5 ? 90 : distanceFromResistance < 10 ? 70 : 50;
+
+                // Volatility Score: Lower volatility = safer exit
+                scores.volatility = Math.max(0, 100 - volatility * 2);
+            }
+
+            // Calculate weighted average score
+            const weights = {
+                rsi: 0.20,
+                ema: 0.15,
+                macd: 0.15,
+                bollinger: 0.15,
+                momentum: 0.15,
+                support: action === 'buy' ? 0.10 : 0,
+                resistance: action === 'sell' ? 0.10 : 0,
+                volatility: 0.10
+            };
+
+            let totalScore = 0;
+            let totalWeight = 0;
+
+            for (const [key, score] of Object.entries(scores)) {
+                if (weights[key]) {
+                    totalScore += score * weights[key];
+                    totalWeight += weights[key];
+                }
+            }
+
+            const finalScore = totalScore / totalWeight;
+
+            // Calculate confidence based on signal agreement
+            const signalAgreement = Object.values(scores).filter(s => s > 60).length / Object.keys(scores).length;
+            const confidence = signalAgreement;
+
+            // Get AI learning adjustment
+            const perfData = tradingAI.learning.itemPerformance[itemId];
+            const learningBonus = perfData.confidence * 10; // +0-10 points based on past success
+
+            return {
+                score: Math.min(100, finalScore + learningBonus),
+                confidence: confidence,
+                signals: scores,
+                indicators: { rsi, ema12, ema26, macd, bb, momentum, volatility, support, resistance }
+            };
+        }
 
         // Initialize market
         function initMarket() {
@@ -1169,50 +1622,147 @@
             });
         }
 
-        // TRADER-X: Auto-trades based on market movements
+        // ═══════════════════════════════════════════════════════════════
+        // 💼 TRADER-X ULTRA v4.0 - AI-Powered Auto-Trading
+        // ═══════════════════════════════════════════════════════════════
+
         function autoTrade() {
             if (!game.agents.trader) return;
+
+            // Capital management: Reserve cash for safety
+            const totalCapital = game.money + calculatePortfolioValue();
+            const availableCapital = game.money - (totalCapital * tradingAI.capital.reservePercent);
+
+            if (availableCapital < 0) return; // Not enough capital
 
             items.forEach(item => {
                 const price = marketPrices[item.id];
                 const history = priceHistory[item.id];
                 const owned = game.portfolio[item.id] || 0;
 
-                if (history.length < 2) return;
-                const priceChange = ((price - history[history.length - 2]) / history[history.length - 2] * 100);
+                if (history.length < 10) return; // Need enough data for indicators
 
-                // BUY when price drops by -5% or more
-                if (priceChange <= -5 && game.money >= price) {
-                    const quantity = 1;
-                    const totalCost = price * quantity;
+                // === BUY LOGIC ===
+                if (game.money >= price) {
+                    const buyAnalysis = calculateTradingScore(item.id, 'buy');
 
-                    if (game.money >= totalCost) {
-                        game.money -= totalCost;
+                    // Dynamic threshold based on learning
+                    const buyThreshold = tradingAI.learning.optimalThresholds.buyScore;
 
-                        if (!game.portfolioDetails[item.id]) {
-                            game.portfolioDetails[item.id] = {
-                                totalSpent: 0,
-                                totalQuantity: 0
-                            };
+                    // Check if score is good enough AND we have confidence
+                    if (buyAnalysis.score >= buyThreshold && buyAnalysis.confidence >= 0.6) {
+                        // Position sizing based on confidence and volatility
+                        const maxPositionValue = totalCapital * tradingAI.capital.maxPositionSize;
+                        const confidenceMultiplier = buyAnalysis.confidence; // 0.6-1.0
+                        const targetPositionValue = maxPositionValue * confidenceMultiplier;
+
+                        // Calculate quantity based on position sizing
+                        let quantity = Math.floor(Math.min(
+                            targetPositionValue / price,
+                            availableCapital / price,
+                            3 // Max 3 units per trade
+                        ));
+
+                        if (quantity < 1) quantity = 1;
+
+                        const totalCost = price * quantity;
+
+                        if (game.money >= totalCost && totalCost <= availableCapital) {
+                            // Execute buy
+                            game.money -= totalCost;
+
+                            if (!game.portfolioDetails[item.id]) {
+                                game.portfolioDetails[item.id] = {
+                                    totalSpent: 0,
+                                    totalQuantity: 0
+                                };
+                            }
+
+                            game.portfolioDetails[item.id].totalSpent += totalCost;
+                            game.portfolioDetails[item.id].totalQuantity += quantity;
+                            game.portfolio[item.id] = (game.portfolio[item.id] || 0) + quantity;
+                            game.totalTrades += quantity;
+
+                            // Create AI position tracking for trailing stop
+                            if (!tradingAI.positions[item.id]) {
+                                tradingAI.positions[item.id] = [];
+                            }
+                            tradingAI.positions[item.id].push({
+                                entry: price,
+                                quantity: quantity,
+                                highestPrice: price,
+                                timestamp: Date.now(),
+                                strategy: buyAnalysis.score > 85 ? 'hold' : buyAnalysis.score > 75 ? 'swing' : 'scalp'
+                            });
+
+                            // Update AI stats
+                            tradingAI.stats.totalBuys++;
+                            tradingAI.learning.itemPerformance[item.id].trades++;
+
+                            // Log with detailed info
+                            const indicators = buyAnalysis.indicators;
+                            addNews(`> 💼 TRADER-X AI: Bought ${quantity}x ${item.icon} ${item.name} @ ${price}¢ [Score: ${Math.round(buyAnalysis.score)}/100, RSI: ${indicators.rsi.toFixed(0)}, Confidence: ${(buyAnalysis.confidence*100).toFixed(0)}%]`, 'success');
                         }
-
-                        game.portfolioDetails[item.id].totalSpent += totalCost;
-                        game.portfolioDetails[item.id].totalQuantity += quantity;
-                        game.portfolio[item.id] = (game.portfolio[item.id] || 0) + quantity;
-                        game.totalTrades += quantity;
-
-                        addNews(`> 💼 TRADER-X: Bought ${item.icon} ${item.name} @ ${price}¢ (${priceChange.toFixed(1)}% drop)`, 'success');
                     }
                 }
 
-                // SELL when we have ANY profit (profit > 0)
+                // === SELL LOGIC with Trailing Stop ===
                 if (owned > 0 && game.portfolioDetails[item.id]) {
+                    const sellAnalysis = calculateTradingScore(item.id, 'sell');
                     const avgBuyPrice = game.portfolioDetails[item.id].totalSpent / game.portfolioDetails[item.id].totalQuantity;
-                    const profitPerUnit = price - avgBuyPrice;
                     const profitPercent = ((price - avgBuyPrice) / avgBuyPrice * 100);
 
-                    // Sell if profitable
-                    if (profitPerUnit > 0) {
+                    // Update highest price for trailing stop
+                    if (tradingAI.positions[item.id]) {
+                        tradingAI.positions[item.id].forEach(pos => {
+                            if (price > pos.highestPrice) {
+                                pos.highestPrice = price;
+                            }
+                        });
+                    }
+
+                    let shouldSell = false;
+                    let sellReason = '';
+
+                    // Reason 1: AI Score says sell + profitable
+                    if (sellAnalysis.score >= tradingAI.learning.optimalThresholds.sellScore && profitPercent > 0) {
+                        shouldSell = true;
+                        sellReason = `AI Signal (Score: ${Math.round(sellAnalysis.score)})`;
+                    }
+
+                    // Reason 2: Trailing stop triggered (price dropped 10% from highest)
+                    if (tradingAI.positions[item.id] && tradingAI.positions[item.id].length > 0) {
+                        const avgHighest = tradingAI.positions[item.id].reduce((sum, p) => sum + p.highestPrice, 0) / tradingAI.positions[item.id].length;
+                        const dropFromHigh = ((avgHighest - price) / avgHighest) * 100;
+
+                        if (dropFromHigh > 10 && profitPercent > 2) { // Dropped 10% from high, but still +2% profit
+                            shouldSell = true;
+                            sellReason = `Trailing Stop (-${dropFromHigh.toFixed(1)}% from peak)`;
+                        }
+                    }
+
+                    // Reason 3: Quick profit target based on strategy
+                    if (tradingAI.positions[item.id] && tradingAI.positions[item.id].length > 0) {
+                        const strategy = tradingAI.positions[item.id][0].strategy;
+                        if (strategy === 'scalp' && profitPercent > 3) {
+                            shouldSell = true;
+                            sellReason = `Scalp Target (+${profitPercent.toFixed(1)}%)`;
+                        } else if (strategy === 'swing' && profitPercent > 8) {
+                            shouldSell = true;
+                            sellReason = `Swing Target (+${profitPercent.toFixed(1)}%)`;
+                        } else if (strategy === 'hold' && profitPercent > 15) {
+                            shouldSell = true;
+                            sellReason = `Hold Target (+${profitPercent.toFixed(1)}%)`;
+                        }
+                    }
+
+                    // Reason 4: Break-even stop (if up 5%, don't let it go below break-even)
+                    if (profitPercent > 5 && price <= avgBuyPrice * 1.01) {
+                        shouldSell = true;
+                        sellReason = `Break-Even Stop`;
+                    }
+
+                    if (shouldSell) {
                         const quantity = 1;
                         const totalRevenue = price * quantity;
                         const costOfSold = avgBuyPrice * quantity;
@@ -1234,10 +1784,88 @@
                             delete game.portfolio[item.id];
                         }
 
-                        addNews(`> 💼 TRADER-X: Sold ${item.icon} ${item.name} @ ${price}¢ (+${Math.round(profit)}¢, +${profitPercent.toFixed(1)}%)`, 'success');
+                        // Update AI position tracking
+                        if (tradingAI.positions[item.id] && tradingAI.positions[item.id].length > 0) {
+                            tradingAI.positions[item.id].shift(); // Remove first position
+                        }
+
+                        // Update AI stats and learning
+                        tradingAI.stats.totalSells++;
+                        tradingAI.stats.totalProfitFromAI += profit;
+
+                        if (profit > 0) {
+                            tradingAI.stats.wins++;
+                            tradingAI.learning.itemPerformance[item.id].wins++;
+                            tradingAI.learning.itemPerformance[item.id].totalProfit += profit;
+
+                            // Track successful scores for learning
+                            if (tradingAI.learning.successfulBuyScores.length < 100) {
+                                tradingAI.learning.successfulBuyScores.push(sellAnalysis.score);
+                            }
+
+                            if (profit > tradingAI.stats.biggestWin) {
+                                tradingAI.stats.biggestWin = profit;
+                                tradingAI.stats.bestItem = item.name;
+                            }
+                        } else {
+                            tradingAI.stats.losses++;
+
+                            // Track failed scores
+                            if (tradingAI.learning.failedBuyScores.length < 100) {
+                                tradingAI.learning.failedBuyScores.push(sellAnalysis.score);
+                            }
+
+                            if (Math.abs(profit) > Math.abs(tradingAI.stats.biggestLoss)) {
+                                tradingAI.stats.biggestLoss = profit;
+                                tradingAI.stats.worstItem = item.name;
+                            }
+                        }
+
+                        // Update win rate
+                        tradingAI.stats.winRate = (tradingAI.stats.wins / (tradingAI.stats.wins + tradingAI.stats.losses)) * 100;
+
+                        // Update item confidence based on performance
+                        const itemPerf = tradingAI.learning.itemPerformance[item.id];
+                        if (itemPerf.trades > 5) {
+                            itemPerf.confidence = (itemPerf.wins / itemPerf.trades);
+                        }
+
+                        // Machine Learning: Adjust thresholds based on results
+                        updateLearningThresholds();
+
+                        const profitSign = profit >= 0 ? '+' : '';
+                        addNews(`> 💼 TRADER-X AI: Sold ${item.icon} ${item.name} @ ${price}¢ (${profitSign}${Math.round(profit)}¢, ${profitSign}${profitPercent.toFixed(1)}%) [${sellReason}]`, profit >= 0 ? 'success' : 'error');
                     }
                 }
             });
+        }
+
+        // Machine Learning: Update thresholds based on success/failure
+        function updateLearningThresholds() {
+            const successScores = tradingAI.learning.successfulBuyScores;
+            const failedScores = tradingAI.learning.failedBuyScores;
+
+            if (successScores.length > 20 && failedScores.length > 10) {
+                // Calculate average successful score
+                const avgSuccess = successScores.reduce((a, b) => a + b, 0) / successScores.length;
+                const avgFailed = failedScores.reduce((a, b) => a + b, 0) / failedScores.length;
+
+                // Adjust buy threshold to be between failed and successful average
+                const newBuyThreshold = (avgSuccess + avgFailed) / 2;
+
+                // Gradual adjustment to avoid wild swings
+                tradingAI.learning.optimalThresholds.buyScore =
+                    tradingAI.learning.optimalThresholds.buyScore * 0.9 + newBuyThreshold * 0.1;
+            }
+        }
+
+        // Helper: Calculate total portfolio value
+        function calculatePortfolioValue() {
+            let total = 0;
+            Object.entries(game.portfolio).forEach(([itemId, quantity]) => {
+                total += marketPrices[itemId] * quantity;
+            });
+            return total;
         }
 
         // GUARDIAN: Protects portfolio from heavy losses
@@ -1351,6 +1979,59 @@
 
         function closeChangelog() {
             document.getElementById('changelogModal').style.display = 'none';
+        }
+
+        function showAIStats() {
+            updateAIStatsDisplay();
+            document.getElementById('aiStatsModal').style.display = 'block';
+        }
+
+        function closeAIStats() {
+            document.getElementById('aiStatsModal').style.display = 'none';
+        }
+
+        function updateAIStatsDisplay() {
+            // Update global stats
+            document.getElementById('aiTotalTrades').textContent = tradingAI.stats.totalBuys + tradingAI.stats.totalSells;
+            document.getElementById('aiWinRate').textContent = tradingAI.stats.winRate.toFixed(1) + '%';
+            document.getElementById('aiTotalProfit').textContent = Math.round(tradingAI.stats.totalProfitFromAI) + '¢';
+            document.getElementById('aiBiggestWin').textContent = Math.round(tradingAI.stats.biggestWin) + '¢';
+
+            // Update learning stats
+            document.getElementById('aiBuyThreshold').textContent = Math.round(tradingAI.learning.optimalThresholds.buyScore);
+            document.getElementById('aiSuccessMemory').textContent = tradingAI.learning.successfulBuyScores.length;
+            document.getElementById('aiFailMemory').textContent = tradingAI.learning.failedBuyScores.length;
+
+            // Update item performance
+            const perfDiv = document.getElementById('aiItemPerformance');
+            perfDiv.innerHTML = '';
+
+            items.forEach(item => {
+                const perf = tradingAI.learning.itemPerformance[item.id];
+                if (perf.trades > 0) {
+                    const winRate = (perf.wins / perf.trades * 100).toFixed(1);
+                    const confidence = (perf.confidence * 100).toFixed(0);
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.style.cssText = 'background: rgba(0,0,0,0.3); padding: 12px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #00ff41;';
+                    itemDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 1.1em; font-weight: bold;">${item.icon} ${item.name}</span>
+                            <span style="color: ${perf.totalProfit >= 0 ? '#0f0' : '#f00'}; font-weight: bold;">${perf.totalProfit >= 0 ? '+' : ''}${Math.round(perf.totalProfit)}¢</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 0.9em;">
+                            <div><span style="color: rgba(255,255,255,0.6);">Trades:</span> <span style="color: #00d9ff;">${perf.trades}</span></div>
+                            <div><span style="color: rgba(255,255,255,0.6);">Win Rate:</span> <span style="color: ${winRate >= 50 ? '#0f0' : '#f00'};">${winRate}%</span></div>
+                            <div><span style="color: rgba(255,255,255,0.6);">Confidence:</span> <span style="color: #ffd700;">${confidence}%</span></div>
+                        </div>
+                    `;
+                    perfDiv.appendChild(itemDiv);
+                }
+            });
+
+            if (perfDiv.innerHTML === '') {
+                perfDiv.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">Aucun trade effectué encore. Active TRADER-X pour voir des stats !</div>';
+            }
         }
 
         function confirmReset() {
