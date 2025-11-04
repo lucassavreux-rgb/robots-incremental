@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipverse - Trading Interdimensionnel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 15px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* CRT Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Neon glow animation */
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
+            50% { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px #00ff41; }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(0, 217, 255, 0.1));
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            font-weight: 900;
+            color: #00ff41;
+            text-align: center;
+            animation: neonPulse 2s infinite;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00d9ff;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: 2px solid #00ff41;
+            background: rgba(0, 255, 65, 0.1);
+            color: #00ff41;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 65, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            border-color: #ff0055;
+            color: #ff0055;
+            background: rgba(255, 0, 85, 0.1);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 0, 85, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00d9ff;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .stat-label {
+            color: #00d9ff;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff41;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+
+        .panel h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff41;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Trading Items */
+        .item-card {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.05), rgba(0, 217, 255, 0.05));
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .item-card:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+            transform: translateX(5px);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .item-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #00ff41;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .rarity {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .rarity-common { background: rgba(150, 150, 150, 0.3); color: #aaa; border: 1px solid #888; }
+        .rarity-rare { background: rgba(0, 150, 255, 0.3); color: #00d9ff; border: 1px solid #00d9ff; }
+        .rarity-legendary { background: rgba(255, 215, 0, 0.3); color: #ffd700; border: 1px solid #ffd700; }
+        .rarity-mythic { background: rgba(255, 0, 255, 0.3); color: #ff00ff; border: 1px solid #ff00ff; }
+
+        .item-price {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .price-current {
+            color: #00d9ff;
+            font-weight: 700;
+        }
+
+        .price-change {
+            font-weight: 700;
+        }
+
+        .price-up { color: #00ff41; }
+        .price-down { color: #ff0055; }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .quantity-input {
+            width: 80px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            border-radius: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            text-align: center;
+        }
+
+        .btn-buy {
+            flex: 1;
+            padding: 10px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-buy:hover {
+            background: rgba(0, 255, 65, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+        }
+
+        .btn-sell {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 0, 85, 0.2);
+            border: 2px solid #ff0055;
+            color: #ff0055;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-sell:hover {
+            background: rgba(255, 0, 85, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+        }
+
+        .btn-sell:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Portfolio */
+        .portfolio-empty {
+            text-align: center;
+            padding: 40px;
+            color: rgba(0, 217, 255, 0.5);
+            font-style: italic;
+        }
+
+        .portfolio-item {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .portfolio-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .profit-positive { color: #00ff41; }
+        .profit-negative { color: #ff0055; }
+
+        /* News Feed */
+        .news-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .news-feed::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .news-feed::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .news-feed::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 10px;
+        }
+
+        .news-item {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid #00ff41;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .news-item.event {
+            border-left-color: #ff0055;
+            background: rgba(255, 0, 85, 0.1);
+        }
+
+        .news-item.success {
+            border-left-color: #00ff41;
+        }
+
+        /* Agents */
+        .agent-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .agent-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .agent-desc {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .agent-cost {
+            color: #00d9ff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .agent-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .agent-active {
+            background: rgba(0, 255, 65, 0.3);
+            color: #00ff41;
+            border: 1px solid #00ff41;
+        }
+
+        .agent-inactive {
+            background: rgba(150, 150, 150, 0.3);
+            color: #aaa;
+            border: 1px solid #888;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        .terminal-text {
+            color: #00ff41;
+            text-shadow: 0 0 5px #00ff41;
+        }
+
+        /* Dimension Badge */
+        .dimension-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff00ff, #00d9ff);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            margin-left: 15px;
+            font-size: 0.5em;
+            animation: neonPulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                ⚡ FLIPVERSE <span class="dimension-badge" id="dimensionBadge">DIM-α</span>
+            </h1>
+            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v2.047 //</p>
+            <div class="header-buttons">
+                <button class="btn" onclick="window.location.href='index.html'">🏠 MENU</button>
+                <button class="btn" onclick="showTutorial()">📖 TUTORIAL</button>
+                <button class="btn" onclick="switchDimension()">🌀 PRESTIGE</button>
+                <button class="btn-danger" onclick="confirmReset()">⚠️ RESET</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-box">
+                <div class="stat-label">💰 CAPITAL</div>
+                <div class="stat-value terminal-text" id="money">10000 ¢</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">📊 PORTFOLIO</div>
+                <div class="stat-value terminal-text" id="portfolioValue">10000 ¢</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">💹 PROFIT</div>
+                <div class="stat-value terminal-text" id="totalProfit">0 ¢</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">🔄 TRADES</div>
+                <div class="stat-value terminal-text" id="totalTrades">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">✨ ESSENCE</div>
+                <div class="stat-value terminal-text" id="essence">0</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Market -->
+            <div class="panel">
+                <h2>📈 MARKET</h2>
+                <div id="market"></div>
+            </div>
+
+            <!-- Portfolio -->
+            <div class="panel">
+                <h2>💼 PORTFOLIO</h2>
+                <div id="portfolio">
+                    <div class="portfolio-empty">[ PORTFOLIO EMPTY ]</div>
+                </div>
+            </div>
+
+            <!-- Agents -->
+            <div class="panel">
+                <h2>🤖 AGENTS</h2>
+                <div id="agents"></div>
+            </div>
+
+            <!-- News -->
+            <div class="panel">
+                <h2>📡 NEWS FEED</h2>
+                <div class="news-feed" id="news">
+                    <div class="news-item">
+                        > SYSTEM INITIALIZED<br>
+                        > WELCOME TO FLIPVERSE<br>
+                        > DIMENSION: ALPHA<br>
+                        > TRADING ENABLED
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const game = {
+            money: 10000,
+            portfolio: {},
+            portfolioDetails: {},
+            totalProfit: 0,
+            totalTrades: 0,
+            dimension: 1,
+            essence: 0,
+            agents: {
+                analyst: false,
+                trader: false,
+                guardian: false,
+                prophet: false
+            }
+        };
+
+        // Items Database
+        const items = [
+            { id: 'quantum_chip', name: 'Quantum Chip', rarity: 'common', basePrice: 100, volatility: 0.15, icon: '💾' },
+            { id: 'plasma_cell', name: 'Plasma Cell', rarity: 'common', basePrice: 150, volatility: 0.18, icon: '⚡' },
+            { id: 'crystal_core', name: 'Crystal Core', rarity: 'rare', basePrice: 500, volatility: 0.25, icon: '💎' },
+            { id: 'nano_fabric', name: 'Nano Fabric', rarity: 'rare', basePrice: 400, volatility: 0.22, icon: '🧬' },
+            { id: 'void_essence', name: 'Void Essence', rarity: 'legendary', basePrice: 2000, volatility: 0.35, icon: '🌌' },
+            { id: 'time_shard', name: 'Time Shard', rarity: 'legendary', basePrice: 3000, volatility: 0.40, icon: '⏳' },
+            { id: 'infinity_stone', name: 'Infinity Stone', rarity: 'mythic', basePrice: 10000, volatility: 0.50, icon: '💠' },
+            { id: 'god_particle', name: 'God Particle', rarity: 'mythic', basePrice: 15000, volatility: 0.55, icon: '⚛️' }
+        ];
+
+        const marketPrices = {};
+        const priceHistory = {};
+
+        // Initialize market
+        function initMarket() {
+            items.forEach(item => {
+                marketPrices[item.id] = Math.round(item.basePrice * (1 + (Math.random() - 0.5) * item.volatility));
+                priceHistory[item.id] = [marketPrices[item.id]];
+            });
+        }
+
+        // Fluctuate prices
+        function fluctuatePrices() {
+            items.forEach(item => {
+                const currentPrice = marketPrices[item.id];
+                const change = (Math.random() - 0.45) * item.volatility; // Slight upward bias
+                let newPrice = Math.round(currentPrice * (1 + change));
+
+                // Clamp to reasonable bounds
+                const minPrice = Math.round(item.basePrice * 0.3);
+                const maxPrice = Math.round(item.basePrice * 3);
+                newPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
+
+                marketPrices[item.id] = newPrice;
+                priceHistory[item.id].push(newPrice);
+
+                // Keep only last 50 price points
+                if (priceHistory[item.id].length > 50) {
+                    priceHistory[item.id].shift();
+                }
+            });
+        }
+
+        // Buy item
+        function buyItem(itemId, quantity) {
+            const item = items.find(i => i.id === itemId);
+            const price = marketPrices[itemId];
+            const totalCost = price * quantity;
+
+            if (game.money < totalCost) {
+                addNews(`> ERROR: Insufficient funds for ${item.name}`, 'error');
+                return;
+            }
+
+            game.money -= totalCost;
+
+            // Track purchase
+            if (!game.portfolioDetails[itemId]) {
+                game.portfolioDetails[itemId] = {
+                    totalSpent: 0,
+                    totalQuantity: 0
+                };
+            }
+
+            game.portfolioDetails[itemId].totalSpent += totalCost;
+            game.portfolioDetails[itemId].totalQuantity += quantity;
+
+            game.portfolio[itemId] = (game.portfolio[itemId] || 0) + quantity;
+            game.totalTrades += quantity;
+
+            addNews(`> BOUGHT: ${quantity}x ${item.icon} ${item.name} @ ${price}¢`, 'success');
+            updateUI();
+        }
+
+        // Sell item
+        function sellItem(itemId, quantity) {
+            const item = items.find(i => i.id === itemId);
+            const price = marketPrices[itemId];
+
+            if (!game.portfolio[itemId] || game.portfolio[itemId] < quantity) {
+                addNews(`> ERROR: Insufficient ${item.name} in portfolio`, 'error');
+                return;
+            }
+
+            const totalRevenue = price * quantity;
+
+            // Calculate profit
+            let profit = 0;
+            if (game.portfolioDetails[itemId]) {
+                const avgBuyPrice = game.portfolioDetails[itemId].totalSpent / game.portfolioDetails[itemId].totalQuantity;
+                const costOfSold = avgBuyPrice * quantity;
+                profit = totalRevenue - costOfSold;
+
+                // Update details
+                game.portfolioDetails[itemId].totalSpent -= costOfSold;
+                game.portfolioDetails[itemId].totalQuantity -= quantity;
+
+                if (game.portfolioDetails[itemId].totalQuantity <= 0) {
+                    delete game.portfolioDetails[itemId];
+                }
+            }
+
+            game.money += totalRevenue;
+            game.portfolio[itemId] -= quantity;
+            game.totalProfit += profit;
+            game.totalTrades += quantity;
+
+            if (game.portfolio[itemId] === 0) {
+                delete game.portfolio[itemId];
+            }
+
+            const profitText = profit >= 0 ? `+${Math.round(profit)}¢` : `${Math.round(profit)}¢`;
+            addNews(`> SOLD: ${quantity}x ${item.icon} ${item.name} @ ${price}¢ (${profitText})`, profit >= 0 ? 'success' : 'error');
+            updateUI();
+        }
+
+        // Add news
+        let newsCounter = 0;
+        function addNews(message, type = '') {
+            const newsDiv = document.getElementById('news');
+            const newsItem = document.createElement('div');
+            newsItem.className = `news-item ${type}`;
+            newsItem.textContent = message;
+            newsDiv.insertBefore(newsItem, newsDiv.firstChild);
+
+            newsCounter++;
+            if (newsCounter > 15) {
+                newsDiv.removeChild(newsDiv.lastChild);
+            }
+        }
+
+        // Render market
+        function renderMarket() {
+            const marketDiv = document.getElementById('market');
+            marketDiv.innerHTML = '';
+
+            items.forEach(item => {
+                const price = marketPrices[item.id];
+                const owned = game.portfolio[item.id] || 0;
+
+                // Calculate price change
+                const history = priceHistory[item.id];
+                const priceChange = history.length > 1 ? ((price - history[history.length - 2]) / history[history.length - 2] * 100) : 0;
+                const changeClass = priceChange >= 0 ? 'price-up' : 'price-down';
+                const changeSign = priceChange >= 0 ? '+' : '';
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item-card';
+                itemDiv.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-name">${item.icon} ${item.name}</span>
+                        <span class="rarity rarity-${item.rarity}">${item.rarity}</span>
+                    </div>
+                    <div class="item-price">
+                        <span class="price-current">${price} ¢</span>
+                        <span class="price-change ${changeClass}">${changeSign}${priceChange.toFixed(1)}%</span>
+                    </div>
+                    ${owned > 0 ? `<div style="color: #00d9ff; margin-bottom: 10px;">Owned: ${owned}</div>` : ''}
+                    <div class="item-actions">
+                        <input type="number" class="quantity-input" id="qty-${item.id}" value="1" min="1">
+                        <button class="btn-buy" onclick="buyItem('${item.id}', parseInt(document.getElementById('qty-${item.id}').value))">
+                            BUY
+                        </button>
+                        <button class="btn-sell" onclick="sellItem('${item.id}', parseInt(document.getElementById('qty-${item.id}').value))" ${owned === 0 ? 'disabled' : ''}>
+                            SELL
+                        </button>
+                    </div>
+                `;
+                marketDiv.appendChild(itemDiv);
+            });
+        }
+
+        // Render portfolio
+        function renderPortfolio() {
+            const portfolioDiv = document.getElementById('portfolio');
+
+            if (Object.keys(game.portfolio).length === 0) {
+                portfolioDiv.innerHTML = '<div class="portfolio-empty">[ PORTFOLIO EMPTY ]</div>';
+                return;
+            }
+
+            portfolioDiv.innerHTML = '';
+
+            Object.entries(game.portfolio).forEach(([itemId, quantity]) => {
+                const item = items.find(i => i.id === itemId);
+                const currentPrice = marketPrices[itemId];
+                const currentValue = currentPrice * quantity;
+
+                let avgBuyPrice = currentPrice;
+                let profit = 0;
+                let profitPercent = 0;
+
+                if (game.portfolioDetails[itemId]) {
+                    avgBuyPrice = Math.round(game.portfolioDetails[itemId].totalSpent / game.portfolioDetails[itemId].totalQuantity);
+                    const totalCost = Math.round(game.portfolioDetails[itemId].totalSpent);
+                    profit = currentValue - totalCost;
+                    profitPercent = ((profit / totalCost) * 100).toFixed(1);
+                }
+
+                const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+                const profitSign = profit >= 0 ? '+' : '';
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'portfolio-item';
+                itemDiv.innerHTML = `
+                    <div class="portfolio-info">
+                        <div>
+                            <strong>${item.icon} ${item.name}</strong> x${quantity}<br>
+                            <small style="color: rgba(255,255,255,0.6);">Avg Buy: ${avgBuyPrice}¢ | Current: ${currentPrice}¢</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: #00d9ff;">${currentValue}¢</strong><br>
+                            <span class="${profitClass}">${profitSign}${Math.round(profit)}¢ (${profitSign}${profitPercent}%)</span>
+                        </div>
+                    </div>
+                    <button class="btn-sell" onclick="sellItem('${itemId}', ${quantity})" style="width: 100%; margin-top: 10px;">
+                        SELL ALL
+                    </button>
+                `;
+                portfolioDiv.appendChild(itemDiv);
+            });
+        }
+
+        // Render agents
+        function renderAgents() {
+            const agentsDiv = document.getElementById('agents');
+
+            const agentsList = [
+                { id: 'analyst', name: '🤖 ANALYST-7', desc: 'Auto-analyzes market trends', cost: 5000 },
+                { id: 'trader', name: '💼 TRADER-X', desc: 'Auto-trades when profitable', cost: 15000 },
+                { id: 'guardian', name: '🛡️ GUARDIAN', desc: 'Protects against crashes', cost: 25000 },
+                { id: 'prophet', name: '🔮 PROPHET', desc: 'Predicts market movements', cost: 50000 }
+            ];
+
+            agentsDiv.innerHTML = '';
+
+            agentsList.forEach(agent => {
+                if (game.agents[agent.id]) return; // Already owned
+
+                const canAfford = game.money >= agent.cost;
+
+                const agentDiv = document.createElement('div');
+                agentDiv.className = 'agent-card';
+                agentDiv.innerHTML = `
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-desc">${agent.desc}</div>
+                    <div class="agent-cost">Cost: ${agent.cost}¢</div>
+                    <button class="btn" onclick="buyAgent('${agent.id}')" ${!canAfford ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>
+                        RECRUIT
+                    </button>
+                `;
+                agentsDiv.appendChild(agentDiv);
+            });
+
+            if (agentsDiv.innerHTML === '') {
+                agentsDiv.innerHTML = '<div class="portfolio-empty">[ ALL AGENTS RECRUITED ]</div>';
+            }
+        }
+
+        function buyAgent(agentId) {
+            const agentsList = {
+                analyst: { cost: 5000, name: 'ANALYST-7' },
+                trader: { cost: 15000, name: 'TRADER-X' },
+                guardian: { cost: 25000, name: 'GUARDIAN' },
+                prophet: { cost: 50000, name: 'PROPHET' }
+            };
+
+            const agent = agentsList[agentId];
+
+            if (game.money < agent.cost) {
+                addNews(`> ERROR: Insufficient funds for ${agent.name}`, 'error');
+                return;
+            }
+
+            game.money -= agent.cost;
+            game.agents[agentId] = true;
+
+            addNews(`> RECRUITED: ${agent.name} is now active`, 'success');
+            updateUI();
+        }
+
+        function switchDimension() {
+            const totalValue = game.money + calculatePortfolioValue();
+
+            if (totalValue < 50000) {
+                addNews('> ERROR: Need 50,000¢ total value to switch dimension', 'error');
+                return;
+            }
+
+            if (!confirm(`DIMENSION SHIFT PROTOCOL\n\nYou will lose all items and currency.\nYou will gain ${Math.floor(totalValue / 1000)} Essence.\n\nEssence provides permanent bonuses.\n\nProceed?`)) {
+                return;
+            }
+
+            const essenceGain = Math.floor(totalValue / 1000);
+
+            game.money = 10000 * (1 + game.essence * 0.1);
+            game.portfolio = {};
+            game.portfolioDetails = {};
+            game.dimension++;
+            game.essence += essenceGain;
+
+            const dimensions = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ'];
+            document.getElementById('dimensionBadge').textContent = `DIM-${dimensions[Math.min(game.dimension - 1, dimensions.length - 1)]}`;
+
+            addNews(`> DIMENSION SHIFTED TO ${dimensions[Math.min(game.dimension - 1, dimensions.length - 1)]}`, 'event');
+            addNews(`> GAINED ${essenceGain} ESSENCE`, 'success');
+
+            updateUI();
+        }
+
+        function calculatePortfolioValue() {
+            let total = 0;
+            Object.entries(game.portfolio).forEach(([itemId, quantity]) => {
+                total += marketPrices[itemId] * quantity;
+            });
+            return total;
+        }
+
+        function updateUI() {
+            document.getElementById('money').textContent = Math.floor(game.money) + ' ¢';
+            document.getElementById('portfolioValue').textContent = (Math.floor(game.money) + calculatePortfolioValue()) + ' ¢';
+            document.getElementById('totalProfit').textContent = Math.floor(game.totalProfit) + ' ¢';
+            document.getElementById('totalTrades').textContent = game.totalTrades;
+            document.getElementById('essence').textContent = game.essence;
+
+            renderMarket();
+            renderPortfolio();
+            renderAgents();
+        }
+
+        function gameLoop() {
+            fluctuatePrices();
+            updateUI();
+
+            // Random events
+            if (Math.random() < 0.1) {
+                const item = items[Math.floor(Math.random() * items.length)];
+                const events = [
+                    `> ALERT: ${item.name} supply increased`,
+                    `> ALERT: ${item.name} demand surging`,
+                    `> WARNING: Market volatility detected`,
+                    `> INFO: Interdimensional trade route opened`
+                ];
+                addNews(events[Math.floor(Math.random() * events.length)], 'event');
+            }
+        }
+
+        function showTutorial() {
+            alert(`FLIPVERSE TUTORIAL
+
+🎯 OBJECTIVE: Build wealth by trading interdimensional items
+
+💰 TRADING:
+- Buy items when prices are low
+- Sell when prices are high
+- Watch the % change indicator
+
+📊 PORTFOLIO:
+- Shows your profit/loss in real-time
+- Green = profit, Red = loss
+
+🤖 AGENTS:
+- Recruit AI agents to automate tasks
+- Each agent provides unique benefits
+
+✨ PRESTIGE (Dimension Shift):
+- Requires 50,000¢ total value
+- Resets progress but grants Essence
+- Essence = permanent bonuses
+
+💎 ITEM RARITY:
+- Common: Low volatility, safe
+- Rare: Medium risk/reward
+- Legendary: High volatility
+- Mythic: Extreme risk/reward
+
+Good luck, Trader!`);
+        }
+
+        function confirmReset() {
+            if (confirm('⚠️ HARD RESET\n\nThis will delete ALL progress including Essence.\n\nAre you sure?')) {
+                localStorage.removeItem('flipverse_save');
+                location.reload();
+            }
+        }
+
+        // Auto-save
+        setInterval(() => {
+            localStorage.setItem('flipverse_save', JSON.stringify(game));
+        }, 10000);
+
+        // Load save
+        const save = localStorage.getItem('flipverse_save');
+        if (save) {
+            const loaded = JSON.parse(save);
+            Object.assign(game, loaded);
+            addNews('> SAVE DATA LOADED', 'success');
+        }
+
+        // Initialize
+        initMarket();
+        updateUI();
+
+        // Game loop (5 seconds)
+        setInterval(gameLoop, 5000);
+    </script>
+</body>
+</html>
