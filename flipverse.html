@@ -2248,80 +2248,75 @@
                         : 'swing';
 
                     // ═══════════════════════════════════════════════════════════
-                    // SMART EXIT SYSTEM - Multiple intelligent exit conditions
+                    // SMART EXIT SYSTEM v5.2 - AGGRESSIVE MODE
                     // ═══════════════════════════════════════════════════════════
 
-                    // 🎯 REASON 1: HIGH SELL SCORE + Decent Profit
-                    // Sell when AI detects strong sell signal even before target
-                    if (sellAnalysis.score >= 70 && profitPercent >= 6) {
+                    // 🚨 REASON 1: LARGE PROFIT - ALWAYS SELL
+                    // Highest priority - sell immediately if profit is large
+                    if (profitPercent >= 15) {
                         shouldSell = true;
-                        sellReason = `Smart Exit: High Sell Score (${Math.round(sellAnalysis.score)}/100 at +${profitPercent.toFixed(1)}%)`;
+                        sellReason = `Large Profit (+${profitPercent.toFixed(1)}%)`;
                     }
 
-                    // 🔒 REASON 2: PEAK LOCK System
+                    // 🎯 REASON 2: GOOD PROFIT + ANY DECENT SIGNAL
+                    // Sell if profit good and any indicator suggests selling
+                    if (!shouldSell && profitPercent >= 8 && sellAnalysis.score >= 55) {
+                        shouldSell = true;
+                        sellReason = `Good Profit + Signal (${Math.round(sellAnalysis.score)}/100 at +${profitPercent.toFixed(1)}%)`;
+                    }
+
+                    // 💰 REASON 3: MEDIUM PROFIT + STRONG SIGNAL
+                    // Sell with lower profit if strong sell signal
+                    if (!shouldSell && profitPercent >= 5 && sellAnalysis.score >= 65) {
+                        shouldSell = true;
+                        sellReason = `Strong Signal (${Math.round(sellAnalysis.score)}/100 at +${profitPercent.toFixed(1)}%)`;
+                    }
+
+                    // 🔒 REASON 4: PEAK LOCK System
                     // Lock profits when they start decreasing from peak
                     if (!shouldSell && tradingAI.positions[item.id] && tradingAI.positions[item.id].length > 0) {
                         const peakProfit = tradingAI.positions[item.id][0].peakProfit;
                         const dropFromPeak = peakProfit - profitPercent;
 
-                        // If reached +12% peak and now dropped 2%
-                        if (peakProfit >= 12 && dropFromPeak >= 2) {
+                        // If reached +10% peak and now dropped 2%
+                        if (peakProfit >= 10 && dropFromPeak >= 2) {
                             shouldSell = true;
-                            sellReason = `Peak Lock (Peak: +${peakProfit.toFixed(1)}% → Now: +${profitPercent.toFixed(1)}%, -${dropFromPeak.toFixed(1)}% drop)`;
+                            sellReason = `Peak Lock (Peak: +${peakProfit.toFixed(1)}% → Now: +${profitPercent.toFixed(1)}%)`;
                         }
                     }
 
-                    // 📊 REASON 3: DYNAMIC TARGET System
-                    // Flexible targets based on sell score
+                    // 📊 REASON 5: STRATEGY TARGETS (Simplified)
+                    // Flexible targets based on strategy
                     if (!shouldSell) {
-                        const sellScore = sellAnalysis.score;
-
-                        if (strategy === 'scalp') {
-                            // Scalp: 2-4% range
-                            if (profitPercent >= 4 || (profitPercent >= 2 && sellScore >= 65)) {
-                                shouldSell = true;
-                                sellReason = `Scalp Target (+${profitPercent.toFixed(1)}%)`;
-                            }
-                        } else if (strategy === 'swing') {
-                            // Swing: 5-8% range
-                            if (profitPercent >= 8 || (profitPercent >= 5 && sellScore >= 70)) {
-                                shouldSell = true;
-                                sellReason = `Swing Target (+${profitPercent.toFixed(1)}%)`;
-                            }
-                        } else if (strategy === 'hold') {
-                            // Hold: 10-15% range
-                            if (profitPercent >= 15 || (profitPercent >= 10 && sellScore >= 75)) {
-                                shouldSell = true;
-                                sellReason = `Hold Target (+${profitPercent.toFixed(1)}%)`;
-                            }
+                        if (strategy === 'scalp' && profitPercent >= 3) {
+                            shouldSell = true;
+                            sellReason = `Scalp Target (+${profitPercent.toFixed(1)}%)`;
+                        } else if (strategy === 'swing' && profitPercent >= 6) {
+                            shouldSell = true;
+                            sellReason = `Swing Target (+${profitPercent.toFixed(1)}%)`;
+                        } else if (strategy === 'hold' && profitPercent >= 10) {
+                            shouldSell = true;
+                            sellReason = `Hold Target (+${profitPercent.toFixed(1)}%)`;
                         }
                     }
 
-                    // 🛡️ REASON 4: TRAILING STOP (Protection)
-                    // Sell if price dropped 10% from peak price
+                    // 🛡️ REASON 6: TRAILING STOP (Protection)
+                    // Sell if price dropped significantly from peak
                     if (!shouldSell && tradingAI.positions[item.id] && tradingAI.positions[item.id].length > 0) {
                         const avgHighest = tradingAI.positions[item.id].reduce((sum, p) => sum + p.highestPrice, 0) / tradingAI.positions[item.id].length;
                         const dropFromHigh = ((avgHighest - price) / avgHighest) * 100;
 
-                        if (dropFromHigh > 10 && profitPercent > 1) {
+                        if (dropFromHigh > 8 && profitPercent > 1) {
                             shouldSell = true;
-                            sellReason = `Trailing Stop (-${dropFromHigh.toFixed(1)}% from peak price)`;
+                            sellReason = `Trailing Stop (-${dropFromHigh.toFixed(1)}% from peak)`;
                         }
                     }
 
-                    // ✅ REASON 5: BREAK-EVEN STOP (Protection)
-                    // If gained 5%+, don't let it drop back to break-even
-                    if (!shouldSell && profitPercent > 5 && price <= avgBuyPrice * 1.01) {
+                    // ✅ REASON 7: ANY PROFIT + VERY STRONG SIGNAL
+                    // Sell at ANY profit if signal is very strong
+                    if (!shouldSell && profitPercent >= 2 && sellAnalysis.score >= 75) {
                         shouldSell = true;
-                        sellReason = `Break-Even Stop (protecting gains)`;
-                    }
-
-                    // 🚨 REASON 6: SAFETY OVERRIDE - Large Profit
-                    // ALWAYS sell if profit is massive (+20%+) regardless of other conditions
-                    if (!shouldSell && profitPercent >= 20) {
-                        shouldSell = true;
-                        sellReason = `Large Profit Override (+${profitPercent.toFixed(1)}%)`;
-                        console.log(`✅ TRIGGERED: ${item.name} - ${sellReason}`);
+                        sellReason = `Very Strong Signal (${Math.round(sellAnalysis.score)}/100)`;
                     }
 
                     if (shouldSell) {
