@@ -743,6 +743,7 @@
         const game = {
             money: 1000,
             inventory: {},
+            inventoryDetails: {}, // Tracks purchase prices for each product
             inventoryMax: 10,
             level: 1,
             totalProfit: 0,
@@ -829,10 +830,22 @@
             }
 
             game.money -= totalCost;
+
+            // Track purchase details for inventory
+            if (!game.inventoryDetails[productId]) {
+                game.inventoryDetails[productId] = {
+                    totalSpent: 0,
+                    totalQuantity: 0
+                };
+            }
+
+            game.inventoryDetails[productId].totalSpent += totalCost;
+            game.inventoryDetails[productId].totalQuantity += quantity;
+
             game.inventory[productId] = (game.inventory[productId] || 0) + quantity;
             game.totalTransactions += quantity;
 
-            addNews(`✅ Acheté ${quantity}x ${product.icon} ${product.name} pour ${totalCost}€`, 'success');
+            addNews(`✅ Acheté ${quantity}x ${product.icon} ${product.name} pour ${totalCost}€ (${price}€/unité)`, 'success');
             updateUI();
             checkLevelUp();
         }
@@ -847,16 +860,35 @@
             }
 
             const totalRevenue = price * quantity;
+
+            // Calculate actual profit based on purchase price
+            let actualProfit = 0;
+            if (game.inventoryDetails[productId]) {
+                const avgBuyPrice = game.inventoryDetails[productId].totalSpent / game.inventoryDetails[productId].totalQuantity;
+                const costOfSold = avgBuyPrice * quantity;
+                actualProfit = totalRevenue - costOfSold;
+
+                // Update inventory details
+                const soldRatio = quantity / game.inventoryDetails[productId].totalQuantity;
+                game.inventoryDetails[productId].totalSpent -= costOfSold;
+                game.inventoryDetails[productId].totalQuantity -= quantity;
+
+                if (game.inventoryDetails[productId].totalQuantity <= 0) {
+                    delete game.inventoryDetails[productId];
+                }
+            }
+
             game.money += totalRevenue;
             game.inventory[productId] -= quantity;
-            game.totalProfit += totalRevenue;
+            game.totalProfit += actualProfit;
             game.totalTransactions += quantity;
 
             if (game.inventory[productId] === 0) {
                 delete game.inventory[productId];
             }
 
-            addNews(`💰 Vendu ${quantity}x ${product.icon} ${product.name} pour ${totalRevenue}€`, 'success');
+            const profitText = actualProfit >= 0 ? `+${Math.round(actualProfit)}€` : `${Math.round(actualProfit)}€`;
+            addNews(`💰 Vendu ${quantity}x ${product.icon} ${product.name} pour ${totalRevenue}€ (Profit: ${profitText})`, actualProfit >= 0 ? 'success' : 'error');
             updateUI();
             checkLevelUp();
         }
@@ -985,16 +1017,41 @@
                 const product = products.find(p => p.id === productId);
                 const sellPrice = Math.round(marketPrices[productId].sell * getMarkupMultiplier());
 
+                // Calculate average buy price
+                let avgBuyPrice = 0;
+                let totalCost = 0;
+                let profit = 0;
+                let profitPercent = 0;
+
+                if (game.inventoryDetails[productId]) {
+                    avgBuyPrice = Math.round(game.inventoryDetails[productId].totalSpent / game.inventoryDetails[productId].totalQuantity);
+                    totalCost = Math.round(game.inventoryDetails[productId].totalSpent);
+                    profit = (sellPrice * count) - totalCost;
+                    profitPercent = ((profit / totalCost) * 100).toFixed(1);
+                }
+
+                const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+                const profitSign = profit >= 0 ? '+' : '';
+
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'inventory-item';
                 itemDiv.innerHTML = `
                     <div class="inventory-info">
-                        <div class="inventory-name">${product.icon} ${product.name}</div>
-                        <div class="inventory-details">Quantité: ${count} | Valeur totale: ${sellPrice * count}€</div>
+                        <div class="inventory-name">${product.icon} ${product.name} <span style="color: rgba(255,255,255,0.6); font-size: 0.9em;">x${count}</span></div>
+                        <div class="inventory-details" style="margin-top: 8px; line-height: 1.8;">
+                            💵 Prix d'achat moyen: <strong>${avgBuyPrice}€/unité</strong> (${totalCost}€ total)<br>
+                            💰 Prix de vente actuel: <strong style="color: #38ef7d;">${sellPrice}€/unité</strong> (${sellPrice * count}€ total)<br>
+                            <span class="${profitClass}">📊 Profit potentiel: <strong>${profitSign}${Math.round(profit)}€ (${profitSign}${profitPercent}%)</strong></span>
+                        </div>
                     </div>
-                    <button class="btn btn-sell" onclick="sellProduct('${productId}', ${count})">
-                        💰 Tout Vendre
-                    </button>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="btn btn-sell" onclick="sellProduct('${productId}', ${count})">
+                            💰 Tout Vendre
+                        </button>
+                        <button class="btn btn-success" onclick="sellProduct('${productId}', ${count})" ${profit <= 0 ? 'disabled' : ''} style="font-size: 0.9em;">
+                            ✅ Vendre si Profit
+                        </button>
+                    </div>
                 `;
                 inventoryDiv.appendChild(itemDiv);
             });
