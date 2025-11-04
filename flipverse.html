@@ -2129,6 +2129,11 @@
         function autoTrade() {
             if (!game.agents.trader) return;
 
+            // DEBUG: Confirm bot is running
+            if (Math.random() < 0.1) { // Log 10% of the time to avoid spam
+                console.log('🤖 TRADER-X is running...');
+            }
+
             // Capital management: Reserve cash for safety
             const totalCapital = game.money + calculatePortfolioValue();
             const availableCapital = game.money - (totalCapital * tradingAI.capital.reservePercent);
@@ -2169,6 +2174,10 @@
                         if (game.money >= totalCost && totalCost <= availableCapital) {
                             // Execute buy
                             game.money -= totalCost;
+
+                            // Update market supply (bot removes from available stock)
+                            const supply = marketSupply[item.id];
+                            supply.available -= quantity;
 
                             if (!game.portfolioDetails[item.id]) {
                                 game.portfolioDetails[item.id] = {
@@ -2211,6 +2220,11 @@
                     const sellAnalysis = calculateTradingScore(item.id, 'sell');
                     const avgBuyPrice = game.portfolioDetails[item.id].totalSpent / game.portfolioDetails[item.id].totalQuantity;
                     const profitPercent = ((price - avgBuyPrice) / avgBuyPrice * 100);
+
+                    // DEBUG: Log sell analysis for items with large profit
+                    if (profitPercent > 20) {
+                        console.log(`🔍 DEBUG ${item.name}: Profit ${profitPercent.toFixed(1)}%, Owned: ${owned}, SellScore: ${sellAnalysis.score.toFixed(0)}`);
+                    }
 
                     // Update highest price AND peak profit for tracking
                     if (tradingAI.positions[item.id]) {
@@ -2302,11 +2316,24 @@
                         sellReason = `Break-Even Stop (protecting gains)`;
                     }
 
+                    // 🚨 REASON 6: SAFETY OVERRIDE - Large Profit
+                    // ALWAYS sell if profit is massive (+20%+) regardless of other conditions
+                    if (!shouldSell && profitPercent >= 20) {
+                        shouldSell = true;
+                        sellReason = `Large Profit Override (+${profitPercent.toFixed(1)}%)`;
+                        console.log(`✅ TRIGGERED: ${item.name} - ${sellReason}`);
+                    }
+
                     if (shouldSell) {
+                        console.log(`💰 SELLING: ${item.name} - ${sellReason}, Profit: ${profitPercent.toFixed(1)}%`);
                         const quantity = 1;
                         const totalRevenue = price * quantity;
                         const costOfSold = avgBuyPrice * quantity;
                         const profit = totalRevenue - costOfSold;
+
+                        // Update market supply (bot adds back to available stock)
+                        const supply = marketSupply[item.id];
+                        supply.available = Math.min(supply.max, supply.available + quantity);
 
                         game.portfolioDetails[item.id].totalSpent -= costOfSold;
                         game.portfolioDetails[item.id].totalQuantity -= quantity;
