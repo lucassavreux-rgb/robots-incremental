@@ -531,6 +531,7 @@
                 <button class="btn" onclick="window.location.href='index.html'">🏠 MENU</button>
                 <button class="btn" onclick="showTutorial()">📖 TUTORIEL</button>
                 <button class="btn" onclick="showAIStats()" style="background: linear-gradient(135deg, #ff00ff, #00d9ff); border: 2px solid #ff00ff;">🤖 AI STATS</button>
+                <button class="btn" id="botToggleBtn" onclick="toggleBot()" style="background: linear-gradient(135deg, #00ff00, #00aa00); border: 2px solid #00ff00;">🤖 BOT: ON</button>
                 <button class="btn" onclick="showChangelog()">📝 CHANGELOG</button>
                 <button class="btn" onclick="switchDimension()">🌀 PRESTIGE</button>
                 <button class="btn-danger" onclick="confirmReset()">⚠️ RESET</button>
@@ -1208,6 +1209,7 @@
             totalTrades: 0,
             dimension: 1,
             essence: 0,
+            botEnabled: true, // Toggle for TRADER-X auto-trading
             agents: {
                 analyst: false,
                 trader: false,
@@ -1649,24 +1651,24 @@
                 // Calculate trading pressure based on scarcity and volatility
                 // Low stock → more buying pressure
                 // High stock → more selling pressure
-                const buyPressure = (1 - scarcityRatio) * item.volatility;
-                const sellPressure = scarcityRatio * item.volatility;
+                const buyPressure = (1 - scarcityRatio) * item.volatility * 3; // x3 multiplier for MAXIMUM activity
+                const sellPressure = scarcityRatio * item.volatility * 3;
 
-                // Random number of virtual traders (0-5 per cycle)
-                const numTraders = Math.floor(Math.random() * 6);
+                // LOTS of virtual traders! (0-25 per cycle)
+                const numTraders = Math.floor(Math.random() * 26);
 
                 for (let i = 0; i < numTraders; i++) {
                     const tradeProbability = Math.random();
 
                     if (tradeProbability < buyPressure && supply.available > 10) {
                         // Virtual trader BUYS (removes from available stock)
-                        const buyQty = Math.floor(1 + Math.random() * 5);
+                        const buyQty = Math.floor(10 + Math.random() * 20); // 10-30 units for MORE movement
                         const actualBuy = Math.min(buyQty, supply.available);
                         supply.available -= actualBuy;
                         supply.virtualTradeVolume += actualBuy;
                     } else if (tradeProbability > (1 - sellPressure) && supply.available < supply.max) {
                         // Virtual trader SELLS (adds to available stock)
-                        const sellQty = Math.floor(1 + Math.random() * 5);
+                        const sellQty = Math.floor(10 + Math.random() * 20); // 10-30 units for MORE movement
                         const actualSell = Math.min(sellQty, supply.max - supply.available);
                         supply.available += actualSell;
                         supply.virtualTradeVolume += actualSell;
@@ -1676,6 +1678,13 @@
                 // Clamp stock to valid range
                 supply.available = Math.max(10, Math.min(supply.max, supply.available));
             });
+
+            // DEBUG: Log virtual trader activity occasionally
+            if (Math.random() < 0.05) { // 5% of the time
+                const sampleItem = items[0];
+                const sampleSupply = marketSupply[sampleItem.id];
+                console.log(`🤖 Virtual Traders: ${sampleItem.name} stock ${sampleSupply.available}/${sampleSupply.max} (${(sampleSupply.available/sampleSupply.max*100).toFixed(0)}%)`);
+            }
         }
 
         // Buy item
@@ -1962,6 +1971,23 @@
             updateUI();
         }
 
+        function toggleBot() {
+            game.botEnabled = !game.botEnabled;
+            const btn = document.getElementById('botToggleBtn');
+
+            if (game.botEnabled) {
+                btn.textContent = '🤖 BOT: ON';
+                btn.style.background = 'linear-gradient(135deg, #00ff00, #00aa00)';
+                btn.style.border = '2px solid #00ff00';
+                addNews('> 💼 TRADER-X BOT: ACTIVÉ', 'success');
+            } else {
+                btn.textContent = '🤖 BOT: OFF';
+                btn.style.background = 'linear-gradient(135deg, #ff0000, #aa0000)';
+                btn.style.border = '2px solid #ff0000';
+                addNews('> 💼 TRADER-X BOT: DÉSACTIVÉ', 'error');
+            }
+        }
+
         function switchDimension() {
             const totalValue = game.money + calculatePortfolioValue();
 
@@ -2127,7 +2153,7 @@
         // ═══════════════════════════════════════════════════════════════
 
         function autoTrade() {
-            if (!game.agents.trader) return;
+            if (!game.agents.trader || !game.botEnabled) return; // Check if bot is enabled
 
             // DEBUG: Confirm bot is running
             if (Math.random() < 0.1) { // Log 10% of the time to avoid spam
@@ -2248,26 +2274,26 @@
                         : 'swing';
 
                     // ═══════════════════════════════════════════════════════════
-                    // SMART EXIT SYSTEM v5.2 - AGGRESSIVE MODE
+                    // SMART EXIT SYSTEM v5.3 - ULTRA AGGRESSIVE MODE
                     // ═══════════════════════════════════════════════════════════
 
                     // 🚨 REASON 1: LARGE PROFIT - ALWAYS SELL
                     // Highest priority - sell immediately if profit is large
-                    if (profitPercent >= 15) {
+                    if (profitPercent >= 8) { // LOWERED from 15% → 8%
                         shouldSell = true;
                         sellReason = `Large Profit (+${profitPercent.toFixed(1)}%)`;
                     }
 
                     // 🎯 REASON 2: GOOD PROFIT + ANY DECENT SIGNAL
                     // Sell if profit good and any indicator suggests selling
-                    if (!shouldSell && profitPercent >= 8 && sellAnalysis.score >= 55) {
+                    if (!shouldSell && profitPercent >= 5 && sellAnalysis.score >= 50) { // LOWERED from 8% + score 55
                         shouldSell = true;
                         sellReason = `Good Profit + Signal (${Math.round(sellAnalysis.score)}/100 at +${profitPercent.toFixed(1)}%)`;
                     }
 
                     // 💰 REASON 3: MEDIUM PROFIT + STRONG SIGNAL
                     // Sell with lower profit if strong sell signal
-                    if (!shouldSell && profitPercent >= 5 && sellAnalysis.score >= 65) {
+                    if (!shouldSell && profitPercent >= 3 && sellAnalysis.score >= 60) { // LOWERED from 5% + score 65
                         shouldSell = true;
                         sellReason = `Strong Signal (${Math.round(sellAnalysis.score)}/100 at +${profitPercent.toFixed(1)}%)`;
                     }
@@ -2285,16 +2311,16 @@
                         }
                     }
 
-                    // 📊 REASON 5: STRATEGY TARGETS (Simplified)
-                    // Flexible targets based on strategy
+                    // 📊 REASON 5: STRATEGY TARGETS (Ultra Aggressive)
+                    // Lower targets for faster exits
                     if (!shouldSell) {
-                        if (strategy === 'scalp' && profitPercent >= 3) {
+                        if (strategy === 'scalp' && profitPercent >= 2) { // LOWERED from 3%
                             shouldSell = true;
                             sellReason = `Scalp Target (+${profitPercent.toFixed(1)}%)`;
-                        } else if (strategy === 'swing' && profitPercent >= 6) {
+                        } else if (strategy === 'swing' && profitPercent >= 4) { // LOWERED from 6%
                             shouldSell = true;
                             sellReason = `Swing Target (+${profitPercent.toFixed(1)}%)`;
-                        } else if (strategy === 'hold' && profitPercent >= 10) {
+                        } else if (strategy === 'hold' && profitPercent >= 7) { // LOWERED from 10%
                             shouldSell = true;
                             sellReason = `Hold Target (+${profitPercent.toFixed(1)}%)`;
                         }
@@ -2314,14 +2340,15 @@
 
                     // ✅ REASON 7: ANY PROFIT + VERY STRONG SIGNAL
                     // Sell at ANY profit if signal is very strong
-                    if (!shouldSell && profitPercent >= 2 && sellAnalysis.score >= 75) {
+                    if (!shouldSell && profitPercent >= 1.5 && sellAnalysis.score >= 70) { // LOWERED from 2% + score 75
                         shouldSell = true;
                         sellReason = `Very Strong Signal (${Math.round(sellAnalysis.score)}/100)`;
                     }
 
                     if (shouldSell) {
                         console.log(`💰 SELLING: ${item.name} - ${sellReason}, Profit: ${profitPercent.toFixed(1)}%`);
-                        const quantity = 1;
+                        // SELL ALL UNITS AT ONCE for fast exit!
+                        const quantity = owned;
                         const totalRevenue = price * quantity;
                         const costOfSold = avgBuyPrice * quantity;
                         const profit = totalRevenue - costOfSold;
