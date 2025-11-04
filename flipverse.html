@@ -1656,11 +1656,10 @@
                         const confidenceMultiplier = buyAnalysis.confidence; // 0.6-1.0
                         const targetPositionValue = maxPositionValue * confidenceMultiplier;
 
-                        // Calculate quantity based on position sizing
+                        // Calculate quantity based on position sizing (no hard limit)
                         let quantity = Math.floor(Math.min(
                             targetPositionValue / price,
-                            availableCapital / price,
-                            3 // Max 3 units per trade
+                            availableCapital / price
                         ));
 
                         if (quantity < 1) quantity = 1;
@@ -2043,15 +2042,31 @@
 
         // Auto-save
         setInterval(() => {
-            localStorage.setItem('flipverse_save', JSON.stringify(game));
+            const saveData = {
+                game: game,
+                tradingAI: tradingAI
+            };
+            localStorage.setItem('flipverse_save', JSON.stringify(saveData));
         }, 10000);
 
         // Load save
         const save = localStorage.getItem('flipverse_save');
         if (save) {
             const loaded = JSON.parse(save);
-            Object.assign(game, loaded);
-            addNews('> SAVE DATA LOADED', 'success');
+            // Support both old and new save format
+            if (loaded.game) {
+                Object.assign(game, loaded.game);
+                if (loaded.tradingAI) {
+                    Object.assign(tradingAI, loaded.tradingAI);
+                    addNews('> SAVE DATA + AI MEMORY LOADED', 'success');
+                } else {
+                    addNews('> SAVE DATA LOADED', 'success');
+                }
+            } else {
+                // Old save format (just game object)
+                Object.assign(game, loaded);
+                addNews('> SAVE DATA LOADED (OLD FORMAT)', 'success');
+            }
         }
 
         // Initialize
