@@ -26,7 +26,6 @@
             overflow: hidden;
         }
 
-        /* Animated Background */
         body::before {
             content: '';
             position: fixed;
@@ -43,14 +42,8 @@
         }
 
         @keyframes bgAnimation {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
         .login-container {
@@ -66,14 +59,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .logo {
@@ -84,12 +71,8 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         h1 {
@@ -163,24 +146,6 @@
             box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
         }
 
-        .btn-secondary {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            color: white;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 30px 0;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.9em;
-        }
-
         .error-message {
             background: linear-gradient(135deg, rgba(233, 69, 96, 0.2), rgba(214, 52, 71, 0.1));
             border: 2px solid rgba(233, 69, 96, 0.5);
@@ -226,25 +191,8 @@
             text-decoration: underline;
         }
 
-        .loading {
+        #registerForm {
             display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .spinner {
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -260,10 +208,6 @@
                 font-size: 3em;
             }
         }
-
-        #registerForm {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -278,7 +222,7 @@
         <!-- Login Form -->
         <form id="loginForm">
             <div class="form-group">
-                <label for="loginUsername">Pseudo / ID</label>
+                <label for="loginUsername">Pseudo</label>
                 <input type="text" id="loginUsername" required placeholder="Entre ton pseudo">
             </div>
             <div class="form-group">
@@ -291,13 +235,9 @@
         <!-- Register Form -->
         <form id="registerForm">
             <div class="form-group">
-                <label for="registerUsername">Pseudo / ID</label>
+                <label for="registerUsername">Pseudo</label>
                 <input type="text" id="registerUsername" required placeholder="Choisis ton pseudo" minlength="3" maxlength="20">
-                <small style="color: rgba(255,255,255,0.6); font-size: 0.85em;">3-20 caractères, lettres et chiffres uniquement</small>
-            </div>
-            <div class="form-group">
-                <label for="registerEmail">Email (optionnel)</label>
-                <input type="email" id="registerEmail" placeholder="ton@email.com">
+                <small style="color: rgba(255,255,255,0.6); font-size: 0.85em;">3-20 caractères</small>
             </div>
             <div class="form-group">
                 <label for="registerPassword">Mot de passe</label>
@@ -310,40 +250,14 @@
             <button type="submit" class="btn btn-primary">✨ Créer mon Compte</button>
         </form>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 15px; color: rgba(255,255,255,0.7);">Chargement...</p>
-        </div>
-
         <div class="toggle-form">
             <span id="toggleText">Pas encore de compte ?</span>
             <a id="toggleLink">Créer un compte</a>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-        // TODO: Replace with your Firebase config
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
-
-        // Toggle between login and register
+    <script>
+        // Simple localStorage authentication (no setup needed!)
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
         const toggleLink = document.getElementById('toggleLink');
@@ -352,6 +266,7 @@
         const formSubtitle = document.getElementById('formSubtitle');
         let isLoginMode = true;
 
+        // Toggle forms
         toggleLink.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
             if (isLoginMode) {
@@ -372,18 +287,15 @@
             hideMessages();
         });
 
-        // Show/hide messages
         function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
             document.getElementById('successMessage').style.display = 'none';
         }
 
         function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successMessage').style.display = 'block';
             document.getElementById('errorMessage').style.display = 'none';
         }
 
@@ -392,165 +304,118 @@
             document.getElementById('successMessage').style.display = 'none';
         }
 
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            loginForm.style.display = !show && isLoginMode ? 'block' : 'none';
-            registerForm.style.display = !show && !isLoginMode ? 'block' : 'none';
+        // Get all users
+        function getAllUsers() {
+            const users = localStorage.getItem('gameArcade_allUsers');
+            return users ? JSON.parse(users) : [];
+        }
+
+        // Save all users
+        function saveAllUsers(users) {
+            localStorage.setItem('gameArcade_allUsers', JSON.stringify(users));
         }
 
         // Login
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             hideMessages();
-            showLoading(true);
 
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            // Convert username to email format for Firebase
-            const email = `${username.toLowerCase()}@gamearcade.local`;
+            const allUsers = getAllUsers();
+            const user = allUsers.find(u => u.username.toLowerCase() === username.toLowerCase());
 
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // Get user data
-                const userRef = ref(database, `users/${user.uid}`);
-                const snapshot = await get(userRef);
-
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-
-                    // Check if banned
-                    if (userData.banned) {
-                        showError('❌ Ton compte a été banni. Contacte un administrateur.');
-                        await auth.signOut();
-                        showLoading(false);
-                        return;
-                    }
-
-                    // Update last login
-                    await set(ref(database, `users/${user.uid}/lastLogin`), new Date().toISOString());
-
-                    // Save to localStorage
-                    localStorage.setItem('gameArcade_user', JSON.stringify({
-                        uid: user.uid,
-                        username: userData.username,
-                        isAdmin: userData.isAdmin || false
-                    }));
-
-                    showSuccess('✅ Connexion réussie ! Redirection...');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-                } else {
-                    showError('❌ Données utilisateur introuvables.');
-                    showLoading(false);
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    showError('❌ Pseudo ou mot de passe incorrect.');
-                } else if (error.code === 'auth/too-many-requests') {
-                    showError('❌ Trop de tentatives. Réessaie plus tard.');
-                } else {
-                    showError('❌ Erreur de connexion. Vérifie ta configuration Firebase.');
-                }
-                showLoading(false);
+            if (!user) {
+                showError('❌ Pseudo introuvable.');
+                return;
             }
+
+            if (user.password !== password) {
+                showError('❌ Mot de passe incorrect.');
+                return;
+            }
+
+            if (user.banned) {
+                showError('❌ Ton compte a été banni.');
+                return;
+            }
+
+            // Update last login
+            user.lastLogin = new Date().toISOString();
+            saveAllUsers(allUsers);
+
+            // Save current user
+            localStorage.setItem('gameArcade_user', JSON.stringify({
+                uid: user.uid,
+                username: user.username,
+                isAdmin: user.isAdmin || false
+            }));
+
+            showSuccess('✅ Connexion réussie ! Redirection...');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
         });
 
         // Register
-        registerForm.addEventListener('submit', async (e) => {
+        registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             hideMessages();
 
             const username = document.getElementById('registerUsername').value.trim();
-            const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
             const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
 
-            // Validate username
+            // Validate
             if (!/^[a-zA-Z0-9_]+$/.test(username)) {
                 showError('❌ Le pseudo ne peut contenir que des lettres, chiffres et underscores.');
                 return;
             }
 
-            // Validate password
             if (password !== passwordConfirm) {
                 showError('❌ Les mots de passe ne correspondent pas.');
                 return;
             }
 
-            showLoading(true);
+            const allUsers = getAllUsers();
 
-            // Convert username to email format
-            const firebaseEmail = email || `${username.toLowerCase()}@gamearcade.local`;
-
-            try {
-                // Check if username already exists
-                const usernamesRef = ref(database, 'usernames');
-                const snapshot = await get(usernamesRef);
-                if (snapshot.exists()) {
-                    const usernames = snapshot.val();
-                    if (Object.values(usernames).includes(username.toLowerCase())) {
-                        showError('❌ Ce pseudo est déjà pris. Choisis-en un autre.');
-                        showLoading(false);
-                        return;
-                    }
-                }
-
-                // Create account
-                const userCredential = await createUserWithEmailAndPassword(auth, firebaseEmail, password);
-                const user = userCredential.user;
-
-                // Update display name
-                await updateProfile(user, {
-                    displayName: username
-                });
-
-                // Save user data to database
-                const userData = {
-                    username: username,
-                    email: email || null,
-                    createdAt: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    isAdmin: false,
-                    banned: false,
-                    stats: {
-                        businessTycoon: { money: 0, level: 0, totalProfit: 0 },
-                        incrementalTrade: { coins: 0, prestige: 0, galaxies: 0 }
-                    }
-                };
-
-                await set(ref(database, `users/${user.uid}`), userData);
-                await set(ref(database, `usernames/${user.uid}`), username.toLowerCase());
-
-                showSuccess('✅ Compte créé avec succès ! Redirection...');
-
-                localStorage.setItem('gameArcade_user', JSON.stringify({
-                    uid: user.uid,
-                    username: username,
-                    isAdmin: false
-                }));
-
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1500);
-
-            } catch (error) {
-                console.error('Register error:', error);
-                if (error.code === 'auth/email-already-in-use') {
-                    showError('❌ Ce pseudo est déjà utilisé.');
-                } else if (error.code === 'auth/weak-password') {
-                    showError('❌ Mot de passe trop faible (minimum 6 caractères).');
-                } else if (error.code === 'auth/invalid-email') {
-                    showError('❌ Email invalide.');
-                } else {
-                    showError('❌ Erreur lors de la création du compte. Vérifie ta configuration Firebase.');
-                }
-                showLoading(false);
+            // Check if username exists
+            if (allUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                showError('❌ Ce pseudo est déjà pris.');
+                return;
             }
+
+            // Create user
+            const isFirstUser = allUsers.length === 0;
+            const newUser = {
+                uid: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                username: username,
+                password: password,
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                isAdmin: isFirstUser, // First user is admin
+                banned: false,
+                stats: {
+                    businessTycoon: { money: 0, level: 0, totalProfit: 0 },
+                    incrementalTrade: { coins: 0, prestige: 0, galaxies: 0 }
+                }
+            };
+
+            allUsers.push(newUser);
+            saveAllUsers(allUsers);
+
+            // Save current user
+            localStorage.setItem('gameArcade_user', JSON.stringify({
+                uid: newUser.uid,
+                username: newUser.username,
+                isAdmin: newUser.isAdmin
+            }));
+
+            showSuccess(`✅ Compte créé${isFirstUser ? ' (Admin)' : ''} ! Redirection...`);
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
         });
 
         // Check if already logged in
