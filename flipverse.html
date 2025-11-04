@@ -517,6 +517,35 @@
             justify-content: center;
             margin-top: 30px;
         }
+
+        /* Essence Shop Upgrade Cards */
+        .upgrade-card {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.05), rgba(0, 217, 255, 0.05));
+            border: 2px solid rgba(0, 255, 65, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .upgrade-card:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .upgrade-card.purchased {
+            opacity: 0.6;
+            border-color: rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+        }
+
+        .upgrade-card.purchased button {
+            background: linear-gradient(135deg, #444, #222);
+            border-color: #666;
+            color: #888;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -532,6 +561,7 @@
                 <button class="btn" onclick="showTutorial()">📖 TUTORIEL</button>
                 <button class="btn" onclick="showAIStats()" style="background: linear-gradient(135deg, #ff00ff, #00d9ff); border: 2px solid #ff00ff;">🤖 AI STATS</button>
                 <button class="btn" id="botToggleBtn" onclick="toggleBot()" style="background: linear-gradient(135deg, #00ff00, #00aa00); border: 2px solid #00ff00;">🤖 BOT: ON</button>
+                <button class="btn" onclick="showEssenceShop()" style="background: linear-gradient(135deg, #ffd700, #ff8800); border: 2px solid #ffd700;">💎 ESSENCE SHOP</button>
                 <button class="btn" onclick="showChangelog()">📝 CHANGELOG</button>
                 <button class="btn" onclick="switchDimension()">🌀 PRESTIGE</button>
                 <button class="btn-danger" onclick="confirmReset()">⚠️ RESET</button>
@@ -735,6 +765,54 @@
     <div id="changelogModal" class="modal">
         <div class="modal-content">
             <h1>📝 FLIPVERSE - CHANGELOG</h1>
+
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 140, 0, 0.3)); padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #ffd700; box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);">
+                <h3 style="color: #ffd700; margin-bottom: 10px; font-size: 1.6em;">💎 Version 5.3 - ESSENCE SHOP + PRIX DYNAMIQUES ! 📊⚡</h3>
+                <p style="color: rgba(255,255,255,0.95); margin-bottom: 15px;"><strong>Date:</strong> Novembre 2024 - MÉTA-PROGRESSION</p>
+
+                <h4 style="color: #ffd700; margin-top: 20px; margin-bottom: 10px;">💎 ESSENCE SHOP - Upgrades Permanents</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🎁 <strong>6 Upgrades Permanents :</strong> Dépense ton Essence pour des boosts définitifs!</li>
+                    <li>🚀 <strong>TURBO TRADER (5💎) :</strong> Bot trade toutes les 2s au lieu de 5s (+150% vitesse!)</li>
+                    <li>💰 <strong>PROFIT MASTER (8💎) :</strong> +30% profit sur TOUTES les ventes</li>
+                    <li>🤖 <strong>CHEAP AGENTS (10💎) :</strong> -50% prix pour tous les agents</li>
+                    <li>👁️ <strong>MARKET VISION (12💎) :</strong> Vois les tendances BULL/BEAR en temps réel</li>
+                    <li>⚡ <strong>VOLATILITY KING (15💎) :</strong> Volatilité ×2 = Profits ×2 (risques ×2!)</li>
+                    <li>👑 <strong>GOD MODE (50💎) :</strong> Double TOUS les gains du jeu!</li>
+                </ul>
+
+                <h4 style="color: #00ff41; margin-top: 20px; margin-bottom: 10px;">📊 PRIX HYPER DYNAMIQUES (×5 Plus Volatils!)</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🐂 <strong>BULL MARKET :</strong> Prix monte +2-8% par cycle pendant 30-70s</li>
+                    <li>🐻 <strong>BEAR MARKET :</strong> Prix descend -2-8% par cycle pendant 30-70s</li>
+                    <li>⚡ <strong>VOLATILE MARKET :</strong> Prix fait le YOYO ±5-12% chaque cycle</li>
+                    <li>🌊 <strong>NEUTRAL MARKET :</strong> Petits mouvements ±2-5%</li>
+                    <li>📢 <strong>Annonces :</strong> Le jeu t'avertit quand les tendances changent</li>
+                </ul>
+
+                <h4 style="color: #ff4400; margin-top: 20px; margin-bottom: 10px;">🚨 ÉVÉNEMENTS DE MARCHÉ (20% par cycle!)</h4>
+                <ul style="margin-top: 10px;">
+                    <li>🚀 <strong>PUMP :</strong> +15-25% spike instantané sur un item!</li>
+                    <li>💥 <strong>DUMP :</strong> -15-25% crash soudain!</li>
+                    <li>🐋 <strong>WHALE :</strong> Manipulation +20% par les baleines!</li>
+                    <li>⚡ <strong>FLASH CRASH :</strong> -15% rapide puis recovery possible!</li>
+                </ul>
+
+                <h4 style="color: #ff00ff; margin-top: 20px; margin-bottom: 10px;">🤖 BOT ULTRA RAPIDE</h4>
+                <ul style="margin-top: 10px;">
+                    <li>⚡ <strong>Vend TOUT d'un coup :</strong> Plus de vente 1 par 1!</li>
+                    <li>🎯 <strong>Conditions + Agressives :</strong> Vend à +8% au lieu de +15%</li>
+                    <li>💨 <strong>Profits 10x Plus Vite :</strong> Sorties rapides garanties</li>
+                    <li>🎛️ <strong>Bouton ON/OFF :</strong> Contrôle ton bot dans le header</li>
+                </ul>
+
+                <h4 style="color: #00d9ff; margin-top: 20px; margin-bottom: 10px;">🤖 TRADERS VIRTUELS HYPERACTIFS</h4>
+                <ul style="margin-top: 10px;">
+                    <li>👥 <strong>0-25 traders par cycle :</strong> 5x plus actifs qu'avant!</li>
+                    <li>📦 <strong>10-30 unités par trade :</strong> Mouvements massifs!</li>
+                    <li>🌊 <strong>Stock bouge VRAIMENT :</strong> Visible même en idle!</li>
+                </ul>
+            </div>
 
             <div style="background: linear-gradient(135deg, rgba(0, 255, 65, 0.4), rgba(0, 217, 255, 0.3)); padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #00ff41; box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);">
                 <h3 style="color: #00ff41; margin-bottom: 10px; font-size: 1.6em;">🌊 Version 5.0 - MARCHÉ VIVANT (Supply & Demand) ! 📊💹</h3>
@@ -1199,6 +1277,122 @@
         </div>
     </div>
 
+    <!-- Essence Shop Modal -->
+    <div id="essenceShopModal" class="modal">
+        <div class="modal-content">
+            <h1>💎 ESSENCE SHOP - Upgrades Permanents</h1>
+            <p style="color: rgba(255,255,255,0.7); text-align: center; margin-bottom: 30px;">
+                Ton Essence: <span id="essenceCount" style="color: #ffd700; font-size: 1.5em; font-weight: bold;">0</span> 💎
+            </p>
+
+            <!-- Turbo Trader -->
+            <div class="upgrade-card" id="upgrade-turboTrader">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: #00ff41; margin-bottom: 5px;">🚀 TURBO TRADER</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95em; margin-bottom: 10px;">
+                            Bot trade toutes les 2s au lieu de 5s<br>
+                            <span style="color: #00ff41;">+150% vitesse de trading!</span>
+                        </p>
+                        <div style="color: #ffd700; font-weight: bold;">Coût: 5 💎 Essence</div>
+                    </div>
+                    <button class="btn" onclick="buyEssenceUpgrade('turboTrader', 5)" style="background: linear-gradient(135deg, #00ff41, #00aa00); border: 2px solid #00ff41;">
+                        ACHETER
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profit Master -->
+            <div class="upgrade-card" id="upgrade-profitMaster">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: #ffd700; margin-bottom: 5px;">💰 PROFIT MASTER</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95em; margin-bottom: 10px;">
+                            +30% profit sur TOUTES les ventes<br>
+                            <span style="color: #ffd700;">Gains massifs sur chaque trade!</span>
+                        </p>
+                        <div style="color: #ffd700; font-weight: bold;">Coût: 8 💎 Essence</div>
+                    </div>
+                    <button class="btn" onclick="buyEssenceUpgrade('profitMaster', 8)" style="background: linear-gradient(135deg, #ffd700, #ff8800); border: 2px solid #ffd700;">
+                        ACHETER
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cheap Agents -->
+            <div class="upgrade-card" id="upgrade-cheapAgents">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: #00d9ff; margin-bottom: 5px;">🤖 CHEAP AGENTS</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95em; margin-bottom: 10px;">
+                            -50% prix pour tous les agents<br>
+                            <span style="color: #00d9ff;">Recrute ton équipe pour moins cher!</span>
+                        </p>
+                        <div style="color: #ffd700; font-weight: bold;">Coût: 10 💎 Essence</div>
+                    </div>
+                    <button class="btn" onclick="buyEssenceUpgrade('cheapAgents', 10)" style="background: linear-gradient(135deg, #00d9ff, #0088ff); border: 2px solid #00d9ff;">
+                        ACHETER
+                    </button>
+                </div>
+            </div>
+
+            <!-- Market Vision -->
+            <div class="upgrade-card" id="upgrade-marketVision">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: #ff00ff; margin-bottom: 5px;">👁️ MARKET VISION</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95em; margin-bottom: 10px;">
+                            Vois les tendances (BULL/BEAR) en temps réel<br>
+                            <span style="color: #ff00ff;">Affichage permanent des trends!</span>
+                        </p>
+                        <div style="color: #ffd700; font-weight: bold;">Coût: 12 💎 Essence</div>
+                    </div>
+                    <button class="btn" onclick="buyEssenceUpgrade('marketVision', 12)" style="background: linear-gradient(135deg, #ff00ff, #ff0088); border: 2px solid #ff00ff;">
+                        ACHETER
+                    </button>
+                </div>
+            </div>
+
+            <!-- Volatility King -->
+            <div class="upgrade-card" id="upgrade-volatilityKing">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: #ff4400; margin-bottom: 5px;">⚡ VOLATILITY KING</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95em; margin-bottom: 10px;">
+                            Volatilité ×2 = Profits ×2 (mais risques ×2!)<br>
+                            <span style="color: #ff4400;">Pour les traders agressifs!</span>
+                        </p>
+                        <div style="color: #ffd700; font-weight: bold;">Coût: 15 💎 Essence</div>
+                    </div>
+                    <button class="btn" onclick="buyEssenceUpgrade('volatilityKing', 15)" style="background: linear-gradient(135deg, #ff4400, #aa0000); border: 2px solid #ff4400;">
+                        ACHETER
+                    </button>
+                </div>
+            </div>
+
+            <!-- God Mode -->
+            <div class="upgrade-card" id="upgrade-godMode">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: #ffffff; margin-bottom: 5px;">👑 GOD MODE</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95em; margin-bottom: 10px;">
+                            Double TOUS les gains du jeu<br>
+                            <span style="color: #ffffff;">L'upgrade ultime!</span>
+                        </p>
+                        <div style="color: #ffd700; font-weight: bold;">Coût: 50 💎 Essence</div>
+                    </div>
+                    <button class="btn" onclick="buyEssenceUpgrade('godMode', 50)" style="background: linear-gradient(135deg, #ffffff, #ffdd00); border: 2px solid #ffffff; color: #000;">
+                        ACHETER
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeEssenceShop()" style="background: linear-gradient(135deg, #ffd700, #ff8800); border: 2px solid #ffd700;">FERMER</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Game State
         const game = {
@@ -1215,7 +1409,23 @@
                 trader: false,
                 guardian: false,
                 prophet: false
+            },
+            essenceUpgrades: {
+                turboTrader: false,    // 5 Essence - Bot trade every 2s
+                profitMaster: false,   // 8 Essence - +30% profit
+                cheapAgents: false,    // 10 Essence - -50% agent costs
+                marketVision: false,   // 12 Essence - See trends in future
+                volatilityKing: false, // 15 Essence - 2x volatility
+                godMode: false         // 50 Essence - 2x ALL gains
             }
+        };
+
+        // Market Trends System
+        const marketTrends = {
+            global: 'neutral', // 'bull', 'bear', 'volatile', 'neutral'
+            duration: 0,
+            maxDuration: 0,
+            items: {} // Individual item trends
         };
 
         // Items Database
@@ -1614,19 +1824,105 @@
         }
 
         // Fluctuate prices (with supply/demand impact)
-        function fluctuatePrices() {
-            items.forEach(item => {
-                // Base volatility fluctuation
-                const change = (Math.random() - 0.45) * item.volatility; // Slight upward bias
-                const basePrice = item.basePrice * (1 + change);
+        // ═══════════════════════════════════════════════════════════════
+        // 📊 MARKET TRENDS & DYNAMIC PRICING v5.3
+        // ═══════════════════════════════════════════════════════════════
 
-                // Apply scarcity multiplier
+        function updateMarketTrends() {
+            // Update global trend duration
+            marketTrends.duration++;
+
+            // Change trend when duration expires
+            if (marketTrends.duration >= marketTrends.maxDuration) {
+                const trends = ['bull', 'bear', 'volatile', 'neutral', 'neutral']; // Neutral more common
+                marketTrends.global = trends[Math.floor(Math.random() * trends.length)];
+                marketTrends.duration = 0;
+                marketTrends.maxDuration = 6 + Math.floor(Math.random() * 8); // 30-70 seconds (6-14 cycles)
+
+                // Announce major trend changes
+                if (marketTrends.global === 'bull') {
+                    addNews('> 🐂 BULL MARKET ACTIVATED - Prices trending UP!', 'success');
+                } else if (marketTrends.global === 'bear') {
+                    addNews('> 🐻 BEAR MARKET ACTIVATED - Prices trending DOWN!', 'error');
+                } else if (marketTrends.global === 'volatile') {
+                    addNews('> ⚡ VOLATILE MARKET - Wild price swings!', 'event');
+                }
+            }
+
+            // Update individual item trends (some items can go against the trend)
+            items.forEach(item => {
+                if (!marketTrends.items[item.id]) {
+                    marketTrends.items[item.id] = {
+                        trend: 'neutral',
+                        strength: 1,
+                        duration: 0,
+                        maxDuration: 4 + Math.floor(Math.random() * 6)
+                    };
+                }
+
+                const itemTrend = marketTrends.items[item.id];
+                itemTrend.duration++;
+
+                // Some items follow global trend, others go against it
+                if (itemTrend.duration >= itemTrend.maxDuration) {
+                    if (Math.random() < 0.7) {
+                        // 70% follow global trend
+                        itemTrend.trend = marketTrends.global;
+                    } else {
+                        // 30% go against or neutral
+                        const opposite = {
+                            'bull': 'bear',
+                            'bear': 'bull',
+                            'volatile': 'volatile',
+                            'neutral': 'neutral'
+                        };
+                        itemTrend.trend = opposite[marketTrends.global] || 'neutral';
+                    }
+                    itemTrend.strength = 0.5 + Math.random() * 1.5; // 0.5x to 2x strength
+                    itemTrend.duration = 0;
+                    itemTrend.maxDuration = 4 + Math.floor(Math.random() * 6);
+                }
+            });
+        }
+
+        function fluctuatePrices() {
+            updateMarketTrends();
+
+            items.forEach(item => {
+                const currentPrice = marketPrices[item.id];
+                const itemTrend = marketTrends.items[item.id];
+
+                // Volatility multiplier from essence upgrades
+                const volatilityMult = game.essenceUpgrades.volatilityKing ? 2 : 1;
+                const effectiveVolatility = item.volatility * volatilityMult;
+
+                // BASE FLUCTUATION (×3 more dramatic)
+                let priceChange = 0;
+
+                if (itemTrend.trend === 'bull') {
+                    // BULL: Strong upward bias (+2% to +8%)
+                    priceChange = (0.02 + Math.random() * 0.06) * itemTrend.strength;
+                } else if (itemTrend.trend === 'bear') {
+                    // BEAR: Strong downward bias (-8% to -2%)
+                    priceChange = -(0.02 + Math.random() * 0.06) * itemTrend.strength;
+                } else if (itemTrend.trend === 'volatile') {
+                    // VOLATILE: Wild swings (±5% to ±12%)
+                    priceChange = (Math.random() - 0.5) * 0.24 * itemTrend.strength;
+                } else {
+                    // NEUTRAL: Small random walk (±2% to ±5%)
+                    priceChange = (Math.random() - 0.5) * 0.10 * effectiveVolatility * 3;
+                }
+
+                // Apply scarcity pressure
                 const scarcityMult = getScarcityMultiplier(item.id);
-                let newPrice = Math.round(basePrice * scarcityMult);
+                const scarcityPressure = (scarcityMult - 1) * 0.05; // Scarcity adds ±5% pressure
+
+                // Calculate new price based on CURRENT price (cumulative changes!)
+                let newPrice = Math.round(currentPrice * (1 + priceChange + scarcityPressure));
 
                 // Clamp to reasonable bounds
                 const minPrice = Math.round(item.basePrice * 0.3);
-                const maxPrice = Math.round(item.basePrice * 5); // Increased max for scarcity spikes
+                const maxPrice = Math.round(item.basePrice * 8); // Wider range for bigger moves
                 newPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
 
                 marketPrices[item.id] = newPrice;
@@ -1637,6 +1933,37 @@
                     priceHistory[item.id].shift();
                 }
             });
+
+            // Random market events (20% chance per cycle)
+            if (Math.random() < 0.20) {
+                triggerMarketEvent();
+            }
+        }
+
+        function triggerMarketEvent() {
+            const eventType = Math.random();
+            const item = items[Math.floor(Math.random() * items.length)];
+            const currentPrice = marketPrices[item.id];
+
+            if (eventType < 0.25) {
+                // PUMP (+15% to +25%)
+                const spike = 1.15 + Math.random() * 0.10;
+                marketPrices[item.id] = Math.round(currentPrice * spike);
+                addNews(`> 🚀 PUMP: ${item.icon} ${item.name} SPIKED +${Math.round((spike - 1) * 100)}%!`, 'success');
+            } else if (eventType < 0.50) {
+                // DUMP (-15% to -25%)
+                const crash = 0.75 + Math.random() * 0.10;
+                marketPrices[item.id] = Math.round(currentPrice * crash);
+                addNews(`> 💥 DUMP: ${item.icon} ${item.name} CRASHED -${Math.round((1 - crash) * 100)}%!`, 'error');
+            } else if (eventType < 0.75) {
+                // WHALE MANIPULATION (+20% then will crash later)
+                marketPrices[item.id] = Math.round(currentPrice * 1.20);
+                addNews(`> 🐋 WHALE: ${item.icon} ${item.name} manipulated +20%!`, 'event');
+            } else {
+                // FLASH CRASH then recovery
+                marketPrices[item.id] = Math.round(currentPrice * 0.85);
+                addNews(`> ⚡ FLASH: ${item.icon} ${item.name} flash crash -15%!`, 'event');
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -1745,11 +2072,27 @@
             supply.available = Math.min(supply.max, supply.available + quantity);
 
             // Calculate profit
+            game.money += totalRevenue;
             let profit = 0;
+            let bonusProfit = 0;
+
             if (game.portfolioDetails[itemId]) {
                 const avgBuyPrice = game.portfolioDetails[itemId].totalSpent / game.portfolioDetails[itemId].totalQuantity;
                 const costOfSold = avgBuyPrice * quantity;
                 profit = totalRevenue - costOfSold;
+
+                // Apply Profit Master bonus (+30% extra profit as cash!)
+                if (game.essenceUpgrades.profitMaster && profit > 0) {
+                    bonusProfit += profit * 0.30;
+                }
+
+                // Apply God Mode bonus (2x all gains)
+                if (game.essenceUpgrades.godMode && profit > 0) {
+                    bonusProfit += profit; // Doubles the profit
+                }
+
+                // Add bonus profit as extra cash
+                game.money += bonusProfit;
 
                 // Update details
                 game.portfolioDetails[itemId].totalSpent -= costOfSold;
@@ -1760,9 +2103,8 @@
                 }
             }
 
-            game.money += totalRevenue;
             game.portfolio[itemId] -= quantity;
-            game.totalProfit += profit;
+            game.totalProfit += profit + bonusProfit;
             game.totalTrades += quantity;
 
             if (game.portfolio[itemId] === 0) {
@@ -1929,14 +2271,22 @@
             agentsList.forEach(agent => {
                 if (game.agents[agent.id]) return; // Already owned
 
-                const canAfford = game.money >= agent.cost;
+                // Apply Cheap Agents discount (-50%)
+                let finalCost = agent.cost;
+                let costDisplay = `${agent.cost}¢`;
+                if (game.essenceUpgrades.cheapAgents) {
+                    finalCost = Math.floor(agent.cost * 0.5);
+                    costDisplay = `<span style="text-decoration: line-through; color: rgba(255,255,255,0.5);">${agent.cost}¢</span> ${finalCost}¢ (-50%!)`;
+                }
+
+                const canAfford = game.money >= finalCost;
 
                 const agentDiv = document.createElement('div');
                 agentDiv.className = 'agent-card';
                 agentDiv.innerHTML = `
                     <div class="agent-name">${agent.name}</div>
                     <div class="agent-desc">${agent.desc}</div>
-                    <div class="agent-cost">Cost: ${agent.cost}¢</div>
+                    <div class="agent-cost">Cost: ${costDisplay}</div>
                     <button class="btn" onclick="buyAgent('${agent.id}')" ${!canAfford ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>
                         RECRUIT
                     </button>
@@ -1959,15 +2309,22 @@
 
             const agent = agentsList[agentId];
 
-            if (game.money < agent.cost) {
-                addNews(`> ERROR: Insufficient funds for ${agent.name}`, 'error');
+            // Apply Cheap Agents discount (-50%)
+            let finalCost = agent.cost;
+            if (game.essenceUpgrades.cheapAgents) {
+                finalCost = Math.floor(agent.cost * 0.5);
+            }
+
+            if (game.money < finalCost) {
+                addNews(`> ERROR: Insufficient funds for ${agent.name} (${finalCost}¢ required)`, 'error');
                 return;
             }
 
-            game.money -= agent.cost;
+            game.money -= finalCost;
             game.agents[agentId] = true;
 
-            addNews(`> RECRUITED: ${agent.name} is now active`, 'success');
+            const costText = game.essenceUpgrades.cheapAgents ? ` (${finalCost}¢ avec -50% discount!)` : '';
+            addNews(`> RECRUITED: ${agent.name} is now active${costText}`, 'success');
             updateUI();
         }
 
@@ -2351,7 +2708,18 @@
                         const quantity = owned;
                         const totalRevenue = price * quantity;
                         const costOfSold = avgBuyPrice * quantity;
-                        const profit = totalRevenue - costOfSold;
+                        let profit = totalRevenue - costOfSold;
+                        let bonusProfit = 0;
+
+                        // Apply Profit Master bonus (+30% extra profit!)
+                        if (game.essenceUpgrades.profitMaster && profit > 0) {
+                            bonusProfit += profit * 0.30;
+                        }
+
+                        // Apply God Mode bonus (2x all gains!)
+                        if (game.essenceUpgrades.godMode && profit > 0) {
+                            bonusProfit += profit;
+                        }
 
                         // Update market supply (bot adds back to available stock)
                         const supply = marketSupply[item.id];
@@ -2364,9 +2732,9 @@
                             delete game.portfolioDetails[item.id];
                         }
 
-                        game.money += totalRevenue;
+                        game.money += totalRevenue + bonusProfit;
                         game.portfolio[item.id] -= quantity;
-                        game.totalProfit += profit;
+                        game.totalProfit += profit + bonusProfit;
                         game.totalTrades += quantity;
 
                         if (game.portfolio[item.id] === 0) {
@@ -2380,9 +2748,9 @@
 
                         // Update AI stats and learning
                         tradingAI.stats.totalSells++;
-                        tradingAI.stats.totalProfitFromAI += profit;
+                        tradingAI.stats.totalProfitFromAI += profit + bonusProfit;
 
-                        if (profit > 0) {
+                        if (profit + bonusProfit > 0) {
                             tradingAI.stats.wins++;
                             tradingAI.learning.itemPerformance[item.id].wins++;
                             tradingAI.learning.itemPerformance[item.id].totalProfit += profit;
@@ -2581,6 +2949,81 @@
             document.getElementById('aiStatsModal').style.display = 'none';
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 💎 ESSENCE SHOP FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════
+
+        function showEssenceShop() {
+            updateEssenceShopUI();
+            document.getElementById('essenceShopModal').style.display = 'block';
+        }
+
+        function closeEssenceShop() {
+            document.getElementById('essenceShopModal').style.display = 'none';
+        }
+
+        function updateEssenceShopUI() {
+            // Update essence count
+            document.getElementById('essenceCount').textContent = game.essence;
+
+            // Update each upgrade card
+            const upgrades = ['turboTrader', 'profitMaster', 'cheapAgents', 'marketVision', 'volatilityKing', 'godMode'];
+            upgrades.forEach(upgrade => {
+                const card = document.getElementById('upgrade-' + upgrade);
+                const button = card.querySelector('button');
+
+                if (game.essenceUpgrades[upgrade]) {
+                    // Already purchased
+                    card.classList.add('purchased');
+                    button.textContent = 'ACHETÉ ✓';
+                    button.disabled = true;
+                    button.style.cursor = 'not-allowed';
+                } else {
+                    card.classList.remove('purchased');
+                    button.disabled = false;
+                    button.style.cursor = 'pointer';
+                }
+            });
+        }
+
+        function buyEssenceUpgrade(upgradeId, cost) {
+            if (game.essenceUpgrades[upgradeId]) {
+                addNews('> ERROR: Upgrade déjà acheté!', 'error');
+                return;
+            }
+
+            if (game.essence < cost) {
+                addNews(`> ERROR: Pas assez d'Essence! (${cost} requis, ${game.essence} disponible)`, 'error');
+                return;
+            }
+
+            // Purchase upgrade
+            game.essence -= cost;
+            game.essenceUpgrades[upgradeId] = true;
+
+            // Announce purchase
+            const upgradeName = {
+                turboTrader: '🚀 TURBO TRADER',
+                profitMaster: '💰 PROFIT MASTER',
+                cheapAgents: '🤖 CHEAP AGENTS',
+                marketVision: '👁️ MARKET VISION',
+                volatilityKing: '⚡ VOLATILITY KING',
+                godMode: '👑 GOD MODE'
+            };
+
+            addNews(`> UPGRADE ACHETÉ: ${upgradeName[upgradeId]}!`, 'success');
+
+            // Special handling for Turbo Trader
+            if (upgradeId === 'turboTrader') {
+                startGameLoop(); // Restart loop with 2s speed
+                addNews('> Game loop now running at 2s instead of 5s!', 'success');
+            }
+
+            // Update UI
+            updateEssenceShopUI();
+            updateUI();
+        }
+
         function updateAIStatsDisplay() {
             // Update global stats
             document.getElementById('aiTotalTrades').textContent = tradingAI.stats.totalBuys + tradingAI.stats.totalSells;
@@ -2637,7 +3080,8 @@
             const saveData = {
                 game: game,
                 tradingAI: tradingAI,
-                marketSupply: marketSupply
+                marketSupply: marketSupply,
+                marketTrends: marketTrends
             };
             localStorage.setItem('flipverse_save', JSON.stringify(saveData));
         }, 10000);
@@ -2649,7 +3093,7 @@
             // Support both old and new save format
             if (loaded.game) {
                 Object.assign(game, loaded.game);
-                let hasAI = false, hasSupply = false;
+                let hasAI = false, hasSupply = false, hasTrends = false;
 
                 if (loaded.tradingAI) {
                     Object.assign(tradingAI, loaded.tradingAI);
@@ -2661,7 +3105,14 @@
                     hasSupply = true;
                 }
 
-                if (hasAI && hasSupply) {
+                if (loaded.marketTrends) {
+                    Object.assign(marketTrends, loaded.marketTrends);
+                    hasTrends = true;
+                }
+
+                if (hasAI && hasSupply && hasTrends) {
+                    addNews('> SAVE DATA + AI + MARKET + TRENDS LOADED', 'success');
+                } else if (hasAI && hasSupply) {
                     addNews('> SAVE DATA + AI MEMORY + MARKET STATE LOADED', 'success');
                 } else if (hasAI) {
                     addNews('> SAVE DATA + AI MEMORY LOADED', 'success');
@@ -2679,8 +3130,17 @@
         initMarket();
         updateUI();
 
-        // Game loop (5 seconds)
-        setInterval(gameLoop, 5000);
+        // Game loop with dynamic speed
+        let gameLoopInterval = null;
+        function startGameLoop() {
+            if (gameLoopInterval) {
+                clearInterval(gameLoopInterval);
+            }
+            // Turbo Trader: 2s instead of 5s
+            const loopSpeed = game.essenceUpgrades.turboTrader ? 2000 : 5000;
+            gameLoopInterval = setInterval(gameLoop, loopSpeed);
+        }
+        startGameLoop();
 
         // Close modals on click outside
         window.onclick = function(event) {
