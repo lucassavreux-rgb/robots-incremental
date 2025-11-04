@@ -489,28 +489,12 @@
     </div>
 
     <script>
-        // Check authentication
-        const savedUser = localStorage.getItem('gameArcade_user');
-
-        if (!savedUser) {
-            // Not logged in, redirect to login
-            window.location.href = 'login.html';
-        } else {
-            // Logged in, display user info
-            const user = JSON.parse(savedUser);
-            document.getElementById('username').textContent = user.username;
-
-            // Show admin button if user is admin
-            if (user.isAdmin) {
-                document.getElementById('adminButton').style.display = 'block';
-            }
-        }
+        // AUTH DISABLED - Direct access to games
+        document.getElementById('username').textContent = 'Joueur';
+        document.getElementById('adminButton').style.display = 'none';
 
         function logout() {
-            if (confirm('Déconnexion ?')) {
-                localStorage.removeItem('gameArcade_user');
-                window.location.href = 'login.html';
-            }
+            alert('Authentification désactivée pour le moment !');
         }
     </script>
 </body>
