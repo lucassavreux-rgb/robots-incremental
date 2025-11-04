@@ -526,7 +526,7 @@
             <h1>
                 ⚡ FLIPVERSE <span class="dimension-badge" id="dimensionBadge">DIM-α</span>
             </h1>
-            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v3.0 - ALL AGENTS ACTIVE //</p>
+            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v3.1 - TRADER-X OPTIMIZED //</p>
             <div class="header-buttons">
                 <button class="btn" onclick="window.location.href='index.html'">🏠 MENU</button>
                 <button class="btn" onclick="showTutorial()">📖 TUTORIEL</button>
@@ -634,10 +634,11 @@
                 </li>
                 <li><strong>💼 TRADER-X (15 000¢) :</strong> 🔥 Trade automatiquement pour toi !
                     <ul style="margin-top: 8px; margin-left: 20px; font-size: 0.95em;">
-                        <li>✅ Achète automatiquement quand le prix baisse de -10% ou plus</li>
-                        <li>✅ Vend automatiquement quand tu as +15% de profit sur un objet</li>
+                        <li>✅ Achète automatiquement quand le prix baisse de <strong>-5% ou plus</strong></li>
+                        <li>✅ Vend automatiquement <strong>dès que c'est rentable</strong> (profit &gt; 0)</li>
                         <li>✅ Trade 1 unité à la fois toutes les 5 secondes</li>
                         <li>✅ Messages préfixés par "💼 TRADER-X"</li>
+                        <li>💡 Très actif : trade beaucoup et souvent !</li>
                     </ul>
                 </li>
                 <li><strong>🛡️ GUARDIAN (25 000¢) :</strong> 🔥 Protège ton portfolio !
@@ -690,12 +691,23 @@
             <h1>📝 FLIPVERSE - CHANGELOG</h1>
 
             <div style="background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 217, 255, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00ff41;">
-                <h3 style="color: #00ff41; margin-bottom: 10px;">Version 3.0 - TOUS LES AGENTS OPÉRATIONNELS ! 🔥🤖</h3>
+                <h3 style="color: #00ff41; margin-bottom: 10px;">Version 3.1 - TRADER-X Plus Actif ! ⚡</h3>
+                <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
+                <ul style="margin-top: 15px;">
+                    <li>🔥 <strong>TRADER-X Optimisé :</strong> Maintenant achète à <strong>-5%</strong> (au lieu de -10%)</li>
+                    <li>💰 <strong>Vente Plus Rapide :</strong> Vend <strong>dès que c'est rentable</strong> (au lieu d'attendre +15%)</li>
+                    <li>⚡ <strong>Trading Accéléré :</strong> Beaucoup plus de trades pour maximiser les profits !</li>
+                    <li>📈 <strong>Expérience Améliorée :</strong> Génère des profits plus rapidement</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 65, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00d9ff;">
+                <h3 style="color: #00d9ff; margin-bottom: 10px;">Version 3.0 - TOUS LES AGENTS OPÉRATIONNELS ! 🔥🤖</h3>
                 <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
                 <ul style="margin-top: 15px;">
                     <li>🎉 <strong>4 AGENTS COMPLETS :</strong> ANALYST-7, TRADER-X, GUARDIAN et PROPHET tous fonctionnels !</li>
                     <li>🤖 <strong>ANALYST-7 :</strong> Conseils et alertes sur les mouvements de marché importants</li>
-                    <li>💼 <strong>TRADER-X Amélioré :</strong> Achète à -10%, vend à +15% de profit</li>
+                    <li>💼 <strong>TRADER-X :</strong> Auto-trading intelligent</li>
                     <li>🛡️ <strong>GUARDIAN :</strong> Stop-loss automatique à -20% pour protéger ton capital</li>
                     <li>🔮 <strong>PROPHET :</strong> Prédictions basées sur l'analyse des tendances</li>
                     <li>⚡ <strong>Trading Automatisé :</strong> Laisse les agents travailler pour toi 24/7 !</li>
@@ -1169,8 +1181,8 @@
                 if (history.length < 2) return;
                 const priceChange = ((price - history[history.length - 2]) / history[history.length - 2] * 100);
 
-                // BUY when price drops by -10% or more
-                if (priceChange <= -10 && game.money >= price) {
+                // BUY when price drops by -5% or more
+                if (priceChange <= -5 && game.money >= price) {
                     const quantity = 1;
                     const totalCost = price * quantity;
 
@@ -1193,12 +1205,14 @@
                     }
                 }
 
-                // SELL when we have +15% profit or more
+                // SELL when we have ANY profit (profit > 0)
                 if (owned > 0 && game.portfolioDetails[item.id]) {
                     const avgBuyPrice = game.portfolioDetails[item.id].totalSpent / game.portfolioDetails[item.id].totalQuantity;
+                    const profitPerUnit = price - avgBuyPrice;
                     const profitPercent = ((price - avgBuyPrice) / avgBuyPrice * 100);
 
-                    if (profitPercent >= 15) {
+                    // Sell if profitable
+                    if (profitPerUnit > 0) {
                         const quantity = 1;
                         const totalRevenue = price * quantity;
                         const costOfSold = avgBuyPrice * quantity;
