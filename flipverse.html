@@ -529,7 +529,8 @@
             <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v2.047 //</p>
             <div class="header-buttons">
                 <button class="btn" onclick="window.location.href='index.html'">🏠 MENU</button>
-                <button class="btn" onclick="showTutorial()">📖 TUTORIAL</button>
+                <button class="btn" onclick="showTutorial()">📖 TUTORIEL</button>
+                <button class="btn" onclick="showChangelog()">📝 CHANGELOG</button>
                 <button class="btn" onclick="switchDimension()">🌀 PRESTIGE</button>
                 <button class="btn-danger" onclick="confirmReset()">⚠️ RESET</button>
             </div>
@@ -599,57 +600,122 @@
     <!-- Tutorial Modal -->
     <div id="tutorialModal" class="modal">
         <div class="modal-content">
-            <h1>📖 FLIPVERSE - TUTORIAL</h1>
+            <h1>📖 FLIPVERSE - TUTORIEL</h1>
 
-            <h2>🎯 OBJECTIVE</h2>
-            <p>Build wealth by trading interdimensional items across the multiverse! Buy low, sell high, and master the volatile markets.</p>
+            <h2>🎯 OBJECTIF</h2>
+            <p>Deviens riche en faisant du trading d'objets interdimensionnels à travers le multivers ! Achète bas, vends haut, et maîtrise les marchés volatils.</p>
 
-            <h2>💰 HOW TO PLAY</h2>
+            <h2>💰 COMMENT JOUER</h2>
             <ul>
-                <li><strong>📈 Watch the Market:</strong> Prices fluctuate every 5 seconds. The % change indicator shows market trends.</li>
-                <li><strong>💵 Buy Smart:</strong> Purchase items when prices are low or falling (red indicator).</li>
-                <li><strong>📊 Sell High:</strong> Wait for prices to rise (green indicator), then sell for profit!</li>
-                <li><strong>💼 Portfolio Management:</strong> Your portfolio shows real-time profit/loss for each item.</li>
-                <li><strong>🎲 Item Rarity:</strong> Higher rarity = higher volatility and potential profits!</li>
+                <li><strong>📈 Surveille le Marché :</strong> Les prix fluctuent toutes les 5 secondes. L'indicateur % montre les tendances du marché.</li>
+                <li><strong>💵 Achète Malin :</strong> Achète les objets quand les prix sont bas ou en baisse (indicateur rouge).</li>
+                <li><strong>📊 Vends Haut :</strong> Attends que les prix montent (indicateur vert), puis revends pour faire du profit !</li>
+                <li><strong>💼 Gestion de Portfolio :</strong> Ton portfolio affiche en temps réel les profits/pertes pour chaque objet.</li>
+                <li><strong>🎲 Rareté des Objets :</strong> Plus c'est rare = plus de volatilité et de profits potentiels !</li>
             </ul>
 
-            <h2>💎 ITEM RARITY SYSTEM</h2>
+            <h2>💎 SYSTÈME DE RARETÉ</h2>
             <ul>
-                <li><strong style="color: #aaa;">Common:</strong> Low volatility (15-18%), safe but lower returns</li>
-                <li><strong style="color: #00d9ff;">Rare:</strong> Medium volatility (22-25%), balanced risk/reward</li>
-                <li><strong style="color: #ffd700;">Legendary:</strong> High volatility (35-40%), risky but profitable</li>
-                <li><strong style="color: #ff00ff;">Mythic:</strong> Extreme volatility (50-55%), massive risk and reward!</li>
+                <li><strong style="color: #aaa;">Commun :</strong> Faible volatilité (15-18%), sûr mais rendements faibles</li>
+                <li><strong style="color: #00d9ff;">Rare :</strong> Volatilité moyenne (22-25%), risque/récompense équilibré</li>
+                <li><strong style="color: #ffd700;">Légendaire :</strong> Haute volatilité (35-40%), risqué mais rentable</li>
+                <li><strong style="color: #ff00ff;">Mythique :</strong> Volatilité extrême (50-55%), risque et gains massifs !</li>
             </ul>
 
             <h2>🤖 AGENTS</h2>
             <ul>
-                <li><strong>🤖 ANALYST-7 (5,000¢):</strong> Auto-analyzes market trends</li>
-                <li><strong>💼 TRADER-X (15,000¢):</strong> Executes automated profitable trades</li>
-                <li><strong>🛡️ GUARDIAN (25,000¢):</strong> Protects your portfolio from crashes</li>
-                <li><strong>🔮 PROPHET (50,000¢):</strong> Predicts future market movements</li>
+                <li><strong>🤖 ANALYST-7 (5 000¢) :</strong> Analyse automatiquement les tendances du marché</li>
+                <li><strong>💼 TRADER-X (15 000¢) :</strong> Exécute des trades profitables automatiquement</li>
+                <li><strong>🛡️ GUARDIAN (25 000¢) :</strong> Protège ton portfolio des crashes</li>
+                <li><strong>🔮 PROPHET (50 000¢) :</strong> Prédit les mouvements futurs du marché</li>
             </ul>
 
-            <h2>✨ PRESTIGE: DIMENSION SHIFT</h2>
+            <h2>✨ PRESTIGE : SAUT DIMENSIONNEL</h2>
             <ul>
-                <li><strong>Requirement:</strong> 50,000¢ total value (cash + portfolio)</li>
-                <li><strong>Effect:</strong> Reset all progress but gain Essence Cosmique</li>
-                <li><strong>Bonus:</strong> Each Essence gives +10% permanent production bonus</li>
-                <li><strong>Strategy:</strong> The higher your total value, the more Essence you gain!</li>
+                <li><strong>Condition :</strong> 50 000¢ de valeur totale (argent + portfolio)</li>
+                <li><strong>Effet :</strong> Réinitialise toute ta progression mais gagne de l'Essence Cosmique</li>
+                <li><strong>Bonus :</strong> Chaque Essence donne +10% de bonus de production permanent</li>
+                <li><strong>Stratégie :</strong> Plus ta valeur totale est élevée, plus tu gagnes d'Essence !</li>
             </ul>
 
-            <h2>💡 PRO TIPS</h2>
+            <h2>💡 ASTUCES PRO</h2>
             <ul>
-                <li>Start with Common items to learn the market safely</li>
-                <li>Diversify your portfolio across multiple items</li>
-                <li>Green profit in portfolio = good time to sell</li>
-                <li>Red loss in portfolio = wait for recovery or cut losses</li>
-                <li>Watch the % change indicator for market momentum</li>
-                <li>Mythic items can double or halve in value quickly!</li>
-                <li>Your progress auto-saves every 10 seconds</li>
+                <li>Commence avec les objets Communs pour apprendre le marché en sécurité</li>
+                <li>Diversifie ton portfolio sur plusieurs objets différents</li>
+                <li>Profit vert dans le portfolio = bon moment pour vendre</li>
+                <li>Perte rouge dans le portfolio = attends la remontée ou coupe tes pertes</li>
+                <li>Regarde l'indicateur % pour voir l'élan du marché</li>
+                <li>Les objets Mythiques peuvent doubler ou perdre la moitié de leur valeur rapidement !</li>
+                <li>Ta progression est sauvegardée automatiquement toutes les 10 secondes</li>
             </ul>
 
             <div class="modal-buttons">
-                <button class="btn" onclick="closeTutorial()" style="background: rgba(0, 255, 65, 0.3); border: 2px solid #00ff41;">START TRADING! 🚀</button>
+                <button class="btn" onclick="closeTutorial()" style="background: rgba(0, 255, 65, 0.3); border: 2px solid #00ff41;">COMMENCER À TRADER ! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Changelog Modal -->
+    <div id="changelogModal" class="modal">
+        <div class="modal-content">
+            <h1>📝 FLIPVERSE - CHANGELOG</h1>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 217, 255, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00ff41;">
+                <h3 style="color: #00ff41; margin-bottom: 10px;">Version 2.1 - Mise à Jour QoL 🎉</h3>
+                <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
+                <ul style="margin-top: 15px;">
+                    <li>✅ <strong>Fix Zoom Mobile :</strong> Plus de zoom intempestif sur les clics rapides</li>
+                    <li>✅ <strong>Fix Bug Quantité :</strong> Les quantités d'achat restent maintenant lors des fluctuations de prix</li>
+                    <li>📖 <strong>Tutoriel Complet :</strong> Nouveau tutoriel détaillé en français avec toutes les mécaniques</li>
+                    <li>📝 <strong>Changelog :</strong> Tu peux maintenant voir l'historique des mises à jour !</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 65, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00d9ff;">
+                <h3 style="color: #00d9ff; margin-bottom: 10px;">Version 2.0 - Lancement Initial 🚀</h3>
+                <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
+                <ul style="margin-top: 15px;">
+                    <li>🎮 <strong>Système de Trading :</strong> 8 objets interdimensionnels à trader</li>
+                    <li>💎 <strong>Système de Rareté :</strong> Commun, Rare, Légendaire, Mythique</li>
+                    <li>📊 <strong>Portfolio Dynamique :</strong> Suivi en temps réel des profits/pertes</li>
+                    <li>🤖 <strong>4 Agents :</strong> ANALYST-7, TRADER-X, GUARDIAN, PROPHET</li>
+                    <li>✨ <strong>Système de Prestige :</strong> Sauts dimensionnels avec Essence Cosmique</li>
+                    <li>📈 <strong>Marché Volatil :</strong> Prix fluctuent toutes les 5 secondes</li>
+                    <li>💾 <strong>Sauvegarde Auto :</strong> Progression sauvegardée toutes les 10 secondes</li>
+                    <li>🎨 <strong>Design Cyberpunk :</strong> Interface futuriste avec effets CRT</li>
+                    <li>📱 <strong>Mobile Friendly :</strong> Optimisé pour mobile et tablette</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(186, 85, 211, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ff00ff;">
+                <h3 style="color: #ff00ff; margin-bottom: 10px;">Objets Disponibles 💎</h3>
+                <ul style="margin-top: 15px;">
+                    <li>💾 <strong>Quantum Chip</strong> (Commun) - Prix de base: 100¢</li>
+                    <li>⚡ <strong>Plasma Cell</strong> (Commun) - Prix de base: 150¢</li>
+                    <li>💎 <strong>Crystal Core</strong> (Rare) - Prix de base: 500¢</li>
+                    <li>🧬 <strong>Nano Fabric</strong> (Rare) - Prix de base: 400¢</li>
+                    <li>🌌 <strong>Void Essence</strong> (Légendaire) - Prix de base: 2 000¢</li>
+                    <li>⏳ <strong>Time Shard</strong> (Légendaire) - Prix de base: 3 000¢</li>
+                    <li>💠 <strong>Infinity Stone</strong> (Mythique) - Prix de base: 10 000¢</li>
+                    <li>⚛️ <strong>God Particle</strong> (Mythique) - Prix de base: 15 000¢</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ffd700;">
+                <h3 style="color: #ffd700; margin-bottom: 10px;">Fonctionnalités Futures 🔮</h3>
+                <ul style="margin-top: 15px;">
+                    <li>🌍 Nouveaux univers à débloquer</li>
+                    <li>⚔️ Mode compétitif contre d'autres traders</li>
+                    <li>🏆 Système d'achievements avancés</li>
+                    <li>📈 Graphiques de tendance détaillés</li>
+                    <li>🎯 Missions quotidiennes</li>
+                    <li>💼 Stratégies d'investissement pré-définies</li>
+                    <li>🔔 Alertes de prix personnalisables</li>
+                </ul>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeChangelog()" style="background: rgba(0, 217, 255, 0.3); border: 2px solid #00d9ff;">FERMER</button>
             </div>
         </div>
     </div>
@@ -1041,6 +1107,14 @@
 
         function closeTutorial() {
             document.getElementById('tutorialModal').style.display = 'none';
+        }
+
+        function showChangelog() {
+            document.getElementById('changelogModal').style.display = 'block';
+        }
+
+        function closeChangelog() {
+            document.getElementById('changelogModal').style.display = 'none';
         }
 
         function confirmReset() {

@@ -572,6 +572,7 @@
         <!-- Bottom Controls -->
         <div class="bottom-controls">
             <button class="btn" id="tutorialBtn">📖 TUTORIEL</button>
+            <button class="btn" id="changelogBtn">📝 CHANGELOG</button>
             <button class="btn" id="resetBtn" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">🔄 RESET</button>
         </div>
     </div>
@@ -672,6 +673,89 @@
 
             <div class="modal-buttons">
                 <button class="btn" onclick="closeTutorial()">COMMENCER L'AVENTURE ! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Changelog Modal -->
+    <div id="changelogModal" class="modal">
+        <div class="modal-content">
+            <h1>📝 WORLD FACTORY - CHANGELOG</h1>
+
+            <div style="background: linear-gradient(135deg, rgba(72, 191, 145, 0.2), rgba(100, 149, 237, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #48bf91;">
+                <h3 style="color: #48bf91; margin-bottom: 10px;">Version 1.1 - Mise à Jour QoL 🎉</h3>
+                <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
+                <ul style="margin-top: 15px;">
+                    <li>✅ <strong>Fix Zoom Mobile :</strong> Plus de zoom intempestif lors des clics rapides</li>
+                    <li>📖 <strong>Tutoriel Complet :</strong> Nouveau tutoriel détaillé avec guide complet des 3 ères</li>
+                    <li>📝 <strong>Changelog :</strong> Suivi de l'historique des mises à jour</li>
+                    <li>🎨 <strong>Améliorations UI :</strong> Interface plus claire et intuitive</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(100, 149, 237, 0.2), rgba(72, 191, 145, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #6495ed;">
+                <h3 style="color: #6495ed; margin-bottom: 10px;">Version 1.0 - Lancement Initial 🚀</h3>
+                <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
+                <ul style="margin-top: 15px;">
+                    <li>🌍 <strong>3 Ères Évolutives :</strong> Primitive, Industrielle, Spatiale</li>
+                    <li>🏗️ <strong>12 Bâtiments :</strong> 4 bâtiments par ère avec production évolutive</li>
+                    <li>📊 <strong>3 Ressources :</strong> Pierre, Fer, Énergie</li>
+                    <li>✨ <strong>Système de Prestige :</strong> Terraformage avec Essence Cosmique</li>
+                    <li>💎 <strong>Bonus Permanents :</strong> +10% de production par Essence</li>
+                    <li>👥 <strong>Population Dynamique :</strong> Croît avec chaque construction</li>
+                    <li>📰 <strong>Événements Aléatoires :</strong> Bonus de ressources périodiques</li>
+                    <li>📈 <strong>Progression Visuelle :</strong> Ta planète évolue à travers les ères</li>
+                    <li>💾 <strong>Sauvegarde Auto :</strong> Progression sauvegardée toutes les 10 secondes</li>
+                    <li>🎨 <strong>Design Moderne :</strong> Interface futuriste et responsive</li>
+                    <li>📱 <strong>Mobile Friendly :</strong> Optimisé pour tous les écrans</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(186, 85, 211, 0.2), rgba(147, 51, 234, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ba55d3;">
+                <h3 style="color: #ba55d3; margin-bottom: 10px;">Bâtiments par Ère 🏗️</h3>
+
+                <p style="color: #48bf91; font-weight: 700; margin-top: 15px; margin-bottom: 10px;">ÈRE PRIMITIVE 🌍</p>
+                <ul>
+                    <li>🪨 <strong>Cueilleur de Pierre</strong> - Pierre +1/s</li>
+                    <li>🪵 <strong>Collecteur de Bois</strong> - Pierre +2/s</li>
+                    <li>⛏️ <strong>Mine Basique</strong> - Fer +0.5/s</li>
+                    <li>🌬️ <strong>Moulin à Vent</strong> - Énergie +0.3/s</li>
+                </ul>
+
+                <p style="color: #6495ed; font-weight: 700; margin-top: 15px; margin-bottom: 10px;">ÈRE INDUSTRIELLE 🏭</p>
+                <ul>
+                    <li>🏗️ <strong>Carrière</strong> - Pierre +10/s</li>
+                    <li>🔥 <strong>Fonderie</strong> - Fer +5/s</li>
+                    <li>💨 <strong>Centrale Vapeur</strong> - Énergie +3/s</li>
+                    <li>🏭 <strong>Usine</strong> - Pierre +15/s, Fer +8/s</li>
+                </ul>
+
+                <p style="color: #ba55d3; font-weight: 700; margin-top: 15px; margin-bottom: 10px;">ÈRE SPATIALE 🚀</p>
+                <ul>
+                    <li>☄️ <strong>Mineur d'Astéroïdes</strong> - Pierre +100/s, Fer +50/s</li>
+                    <li>🔬 <strong>Nano-Forge</strong> - Fer +200/s</li>
+                    <li>☢️ <strong>Réacteur à Fusion</strong> - Énergie +100/s</li>
+                    <li>🚀 <strong>Ascenseur Spatial</strong> - Toutes ressources massivement !</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ffd700;">
+                <h3 style="color: #ffd700; margin-bottom: 10px;">Fonctionnalités Futures 🔮</h3>
+                <ul style="margin-top: 15px;">
+                    <li>🌌 Nouvelles ères : Quantique, Transcendante</li>
+                    <li>🛸 Exploration spatiale et colonisation</li>
+                    <li>🔬 Arbre de recherche technologique</li>
+                    <li>⚔️ Défense planétaire contre invasions</li>
+                    <li>🏆 Système d'achievements complexes</li>
+                    <li>📊 Statistiques détaillées et graphiques</li>
+                    <li>🎯 Défis quotidiens et hebdomadaires</li>
+                    <li>🌍 Terraformation avancée avec biomes</li>
+                    <li>💼 Commerce interplanétaire</li>
+                </ul>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeChangelog()">FERMER</button>
             </div>
         </div>
     </div>
@@ -1106,9 +1190,19 @@
             document.getElementById('tutorialModal').style.display = 'none';
         }
 
+        // Changelog
+        function showChangelog() {
+            document.getElementById('changelogModal').style.display = 'block';
+        }
+
+        function closeChangelog() {
+            document.getElementById('changelogModal').style.display = 'none';
+        }
+
         // Event Listeners
         document.getElementById('prestigeBtn').addEventListener('click', prestige);
         document.getElementById('tutorialBtn').addEventListener('click', showTutorial);
+        document.getElementById('changelogBtn').addEventListener('click', showChangelog);
         document.getElementById('resetBtn').addEventListener('click', resetGame);
 
         // Initialize
