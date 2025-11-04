@@ -526,7 +526,7 @@
             <h1>
                 ⚡ FLIPVERSE <span class="dimension-badge" id="dimensionBadge">DIM-α</span>
             </h1>
-            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v2.047 //</p>
+            <p class="subtitle">// INTERDIMENSIONAL TRADING SYSTEM v2.2 //</p>
             <div class="header-buttons">
                 <button class="btn" onclick="window.location.href='index.html'">🏠 MENU</button>
                 <button class="btn" onclick="showTutorial()">📖 TUTORIEL</button>
@@ -624,10 +624,17 @@
 
             <h2>🤖 AGENTS</h2>
             <ul>
-                <li><strong>🤖 ANALYST-7 (5 000¢) :</strong> Analyse automatiquement les tendances du marché</li>
-                <li><strong>💼 TRADER-X (15 000¢) :</strong> Exécute des trades profitables automatiquement</li>
-                <li><strong>🛡️ GUARDIAN (25 000¢) :</strong> Protège ton portfolio des crashes</li>
-                <li><strong>🔮 PROPHET (50 000¢) :</strong> Prédit les mouvements futurs du marché</li>
+                <li><strong>🤖 ANALYST-7 (5 000¢) :</strong> [Bientôt disponible] Analyse les tendances du marché</li>
+                <li><strong>💼 TRADER-X (15 000¢) :</strong> 🔥 <strong>FONCTIONNEL !</strong> Trade automatiquement pour toi !
+                    <ul style="margin-top: 8px; margin-left: 20px; font-size: 0.95em;">
+                        <li>✅ Achète automatiquement quand le prix baisse de -5% ou plus</li>
+                        <li>✅ Vend automatiquement quand le prix monte de +5% ou plus (seulement si profitable)</li>
+                        <li>✅ Trade 1 unité à la fois toutes les 5 secondes</li>
+                        <li>✅ Ses actions apparaissent dans le fil d'actualités avec "💼 TRADER-X"</li>
+                    </ul>
+                </li>
+                <li><strong>🛡️ GUARDIAN (25 000¢) :</strong> [Bientôt disponible] Protège ton portfolio des crashes</li>
+                <li><strong>🔮 PROPHET (50 000¢) :</strong> [Bientôt disponible] Prédit les mouvements futurs du marché</li>
             </ul>
 
             <h2>✨ PRESTIGE : SAUT DIMENSIONNEL</h2>
@@ -661,7 +668,19 @@
             <h1>📝 FLIPVERSE - CHANGELOG</h1>
 
             <div style="background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 217, 255, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00ff41;">
-                <h3 style="color: #00ff41; margin-bottom: 10px;">Version 2.1 - Mise à Jour QoL 🎉</h3>
+                <h3 style="color: #00ff41; margin-bottom: 10px;">Version 2.2 - TRADER-X Opérationnel ! 🤖</h3>
+                <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
+                <ul style="margin-top: 15px;">
+                    <li>🔥 <strong>TRADER-X Fonctionnel :</strong> L'agent trade automatiquement pour toi !</li>
+                    <li>💼 <strong>Auto-Achat :</strong> Achète quand le prix baisse de -5% ou plus</li>
+                    <li>💰 <strong>Auto-Vente :</strong> Vend quand le prix monte de +5% ou plus (si profitable)</li>
+                    <li>📰 <strong>Notifications :</strong> Vois toutes ses actions dans le fil d'actualités</li>
+                    <li>⚡ <strong>Smart Trading :</strong> Ne vend que si c'est profitable, trade 1 unité toutes les 5 secondes</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 65, 0.1)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #00d9ff;">
+                <h3 style="color: #00d9ff; margin-bottom: 10px;">Version 2.1 - Mise à Jour QoL 🎉</h3>
                 <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> Novembre 2024</p>
                 <ul style="margin-top: 15px;">
                     <li>✅ <strong>Fix Zoom Mobile :</strong> Plus de zoom intempestif sur les clics rapides</li>
@@ -1084,9 +1103,89 @@
             renderAgents();
         }
 
+        // Auto-trader function
+        function autoTrade() {
+            // Check if TRADER-X agent is active
+            if (!game.agents.trader) return;
+
+            items.forEach(item => {
+                const price = marketPrices[item.id];
+                const history = priceHistory[item.id];
+                const owned = game.portfolio[item.id] || 0;
+
+                // Calculate price change
+                if (history.length < 2) return;
+                const priceChange = ((price - history[history.length - 2]) / history[history.length - 2] * 100);
+
+                // BUY when price is falling (red indicator)
+                if (priceChange < -5 && game.money >= price) {
+                    const quantity = 1;
+                    const totalCost = price * quantity;
+
+                    if (game.money >= totalCost) {
+                        game.money -= totalCost;
+
+                        if (!game.portfolioDetails[item.id]) {
+                            game.portfolioDetails[item.id] = {
+                                totalSpent: 0,
+                                totalQuantity: 0
+                            };
+                        }
+
+                        game.portfolioDetails[item.id].totalSpent += totalCost;
+                        game.portfolioDetails[item.id].totalQuantity += quantity;
+                        game.portfolio[item.id] = (game.portfolio[item.id] || 0) + quantity;
+                        game.totalTrades += quantity;
+
+                        addNews(`> 💼 TRADER-X: Bought ${item.icon} ${item.name} @ ${price}¢ (falling market)`, 'success');
+                    }
+                }
+
+                // SELL when price is rising (green indicator) AND we have profit
+                if (priceChange > 5 && owned > 0) {
+                    const quantity = 1;
+                    const totalRevenue = price * quantity;
+
+                    // Calculate profit
+                    let profit = 0;
+                    if (game.portfolioDetails[item.id]) {
+                        const avgBuyPrice = game.portfolioDetails[item.id].totalSpent / game.portfolioDetails[item.id].totalQuantity;
+                        const costOfSold = avgBuyPrice * quantity;
+                        profit = totalRevenue - costOfSold;
+
+                        // Only sell if profitable
+                        if (profit > 0) {
+                            game.portfolioDetails[item.id].totalSpent -= costOfSold;
+                            game.portfolioDetails[item.id].totalQuantity -= quantity;
+
+                            if (game.portfolioDetails[item.id].totalQuantity <= 0) {
+                                delete game.portfolioDetails[item.id];
+                            }
+
+                            game.money += totalRevenue;
+                            game.portfolio[item.id] -= quantity;
+                            game.totalProfit += profit;
+                            game.totalTrades += quantity;
+
+                            if (game.portfolio[item.id] === 0) {
+                                delete game.portfolio[item.id];
+                            }
+
+                            addNews(`> 💼 TRADER-X: Sold ${item.icon} ${item.name} @ ${price}¢ (+${Math.round(profit)}¢ profit)`, 'success');
+                        }
+                    }
+                }
+            });
+
+            updateUI();
+        }
+
         function gameLoop() {
             fluctuatePrices();
             updateUI();
+
+            // Auto-trading if TRADER-X is active
+            autoTrade();
 
             // Random events
             if (Math.random() < 0.1) {
