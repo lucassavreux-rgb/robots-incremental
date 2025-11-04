@@ -265,6 +265,7 @@
             transition: all 0.3s;
             text-transform: uppercase;
             box-shadow: 0 5px 15px rgba(72, 191, 145, 0.3);
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -411,6 +412,80 @@
             font-style: italic;
             margin-top: 10px;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 900px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(26, 26, 46, 0.95));
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #48bf91;
+            box-shadow: 0 0 50px rgba(72, 191, 145, 0.3);
+        }
+
+        .modal-content h1 {
+            margin-bottom: 30px;
+            color: #48bf91;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .modal-content h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #6495ed;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .modal-content ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .modal-content li {
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+
+        .modal-content strong {
+            color: #48bf91;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -498,6 +573,106 @@
         <div class="bottom-controls">
             <button class="btn" id="tutorialBtn">📖 TUTORIEL</button>
             <button class="btn" id="resetBtn" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">🔄 RESET</button>
+        </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <h1>📖 WORLD FACTORY - TUTORIEL COMPLET</h1>
+
+            <h2>🎯 OBJECTIF DU JEU</h2>
+            <p>Développez votre planète à travers 3 ères distinctes de l'évolution civilisationnelle ! Construisez des bâtiments, gérez vos ressources et devenez maître de votre monde.</p>
+
+            <h2>📊 SYSTÈME DE RESSOURCES</h2>
+            <ul>
+                <li><strong>🪨 Pierre:</strong> Ressource de base, nécessaire pour la plupart des constructions primitives</li>
+                <li><strong>⚙️ Fer:</strong> Ressource intermédiaire, essentielle pour l'industrialisation</li>
+                <li><strong>⚡ Énergie:</strong> Ressource avancée, cruciale pour les technologies de pointe</li>
+            </ul>
+            <p>Toutes les ressources se génèrent automatiquement au fil du temps grâce à vos bâtiments.</p>
+
+            <h2>🏗️ CONSTRUCTIONS ET PROGRESSION</h2>
+            <p>Chaque bâtiment produit des ressources automatiquement. Plus vous en construisez, plus ils deviennent chers (système de coût croissant).</p>
+
+            <h3>📍 Ère Primitive (Départ)</h3>
+            <ul>
+                <li><strong>🪨 Cueilleur de Pierre:</strong> Première source de pierre (1/s)</li>
+                <li><strong>🪵 Collecteur de Bois:</strong> Production améliorée de pierre (2/s)</li>
+                <li><strong>⛏️ Mine Basique:</strong> Commence à extraire du fer (0.5/s)</li>
+                <li><strong>🌬️ Moulin à Vent:</strong> Première source d'énergie (0.3/s)</li>
+            </ul>
+
+            <h3>🏭 Ère Industrielle (1,000 production totale)</h3>
+            <ul>
+                <li><strong>🏗️ Carrière:</strong> Production massive de pierre (10/s)</li>
+                <li><strong>🔥 Fonderie:</strong> Forge industrielle de fer (5/s)</li>
+                <li><strong>💨 Centrale Vapeur:</strong> Énergie à grande échelle (3/s)</li>
+                <li><strong>🏭 Usine:</strong> Production multiple (pierre + fer)</li>
+            </ul>
+
+            <h3>🚀 Ère Spatiale (100,000 production totale)</h3>
+            <ul>
+                <li><strong>☄️ Mineur d'Astéroïdes:</strong> Extraction spatiale massive</li>
+                <li><strong>🔬 Nano-Forge:</strong> Fabrication moléculaire de fer (200/s)</li>
+                <li><strong>☢️ Réacteur à Fusion:</strong> Énergie quasi-illimitée (100/s)</li>
+                <li><strong>🚀 Ascenseur Spatial:</strong> Production ultime de toutes les ressources!</li>
+            </ul>
+
+            <h2>✨ TERRAFORMAGE (PRESTIGE)</h2>
+            <p>Quand vous atteignez un niveau de production suffisant, vous pouvez "terraformer" votre planète:</p>
+            <ul>
+                <li><strong>Condition:</strong> Production totale élevée (visible dans le gain estimé d'essence)</li>
+                <li><strong>Effet:</strong> Réinitialise TOUTE votre progression (bâtiments, ressources, ère)</li>
+                <li><strong>Récompense:</strong> Essence Cosmique (💎)</li>
+                <li><strong>Bonus Permanent:</strong> Chaque Essence = +10% de production pour TOUS vos bâtiments!</li>
+            </ul>
+            <p><strong>Exemple:</strong> 5 Essence = +50% de production permanente, même après reset!</p>
+
+            <h2>🌍 PROGRESSION DES ÈRES</h2>
+            <p>Pour débloquer une nouvelle ère:</p>
+            <ol>
+                <li>Construisez des bâtiments pour augmenter votre production</li>
+                <li>La barre de progression se remplit automatiquement</li>
+                <li>Atteignez le seuil requis pour débloquer de nouveaux bâtiments</li>
+                <li>Votre planète évolue visuellement (🌍 → 🏭 → 🚀)</li>
+            </ol>
+
+            <h2>👥 POPULATION</h2>
+            <p>Votre population augmente avec chaque bâtiment construit (1 bâtiment = 10 habitants). C'est un indicateur de votre réussite!</p>
+
+            <h2>📰 ÉVÉNEMENTS ALÉATOIRES</h2>
+            <p>Tous les 30 secondes, des événements cosmiques peuvent se produire:</p>
+            <ul>
+                <li>☄️ Passage d'astéroïde → bonus de pierre</li>
+                <li>🌟 Filon minéral → bonus de fer</li>
+                <li>⚡ Tempête d'énergie → bonus d'énergie</li>
+                <li>🔬 Percée technologique → bonus de ressources</li>
+            </ul>
+
+            <h2>💡 STRATÉGIES ET ASTUCES</h2>
+            <ul>
+                <li><strong>Début de partie:</strong> Concentrez-vous sur les Cueilleurs de Pierre pour démarrer</li>
+                <li><strong>Diversification:</strong> Équilibrez vos bâtiments entre pierre, fer et énergie</li>
+                <li><strong>Unlock rapide:</strong> Construisez beaucoup pour débloquer les ères plus vite</li>
+                <li><strong>Patience:</strong> Les bâtiments tardifs coûtent cher mais rapportent énormément</li>
+                <li><strong>Prestige timing:</strong> Terraformez quand vous gagnez au moins 5-10 Essence</li>
+                <li><strong>Post-Prestige:</strong> Avec l'Essence, vous progresserez beaucoup plus vite!</li>
+                <li><strong>Sauvegarde auto:</strong> Le jeu se sauvegarde automatiquement toutes les 10 secondes</li>
+            </ul>
+
+            <h2>🎮 CONSEILS DE JEU</h2>
+            <ul>
+                <li>Surveillez vos ratios de ressources dans les onglets du haut</li>
+                <li>Les bâtiments grisés sont verrouillés jusqu'à la prochaine ère</li>
+                <li>Le coût augmente exponentiellement - planifiez vos achats</li>
+                <li>La barre de progression d'ère se remplit en fonction de votre production totale</li>
+                <li>Plus vous avez d'Essence, plus le jeu devient facile et rapide</li>
+            </ul>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeTutorial()">COMMENCER L'AVENTURE ! 🚀</button>
+            </div>
         </div>
     </div>
 
@@ -924,29 +1099,11 @@
 
         // Tutorial
         function showTutorial() {
-            alert(`🎮 WORLD FACTORY - TUTORIEL
+            document.getElementById('tutorialModal').style.display = 'block';
+        }
 
-🌍 OBJECTIF:
-Développez votre planète à travers 3 ères de progression !
-
-📊 RESSOURCES:
-🪨 Pierre - Ressource de base
-⚙️ Fer - Ressource intermédiaire
-⚡ Énergie - Ressource avancée
-
-🏗️ CONSTRUCTIONS:
-Construisez des bâtiments pour générer des ressources automatiquement. Chaque bâtiment coûte de plus en plus cher.
-
-🌟 ÈRES:
-• Primitive (départ)
-• Industrielle (1000 production)
-• Spatiale (100K production)
-
-✨ TERRAFORMAGE:
-Réinitialisez votre planète pour gagner de l'Essence Cosmique qui donne des bonus permanents de production (+10% par essence).
-
-💡 ASTUCE:
-Débloquez de nouveaux bâtiments en avançant d'ère !`);
+        function closeTutorial() {
+            document.getElementById('tutorialModal').style.display = 'none';
         }
 
         // Event Listeners
@@ -962,6 +1119,13 @@ Débloquez de nouveaux bâtiments en avançant d'ère !`);
         setInterval(productionTick, 100); // Production every 100ms
         setInterval(saveGame, 10000); // Auto-save every 10s
         setInterval(triggerRandomEvent, 30000); // Random events every 30s
+
+        // Close modals on click outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

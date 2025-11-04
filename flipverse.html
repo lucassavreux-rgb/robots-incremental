@@ -101,6 +101,7 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -266,6 +267,7 @@
             cursor: pointer;
             font-weight: 700;
             transition: all 0.3s;
+            touch-action: manipulation;
         }
 
         .btn-buy:hover {
@@ -283,6 +285,7 @@
             cursor: pointer;
             font-weight: 700;
             transition: all 0.3s;
+            touch-action: manipulation;
         }
 
         .btn-sell:hover {
@@ -443,6 +446,77 @@
             font-size: 0.5em;
             animation: neonPulse 2s infinite;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 900px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(26, 26, 46, 0.95));
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.3);
+        }
+
+        .modal-content h1 {
+            margin-bottom: 30px;
+            color: #00ff41;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .modal-content h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #00d9ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .modal-content ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .modal-content li {
+            margin-bottom: 10px;
+        }
+
+        .modal-content strong {
+            color: #00ff41;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -518,6 +592,64 @@
                         > TRADING ENABLED
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <h1>📖 FLIPVERSE - TUTORIAL</h1>
+
+            <h2>🎯 OBJECTIVE</h2>
+            <p>Build wealth by trading interdimensional items across the multiverse! Buy low, sell high, and master the volatile markets.</p>
+
+            <h2>💰 HOW TO PLAY</h2>
+            <ul>
+                <li><strong>📈 Watch the Market:</strong> Prices fluctuate every 5 seconds. The % change indicator shows market trends.</li>
+                <li><strong>💵 Buy Smart:</strong> Purchase items when prices are low or falling (red indicator).</li>
+                <li><strong>📊 Sell High:</strong> Wait for prices to rise (green indicator), then sell for profit!</li>
+                <li><strong>💼 Portfolio Management:</strong> Your portfolio shows real-time profit/loss for each item.</li>
+                <li><strong>🎲 Item Rarity:</strong> Higher rarity = higher volatility and potential profits!</li>
+            </ul>
+
+            <h2>💎 ITEM RARITY SYSTEM</h2>
+            <ul>
+                <li><strong style="color: #aaa;">Common:</strong> Low volatility (15-18%), safe but lower returns</li>
+                <li><strong style="color: #00d9ff;">Rare:</strong> Medium volatility (22-25%), balanced risk/reward</li>
+                <li><strong style="color: #ffd700;">Legendary:</strong> High volatility (35-40%), risky but profitable</li>
+                <li><strong style="color: #ff00ff;">Mythic:</strong> Extreme volatility (50-55%), massive risk and reward!</li>
+            </ul>
+
+            <h2>🤖 AGENTS</h2>
+            <ul>
+                <li><strong>🤖 ANALYST-7 (5,000¢):</strong> Auto-analyzes market trends</li>
+                <li><strong>💼 TRADER-X (15,000¢):</strong> Executes automated profitable trades</li>
+                <li><strong>🛡️ GUARDIAN (25,000¢):</strong> Protects your portfolio from crashes</li>
+                <li><strong>🔮 PROPHET (50,000¢):</strong> Predicts future market movements</li>
+            </ul>
+
+            <h2>✨ PRESTIGE: DIMENSION SHIFT</h2>
+            <ul>
+                <li><strong>Requirement:</strong> 50,000¢ total value (cash + portfolio)</li>
+                <li><strong>Effect:</strong> Reset all progress but gain Essence Cosmique</li>
+                <li><strong>Bonus:</strong> Each Essence gives +10% permanent production bonus</li>
+                <li><strong>Strategy:</strong> The higher your total value, the more Essence you gain!</li>
+            </ul>
+
+            <h2>💡 PRO TIPS</h2>
+            <ul>
+                <li>Start with Common items to learn the market safely</li>
+                <li>Diversify your portfolio across multiple items</li>
+                <li>Green profit in portfolio = good time to sell</li>
+                <li>Red loss in portfolio = wait for recovery or cut losses</li>
+                <li>Watch the % change indicator for market momentum</li>
+                <li>Mythic items can double or halve in value quickly!</li>
+                <li>Your progress auto-saves every 10 seconds</li>
+            </ul>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeTutorial()" style="background: rgba(0, 255, 65, 0.3); border: 2px solid #00ff41;">START TRADING! 🚀</button>
             </div>
         </div>
     </div>
@@ -676,6 +808,16 @@
         // Render market
         function renderMarket() {
             const marketDiv = document.getElementById('market');
+
+            // Save current input values before re-rendering
+            const savedQuantities = {};
+            items.forEach(item => {
+                const input = document.getElementById(`qty-${item.id}`);
+                if (input) {
+                    savedQuantities[item.id] = input.value;
+                }
+            });
+
             marketDiv.innerHTML = '';
 
             items.forEach(item => {
@@ -690,6 +832,10 @@
 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item-card';
+
+                // Restore saved quantity or use default
+                const savedQty = savedQuantities[item.id] || '1';
+
                 itemDiv.innerHTML = `
                     <div class="item-header">
                         <span class="item-name">${item.icon} ${item.name}</span>
@@ -701,7 +847,7 @@
                     </div>
                     ${owned > 0 ? `<div style="color: #00d9ff; margin-bottom: 10px;">Owned: ${owned}</div>` : ''}
                     <div class="item-actions">
-                        <input type="number" class="quantity-input" id="qty-${item.id}" value="1" min="1">
+                        <input type="number" class="quantity-input" id="qty-${item.id}" value="${savedQty}" min="1">
                         <button class="btn-buy" onclick="buyItem('${item.id}', parseInt(document.getElementById('qty-${item.id}').value))">
                             BUY
                         </button>
@@ -890,35 +1036,11 @@
         }
 
         function showTutorial() {
-            alert(`FLIPVERSE TUTORIAL
+            document.getElementById('tutorialModal').style.display = 'block';
+        }
 
-🎯 OBJECTIVE: Build wealth by trading interdimensional items
-
-💰 TRADING:
-- Buy items when prices are low
-- Sell when prices are high
-- Watch the % change indicator
-
-📊 PORTFOLIO:
-- Shows your profit/loss in real-time
-- Green = profit, Red = loss
-
-🤖 AGENTS:
-- Recruit AI agents to automate tasks
-- Each agent provides unique benefits
-
-✨ PRESTIGE (Dimension Shift):
-- Requires 50,000¢ total value
-- Resets progress but grants Essence
-- Essence = permanent bonuses
-
-💎 ITEM RARITY:
-- Common: Low volatility, safe
-- Rare: Medium risk/reward
-- Legendary: High volatility
-- Mythic: Extreme risk/reward
-
-Good luck, Trader!`);
+        function closeTutorial() {
+            document.getElementById('tutorialModal').style.display = 'none';
         }
 
         function confirmReset() {
@@ -947,6 +1069,13 @@ Good luck, Trader!`);
 
         // Game loop (5 seconds)
         setInterval(gameLoop, 5000);
+
+        // Close modals on click outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
