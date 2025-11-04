@@ -410,6 +410,20 @@
             <div class="logo">🎮</div>
             <h1>Game Arcade</h1>
             <p class="subtitle">Choisis ton aventure et deviens une légende</p>
+
+            <!-- User Info -->
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;" id="userControls">
+                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.1)); padding: 12px 25px; border-radius: 50px; border: 2px solid rgba(102, 126, 234, 0.3);">
+                    <span style="color: rgba(255,255,255,0.7);">Connecté en tant que</span>
+                    <strong id="username" style="color: #667eea; margin-left: 8px;">Utilisateur</strong>
+                </div>
+                <button id="adminButton" onclick="window.location.href='admin.html'" style="display: none; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); color: white; padding: 12px 25px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
+                    ⚙️ Panel Admin
+                </button>
+                <button onclick="logout()" style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); color: white; padding: 12px 25px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.2); font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
+                    🚪 Déconnexion
+                </button>
+            </div>
         </div>
 
         <div class="stats-bar">
@@ -473,5 +487,31 @@
             <p style="margin-top: 10px;">Créé avec ❤️ pour les gamers</p>
         </div>
     </div>
+
+    <script>
+        // Check authentication
+        const savedUser = localStorage.getItem('gameArcade_user');
+
+        if (!savedUser) {
+            // Not logged in, redirect to login
+            window.location.href = 'login.html';
+        } else {
+            // Logged in, display user info
+            const user = JSON.parse(savedUser);
+            document.getElementById('username').textContent = user.username;
+
+            // Show admin button if user is admin
+            if (user.isAdmin) {
+                document.getElementById('adminButton').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            if (confirm('Déconnexion ?')) {
+                localStorage.removeItem('gameArcade_user');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
 </body>
 </html>
