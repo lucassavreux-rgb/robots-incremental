@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoTrader Pro - Smart Trading Simulator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5em;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            font-size: 1.5em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .balance-display {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .balance-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .balance-label {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 3px;
+        }
+
+        .balance-value {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .market-overview {
+            grid-column: 1 / -1;
+        }
+
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .crypto-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .crypto-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-3px);
+        }
+
+        .crypto-card.selected {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .crypto-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .crypto-icon {
+            font-size: 2em;
+        }
+
+        .crypto-symbol {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .crypto-name {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .crypto-price {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .price-change {
+            font-size: 0.9em;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+
+        .price-change.positive {
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .price-change.negative {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            height: 400px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .candlestick-chart {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 10px;
+        }
+
+        .candle {
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .candle-wick {
+            width: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .candle-body {
+            width: 100%;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .candle.bullish .candle-body {
+            background: #4ade80;
+        }
+
+        .candle.bearish .candle-body {
+            background: #f87171;
+        }
+
+        .trading-panel {
+            display: grid;
+            gap: 15px;
+        }
+
+        .trade-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-buy {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+        }
+
+        .btn-buy:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.4);
+        }
+
+        .btn-sell {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            color: white;
+        }
+
+        .btn-sell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(248, 113, 113, 0.4);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .bot-controls {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .bot-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        .status-indicator.active {
+            background: #4ade80;
+        }
+
+        .status-indicator.inactive {
+            background: #6b7280;
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn-bot {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-bot:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-bot.active {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+        }
+
+        .portfolio-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .portfolio-crypto {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portfolio-amount {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .portfolio-value {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .news-item {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid #3b82f6;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .news-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .news-impact {
+            font-size: 0.85em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .news-impact.positive {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .news-impact.negative {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        .news-impact.neutral {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+        }
+
+        .sentiment-meter {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .sentiment-bar {
+            height: 30px;
+            background: linear-gradient(90deg, #f87171, #fbbf24, #4ade80);
+            border-radius: 15px;
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .sentiment-indicator {
+            position: absolute;
+            top: -5px;
+            width: 3px;
+            height: 40px;
+            background: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            transition: left 0.5s ease;
+        }
+
+        .sentiment-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .technical-indicators {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .indicator-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .indicator-name {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .indicator-value {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .indicator-signal {
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .indicator-signal.buy {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .indicator-signal.sell {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        .indicator-signal.hold {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .trade-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .trade-item {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .trade-profit {
+            font-weight: 700;
+        }
+
+        .trade-profit.positive {
+            color: #4ade80;
+        }
+
+        .trade-profit.negative {
+            color: #f87171;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .crypto-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .technical-indicators {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quickactions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-quick {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.85em;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-quick:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span class="logo-icon">🚀</span>
+            <span>CryptoTrader Pro</span>
+        </div>
+        <div class="balance-display">
+            <div class="balance-item">
+                <div class="balance-label">Balance USD</div>
+                <div class="balance-value" id="balanceUSD">$10,000.00</div>
+            </div>
+            <div class="balance-item">
+                <div class="balance-label">Valeur Portfolio</div>
+                <div class="balance-value" id="portfolioValue">$10,000.00</div>
+            </div>
+            <div class="balance-item">
+                <div class="balance-label">P&L Total</div>
+                <div class="balance-value" id="totalPL">$0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Market Overview -->
+        <div class="card market-overview">
+            <div class="card-title">📊 Marché des Cryptos</div>
+            <div class="crypto-grid" id="cryptoGrid"></div>
+
+            <!-- Sentiment Meter -->
+            <div class="sentiment-meter">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-weight: 600;">📈 Sentiment du Marché</span>
+                    <span id="sentimentText" style="font-weight: 700;">Neutre</span>
+                </div>
+                <div class="sentiment-bar">
+                    <div class="sentiment-indicator" id="sentimentIndicator"></div>
+                </div>
+                <div class="sentiment-labels">
+                    <span>Extrême Peur</span>
+                    <span>Neutre</span>
+                    <span>Extrême Cupidité</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Panel -->
+        <div class="card">
+            <div class="card-title">💹 Trading</div>
+
+            <div class="input-group">
+                <label class="input-label">Crypto sélectionnée</label>
+                <select id="selectedCrypto">
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                    <option value="ADA">Cardano (ADA)</option>
+                    <option value="DOT">Polkadot (DOT)</option>
+                    <option value="LINK">Chainlink (LINK)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Montant (USD)</label>
+                <input type="number" id="tradeAmount" value="100" min="1" step="10">
+            </div>
+
+            <div class="quickactions">
+                <button class="btn-quick" onclick="setTradeAmount(100)">$100</button>
+                <button class="btn-quick" onclick="setTradeAmount(500)">$500</button>
+                <button class="btn-quick" onclick="setTradeAmount(1000)">$1000</button>
+                <button class="btn-quick" onclick="setTradeAmount('max')">MAX</button>
+            </div>
+
+            <div class="trade-buttons">
+                <button class="btn btn-buy" onclick="executeTrade('buy')">📈 Acheter</button>
+                <button class="btn btn-sell" onclick="executeTrade('sell')">📉 Vendre</button>
+            </div>
+
+            <!-- Technical Indicators -->
+            <div style="margin-top: 25px;">
+                <div style="font-weight: 600; margin-bottom: 15px;">🔬 Indicateurs Techniques</div>
+                <div class="technical-indicators" id="technicalIndicators"></div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="card">
+            <div class="card-title">📈 Graphique - <span id="chartCrypto">BTC</span></div>
+            <div class="chart-container">
+                <div class="candlestick-chart" id="candlestickChart"></div>
+            </div>
+        </div>
+
+        <!-- Trading Bot -->
+        <div class="card">
+            <div class="card-title">🤖 Bot de Trading Intelligent</div>
+
+            <div class="bot-status">
+                <div class="status-indicator" id="botStatusIndicator"></div>
+                <div>
+                    <div style="font-weight: 600;">Status: <span id="botStatus">Inactif</span></div>
+                    <div style="font-size: 0.85em; color: rgba(255,255,255,0.6);" id="botInfo">Le bot est prêt</div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">🎯 Stratégie de Trading</label>
+                <select id="botStrategy">
+                    <option value="scalping">Scalping (Trades rapides)</option>
+                    <option value="momentum">Momentum (Suit les tendances)</option>
+                    <option value="meanReversion">Mean Reversion (Retour à la moyenne)</option>
+                    <option value="rsi">RSI Strategy (Indicateur RSI)</option>
+                    <option value="macd">MACD Strategy (Croisements MACD)</option>
+                    <option value="adaptive">Adaptive AI (S'adapte au marché)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">💰 Montant par Trade</label>
+                <input type="number" id="botTradeAmount" value="50" min="10" step="10">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">⚡ Agressivité (1-10)</label>
+                <input type="range" id="botAggression" min="1" max="10" value="5">
+                <div style="text-align: center; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                    <span id="aggressionValue">5</span>/10
+                </div>
+            </div>
+
+            <button class="btn-bot" id="botToggle" onclick="toggleBot()">
+                🚀 DÉMARRER LE BOT
+            </button>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Trades Bot</div>
+                    <div class="stat-value" id="botTrades">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Taux Win</div>
+                    <div class="stat-value" id="botWinRate">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Profit Bot</div>
+                    <div class="stat-value" id="botProfit">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div class="card">
+            <div class="card-title">💼 Mon Portfolio</div>
+            <div id="portfolioList"></div>
+        </div>
+
+        <!-- News Feed -->
+        <div class="card">
+            <div class="card-title">📰 Actualités du Marché</div>
+            <div id="newsFeed"></div>
+        </div>
+
+        <!-- Trade History -->
+        <div class="card">
+            <div class="card-title">📜 Historique des Trades</div>
+            <div class="trade-history" id="tradeHistory"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GAME STATE ====================
+        const gameState = {
+            balanceUSD: 10000,
+            portfolio: {},
+            tradeHistory: [],
+            botActive: false,
+            botStats: {
+                trades: 0,
+                wins: 0,
+                totalProfit: 0
+            },
+            selectedCrypto: 'BTC',
+            marketSentiment: 50, // 0-100 (Fear to Greed)
+        };
+
+        // ==================== CRYPTO DATA ====================
+        const cryptos = {
+            BTC: { name: 'Bitcoin', icon: '₿', price: 45000, basePrice: 45000, volatility: 0.05 },
+            ETH: { name: 'Ethereum', icon: 'Ξ', price: 3000, basePrice: 3000, volatility: 0.07 },
+            ADA: { name: 'Cardano', icon: '🔷', price: 1.2, basePrice: 1.2, volatility: 0.10 },
+            DOT: { name: 'Polkadot', icon: '⬤', price: 25, basePrice: 25, volatility: 0.08 },
+            LINK: { name: 'Chainlink', icon: '🔗', price: 20, basePrice: 20, volatility: 0.09 }
+        };
+
+        // Price history for candlestick chart
+        const priceHistory = {
+            BTC: [],
+            ETH: [],
+            ADA: [],
+            DOT: [],
+            LINK: []
+        };
+
+        // Initialize price history
+        Object.keys(cryptos).forEach(symbol => {
+            for (let i = 0; i < 50; i++) {
+                const crypto = cryptos[symbol];
+                const change = (Math.random() - 0.5) * crypto.volatility * 2;
+                const open = crypto.basePrice * (1 + change);
+                const close = open * (1 + (Math.random() - 0.5) * crypto.volatility);
+                const high = Math.max(open, close) * (1 + Math.random() * crypto.volatility * 0.5);
+                const low = Math.min(open, close) * (1 - Math.random() * crypto.volatility * 0.5);
+
+                priceHistory[symbol].push({ open, high, low, close, timestamp: Date.now() - (50 - i) * 60000 });
+            }
+        });
+
+        // ==================== NEWS SYSTEM ====================
+        const newsTemplates = {
+            positive: [
+                { title: "Adoption institutionnelle massive de {crypto}", impact: 0.03 },
+                { title: "Mise à jour majeure annoncée pour {crypto}", impact: 0.04 },
+                { title: "Partenariat stratégique pour {crypto}", impact: 0.05 },
+                { title: "Régulation favorable adoptée", impact: 0.02 },
+                { title: "Volume de trading record pour {crypto}", impact: 0.03 }
+            ],
+            negative: [
+                { title: "Préoccupations réglementaires sur {crypto}", impact: -0.04 },
+                { title: "Vente massive par les baleines", impact: -0.05 },
+                { title: "Faille de sécurité découverte", impact: -0.06 },
+                { title: "FUD propagé sur les réseaux sociaux", impact: -0.03 },
+                { title: "Corrélation baissière observée", impact: -0.02 }
+            ],
+            neutral: [
+                { title: "Analyse technique mixte pour {crypto}", impact: 0 },
+                { title: "Consolidation du marché en cours", impact: 0 },
+                { title: "Les traders attendent le prochain mouvement", impact: 0 }
+            ]
+        };
+
+        let newsQueue = [];
+
+        function generateNews() {
+            const types = ['positive', 'negative', 'neutral'];
+            const weights = [0.35, 0.35, 0.3]; // Probabilités
+            const type = types[weightedRandom(weights)];
+            const templates = newsTemplates[type];
+            const template = templates[Math.floor(Math.random() * templates.length)];
+            const cryptoKeys = Object.keys(cryptos);
+            const crypto = cryptoKeys[Math.floor(Math.random() * cryptoKeys.length)];
+
+            const news = {
+                title: template.title.replace('{crypto}', cryptos[crypto].name),
+                impact: template.impact,
+                type: type,
+                crypto: crypto,
+                timestamp: Date.now()
+            };
+
+            newsQueue.unshift(news);
+            if (newsQueue.length > 5) newsQueue.pop();
+
+            // Apply impact to crypto price
+            cryptos[crypto].price *= (1 + news.impact);
+
+            // Update market sentiment
+            gameState.marketSentiment = Math.max(0, Math.min(100, gameState.marketSentiment + news.impact * 500));
+
+            updateNewsDisplay();
+        }
+
+        function updateNewsDisplay() {
+            const feed = document.getElementById('newsFeed');
+            feed.innerHTML = newsQueue.map(news => `
+                <div class="news-item">
+                    <div class="news-title">${news.title}</div>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.5); margin-top: 3px;">
+                        ${new Date(news.timestamp).toLocaleTimeString()}
+                    </div>
+                    <span class="news-impact ${news.type}">${news.type === 'positive' ? '📈 Haussier' : news.type === 'negative' ? '📉 Baissier' : '➡️ Neutre'}</span>
+                </div>
+            `).join('');
+        }
+
+        function weightedRandom(weights) {
+            const total = weights.reduce((a, b) => a + b, 0);
+            let random = Math.random() * total;
+            for (let i = 0; i < weights.length; i++) {
+                if (random < weights[i]) return i;
+                random -= weights[i];
+            }
+            return weights.length - 1;
+        }
+
+        // ==================== TECHNICAL INDICATORS ====================
+        function calculateRSI(prices, period = 14) {
+            if (prices.length < period) return 50;
+
+            let gains = 0, losses = 0;
+            for (let i = prices.length - period; i < prices.length; i++) {
+                const change = prices[i] - prices[i - 1];
+                if (change > 0) gains += change;
+                else losses -= change;
+            }
+
+            const avgGain = gains / period;
+            const avgLoss = losses / period;
+            if (avgLoss === 0) return 100;
+
+            const rs = avgGain / avgLoss;
+            const rsi = 100 - (100 / (1 + rs));
+            return rsi;
+        }
+
+        function calculateMACD(prices) {
+            if (prices.length < 26) return { macd: 0, signal: 0, histogram: 0 };
+
+            const ema12 = calculateEMA(prices, 12);
+            const ema26 = calculateEMA(prices, 26);
+            const macd = ema12 - ema26;
+
+            // For simplicity, using a basic signal calculation
+            const signal = macd * 0.9;
+            const histogram = macd - signal;
+
+            return { macd, signal, histogram };
+        }
+
+        function calculateEMA(prices, period) {
+            const k = 2 / (period + 1);
+            let ema = prices[0];
+            for (let i = 1; i < prices.length; i++) {
+                ema = prices[i] * k + ema * (1 - k);
+            }
+            return ema;
+        }
+
+        function calculateBollingerBands(prices, period = 20) {
+            if (prices.length < period) return { upper: 0, middle: 0, lower: 0 };
+
+            const recentPrices = prices.slice(-period);
+            const sma = recentPrices.reduce((a, b) => a + b, 0) / period;
+            const variance = recentPrices.reduce((a, b) => a + Math.pow(b - sma, 2), 0) / period;
+            const stdDev = Math.sqrt(variance);
+
+            return {
+                upper: sma + (stdDev * 2),
+                middle: sma,
+                lower: sma - (stdDev * 2)
+            };
+        }
+
+        function getTechnicalSignal(symbol) {
+            const history = priceHistory[symbol];
+            const prices = history.map(h => h.close);
+            const currentPrice = cryptos[symbol].price;
+
+            const rsi = calculateRSI(prices);
+            const macd = calculateMACD(prices);
+            const bb = calculateBollingerBands(prices);
+
+            // RSI Signal
+            let rsiSignal = 'hold';
+            if (rsi < 30) rsiSignal = 'buy';
+            else if (rsi > 70) rsiSignal = 'sell';
+
+            // MACD Signal
+            let macdSignal = 'hold';
+            if (macd.histogram > 0 && macd.macd > macd.signal) macdSignal = 'buy';
+            else if (macd.histogram < 0 && macd.macd < macd.signal) macdSignal = 'sell';
+
+            // Bollinger Bands Signal
+            let bbSignal = 'hold';
+            if (currentPrice < bb.lower) bbSignal = 'buy';
+            else if (currentPrice > bb.upper) bbSignal = 'sell';
+
+            return { rsi, rsiSignal, macd, macdSignal, bb, bbSignal };
+        }
+
+        function updateTechnicalIndicators() {
+            const symbol = gameState.selectedCrypto;
+            const indicators = getTechnicalSignal(symbol);
+
+            const html = `
+                <div class="indicator-item">
+                    <div class="indicator-name">RSI (14)</div>
+                    <div class="indicator-value">${indicators.rsi.toFixed(2)}</div>
+                    <span class="indicator-signal ${indicators.rsiSignal}">${indicators.rsiSignal.toUpperCase()}</span>
+                </div>
+                <div class="indicator-item">
+                    <div class="indicator-name">MACD</div>
+                    <div class="indicator-value">${indicators.macd.macd.toFixed(2)}</div>
+                    <span class="indicator-signal ${indicators.macdSignal}">${indicators.macdSignal.toUpperCase()}</span>
+                </div>
+                <div class="indicator-item">
+                    <div class="indicator-name">BB Upper</div>
+                    <div class="indicator-value">$${indicators.bb.upper.toFixed(2)}</div>
+                </div>
+                <div class="indicator-item">
+                    <div class="indicator-name">BB Lower</div>
+                    <div class="indicator-value">$${indicators.bb.lower.toFixed(2)}</div>
+                </div>
+            `;
+
+            document.getElementById('technicalIndicators').innerHTML = html;
+        }
+
+        // ==================== PRICE UPDATE ====================
+        function updatePrices() {
+            Object.keys(cryptos).forEach(symbol => {
+                const crypto = cryptos[symbol];
+
+                // Base random walk
+                const randomChange = (Math.random() - 0.5) * crypto.volatility * 2;
+
+                // Sentiment influence
+                const sentimentInfluence = (gameState.marketSentiment - 50) / 1000;
+
+                // Mean reversion
+                const meanReversion = (crypto.basePrice - crypto.price) / crypto.basePrice * 0.01;
+
+                const totalChange = randomChange + sentimentInfluence + meanReversion;
+
+                // Update price
+                const newPrice = crypto.price * (1 + totalChange);
+                crypto.price = Math.max(newPrice, crypto.basePrice * 0.1); // Prevent crash to 0
+
+                // Add to price history
+                const lastCandle = priceHistory[symbol][priceHistory[symbol].length - 1];
+                const open = lastCandle.close;
+                const close = crypto.price;
+                const high = Math.max(open, close) * (1 + Math.random() * crypto.volatility * 0.3);
+                const low = Math.min(open, close) * (1 - Math.random() * crypto.volatility * 0.3);
+
+                priceHistory[symbol].push({ open, high, low, close, timestamp: Date.now() });
+
+                // Keep only last 50 candles
+                if (priceHistory[symbol].length > 50) {
+                    priceHistory[symbol].shift();
+                }
+            });
+
+            updateUI();
+        }
+
+        // ==================== TRADING ====================
+        function executeTrade(type) {
+            const symbol = gameState.selectedCrypto;
+            const amount = parseFloat(document.getElementById('tradeAmount').value);
+            const price = cryptos[symbol].price;
+
+            if (type === 'buy') {
+                if (amount > gameState.balanceUSD) {
+                    alert('Balance insuffisante !');
+                    return;
+                }
+
+                const quantity = amount / price;
+                gameState.balanceUSD -= amount;
+                gameState.portfolio[symbol] = (gameState.portfolio[symbol] || 0) + quantity;
+
+                addTradeToHistory({
+                    type: 'BUY',
+                    symbol,
+                    quantity,
+                    price,
+                    total: amount,
+                    timestamp: Date.now()
+                });
+            } else {
+                const holding = gameState.portfolio[symbol] || 0;
+                const maxSellValue = holding * price;
+                const sellAmount = Math.min(amount, maxSellValue);
+
+                if (sellAmount === 0) {
+                    alert(`Vous ne possédez pas de ${symbol} !`);
+                    return;
+                }
+
+                const quantity = sellAmount / price;
+                gameState.balanceUSD += sellAmount;
+                gameState.portfolio[symbol] -= quantity;
+
+                if (gameState.portfolio[symbol] < 0.00001) {
+                    delete gameState.portfolio[symbol];
+                }
+
+                addTradeToHistory({
+                    type: 'SELL',
+                    symbol,
+                    quantity,
+                    price,
+                    total: sellAmount,
+                    timestamp: Date.now()
+                });
+            }
+
+            updateUI();
+            saveGame();
+        }
+
+        function addTradeToHistory(trade) {
+            gameState.tradeHistory.unshift(trade);
+            if (gameState.tradeHistory.length > 20) {
+                gameState.tradeHistory.pop();
+            }
+        }
+
+        function setTradeAmount(value) {
+            const input = document.getElementById('tradeAmount');
+            if (value === 'max') {
+                input.value = gameState.balanceUSD;
+            } else {
+                input.value = value;
+            }
+        }
+
+        // ==================== TRADING BOT ====================
+        let botInterval;
+
+        function toggleBot() {
+            gameState.botActive = !gameState.botActive;
+
+            if (gameState.botActive) {
+                document.getElementById('botToggle').textContent = '🛑 ARRÊTER LE BOT';
+                document.getElementById('botToggle').classList.add('active');
+                document.getElementById('botStatusIndicator').classList.add('active');
+                document.getElementById('botStatusIndicator').classList.remove('inactive');
+                document.getElementById('botStatus').textContent = 'Actif';
+
+                // Bot runs every 2-5 seconds depending on aggression
+                const aggression = parseInt(document.getElementById('botAggression').value);
+                const interval = 5000 - (aggression * 300); // 2s to 5s
+                botInterval = setInterval(runBot, interval);
+            } else {
+                document.getElementById('botToggle').textContent = '🚀 DÉMARRER LE BOT';
+                document.getElementById('botToggle').classList.remove('active');
+                document.getElementById('botStatusIndicator').classList.remove('active');
+                document.getElementById('botStatusIndicator').classList.add('inactive');
+                document.getElementById('botStatus').textContent = 'Inactif';
+                clearInterval(botInterval);
+            }
+
+            updateUI();
+        }
+
+        function runBot() {
+            const strategy = document.getElementById('botStrategy').value;
+            const tradeAmount = parseFloat(document.getElementById('botTradeAmount').value);
+            const aggression = parseInt(document.getElementById('botAggression').value);
+
+            // Select best crypto to trade based on strategy
+            let bestCrypto = null;
+            let bestScore = -Infinity;
+
+            Object.keys(cryptos).forEach(symbol => {
+                const score = evaluateTradeOpportunity(symbol, strategy, aggression);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestCrypto = symbol;
+                }
+            });
+
+            if (!bestCrypto || bestScore < 0.3) {
+                document.getElementById('botInfo').textContent = 'Aucune opportunité détectée...';
+                return;
+            }
+
+            // Determine action
+            const indicators = getTechnicalSignal(bestCrypto);
+            let action = null;
+
+            if (strategy === 'scalping') {
+                // Quick trades based on small movements
+                if (indicators.rsiSignal === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                    action = 'buy';
+                } else if (indicators.rsiSignal === 'sell' && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                    action = 'sell';
+                }
+            } else if (strategy === 'momentum') {
+                // Follow trends
+                if (indicators.macdSignal === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                    action = 'buy';
+                } else if (indicators.macdSignal === 'sell' && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                    action = 'sell';
+                }
+            } else if (strategy === 'meanReversion') {
+                // Buy low, sell high
+                if (indicators.bbSignal === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                    action = 'buy';
+                } else if (indicators.bbSignal === 'sell' && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                    action = 'sell';
+                }
+            } else if (strategy === 'rsi') {
+                // Pure RSI strategy
+                if (indicators.rsi < 30 && gameState.balanceUSD >= tradeAmount) {
+                    action = 'buy';
+                } else if (indicators.rsi > 70 && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                    action = 'sell';
+                }
+            } else if (strategy === 'macd') {
+                // Pure MACD strategy
+                if (indicators.macd.histogram > 0 && gameState.balanceUSD >= tradeAmount) {
+                    action = 'buy';
+                } else if (indicators.macd.histogram < 0 && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                    action = 'sell';
+                }
+            } else if (strategy === 'adaptive') {
+                // Combines all signals with weighting
+                const buySignals = [indicators.rsiSignal, indicators.macdSignal, indicators.bbSignal].filter(s => s === 'buy').length;
+                const sellSignals = [indicators.rsiSignal, indicators.macdSignal, indicators.bbSignal].filter(s => s === 'sell').length;
+
+                if (buySignals >= 2 && gameState.balanceUSD >= tradeAmount) {
+                    action = 'buy';
+                } else if (sellSignals >= 2 && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                    action = 'sell';
+                }
+            }
+
+            if (action) {
+                const price = cryptos[bestCrypto].price;
+
+                if (action === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                    const quantity = tradeAmount / price;
+                    gameState.balanceUSD -= tradeAmount;
+                    gameState.portfolio[bestCrypto] = (gameState.portfolio[bestCrypto] || 0) + quantity;
+
+                    gameState.botStats.trades++;
+                    document.getElementById('botInfo').textContent = `Acheté ${quantity.toFixed(4)} ${bestCrypto} @ $${price.toFixed(2)}`;
+
+                    addTradeToHistory({
+                        type: 'BOT BUY',
+                        symbol: bestCrypto,
+                        quantity,
+                        price,
+                        total: tradeAmount,
+                        timestamp: Date.now(),
+                        strategy: strategy
+                    });
+                } else if (action === 'sell') {
+                    const holding = gameState.portfolio[bestCrypto] || 0;
+                    const sellValue = Math.min(tradeAmount, holding * price);
+                    const quantity = sellValue / price;
+
+                    if (quantity > 0) {
+                        gameState.balanceUSD += sellValue;
+                        gameState.portfolio[bestCrypto] -= quantity;
+
+                        if (gameState.portfolio[bestCrypto] < 0.00001) {
+                            delete gameState.portfolio[bestCrypto];
+                        }
+
+                        gameState.botStats.trades++;
+                        // Simple profit tracking
+                        if (sellValue > tradeAmount * 0.95) {
+                            gameState.botStats.wins++;
+                            gameState.botStats.totalProfit += (sellValue - tradeAmount);
+                        } else {
+                            gameState.botStats.totalProfit += (sellValue - tradeAmount);
+                        }
+
+                        document.getElementById('botInfo').textContent = `Vendu ${quantity.toFixed(4)} ${bestCrypto} @ $${price.toFixed(2)}`;
+
+                        addTradeToHistory({
+                            type: 'BOT SELL',
+                            symbol: bestCrypto,
+                            quantity,
+                            price,
+                            total: sellValue,
+                            timestamp: Date.now(),
+                            strategy: strategy
+                        });
+                    }
+                }
+
+                updateUI();
+                saveGame();
+            } else {
+                document.getElementById('botInfo').textContent = 'Analyse du marché en cours...';
+            }
+        }
+
+        function evaluateTradeOpportunity(symbol, strategy, aggression) {
+            const indicators = getTechnicalIndical(symbol);
+            let score = 0;
+
+            // RSI scoring
+            if (indicators.rsi < 30) score += 1;
+            else if (indicators.rsi > 70) score += 0.5;
+            else if (indicators.rsi > 40 && indicators.rsi < 60) score += 0.3;
+
+            // MACD scoring
+            if (indicators.macd.histogram > 0) score += 0.8;
+            else if (indicators.macd.histogram < 0) score += 0.4;
+
+            // Bollinger Bands scoring
+            const price = cryptos[symbol].price;
+            if (price < indicators.bb.lower) score += 1.2;
+            else if (price > indicators.bb.upper) score += 0.6;
+
+            // Market sentiment influence
+            const sentimentBonus = gameState.marketSentiment / 100;
+            score += sentimentBonus * 0.5;
+
+            // Aggression multiplier
+            score *= (aggression / 5);
+
+            return score;
+        }
+
+        // ==================== UI UPDATE ====================
+        function updateUI() {
+            // Update balance
+            document.getElementById('balanceUSD').textContent = '$' + gameState.balanceUSD.toFixed(2);
+
+            // Calculate portfolio value
+            let portfolioValue = gameState.balanceUSD;
+            Object.keys(gameState.portfolio).forEach(symbol => {
+                portfolioValue += gameState.portfolio[symbol] * cryptos[symbol].price;
+            });
+            document.getElementById('portfolioValue').textContent = '$' + portfolioValue.toFixed(2);
+
+            // Calculate P&L
+            const totalPL = portfolioValue - 10000;
+            document.getElementById('totalPL').textContent = (totalPL >= 0 ? '+$' : '-$') + Math.abs(totalPL).toFixed(2);
+            document.getElementById('totalPL').style.color = totalPL >= 0 ? '#4ade80' : '#f87171';
+
+            // Update crypto grid
+            const grid = document.getElementById('cryptoGrid');
+            grid.innerHTML = Object.keys(cryptos).map(symbol => {
+                const crypto = cryptos[symbol];
+                const change = ((crypto.price - crypto.basePrice) / crypto.basePrice * 100).toFixed(2);
+                const isPositive = change >= 0;
+                const isSelected = symbol === gameState.selectedCrypto;
+
+                return `
+                    <div class="crypto-card ${isSelected ? 'selected' : ''}" onclick="selectCrypto('${symbol}')">
+                        <div class="crypto-header">
+                            <span class="crypto-icon">${crypto.icon}</span>
+                            <div>
+                                <div class="crypto-symbol">${symbol}</div>
+                                <div class="crypto-name">${crypto.name}</div>
+                            </div>
+                        </div>
+                        <div class="crypto-price">$${crypto.price.toFixed(2)}</div>
+                        <span class="price-change ${isPositive ? 'positive' : 'negative'}">
+                            ${isPositive ? '▲' : '▼'} ${Math.abs(change)}%
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            // Update sentiment meter
+            const sentimentPercent = gameState.marketSentiment;
+            document.getElementById('sentimentIndicator').style.left = sentimentPercent + '%';
+
+            let sentimentText = 'Neutre';
+            if (sentimentPercent < 25) sentimentText = 'Extrême Peur 😨';
+            else if (sentimentPercent < 45) sentimentText = 'Peur 😟';
+            else if (sentimentPercent < 55) sentimentText = 'Neutre 😐';
+            else if (sentimentPercent < 75) sentimentText = 'Cupidité 😊';
+            else sentimentText = 'Extrême Cupidité 🤑';
+
+            document.getElementById('sentimentText').textContent = sentimentText;
+
+            // Update portfolio list
+            const portfolioList = document.getElementById('portfolioList');
+            const portfolioEntries = Object.entries(gameState.portfolio);
+
+            if (portfolioEntries.length === 0) {
+                portfolioList.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">Aucune crypto dans le portfolio</div>';
+            } else {
+                portfolioList.innerHTML = portfolioEntries.map(([symbol, quantity]) => {
+                    const crypto = cryptos[symbol];
+                    const value = quantity * crypto.price;
+                    return `
+                        <div class="portfolio-item">
+                            <div class="portfolio-crypto">
+                                <span style="font-size: 1.5em;">${crypto.icon}</span>
+                                <div>
+                                    <div style="font-weight: 600;">${symbol}</div>
+                                    <div style="font-size: 0.85em; color: rgba(255,255,255,0.6);">${quantity.toFixed(4)}</div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="portfolio-amount">$${value.toFixed(2)}</div>
+                                <div class="portfolio-value">@ $${crypto.price.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Update trade history
+            const historyDiv = document.getElementById('tradeHistory');
+            if (gameState.tradeHistory.length === 0) {
+                historyDiv.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">Aucun trade effectué</div>';
+            } else {
+                historyDiv.innerHTML = gameState.tradeHistory.map(trade => {
+                    const time = new Date(trade.timestamp).toLocaleTimeString();
+                    const isBuy = trade.type.includes('BUY');
+                    return `
+                        <div class="trade-item">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-weight: 600; color: ${isBuy ? '#4ade80' : '#f87171'};">
+                                    ${trade.type}
+                                </span>
+                                <span style="color: rgba(255,255,255,0.6);">${time}</span>
+                            </div>
+                            <div>${trade.quantity.toFixed(4)} ${trade.symbol} @ $${trade.price.toFixed(2)}</div>
+                            <div style="color: rgba(255,255,255,0.7);">Total: $${trade.total.toFixed(2)}</div>
+                            ${trade.strategy ? `<div style="font-size: 0.8em; color: rgba(255,255,255,0.5); margin-top: 3px;">Stratégie: ${trade.strategy}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Update bot stats
+            document.getElementById('botTrades').textContent = gameState.botStats.trades;
+            const winRate = gameState.botStats.trades > 0 ? (gameState.botStats.wins / gameState.botStats.trades * 100).toFixed(1) : 0;
+            document.getElementById('botWinRate').textContent = winRate + '%';
+            document.getElementById('botProfit').textContent = (gameState.botStats.totalProfit >= 0 ? '+$' : '-$') + Math.abs(gameState.botStats.totalProfit).toFixed(2);
+            document.getElementById('botProfit').style.color = gameState.botStats.totalProfit >= 0 ? '#4ade80' : '#f87171';
+
+            // Update technical indicators
+            updateTechnicalIndicators();
+
+            // Update chart
+            updateChart();
+        }
+
+        function selectCrypto(symbol) {
+            gameState.selectedCrypto = symbol;
+            document.getElementById('selectedCrypto').value = symbol;
+            document.getElementById('chartCrypto').textContent = symbol;
+            updateUI();
+        }
+
+        function updateChart() {
+            const symbol = gameState.selectedCrypto;
+            const history = priceHistory[symbol].slice(-30); // Show last 30 candles
+            const chart = document.getElementById('candlestickChart');
+
+            if (history.length === 0) return;
+
+            const maxPrice = Math.max(...history.map(h => h.high));
+            const minPrice = Math.min(...history.map(h => h.low));
+            const priceRange = maxPrice - minPrice;
+
+            chart.innerHTML = history.map((candle, i) => {
+                const isBullish = candle.close >= candle.open;
+                const bodyHeight = Math.abs(candle.close - candle.open) / priceRange * 100;
+                const bodyBottom = Math.min(candle.open, candle.close);
+                const bodyBottomPercent = (bodyBottom - minPrice) / priceRange * 100;
+
+                const wickTop = (candle.high - minPrice) / priceRange * 100;
+                const wickBottom = (candle.low - minPrice) / priceRange * 100;
+                const wickHeight = wickTop - wickBottom;
+
+                return `
+                    <div class="candle ${isBullish ? 'bullish' : 'bearish'}" title="O: ${candle.open.toFixed(2)} H: ${candle.high.toFixed(2)} L: ${candle.low.toFixed(2)} C: ${candle.close.toFixed(2)}">
+                        <div class="candle-wick" style="bottom: ${wickBottom}%; height: ${wickHeight}%;"></div>
+                        <div class="candle-body" style="bottom: ${bodyBottomPercent}%; height: ${Math.max(bodyHeight, 1)}%;"></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== SAVE/LOAD ====================
+        function saveGame() {
+            localStorage.setItem('cryptoTraderSave', JSON.stringify(gameState));
+        }
+
+        function loadGame() {
+            const save = localStorage.getItem('cryptoTraderSave');
+            if (save) {
+                try {
+                    const loaded = JSON.parse(save);
+                    Object.assign(gameState, loaded);
+                } catch (e) {
+                    console.error('Failed to load save:', e);
+                }
+            }
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        document.getElementById('selectedCrypto').addEventListener('change', (e) => {
+            selectCrypto(e.target.value);
+        });
+
+        document.getElementById('botAggression').addEventListener('input', (e) => {
+            document.getElementById('aggressionValue').textContent = e.target.value;
+        });
+
+        // ==================== GAME LOOP ====================
+        function gameLoop() {
+            updatePrices();
+
+            // Generate news occasionally
+            if (Math.random() < 0.1) {
+                generateNews();
+            }
+
+            saveGame();
+        }
+
+        // ==================== INITIALIZATION ====================
+        loadGame();
+        updateUI();
+        updateNewsDisplay();
+
+        // Start game loops
+        setInterval(gameLoop, 1000); // Update every second
+        setInterval(() => {
+            generateNews();
+        }, 15000); // Generate news every 15 seconds
+
+        // Generate initial news
+        for (let i = 0; i < 3; i++) {
+            generateNews();
+        }
+    </script>
+</body>
+</html>
