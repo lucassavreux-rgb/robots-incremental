@@ -1120,6 +1120,11 @@
                 // Bot runs every 2-5 seconds depending on aggression
                 const aggression = parseInt(document.getElementById('botAggression').value);
                 const interval = 5000 - (aggression * 300); // 2s to 5s
+
+                // Run immediately on start
+                runBot();
+
+                // Then run on interval
                 botInterval = setInterval(runBot, interval);
             } else {
                 document.getElementById('botToggle').textContent = '🚀 DÉMARRER LE BOT';
@@ -1150,7 +1155,7 @@
                 }
             });
 
-            if (!bestCrypto || bestScore < 0.3) {
+            if (!bestCrypto || bestScore < 0.1) {
                 document.getElementById('botInfo').textContent = 'Aucune opportunité détectée...';
                 return;
             }
@@ -1160,48 +1165,50 @@
             let action = null;
 
             if (strategy === 'scalping') {
-                // Quick trades based on small movements
-                if (indicators.rsiSignal === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                // Quick trades based on small movements - MORE AGGRESSIVE
+                if ((indicators.rsiSignal === 'buy' || indicators.rsi < 50) && gameState.balanceUSD >= tradeAmount) {
                     action = 'buy';
-                } else if (indicators.rsiSignal === 'sell' && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                } else if ((indicators.rsiSignal === 'sell' || indicators.rsi > 50) && (gameState.portfolio[bestCrypto] || 0) > 0) {
                     action = 'sell';
                 }
             } else if (strategy === 'momentum') {
-                // Follow trends
-                if (indicators.macdSignal === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                // Follow trends - MORE AGGRESSIVE
+                if ((indicators.macdSignal === 'buy' || indicators.macd.histogram > -0.5) && gameState.balanceUSD >= tradeAmount) {
                     action = 'buy';
-                } else if (indicators.macdSignal === 'sell' && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                } else if ((indicators.macdSignal === 'sell' || indicators.macd.histogram < 0.5) && (gameState.portfolio[bestCrypto] || 0) > 0) {
                     action = 'sell';
                 }
             } else if (strategy === 'meanReversion') {
-                // Buy low, sell high
-                if (indicators.bbSignal === 'buy' && gameState.balanceUSD >= tradeAmount) {
+                // Buy low, sell high - MORE AGGRESSIVE
+                const price = cryptos[bestCrypto].price;
+                if ((indicators.bbSignal === 'buy' || price < indicators.bb.middle) && gameState.balanceUSD >= tradeAmount) {
                     action = 'buy';
-                } else if (indicators.bbSignal === 'sell' && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                } else if ((indicators.bbSignal === 'sell' || price > indicators.bb.middle) && (gameState.portfolio[bestCrypto] || 0) > 0) {
                     action = 'sell';
                 }
             } else if (strategy === 'rsi') {
-                // Pure RSI strategy
-                if (indicators.rsi < 30 && gameState.balanceUSD >= tradeAmount) {
+                // Pure RSI strategy - RELAXED THRESHOLDS
+                if (indicators.rsi < 55 && gameState.balanceUSD >= tradeAmount) {
                     action = 'buy';
-                } else if (indicators.rsi > 70 && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                } else if (indicators.rsi > 45 && (gameState.portfolio[bestCrypto] || 0) > 0) {
                     action = 'sell';
                 }
             } else if (strategy === 'macd') {
-                // Pure MACD strategy
-                if (indicators.macd.histogram > 0 && gameState.balanceUSD >= tradeAmount) {
+                // Pure MACD strategy - MORE AGGRESSIVE
+                if (indicators.macd.macd > indicators.macd.signal - 1 && gameState.balanceUSD >= tradeAmount) {
                     action = 'buy';
-                } else if (indicators.macd.histogram < 0 && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                } else if (indicators.macd.macd < indicators.macd.signal + 1 && (gameState.portfolio[bestCrypto] || 0) > 0) {
                     action = 'sell';
                 }
             } else if (strategy === 'adaptive') {
-                // Combines all signals with weighting
+                // Combines all signals - SMART & AGGRESSIVE
                 const buySignals = [indicators.rsiSignal, indicators.macdSignal, indicators.bbSignal].filter(s => s === 'buy').length;
                 const sellSignals = [indicators.rsiSignal, indicators.macdSignal, indicators.bbSignal].filter(s => s === 'sell').length;
 
-                if (buySignals >= 2 && gameState.balanceUSD >= tradeAmount) {
+                // More aggressive: only need 1 signal, or random chance based on aggression
+                if ((buySignals >= 1 || Math.random() < aggression / 20) && gameState.balanceUSD >= tradeAmount) {
                     action = 'buy';
-                } else if (sellSignals >= 2 && (gameState.portfolio[bestCrypto] || 0) > 0) {
+                } else if ((sellSignals >= 1 || Math.random() < aggression / 20) && (gameState.portfolio[bestCrypto] || 0) > 0) {
                     action = 'sell';
                 }
             }
@@ -1270,26 +1277,32 @@
         }
 
         function evaluateTradeOpportunity(symbol, strategy, aggression) {
-            const indicators = getTechnicalIndical(symbol);
-            let score = 0;
+            const indicators = getTechnicalSignal(symbol);
+            let score = 0.5; // Start with base score
 
             // RSI scoring
-            if (indicators.rsi < 30) score += 1;
-            else if (indicators.rsi > 70) score += 0.5;
-            else if (indicators.rsi > 40 && indicators.rsi < 60) score += 0.3;
+            if (indicators.rsi < 30) score += 1.5;
+            else if (indicators.rsi > 70) score += 1.2;
+            else if (indicators.rsi > 40 && indicators.rsi < 60) score += 0.8;
+            else score += 0.5;
 
             // MACD scoring
-            if (indicators.macd.histogram > 0) score += 0.8;
-            else if (indicators.macd.histogram < 0) score += 0.4;
+            if (indicators.macd.histogram > 0) score += 1.2;
+            else if (indicators.macd.histogram < 0) score += 0.8;
+            else score += 0.5;
 
             // Bollinger Bands scoring
             const price = cryptos[symbol].price;
-            if (price < indicators.bb.lower) score += 1.2;
-            else if (price > indicators.bb.upper) score += 0.6;
+            if (price < indicators.bb.lower) score += 1.5;
+            else if (price > indicators.bb.upper) score += 1.2;
+            else score += 0.5;
 
             // Market sentiment influence
             const sentimentBonus = gameState.marketSentiment / 100;
-            score += sentimentBonus * 0.5;
+            score += sentimentBonus * 0.8;
+
+            // Volatility bonus (more volatile = more opportunities)
+            score += cryptos[symbol].volatility * 10;
 
             // Aggression multiplier
             score *= (aggression / 5);
@@ -1497,6 +1510,9 @@
         loadGame();
         updateUI();
         updateNewsDisplay();
+
+        // Initialize bot status indicator
+        document.getElementById('botStatusIndicator').classList.add('inactive');
 
         // Start game loops
         setInterval(gameLoop, 1000); // Update every second
