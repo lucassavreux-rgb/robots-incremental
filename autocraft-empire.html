@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoCraft Empire - Factory Automation Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0,0,0,0.5);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resources {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .resource-item {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .resource-icon {
+            font-size: 1.2em;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            height: calc(100vh - 70px);
+            gap: 0;
+        }
+
+        .sidebar {
+            background: rgba(0,0,0,0.3);
+            border-right: 2px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .tab-button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            background: rgba(0,0,0,0.3);
+            border-left: 2px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-level {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .card-description {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .card-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(255,255,255,0.1);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+        }
+
+        .cost-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .cost-item {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cost-item.affordable {
+            border: 1px solid #4ade80;
+        }
+
+        .cost-item.unaffordable {
+            border: 1px solid #f87171;
+            opacity: 0.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .achievement-item.unlocked {
+            border-color: #fbbf24;
+            background: rgba(251,191,36,0.1);
+        }
+
+        .achievement-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            filter: grayscale(100%);
+        }
+
+        .achievement-item.unlocked .achievement-icon {
+            filter: grayscale(0%);
+        }
+
+        .achievement-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .log-entry {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.05);
+            border-left: 3px solid #667eea;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .log-time {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8em;
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .tech-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tech-tier {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tech-card {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tech-card.researched {
+            border-color: #4ade80;
+            background: rgba(74,222,128,0.1);
+        }
+
+        .tech-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tech-card:not(.locked):hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .building-slot {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .building-slot:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.1);
+        }
+
+        .building-slot.active {
+            border-color: #4ade80;
+            background: rgba(74,222,128,0.2);
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar, .right-panel {
+                display: none;
+            }
+        }
+
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .tutorial-box {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            border: 2px solid #667eea;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+
+        .tutorial-title {
+            font-size: 2em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .tutorial-content {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span>🏭</span>
+            <span>AutoCraft Empire</span>
+        </div>
+        <div class="resources" id="resourceDisplay"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <button class="tab-button active" onclick="switchTab('production')">
+                <span>⚙️</span> Production
+            </button>
+            <button class="tab-button" onclick="switchTab('buildings')">
+                <span>🏗️</span> Bâtiments
+            </button>
+            <button class="tab-button" onclick="switchTab('research')">
+                <span>🔬</span> Recherche
+            </button>
+            <button class="tab-button" onclick="switchTab('automation')">
+                <span>🤖</span> Automation
+            </button>
+            <button class="tab-button" onclick="switchTab('achievements')">
+                <span>🏆</span> Succès
+            </button>
+            <button class="tab-button" onclick="switchTab('stats')">
+                <span>📊</span> Statistiques
+            </button>
+            <button class="tab-button" onclick="switchTab('tutorial')">
+                <span>📖</span> Guide
+            </button>
+        </div>
+
+        <div class="main-content" id="mainContent"></div>
+
+        <div class="right-panel">
+            <h3 style="margin-bottom: 15px;">📜 Journal de Production</h3>
+            <div id="productionLog"></div>
+        </div>
+    </div>
+
+    <div id="notifications"></div>
+
+    <script>
+        // ==================== GAME STATE ====================
+        const gameState = {
+            resources: {
+                iron_ore: 10,
+                copper_ore: 10,
+                coal: 5,
+                iron_plate: 0,
+                copper_plate: 0,
+                steel: 0,
+                gear: 0,
+                circuit: 0,
+                oil: 0,
+                plastic: 0,
+                science_red: 0,
+                science_green: 0,
+                science_blue: 0
+            },
+            buildings: {
+                miner: 0,
+                furnace: 0,
+                assembler: 0,
+                lab: 0,
+                oil_refinery: 0,
+                chemical_plant: 0
+            },
+            research: {
+                automation1: false,
+                automation2: false,
+                logistics1: false,
+                logistics2: false,
+                electronics1: false,
+                electronics2: false,
+                production1: false,
+                production2: false,
+                oil_processing: false,
+                advanced_electronics: false,
+                speed1: false,
+                speed2: false,
+                productivity1: false,
+                productivity2: false
+            },
+            production: {
+                iron_plate_per_sec: 0,
+                copper_plate_per_sec: 0,
+                steel_per_sec: 0,
+                gear_per_sec: 0,
+                circuit_per_sec: 0
+            },
+            stats: {
+                totalProduced: {},
+                totalConsumed: {},
+                playTime: 0,
+                clicks: 0
+            },
+            achievements: {},
+            automationEnabled: {},
+            currentTab: 'production',
+            tutorialCompleted: false
+        };
+
+        // ==================== RESOURCE DEFINITIONS ====================
+        const resourceDefinitions = {
+            iron_ore: { name: 'Minerai de Fer', icon: '🪨', color: '#94a3b8' },
+            copper_ore: { name: 'Minerai de Cuivre', icon: '🟠', color: '#f97316' },
+            coal: { name: 'Charbon', icon: '⚫', color: '#1f2937' },
+            iron_plate: { name: 'Plaque de Fer', icon: '🔩', color: '#64748b' },
+            copper_plate: { name: 'Plaque de Cuivre', icon: '🟧', color: '#ea580c' },
+            steel: { name: 'Acier', icon: '⚙️', color: '#475569' },
+            gear: { name: 'Engrenage', icon: '⚙️', color: '#fbbf24' },
+            circuit: { name: 'Circuit', icon: '💾', color: '#10b981' },
+            oil: { name: 'Pétrole', icon: '🛢️', color: '#0f172a' },
+            plastic: { name: 'Plastique', icon: '🧊', color: '#8b5cf6' },
+            science_red: { name: 'Science Rouge', icon: '🔴', color: '#ef4444' },
+            science_green: { name: 'Science Verte', icon: '🟢', color: '#22c55e' },
+            science_blue: { name: 'Science Bleue', icon: '🔵', color: '#3b82f6' }
+        };
+
+        // ==================== RECIPES ====================
+        const recipes = {
+            iron_plate: {
+                name: 'Plaque de Fer',
+                icon: '🔩',
+                time: 3.2,
+                inputs: { iron_ore: 1 },
+                outputs: { iron_plate: 1 },
+                building: 'furnace'
+            },
+            copper_plate: {
+                name: 'Plaque de Cuivre',
+                icon: '🟧',
+                time: 3.2,
+                inputs: { copper_ore: 1 },
+                outputs: { copper_plate: 1 },
+                building: 'furnace'
+            },
+            steel: {
+                name: 'Acier',
+                icon: '⚙️',
+                time: 16,
+                inputs: { iron_plate: 5 },
+                outputs: { steel: 1 },
+                building: 'furnace',
+                requiresResearch: 'production1'
+            },
+            gear: {
+                name: 'Engrenage',
+                icon: '⚙️',
+                time: 0.5,
+                inputs: { iron_plate: 2 },
+                outputs: { gear: 1 },
+                building: 'assembler'
+            },
+            circuit: {
+                name: 'Circuit Électronique',
+                icon: '💾',
+                time: 0.5,
+                inputs: { iron_plate: 1, copper_plate: 3 },
+                outputs: { circuit: 1 },
+                building: 'assembler',
+                requiresResearch: 'electronics1'
+            },
+            plastic: {
+                name: 'Plastique',
+                icon: '🧊',
+                time: 1,
+                inputs: { oil: 20, coal: 1 },
+                outputs: { plastic: 2 },
+                building: 'chemical_plant',
+                requiresResearch: 'oil_processing'
+            },
+            science_red: {
+                name: 'Science Rouge',
+                icon: '🔴',
+                time: 5,
+                inputs: { gear: 1, copper_plate: 1 },
+                outputs: { science_red: 1 },
+                building: 'lab'
+            },
+            science_green: {
+                name: 'Science Verte',
+                icon: '🟢',
+                time: 6,
+                inputs: { iron_plate: 1, circuit: 1 },
+                outputs: { science_green: 1 },
+                building: 'lab',
+                requiresResearch: 'automation1'
+            },
+            science_blue: {
+                name: 'Science Bleue',
+                icon: '🔵',
+                time: 24,
+                inputs: { gear: 2, circuit: 2 },
+                outputs: { science_blue: 1 },
+                building: 'lab',
+                requiresResearch: 'electronics2'
+            }
+        };
+
+        // ==================== BUILDINGS ====================
+        const buildingDefinitions = {
+            miner: {
+                name: 'Foreuse',
+                icon: '⛏️',
+                description: 'Extrait les minerais du sol',
+                baseCost: { iron_plate: 5, gear: 5 },
+                production: { iron_ore: 0.5, copper_ore: 0.5, coal: 0.25 },
+                costMultiplier: 1.15
+            },
+            furnace: {
+                name: 'Fourneau',
+                icon: '🔥',
+                description: 'Transforme les minerais en plaques et en acier',
+                baseCost: { iron_plate: 10, steel: 2 },
+                costMultiplier: 1.2,
+                requiresResearch: 'automation1'
+            },
+            assembler: {
+                name: 'Assembleur',
+                icon: '🏭',
+                description: 'Fabrique des composants complexes',
+                baseCost: { iron_plate: 20, gear: 10, circuit: 5 },
+                costMultiplier: 1.25,
+                requiresResearch: 'automation2'
+            },
+            lab: {
+                name: 'Laboratoire',
+                icon: '🔬',
+                description: 'Produit des packs de science',
+                baseCost: { iron_plate: 10, gear: 10, circuit: 10 },
+                costMultiplier: 1.3,
+                requiresResearch: 'logistics1'
+            },
+            oil_refinery: {
+                name: 'Raffinerie',
+                icon: '🛢️',
+                description: 'Extrait du pétrole brut',
+                baseCost: { steel: 15, gear: 10, circuit: 10 },
+                production: { oil: 1 },
+                costMultiplier: 1.4,
+                requiresResearch: 'oil_processing'
+            },
+            chemical_plant: {
+                name: 'Usine Chimique',
+                icon: '⚗️',
+                description: 'Traite le pétrole en plastique',
+                baseCost: { steel: 10, gear: 5, circuit: 5 },
+                costMultiplier: 1.35,
+                requiresResearch: 'oil_processing'
+            }
+        };
+
+        // ==================== RESEARCH ====================
+        const researchDefinitions = {
+            automation1: {
+                name: 'Automation I',
+                icon: '🤖',
+                description: 'Débloque les fourneaux automatiques et la science verte',
+                cost: { science_red: 10 },
+                time: 5,
+                unlocks: ['furnace', 'science_green']
+            },
+            automation2: {
+                name: 'Automation II',
+                icon: '🤖',
+                description: 'Débloque les assembleurs pour fabriquer des composants',
+                cost: { science_red: 25, science_green: 25 },
+                time: 10,
+                requires: ['automation1'],
+                unlocks: ['assembler']
+            },
+            logistics1: {
+                name: 'Logistique I',
+                icon: '📦',
+                description: 'Débloque les laboratoires pour la recherche',
+                cost: { science_red: 15 },
+                time: 5,
+                unlocks: ['lab']
+            },
+            logistics2: {
+                name: 'Logistique II',
+                icon: '📦',
+                description: 'Améliore l\'efficacité de la logistique (+20% production)',
+                cost: { science_red: 50, science_green: 50 },
+                time: 15,
+                requires: ['logistics1']
+            },
+            electronics1: {
+                name: 'Électronique I',
+                icon: '💻',
+                description: 'Débloque la fabrication de circuits électroniques',
+                cost: { science_red: 20 },
+                time: 5,
+                unlocks: ['circuit']
+            },
+            electronics2: {
+                name: 'Électronique II',
+                icon: '💻',
+                description: 'Débloque les circuits avancés et la science bleue',
+                cost: { science_red: 40, science_green: 40 },
+                time: 15,
+                requires: ['electronics1'],
+                unlocks: ['science_blue']
+            },
+            production1: {
+                name: 'Production I',
+                icon: '⚙️',
+                description: 'Débloque la production d\'acier',
+                cost: { science_red: 30 },
+                time: 10,
+                unlocks: ['steel']
+            },
+            production2: {
+                name: 'Production II',
+                icon: '⚙️',
+                description: 'Augmente la production de tous les bâtiments (+25%)',
+                cost: { science_red: 75, science_green: 75 },
+                time: 20,
+                requires: ['production1']
+            },
+            oil_processing: {
+                name: 'Traitement du Pétrole',
+                icon: '🛢️',
+                description: 'Débloque les raffineries et usines chimiques',
+                cost: { science_red: 50, science_green: 50 },
+                time: 15,
+                requires: ['production1', 'electronics1'],
+                unlocks: ['oil_refinery', 'chemical_plant', 'plastic']
+            },
+            advanced_electronics: {
+                name: 'Électronique Avancée',
+                icon: '💻',
+                description: 'Circuits 50% plus rapides à produire',
+                cost: { science_red: 100, science_green: 100, science_blue: 50 },
+                time: 30,
+                requires: ['electronics2', 'oil_processing']
+            },
+            speed1: {
+                name: 'Vitesse I',
+                icon: '⚡',
+                description: 'Tous les bâtiments sont 15% plus rapides',
+                cost: { science_red: 50, science_green: 50 },
+                time: 15,
+                requires: ['automation2']
+            },
+            speed2: {
+                name: 'Vitesse II',
+                icon: '⚡',
+                description: 'Tous les bâtiments sont 25% plus rapides au total',
+                cost: { science_red: 100, science_green: 100, science_blue: 50 },
+                time: 30,
+                requires: ['speed1']
+            },
+            productivity1: {
+                name: 'Productivité I',
+                icon: '📈',
+                description: '10% de chance de production double',
+                cost: { science_red: 75, science_green: 75 },
+                time: 20,
+                requires: ['production2']
+            },
+            productivity2: {
+                name: 'Productivité II',
+                icon: '📈',
+                description: '20% de chance de production double',
+                cost: { science_red: 150, science_green: 150, science_blue: 75 },
+                time: 40,
+                requires: ['productivity1']
+            }
+        };
+
+        // ==================== ACHIEVEMENTS ====================
+        const achievementDefinitions = {
+            first_mine: {
+                name: 'Premier Mineur',
+                description: 'Construire votre première foreuse',
+                icon: '⛏️',
+                condition: () => gameState.buildings.miner >= 1
+            },
+            iron_production: {
+                name: 'Âge du Fer',
+                description: 'Produire 100 plaques de fer',
+                icon: '🔩',
+                condition: () => (gameState.stats.totalProduced.iron_plate || 0) >= 100
+            },
+            automation_master: {
+                name: 'Maître de l\'Automation',
+                description: 'Construire 10 bâtiments',
+                icon: '🏭',
+                condition: () => Object.values(gameState.buildings).reduce((a,b) => a+b, 0) >= 10
+            },
+            researcher: {
+                name: 'Chercheur',
+                description: 'Compléter votre première recherche',
+                icon: '🔬',
+                condition: () => Object.values(gameState.research).some(r => r === true)
+            },
+            tech_tree_master: {
+                name: 'Génie Technologique',
+                description: 'Compléter toutes les recherches',
+                icon: '🎓',
+                condition: () => Object.values(gameState.research).every(r => r === true)
+            },
+            industrialist: {
+                name: 'Industriel',
+                description: 'Avoir 50 bâtiments au total',
+                icon: '🏗️',
+                condition: () => Object.values(gameState.buildings).reduce((a,b) => a+b, 0) >= 50
+            },
+            oil_tycoon: {
+                name: 'Magnat du Pétrole',
+                description: 'Produire 500 unités de pétrole',
+                icon: '🛢️',
+                condition: () => (gameState.stats.totalProduced.oil || 0) >= 500
+            },
+            scientist: {
+                name: 'Scientifique',
+                description: 'Produire 100 packs de science au total',
+                icon: '🔬',
+                condition: () => {
+                    const total = (gameState.stats.totalProduced.science_red || 0) +
+                                  (gameState.stats.totalProduced.science_green || 0) +
+                                  (gameState.stats.totalProduced.science_blue || 0);
+                    return total >= 100;
+                }
+            },
+            veteran: {
+                name: 'Vétéran',
+                description: 'Jouer pendant 1 heure',
+                icon: '⏱️',
+                condition: () => gameState.stats.playTime >= 3600
+            },
+            clicker: {
+                name: 'Clicker Pro',
+                description: 'Cliquer 1000 fois',
+                icon: '🖱️',
+                condition: () => gameState.stats.clicks >= 1000
+            }
+        };
+
+        // ==================== GAME LOGIC ====================
+        let researchProgress = {};
+        let productionLog = [];
+
+        function canAfford(costs) {
+            return Object.entries(costs).every(([resource, amount]) =>
+                gameState.resources[resource] >= amount
+            );
+        }
+
+        function consumeResources(costs) {
+            Object.entries(costs).forEach(([resource, amount]) => {
+                gameState.resources[resource] -= amount;
+                gameState.stats.totalConsumed[resource] = (gameState.stats.totalConsumed[resource] || 0) + amount;
+            });
+        }
+
+        function addResources(resources) {
+            Object.entries(resources).forEach(([resource, amount]) => {
+                gameState.resources[resource] += amount;
+                gameState.stats.totalProduced[resource] = (gameState.stats.totalProduced[resource] || 0) + amount;
+            });
+        }
+
+        function getBuildingCost(buildingType) {
+            const def = buildingDefinitions[buildingType];
+            const count = gameState.buildings[buildingType];
+            const costs = {};
+
+            Object.entries(def.baseCost).forEach(([resource, amount]) => {
+                costs[resource] = Math.floor(amount * Math.pow(def.costMultiplier, count));
+            });
+
+            return costs;
+        }
+
+        function buyBuilding(buildingType) {
+            const def = buildingDefinitions[buildingType];
+
+            // Check research requirement
+            if (def.requiresResearch && !gameState.research[def.requiresResearch]) {
+                showNotification('Recherche requise : ' + researchDefinitions[def.requiresResearch].name, 'error');
+                return;
+            }
+
+            const cost = getBuildingCost(buildingType);
+
+            if (canAfford(cost)) {
+                consumeResources(cost);
+                gameState.buildings[buildingType]++;
+                logProduction(`Construit: ${def.name}`);
+                showNotification(`${def.icon} ${def.name} construit !`);
+                updateUI();
+                checkAchievements();
+                saveGame();
+            } else {
+                showNotification('Ressources insuffisantes', 'error');
+            }
+        }
+
+        function manualProduce(recipeKey) {
+            const recipe = recipes[recipeKey];
+
+            if (recipe.requiresResearch && !gameState.research[recipe.requiresResearch]) {
+                showNotification('Recherche requise', 'error');
+                return;
+            }
+
+            if (canAfford(recipe.inputs)) {
+                consumeResources(recipe.inputs);
+                addResources(recipe.outputs);
+                gameState.stats.clicks++;
+                updateUI();
+                checkAchievements();
+                saveGame();
+            }
+        }
+
+        function startResearch(techKey) {
+            const tech = researchDefinitions[techKey];
+
+            // Check if already researched
+            if (gameState.research[techKey]) {
+                showNotification('Déjà recherché', 'error');
+                return;
+            }
+
+            // Check requirements
+            if (tech.requires && !tech.requires.every(req => gameState.research[req])) {
+                showNotification('Recherches préalables requises', 'error');
+                return;
+            }
+
+            // Check if already researching
+            if (researchProgress[techKey]) {
+                showNotification('Recherche déjà en cours', 'error');
+                return;
+            }
+
+            if (canAfford(tech.cost)) {
+                consumeResources(tech.cost);
+                researchProgress[techKey] = { current: 0, total: tech.time };
+                logProduction(`Recherche lancée: ${tech.name}`);
+                showNotification(`🔬 Recherche: ${tech.name}`);
+                updateUI();
+                saveGame();
+            } else {
+                showNotification('Science insuffisante', 'error');
+            }
+        }
+
+        function toggleAutomation(recipeKey) {
+            gameState.automationEnabled[recipeKey] = !gameState.automationEnabled[recipeKey];
+            updateUI();
+            saveGame();
+        }
+
+        // ==================== GAME LOOP ====================
+        function gameLoop() {
+            const dt = 1; // 1 second
+
+            gameState.stats.playTime += dt;
+
+            // Passive resource generation from miners
+            if (gameState.buildings.miner > 0) {
+                const def = buildingDefinitions.miner;
+                Object.entries(def.production).forEach(([resource, rate]) => {
+                    const amount = rate * gameState.buildings.miner];
+                    gameState.resources[resource] += amount;
+                    gameState.stats.totalProduced[resource] = (gameState.stats.totalProduced[resource] || 0) + amount;
+                });
+            }
+
+            // Oil production
+            if (gameState.buildings.oil_refinery > 0) {
+                const amount = 1 * gameState.buildings.oil_refinery * dt;
+                gameState.resources.oil += amount;
+                gameState.stats.totalProduced.oil = (gameState.stats.totalProduced.oil || 0) + amount;
+            }
+
+            // Automatic production
+            Object.entries(recipes).forEach(([recipeKey, recipe]) => {
+                if (!gameState.automationEnabled[recipeKey]) return;
+                if (recipe.requiresResearch && !gameState.research[recipe.requiresResearch]) return;
+
+                const buildingCount = gameState.buildings[recipe.building] || 0;
+                if (buildingCount === 0) return;
+
+                // Calculate speed bonuses
+                let speedBonus = 1;
+                if (gameState.research.speed1) speedBonus *= 1.15;
+                if (gameState.research.speed2) speedBonus *= 1.1;
+                if (gameState.research.logistics2) speedBonus *= 1.2;
+                if (gameState.research.production2) speedBonus *= 1.25;
+
+                const productionRate = (buildingCount / recipe.time) * dt * speedBonus;
+
+                // Check if we can produce
+                const canProduce = Object.entries(recipe.inputs).every(([resource, amount]) =>
+                    gameState.resources[resource] >= amount * productionRate
+                );
+
+                if (canProduce) {
+                    // Consume inputs
+                    Object.entries(recipe.inputs).forEach(([resource, amount]) => {
+                        const consumed = amount * productionRate;
+                        gameState.resources[resource] -= consumed;
+                        gameState.stats.totalConsumed[resource] = (gameState.stats.totalConsumed[resource] || 0) + consumed;
+                    });
+
+                    // Produce outputs
+                    Object.entries(recipe.outputs).forEach(([resource, amount]) => {
+                        let produced = amount * productionRate;
+
+                        // Productivity bonus
+                        if (gameState.research.productivity1 && Math.random() < 0.1) produced *= 2;
+                        if (gameState.research.productivity2 && Math.random() < 0.1) produced *= 2;
+
+                        gameState.resources[resource] += produced;
+                        gameState.stats.totalProduced[resource] = (gameState.stats.totalProduced[resource] || 0) + produced;
+                    });
+                }
+            });
+
+            // Research progress
+            Object.keys(researchProgress).forEach(techKey => {
+                researchProgress[techKey].current += dt;
+                if (researchProgress[techKey].current >= researchProgress[techKey].total) {
+                    gameState.research[techKey] = true;
+                    delete researchProgress[techKey];
+                    const tech = researchDefinitions[techKey];
+                    logProduction(`✅ Recherche complétée: ${tech.name}`);
+                    showNotification(`✅ ${tech.name} recherché !`, 'success');
+                    checkAchievements();
+                }
+            });
+
+            // Check achievements periodically
+            if (gameState.stats.playTime % 10 === 0) {
+                checkAchievements();
+            }
+
+            updateUI();
+            saveGame();
+        }
+
+        // ==================== ACHIEVEMENTS ====================
+        function checkAchievements() {
+            Object.entries(achievementDefinitions).forEach(([key, achievement]) => {
+                if (!gameState.achievements[key] && achievement.condition()) {
+                    gameState.achievements[key] = true;
+                    showNotification(`🏆 Succès débloqué: ${achievement.name}`, 'achievement');
+                    logProduction(`🏆 ${achievement.name}`);
+                }
+            });
+        }
+
+        // ==================== UI ====================
+        function updateUI() {
+            updateResourceDisplay();
+            updateMainContent();
+            updateProductionLog();
+        }
+
+        function updateResourceDisplay() {
+            const display = document.getElementById('resourceDisplay');
+            const importantResources = ['iron_ore', 'copper_ore', 'coal', 'iron_plate', 'copper_plate', 'steel', 'gear', 'circuit', 'oil', 'science_red', 'science_green', 'science_blue'];
+
+            display.innerHTML = importantResources.map(key => {
+                const amount = gameState.resources[key];
+                if (amount === 0) return '';
+                const def = resourceDefinitions[key];
+                return `
+                    <div class="resource-item">
+                        <span class="resource-icon">${def.icon}</span>
+                        <span>${Math.floor(amount)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateMainContent() {
+            const content = document.getElementById('mainContent');
+
+            switch(gameState.currentTab) {
+                case 'production':
+                    content.innerHTML = renderProductionTab();
+                    break;
+                case 'buildings':
+                    content.innerHTML = renderBuildingsTab();
+                    break;
+                case 'research':
+                    content.innerHTML = renderResearchTab();
+                    break;
+                case 'automation':
+                    content.innerHTML = renderAutomationTab();
+                    break;
+                case 'achievements':
+                    content.innerHTML = renderAchievementsTab();
+                    break;
+                case 'stats':
+                    content.innerHTML = renderStatsTab();
+                    break;
+                case 'tutorial':
+                    content.innerHTML = renderTutorialTab();
+                    break;
+            }
+        }
+
+        function renderProductionTab() {
+            let html = '<div class="section-title">⚙️ Production Manuelle</div>';
+
+            Object.entries(recipes).forEach(([key, recipe]) => {
+                const canResearch = !recipe.requiresResearch || gameState.research[recipe.requiresResearch];
+                if (!canResearch) return;
+
+                const affordable = canAfford(recipe.inputs);
+
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">${recipe.icon} ${recipe.name}</div>
+                        </div>
+                        <div class="cost-list">
+                            ${Object.entries(recipe.inputs).map(([res, amount]) => {
+                                const def = resourceDefinitions[res];
+                                const has = gameState.resources[res];
+                                const canAffordThis = has >= amount;
+                                return `<div class="cost-item ${canAffordThis ? 'affordable' : 'unaffordable'}">
+                                    ${def.icon} ${amount} ${def.name} (${Math.floor(has)})
+                                </div>`;
+                            }).join('')}
+                            <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                                → ${Object.entries(recipe.outputs).map(([res, amount]) => {
+                                    const def = resourceDefinitions[res];
+                                    return `${def.icon} +${amount}`;
+                                }).join(', ')}
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="manualProduce('${key}')" ${!affordable ? 'disabled' : ''}>
+                            Produire
+                        </button>
+                    </div>
+                `;
+            });
+
+            return html;
+        }
+
+        function renderBuildingsTab() {
+            let html = '<div class="section-title">🏗️ Bâtiments</div>';
+
+            Object.entries(buildingDefinitions).forEach(([key, building]) => {
+                const canResearch = !building.requiresResearch || gameState.research[building.requiresResearch];
+                if (!canResearch) return;
+
+                const cost = getBuildingCost(key);
+                const affordable = canAfford(cost);
+                const count = gameState.buildings[key];
+
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">${building.icon} ${building.name}</div>
+                            <div class="card-level">Niveau ${count}</div>
+                        </div>
+                        <div class="card-description">${building.description}</div>
+                        ${building.production ? `
+                            <div class="card-stats">
+                                ${Object.entries(building.production).map(([res, rate]) => {
+                                    const def = resourceDefinitions[res];
+                                    return `
+                                        <div class="stat">
+                                            <div class="stat-label">${def.name}/s</div>
+                                            <div class="stat-value">+${(rate * count).toFixed(2)}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="cost-list">
+                            ${Object.entries(cost).map(([res, amount]) => {
+                                const def = resourceDefinitions[res];
+                                const has = gameState.resources[res];
+                                const canAffordThis = has >= amount;
+                                return `<div class="cost-item ${canAffordThis ? 'affordable' : 'unaffordable'}">
+                                    ${def.icon} ${amount} ${def.name} (${Math.floor(has)})
+                                </div>`;
+                            }).join('')}
+                        </div>
+                        <button class="btn btn-primary" onclick="buyBuilding('${key}')" ${!affordable ? 'disabled' : ''}>
+                            Construire
+                        </button>
+                    </div>
+                `;
+            });
+
+            return html;
+        }
+
+        function renderResearchTab() {
+            let html = '<div class="section-title">🔬 Arbre Technologique</div>';
+            html += '<div class="tech-tree">';
+
+            Object.entries(researchDefinitions).forEach(([key, tech]) => {
+                const researched = gameState.research[key];
+                const researching = researchProgress[key];
+                const canResearch = !tech.requires || tech.requires.every(req => gameState.research[req]);
+                const affordable = canAfford(tech.cost);
+                const locked = !canResearch || researched;
+
+                html += `
+                    <div class="tech-card ${researched ? 'researched' : ''} ${locked && !researched ? 'locked' : ''}"
+                         onclick="${!locked && !researching ? `startResearch('${key}')` : ''}">
+                        <div style="font-size: 2em; margin-bottom: 10px;">${tech.icon}</div>
+                        <div style="font-weight: 700; margin-bottom: 10px;">${tech.name}</div>
+                        <div style="font-size: 0.9em; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+                            ${tech.description}
+                        </div>
+                        ${researching ? `
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${(researching.current / researching.total * 100)}%">
+                                    ${Math.floor(researching.current / researching.total * 100)}%
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${!researched && !researching ? `
+                            <div class="cost-list">
+                                ${Object.entries(tech.cost).map(([res, amount]) => {
+                                    const def = resourceDefinitions[res];
+                                    const has = gameState.resources[res];
+                                    const canAffordThis = has >= amount;
+                                    return `<div class="cost-item ${canAffordThis ? 'affordable' : 'unaffordable'}">
+                                        ${def.icon} ${amount}
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                        ${researched ? '<div style="color: #4ade80; font-weight: 700;">✅ RECHERCHÉ</div>' : ''}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderAutomationTab() {
+            let html = '<div class="section-title">🤖 Automation de la Production</div>';
+            html += '<p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Activez l\'automation pour que vos bâtiments produisent automatiquement</p>';
+
+            Object.entries(recipes).forEach(([key, recipe]) => {
+                const canResearch = !recipe.requiresResearch || gameState.research[recipe.requiresResearch];
+                if (!canResearch) return;
+
+                const enabled = gameState.automationEnabled[key];
+                const buildingCount = gameState.buildings[recipe.building] || 0;
+
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">${recipe.icon} ${recipe.name}</div>
+                            <div class="card-level">${buildingDefinitions[recipe.building].name}: ${buildingCount}</div>
+                        </div>
+                        <div class="card-description">
+                            ${Object.entries(recipe.inputs).map(([res, amount]) => {
+                                const def = resourceDefinitions[res];
+                                return `${def.icon} ${amount}`;
+                            }).join(' + ')}
+                            →
+                            ${Object.entries(recipe.outputs).map(([res, amount]) => {
+                                const def = resourceDefinitions[res];
+                                return `${def.icon} ${amount}`;
+                            }).join(' + ')}
+                        </div>
+                        <button class="btn ${enabled ? 'btn-success' : 'btn-primary'}" onclick="toggleAutomation('${key}')" ${buildingCount === 0 ? 'disabled' : ''}>
+                            ${enabled ? '✅ ACTIVÉ' : '⏸️ DÉSACTIVÉ'}
+                        </button>
+                    </div>
+                `;
+            });
+
+            return html;
+        }
+
+        function renderAchievementsTab() {
+            let html = '<div class="section-title">🏆 Succès</div>';
+            html += '<div class="grid">';
+
+            Object.entries(achievementDefinitions).forEach(([key, achievement]) => {
+                const unlocked = gameState.achievements[key];
+
+                html += `
+                    <div class="achievement-item ${unlocked ? 'unlocked' : ''}">
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                        ${unlocked ? '<div style="color: #fbbf24; font-weight: 700; margin-top: 10px;">✅ DÉBLOQUÉ</div>' : ''}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+
+            const unlockedCount = Object.values(gameState.achievements).filter(a => a).length;
+            const totalCount = Object.keys(achievementDefinitions).length;
+            html += `<div style="margin-top: 20px; text-align: center; font-size: 1.2em;">
+                Progression: ${unlockedCount}/${totalCount} (${Math.floor(unlockedCount/totalCount*100)}%)
+            </div>`;
+
+            return html;
+        }
+
+        function renderStatsTab() {
+            let html = '<div class="section-title">📊 Statistiques</div>';
+
+            html += '<div class="card">';
+            html += '<div class="card-title">⏱️ Temps de Jeu</div>';
+            html += `<div style="font-size: 2em; font-weight: 700; color: #667eea;">
+                ${Math.floor(gameState.stats.playTime / 3600)}h ${Math.floor((gameState.stats.playTime % 3600) / 60)}m ${gameState.stats.playTime % 60}s
+            </div>`;
+            html += '</div>';
+
+            html += '<div class="card">';
+            html += '<div class="card-title">🏗️ Bâtiments Construits</div>';
+            html += '<div class="grid">';
+            Object.entries(gameState.buildings).forEach(([key, count]) => {
+                if (count === 0) return;
+                const def = buildingDefinitions[key];
+                html += `
+                    <div class="stat">
+                        <div class="stat-label">${def.icon} ${def.name}</div>
+                        <div class="stat-value">${count}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            html += '</div>';
+
+            html += '<div class="card">';
+            html += '<div class="card-title">📦 Production Totale</div>';
+            html += '<div class="grid">';
+            Object.entries(gameState.stats.totalProduced).forEach(([key, amount]) => {
+                if (amount === 0) return;
+                const def = resourceDefinitions[key];
+                html += `
+                    <div class="stat">
+                        <div class="stat-label">${def.icon} ${def.name}</div>
+                        <div class="stat-value">${Math.floor(amount)}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            html += '</div>';
+
+            html += '<div class="card">';
+            html += '<div class="card-title">🔬 Recherches</div>';
+            html += `<div style="font-size: 1.5em;">
+                ${Object.values(gameState.research).filter(r => r).length} / ${Object.keys(researchDefinitions).length} complétées
+            </div>`;
+            html += '</div>';
+
+            return html;
+        }
+
+        function renderTutorialTab() {
+            return `
+                <div class="section-title">📖 Guide Complet</div>
+
+                <div class="card">
+                    <div class="card-title">🎯 Objectif du Jeu</div>
+                    <div class="card-description">
+                        AutoCraft Empire est un jeu d'automation et de gestion de production.
+                        Votre objectif est de construire une usine efficace qui produit automatiquement
+                        des ressources et des composants de plus en plus complexes.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⚙️ Production Manuelle</div>
+                    <div class="card-description">
+                        Au début, vous devez produire manuellement des ressources en cliquant sur les boutons de production.
+                        Chaque production consomme des ressources d'entrée et génère des ressources de sortie.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🏗️ Construire des Bâtiments</div>
+                    <div class="card-description">
+                        <strong>Foreuses (⛏️)</strong>: Extraient automatiquement les minerais (fer, cuivre, charbon)<br>
+                        <strong>Fourneaux (🔥)</strong>: Transforment les minerais en plaques et en acier<br>
+                        <strong>Assembleurs (🏭)</strong>: Fabriquent des composants complexes (engrenages, circuits)<br>
+                        <strong>Laboratoires (🔬)</strong>: Produisent des packs de science pour la recherche<br>
+                        <strong>Raffineries (🛢️)</strong>: Extraient du pétrole brut<br>
+                        <strong>Usines Chimiques (⚗️)</strong>: Transforment le pétrole en plastique
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🤖 Automation</div>
+                    <div class="card-description">
+                        Une fois que vous avez construit des bâtiments, allez dans l'onglet "Automation"
+                        et activez la production automatique. Vos bâtiments produiront alors automatiquement
+                        tant qu'ils ont les ressources nécessaires.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🔬 Recherche</div>
+                    <div class="card-description">
+                        Les recherches débloquent de nouvelles technologies, bâtiments et améliorations.
+                        Produisez des packs de science pour lancer des recherches.
+                        <br><br>
+                        <strong>Progression recommandée:</strong><br>
+                        1. Automation I → Débloque les fourneaux<br>
+                        2. Logistique I → Débloque les laboratoires<br>
+                        3. Électronique I → Débloque les circuits<br>
+                        4. Production I → Débloque l'acier<br>
+                        5. Automation II → Débloque les assembleurs<br>
+                        6. Continuez selon vos besoins !
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">💡 Astuces</div>
+                    <div class="card-description">
+                        • Construisez plusieurs foreuses rapidement pour automatiser l'extraction<br>
+                        • Équilibrez votre production : vous aurez besoin de beaucoup de fer et de cuivre<br>
+                        • Les recherches de vitesse et productivité sont très puissantes<br>
+                        • Activez l'automation dès que possible pour gagner du temps<br>
+                        • Le coût des bâtiments augmente à chaque construction<br>
+                        • Les bâtiments produisent en continu tant qu'ils ont des ressources
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🏆 Succès</div>
+                    <div class="card-description">
+                        Débloquez des succès en atteignant certains objectifs !
+                        Consultez l'onglet "Succès" pour voir votre progression.
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateProductionLog() {
+            const log = document.getElementById('productionLog');
+            log.innerHTML = productionLog.slice(0, 15).map(entry =>
+                `<div class="log-entry">
+                    <div>${entry.text}</div>
+                    <div class="log-time">${entry.time}</div>
+                </div>`
+            ).join('');
+        }
+
+        function logProduction(text) {
+            productionLog.unshift({
+                text: text,
+                time: new Date().toLocaleTimeString()
+            });
+            if (productionLog.length > 50) productionLog.pop();
+        }
+
+        function switchTab(tab) {
+            gameState.currentTab = tab;
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-button').classList.add('active');
+            updateUI();
+        }
+
+        function showNotification(text, type = 'info') {
+            const container = document.getElementById('notifications');
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = text;
+
+            if (type === 'achievement') {
+                notif.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+            } else if (type === 'error') {
+                notif.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            } else if (type === 'success') {
+                notif.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+            }
+
+            container.appendChild(notif);
+
+            setTimeout(() => {
+                notif.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // ==================== SAVE/LOAD ====================
+        function saveGame() {
+            localStorage.setItem('autocraftEmpire', JSON.stringify({
+                gameState,
+                researchProgress,
+                productionLog
+            }));
+        }
+
+        function loadGame() {
+            const save = localStorage.getItem('autocraftEmpire');
+            if (save) {
+                try {
+                    const loaded = JSON.parse(save);
+                    Object.assign(gameState, loaded.gameState);
+                    Object.assign(researchProgress, loaded.researchProgress || {});
+                    productionLog = loaded.productionLog || [];
+                } catch (e) {
+                    console.error('Failed to load save:', e);
+                }
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser ? Toute progression sera perdue !')) {
+                localStorage.removeItem('autocraftEmpire');
+                location.reload();
+            }
+        }
+
+        // ==================== TUTORIAL ====================
+        function showTutorial() {
+            if (gameState.tutorialCompleted) return;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'tutorial-overlay';
+            overlay.innerHTML = `
+                <div class="tutorial-box">
+                    <div class="tutorial-title">🏭 Bienvenue dans AutoCraft Empire!</div>
+                    <div class="tutorial-content">
+                        Bienvenue dans votre nouvelle usine! Votre objectif est de construire
+                        un empire industriel automatisé.<br><br>
+
+                        <strong>Pour commencer:</strong><br>
+                        1. Allez dans "Production" et produisez manuellement des ressources<br>
+                        2. Construisez des foreuses dans "Bâtiments" pour automatiser l'extraction<br>
+                        3. Lancez des recherches pour débloquer de nouvelles technologies<br>
+                        4. Activez l'automation pour que tout fonctionne automatiquement!<br><br>
+
+                        Consultez le "Guide" pour plus de détails!
+                    </div>
+                    <div class="tutorial-buttons">
+                        <button class="btn btn-primary" onclick="closeTutorial()">C'est parti! 🚀</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function closeTutorial() {
+            gameState.tutorialCompleted = true;
+            document.querySelector('.tutorial-overlay').remove();
+            saveGame();
+        }
+
+        // ==================== INIT ====================
+        loadGame();
+        updateUI();
+
+        // Show tutorial for new players
+        if (!gameState.tutorialCompleted) {
+            setTimeout(showTutorial, 500);
+        }
+
+        // Start game loop
+        setInterval(gameLoop, 1000);
+
+        // Save every 10 seconds
+        setInterval(saveGame, 10000);
+
+        console.log('%c🏭 AutoCraft Empire loaded!', 'color: #667eea; font-size: 20px; font-weight: bold;');
+        console.log('%cType resetGame() to reset your progress', 'color: #ef4444;');
+    </script>
+</body>
+</html>
