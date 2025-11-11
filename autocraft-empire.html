@@ -1532,7 +1532,14 @@
         function switchTab(tab) {
             gameState.currentTab = tab;
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.tab-button').classList.add('active');
+            // Find and activate the clicked button
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach((btn, index) => {
+                const tabNames = ['production', 'buildings', 'research', 'automation', 'achievements', 'stats', 'tutorial'];
+                if (tabNames[index] === tab) {
+                    btn.classList.add('active');
+                }
+            });
             updateUI();
         }
 
