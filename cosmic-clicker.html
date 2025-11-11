@@ -1290,7 +1290,7 @@
                 if (!canBuy && !purchased) return; // Hide if requirements not met
 
                 html += `
-                    <div class="upgrade-item ${purchased ? 'purchased' : ''}" onclick="${!purchased ? `buyUpgrade('${id}')` : ''}">
+                    <div class="upgrade-item ${purchased ? 'purchased' : ''}" ${!purchased ? `onclick="buyUpgrade('${id}')"` : ''}>
                         <div class="upgrade-name">${upgrade.icon} ${upgrade.name}</div>
                         <div class="upgrade-desc">${upgrade.description}</div>
                         ${!purchased ? `<div class="cost">Coût: ${formatNumber(upgrade.cost)}</div>` : '<div style="color: #4ade80; font-weight: 700;">✅ ACHETÉ</div>'}
