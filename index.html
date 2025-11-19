@@ -403,6 +403,11 @@
             totalPrestiges: 0,
             totalPrestigePointsEarned: 0, // Total points gagnés (jamais diminue)
 
+            // Ascension system
+            ascensionTokens: 0,
+            ascensionUpgrades: {},
+            totalAscensions: 0,
+
             stats: {
                 totalCookies: 0,
                 totalClicks: 0
@@ -491,6 +496,61 @@
                 level: 0,
                 maxLevel: 1,
                 requires: ['multi_click']
+            }
+        };
+
+        // ==================== ASCENSION UPGRADES ====================
+        const ascensionUpgradeDefinitions = {
+            prod_divine: {
+                name: 'Production Divine',
+                icon: '⚡',
+                description: 'x3 production générateurs',
+                cost: 1,
+                multiplier: 3
+            },
+            prod_cosmic: {
+                name: 'Production Cosmique',
+                icon: '⚡',
+                description: 'x5 production générateurs',
+                cost: 3,
+                multiplier: 5,
+                requires: ['prod_divine']
+            },
+            click_divine: {
+                name: 'Clic Divin',
+                icon: '👆',
+                description: 'x5 puissance de clic',
+                cost: 2,
+                clickMultiplier: 5
+            },
+            click_cosmic: {
+                name: 'Clic Cosmique',
+                icon: '👆',
+                description: 'x10 puissance de clic',
+                cost: 5,
+                clickMultiplier: 10,
+                requires: ['click_divine']
+            },
+            cheaper_divine: {
+                name: 'Générateurs Gratuits',
+                icon: '💰',
+                description: '-25% coût générateurs',
+                cost: 4,
+                costReduction: 0.75
+            },
+            prestige_boost: {
+                name: 'Prestige Boosté',
+                icon: '🌟',
+                description: 'Points prestige x2 plus rapides (1pt/10M)',
+                cost: 3,
+                prestigeBoost: true
+            },
+            legendary_start: {
+                name: 'Départ Légendaire',
+                icon: '🚀',
+                description: 'Commence avec 1M cookies après prestige',
+                cost: 6,
+                startingCookies: 1000000
             }
         };
 
@@ -614,6 +674,76 @@
                 baseProduction: 7800,
                 costMultiplier: 1.15,
                 count: 0
+            },
+            alchemist: {
+                name: 'Alchimiste',
+                icon: '💼',
+                description: 'Transforme le plomb en cookies d\'or',
+                baseCost: 100000000,
+                baseProduction: 40000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.stats.totalCookies >= 100000000
+            },
+            bank: {
+                name: 'Banque',
+                icon: '🏦',
+                description: 'Les intérêts font des cookies',
+                baseCost: 500000000,
+                baseProduction: 200000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 3
+            },
+            laboratory: {
+                name: 'Laboratoire',
+                icon: '🔬',
+                description: 'Science des cookies quantiques',
+                baseCost: 3000000000,
+                baseProduction: 1000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.stats.totalCookies >= 500000000
+            },
+            timeMachine: {
+                name: 'Machine Temporelle',
+                icon: '⏰',
+                description: 'Importe des cookies du futur',
+                baseCost: 20000000000,
+                baseProduction: 6000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 5
+            },
+            multiverse: {
+                name: 'Portail Multiversel',
+                icon: '🌌',
+                description: 'Cookies de dimensions parallèles',
+                baseCost: 150000000000,
+                baseProduction: 35000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.stats.totalCookies >= 10000000000
+            },
+            alienShip: {
+                name: 'Vaisseau Alien',
+                icon: '👽',
+                description: 'Technologie extraterrestre',
+                baseCost: 1000000000000,
+                baseProduction: 200000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 10
+            },
+            blackHole: {
+                name: 'Trou Noir',
+                icon: '🌟',
+                description: 'Absorbe l\'univers en cookies',
+                baseCost: 10000000000000,
+                baseProduction: 1200000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 10
             }
         };
 
@@ -1018,6 +1148,11 @@
             let html = '';
 
             Object.entries(generatorDefinitions).forEach(([type, def]) => {
+                // Check unlock condition
+                if (def.unlockCondition && !def.unlockCondition()) {
+                    return; // Skip locked generators
+                }
+
                 const count = gameState.generators[type] || 0;
                 const cost = getGeneratorCost(type);
                 const canAfford = gameState.cookies >= cost;
