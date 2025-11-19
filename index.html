@@ -607,21 +607,31 @@
         function updateProduction() {
             let total = 0;
 
+            console.log('=== CALCUL PRODUCTION ===');
+
             // Calculate base production from generators
             Object.entries(gameState.generators).forEach(([type, count]) => {
                 const def = generatorDefinitions[type];
-                total += def.baseProduction * count;
+                const production = def.baseProduction * count;
+                console.log(`${type}: ${count} x ${def.baseProduction} = ${production}`);
+                total += production;
             });
+
+            console.log('Total AVANT boosts:', total);
 
             // Apply upgrade multipliers
             if (gameState.upgrades.auto_boost) {
                 total *= upgradeDefinitions.auto_boost.multiplier;
+                console.log('Boost x1.5 appliqué');
             }
             if (gameState.upgrades.auto_boost_2) {
                 total *= upgradeDefinitions.auto_boost_2.multiplier;
+                console.log('Boost x2 appliqué');
             }
 
             gameState.cookiesPerSecond = total;
+            console.log('Production FINALE par seconde:', total);
+            console.log('=========================');
         }
 
         function updateUI() {
@@ -763,10 +773,18 @@
             });
         }
 
+        let gameLoopCounter = 0;
         function gameLoop() {
             if (gameState.cookiesPerSecond > 0) {
+                const oldCookies = gameState.cookies;
                 gameState.cookies += gameState.cookiesPerSecond / 10; // Update 10 times per second
                 gameState.stats.totalCookies += gameState.cookiesPerSecond / 10;
+
+                // Log tous les 10 ticks (1 seconde)
+                gameLoopCounter++;
+                if (gameLoopCounter % 10 === 0) {
+                    console.log(`[GameLoop] Cookies: ${oldCookies.toFixed(2)} -> ${gameState.cookies.toFixed(2)} (+${(gameState.cookies - oldCookies).toFixed(2)}) | Production: ${gameState.cookiesPerSecond}/sec`);
+                }
 
                 // Update display
                 const scoreEl = document.getElementById('scoreDisplay');
