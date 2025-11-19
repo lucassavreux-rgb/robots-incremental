@@ -288,6 +288,23 @@
     </style>
 </head>
 <body>
+    <!-- Modal Shop Prestige -->
+    <div id="prestigeShopModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; overflow-y: auto; padding: 20px;">
+        <div style="max-width: 800px; margin: 50px auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 30px; border: 3px solid #ffd700;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: #ffd700; font-size: 2em; margin: 0;">✨ Shop Prestige ✨</h2>
+                <button id="closePrestigeShop" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 1.1em;">✕</button>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(255, 215, 0, 0.2); border-radius: 10px;">
+                <span style="color: #fbbf24; font-weight: 700; font-size: 1.2em;">Points de Prestige: </span>
+                <span id="prestigePointsModal" style="color: #ffd700; font-weight: 900; font-size: 1.5em;">0</span>
+            </div>
+
+            <div id="prestigeUpgradesList"></div>
+        </div>
+    </div>
+
     <div class="header">
         <div class="title">🍪 Cookie Clicker Pro</div>
         <div class="score-display" id="scoreDisplay">0</div>
@@ -333,6 +350,38 @@
             <div class="section-title">🤖 Générateurs Auto</div>
             <div id="generatorsList"></div>
 
+            <!-- Prestige Section -->
+            <div style="margin-top: 30px; padding: 20px; background: rgba(255, 215, 0, 0.1); border-radius: 15px; border: 2px solid rgba(255, 215, 0, 0.3);">
+                <div style="font-size: 1.3em; font-weight: 700; margin-bottom: 15px; text-align: center; color: #ffd700;">
+                    ✨ PRESTIGE ✨
+                </div>
+
+                <div id="prestigeInfo" style="text-align: center; margin-bottom: 15px; font-size: 0.9em;">
+                    <div style="margin-bottom: 8px;">
+                        <span style="color: #fbbf24; font-weight: 700;">Points:</span>
+                        <span id="prestigePointsDisplay" style="color: #ffd700; font-weight: 900; font-size: 1.2em;">0</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span style="color: #4ade80; font-weight: 700;">Multiplicateur:</span>
+                        <span id="prestigeMultiDisplay" style="color: #4ade80; font-weight: 900; font-size: 1.2em;">x1.0</span>
+                    </div>
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em;">
+                        Lifetime: <span id="lifetimeCookies">0</span>
+                    </div>
+                    <div id="nextPrestigeInfo" style="color: rgba(255, 215, 0, 0.8); font-size: 0.85em; margin-top: 5px;">
+                        Prochain: 20.00M
+                    </div>
+                </div>
+
+                <button id="prestigeButton" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; border-radius: 10px; color: white; font-weight: 700; font-size: 1em; cursor: pointer; transition: all 0.3s; margin-bottom: 10px;">
+                    🌟 PRESTIGE 🌟
+                </button>
+
+                <button id="prestigeShopButton" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border: none; border-radius: 10px; color: white; font-weight: 700; font-size: 0.9em; cursor: pointer; transition: all 0.3s;">
+                    🛒 Shop Prestige
+                </button>
+            </div>
+
             <button class="btn-reset" id="resetButton">🔄 Reset Progression</button>
         </div>
     </div>
@@ -347,6 +396,11 @@
 
             upgrades: {},
             generators: {},
+
+            // Prestige system
+            prestigePoints: 0,
+            prestigeUpgrades: {},
+            totalPrestiges: 0,
 
             stats: {
                 totalCookies: 0,
@@ -388,9 +442,9 @@
             click_100x: {
                 name: 'Ultra Clic',
                 icon: '💥',
-                description: 'x100 la puissance de clic !',
+                description: 'x50 la puissance de clic !',
                 baseCost: 100000,
-                effect: () => gameState.clickPower *= 100,
+                effect: () => gameState.clickPower *= 50,
                 level: 0,
                 maxLevel: 1,
                 requires: ['click_10x']
@@ -436,6 +490,62 @@
                 level: 0,
                 maxLevel: 1,
                 requires: ['multi_click']
+            }
+        };
+
+        // ==================== PRESTIGE UPGRADES ====================
+        const prestigeUpgradeDefinitions = {
+            prod_boost_1: {
+                name: 'Boost Production I',
+                icon: '⭐',
+                description: '+50% production générateurs',
+                cost: 1,
+                multiplier: 1.5
+            },
+            prod_boost_2: {
+                name: 'Boost Production II',
+                icon: '⭐',
+                description: '+100% production générateurs',
+                cost: 3,
+                multiplier: 2,
+                requires: ['prod_boost_1']
+            },
+            prod_boost_3: {
+                name: 'Boost Production III',
+                icon: '⭐',
+                description: '+200% production générateurs',
+                cost: 7,
+                multiplier: 3,
+                requires: ['prod_boost_2']
+            },
+            click_boost_1: {
+                name: 'Boost Clic I',
+                icon: '👆',
+                description: '+100% puissance de clic',
+                cost: 2,
+                clickMultiplier: 2
+            },
+            click_boost_2: {
+                name: 'Boost Clic II',
+                icon: '👆',
+                description: '+300% puissance de clic',
+                cost: 5,
+                clickMultiplier: 4,
+                requires: ['click_boost_1']
+            },
+            cheaper_gens: {
+                name: 'Générateurs moins chers',
+                icon: '💰',
+                description: '-10% coût générateurs',
+                cost: 4,
+                costReduction: 0.9
+            },
+            starting_boost: {
+                name: 'Départ boosté',
+                icon: '🚀',
+                description: 'Commence avec 1000 cookies',
+                cost: 2,
+                startingCookies: 1000
             }
         };
 
@@ -506,6 +616,89 @@
             }
         };
 
+        // ==================== PRESTIGE FUNCTIONS ====================
+        function calculatePrestigePoints() {
+            // 1 point de prestige par tranche de 20 millions de cookies lifetime
+            return Math.floor(gameState.stats.totalCookies / 20000000);
+        }
+
+        function getPrestigeMultiplier() {
+            // Chaque prestige donne +50% (x0.5)
+            return 1 + (gameState.totalPrestiges * 0.5);
+        }
+
+        function canPrestige() {
+            return gameState.stats.totalCookies >= 20000000;
+        }
+
+        function doPrestige() {
+            if (!canPrestige()) {
+                alert('Tu as besoin de 20 millions de cookies lifetime pour faire un prestige!');
+                return;
+            }
+
+            const pointsToGain = calculatePrestigePoints() - gameState.prestigePoints;
+
+            if (pointsToGain <= 0) {
+                alert('Tu ne gagnerais pas de nouveaux points de prestige!');
+                return;
+            }
+
+            if (confirm(`Faire un Prestige?\n\n+${pointsToGain} Points de Prestige\nMultiplicateur: x${getPrestigeMultiplier().toFixed(1)} → x${(getPrestigeMultiplier() + 0.5).toFixed(1)}\n\nTu vas perdre tous tes cookies, générateurs et upgrades!`)) {
+                gameState.prestigePoints = calculatePrestigePoints();
+                gameState.totalPrestiges++;
+
+                // Reset tout sauf prestige
+                gameState.cookies = 0;
+                gameState.totalClicks = 0;
+                gameState.clickPower = 1;
+                gameState.cookiesPerSecond = 0;
+                gameState.upgrades = {};
+                gameState.generators = {};
+
+                // Garde les stats
+                // gameState.stats reste
+
+                // Appliquer starting boost si acheté
+                if (gameState.prestigeUpgrades.starting_boost) {
+                    gameState.cookies = prestigeUpgradeDefinitions.starting_boost.startingCookies;
+                }
+
+                updateProduction();
+                updateUI();
+                saveGame();
+
+                alert(`Prestige effectué!\n\n+${pointsToGain} Points de Prestige\nTotal: ${gameState.prestigePoints} points\nMultiplicateur: x${getPrestigeMultiplier().toFixed(1)}`);
+            }
+        }
+
+        function buyPrestigeUpgrade(id) {
+            const upgrade = prestigeUpgradeDefinitions[id];
+
+            // Check if already bought
+            if (gameState.prestigeUpgrades[id]) return;
+
+            // Check requirements
+            if (upgrade.requires) {
+                const hasRequirements = upgrade.requires.every(req => gameState.prestigeUpgrades[req]);
+                if (!hasRequirements) {
+                    alert('Tu dois acheter les upgrades précédents!');
+                    return;
+                }
+            }
+
+            if (gameState.prestigePoints >= upgrade.cost) {
+                gameState.prestigePoints -= upgrade.cost;
+                gameState.prestigeUpgrades[id] = true;
+
+                updateProduction();
+                updateUI();
+                saveGame();
+            } else {
+                alert('Pas assez de points de prestige!');
+            }
+        }
+
         // ==================== FUNCTIONS ====================
         function formatNumber(num) {
             if (num < 1000) return Math.floor(num);
@@ -519,12 +712,24 @@
             console.log('Click détecté!', event);
 
             let clicks = 1;
+            let effectiveClickPower = gameState.clickPower;
 
             // Multi-click upgrades
             if (gameState.upgrades.multi_click) clicks *= upgradeDefinitions.multi_click.clickMultiplier;
             if (gameState.upgrades.multi_click_2) clicks *= upgradeDefinitions.multi_click_2.clickMultiplier;
 
-            const cookiesGained = gameState.clickPower * clicks;
+            // Apply prestige click multipliers
+            if (gameState.prestigeUpgrades.click_boost_1) {
+                effectiveClickPower *= prestigeUpgradeDefinitions.click_boost_1.clickMultiplier;
+            }
+            if (gameState.prestigeUpgrades.click_boost_2) {
+                effectiveClickPower *= prestigeUpgradeDefinitions.click_boost_2.clickMultiplier;
+            }
+
+            // Apply global prestige multiplier
+            effectiveClickPower *= getPrestigeMultiplier();
+
+            const cookiesGained = effectiveClickPower * clicks;
             gameState.cookies += cookiesGained;
             gameState.totalClicks += clicks;
             gameState.stats.totalClicks += clicks;
@@ -560,7 +765,14 @@
         function getGeneratorCost(type) {
             const def = generatorDefinitions[type];
             const count = gameState.generators[type] || 0;
-            return Math.floor(def.baseCost * Math.pow(def.costMultiplier, count));
+            let cost = def.baseCost * Math.pow(def.costMultiplier, count);
+
+            // Apply prestige cost reduction
+            if (gameState.prestigeUpgrades.cheaper_gens) {
+                cost *= prestigeUpgradeDefinitions.cheaper_gens.costReduction;
+            }
+
+            return Math.floor(cost);
         }
 
         function buyGenerator(type) {
@@ -629,6 +841,27 @@
                 console.log('Boost x2 appliqué');
             }
 
+            // Apply prestige multiplier (global)
+            const prestigeMulti = getPrestigeMultiplier();
+            if (prestigeMulti > 1) {
+                total *= prestigeMulti;
+                console.log(`Prestige multiplier x${prestigeMulti.toFixed(1)} appliqué`);
+            }
+
+            // Apply prestige production upgrades
+            if (gameState.prestigeUpgrades.prod_boost_1) {
+                total *= prestigeUpgradeDefinitions.prod_boost_1.multiplier;
+                console.log('Prestige Boost Prod I x1.5 appliqué');
+            }
+            if (gameState.prestigeUpgrades.prod_boost_2) {
+                total *= prestigeUpgradeDefinitions.prod_boost_2.multiplier;
+                console.log('Prestige Boost Prod II x2 appliqué');
+            }
+            if (gameState.prestigeUpgrades.prod_boost_3) {
+                total *= prestigeUpgradeDefinitions.prod_boost_3.multiplier;
+                console.log('Prestige Boost Prod III x3 appliqué');
+            }
+
             gameState.cookiesPerSecond = total;
             console.log('Production FINALE par seconde:', total);
             console.log('=========================');
@@ -646,14 +879,30 @@
                 perSecondEl.textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
             }
 
-            // Calculate effective click power
+            // Calculate effective click power (same calculation as in handleClick)
+            let clicks = 1;
             let effectiveClickPower = gameState.clickPower;
-            if (gameState.upgrades.multi_click) effectiveClickPower *= upgradeDefinitions.multi_click.clickMultiplier;
-            if (gameState.upgrades.multi_click_2) effectiveClickPower *= upgradeDefinitions.multi_click_2.clickMultiplier;
+
+            // Multi-click upgrades
+            if (gameState.upgrades.multi_click) clicks *= upgradeDefinitions.multi_click.clickMultiplier;
+            if (gameState.upgrades.multi_click_2) clicks *= upgradeDefinitions.multi_click_2.clickMultiplier;
+
+            // Apply prestige click multipliers
+            if (gameState.prestigeUpgrades.click_boost_1) {
+                effectiveClickPower *= prestigeUpgradeDefinitions.click_boost_1.clickMultiplier;
+            }
+            if (gameState.prestigeUpgrades.click_boost_2) {
+                effectiveClickPower *= prestigeUpgradeDefinitions.click_boost_2.clickMultiplier;
+            }
+
+            // Apply global prestige multiplier
+            effectiveClickPower *= getPrestigeMultiplier();
+
+            const totalClickPower = effectiveClickPower * clicks;
 
             const perClickDisplayEl = document.getElementById('perClickDisplay');
             if (perClickDisplayEl) {
-                perClickDisplayEl.textContent = 'Par clic: +' + formatNumber(effectiveClickPower) + ' 🍪';
+                perClickDisplayEl.textContent = 'Par clic: +' + formatNumber(totalClickPower) + ' 🍪';
             }
 
             // Update stats
@@ -683,6 +932,47 @@
 
             // Update generators list
             renderGenerators();
+
+            // Update prestige info
+            const prestigePointsEl = document.getElementById('prestigePointsDisplay');
+            if (prestigePointsEl) {
+                prestigePointsEl.textContent = gameState.prestigePoints;
+            }
+
+            const prestigeMultiEl = document.getElementById('prestigeMultiDisplay');
+            if (prestigeMultiEl) {
+                prestigeMultiEl.textContent = 'x' + getPrestigeMultiplier().toFixed(1);
+            }
+
+            const lifetimeCookiesEl = document.getElementById('lifetimeCookies');
+            if (lifetimeCookiesEl) {
+                lifetimeCookiesEl.textContent = formatNumber(gameState.stats.totalCookies);
+            }
+
+            const nextPrestigeEl = document.getElementById('nextPrestigeInfo');
+            if (nextPrestigeEl) {
+                const nextMilestone = Math.ceil(gameState.stats.totalCookies / 20000000) * 20000000;
+                const remaining = nextMilestone - gameState.stats.totalCookies;
+                if (canPrestige()) {
+                    const newPoints = calculatePrestigePoints() - gameState.prestigePoints;
+                    nextPrestigeEl.textContent = `✨ +${newPoints} point${newPoints > 1 ? 's' : ''} disponible${newPoints > 1 ? 's' : ''}!`;
+                    nextPrestigeEl.style.color = '#4ade80';
+                } else {
+                    nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
+                    nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
+                }
+            }
+
+            const prestigeButtonEl = document.getElementById('prestigeButton');
+            if (prestigeButtonEl) {
+                if (canPrestige()) {
+                    prestigeButtonEl.style.opacity = '1';
+                    prestigeButtonEl.style.cursor = 'pointer';
+                } else {
+                    prestigeButtonEl.style.opacity = '0.5';
+                    prestigeButtonEl.style.cursor = 'not-allowed';
+                }
+            }
         }
 
         function renderUpgrades() {
@@ -822,10 +1112,68 @@
             }
         }
 
+        // ==================== PRESTIGE UI ====================
+        function openPrestigeShop() {
+            document.getElementById('prestigeShopModal').style.display = 'block';
+            renderPrestigeUpgrades();
+        }
+
+        function closePrestigeShop() {
+            document.getElementById('prestigeShopModal').style.display = 'none';
+        }
+
+        function renderPrestigeUpgrades() {
+            const container = document.getElementById('prestigeUpgradesList');
+            const modalPoints = document.getElementById('prestigePointsModal');
+
+            if (modalPoints) {
+                modalPoints.textContent = gameState.prestigePoints;
+            }
+
+            let html = '';
+
+            Object.entries(prestigeUpgradeDefinitions).forEach(([id, upgrade]) => {
+                const owned = gameState.prestigeUpgrades[id];
+                const canAfford = gameState.prestigePoints >= upgrade.cost;
+                const hasRequirements = !upgrade.requires || upgrade.requires.every(req => gameState.prestigeUpgrades[req]);
+
+                if (owned || hasRequirements) {
+                    html += `
+                        <div class="upgrade-item ${owned ? 'locked' : (!canAfford ? 'locked' : '')}"
+                             data-prestige-upgrade-id="${id}" ${!owned ? 'data-can-buy-prestige="true"' : ''} style="margin-bottom: 15px;">
+                            <div class="item-header">
+                                <div class="item-name">${upgrade.icon} ${upgrade.name}</div>
+                            </div>
+                            <div class="item-description">${upgrade.description}</div>
+                            <div class="item-footer">
+                                ${owned ?
+                                    '<span style="color: #4ade80; font-weight: 700;">✅ ACHETÉ</span>' :
+                                    `<span class="item-cost" style="color: #ffd700;">⭐ ${upgrade.cost} Points</span>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = html || '<div style="text-align: center; opacity: 0.5; padding: 20px;">Aucune amélioration disponible</div>';
+
+            // Add click listeners
+            container.querySelectorAll('.upgrade-item[data-can-buy-prestige="true"]').forEach(item => {
+                item.addEventListener('click', () => {
+                    buyPrestigeUpgrade(item.dataset.prestigeUpgradeId);
+                    renderPrestigeUpgrades();
+                });
+            });
+        }
+
         // ==================== INIT ====================
         // Add event listeners
         document.getElementById('clickButton').addEventListener('click', handleClick);
         document.getElementById('resetButton').addEventListener('click', resetGame);
+        document.getElementById('prestigeButton').addEventListener('click', doPrestige);
+        document.getElementById('prestigeShopButton').addEventListener('click', openPrestigeShop);
+        document.getElementById('closePrestigeShop').addEventListener('click', closePrestigeShop);
 
         loadGame();
         updateProduction();
