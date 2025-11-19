@@ -501,6 +501,8 @@
         }
 
         function handleClick(event) {
+            console.log('Click détecté!', event);
+
             let clicks = 1;
 
             // Multi-click upgrades
@@ -513,8 +515,12 @@
             gameState.stats.totalClicks += clicks;
             gameState.stats.totalCookies += cookiesGained;
 
-            // Visual effect
-            createClickEffect(event.clientX, event.clientY, cookiesGained);
+            console.log('Cookies gagnés:', cookiesGained, 'Total:', gameState.cookies);
+
+            // Visual effect - seulement si event a les coordonnées
+            if (event && event.clientX !== undefined && event.clientY !== undefined) {
+                createClickEffect(event.clientX, event.clientY, cookiesGained);
+            }
 
             updateUI();
         }
@@ -596,16 +602,37 @@
 
         function updateUI() {
             // Update header
-            document.getElementById('scoreDisplay').textContent = formatNumber(gameState.cookies);
-            document.getElementById('perSecond').textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
+            const scoreEl = document.getElementById('scoreDisplay');
+            if (scoreEl) {
+                scoreEl.textContent = formatNumber(gameState.cookies);
+            }
+
+            const perSecondEl = document.getElementById('perSecond');
+            if (perSecondEl) {
+                perSecondEl.textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
+            }
 
             // Update stats
-            document.getElementById('totalClicks').textContent = formatNumber(gameState.stats.totalClicks);
-            document.getElementById('perClick').textContent = formatNumber(gameState.clickPower);
-            document.getElementById('perSecStats').textContent = formatNumber(gameState.cookiesPerSecond);
+            const totalClicksEl = document.getElementById('totalClicks');
+            if (totalClicksEl) {
+                totalClicksEl.textContent = formatNumber(gameState.stats.totalClicks);
+            }
+
+            const perClickEl = document.getElementById('perClick');
+            if (perClickEl) {
+                perClickEl.textContent = formatNumber(gameState.clickPower);
+            }
+
+            const perSecStatsEl = document.getElementById('perSecStats');
+            if (perSecStatsEl) {
+                perSecStatsEl.textContent = formatNumber(gameState.cookiesPerSecond);
+            }
 
             const totalGens = Object.values(gameState.generators).reduce((a, b) => a + b, 0);
-            document.getElementById('totalGenerators').textContent = totalGens;
+            const totalGensEl = document.getElementById('totalGenerators');
+            if (totalGensEl) {
+                totalGensEl.textContent = totalGens;
+            }
 
             // Update upgrades list
             renderUpgrades();
@@ -691,7 +718,11 @@
             gameState.cookies += gameState.cookiesPerSecond / 10; // Update 10 times per second
             gameState.stats.totalCookies += gameState.cookiesPerSecond / 10;
 
-            updateUI();
+            // Only update display, not rebuild everything
+            const scoreEl = document.getElementById('scoreDisplay');
+            if (scoreEl) {
+                scoreEl.textContent = formatNumber(gameState.cookies);
+            }
         }
 
         function saveGame() {
