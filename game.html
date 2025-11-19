@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍪 Cookie Clicker Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            font-size: 3em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .score-display {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .per-second {
+            font-size: 1.2em;
+            color: #4ade80;
+            margin-top: 10px;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            gap: 20px;
+            padding: 30px 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .clicker-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .click-button {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border: 8px solid #fff;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            font-size: 8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            user-select: none;
+            position: relative;
+        }
+
+        .click-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 25px 70px rgba(255, 215, 0, 0.6);
+        }
+
+        .click-button:active {
+            transform: scale(0.95);
+        }
+
+        .click-effect {
+            position: absolute;
+            font-size: 2em;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 1);
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+
+        .upgrade-item, .generator-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upgrade-item:hover, .generator-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+            border-color: #ffd700;
+        }
+
+        .upgrade-item.locked, .generator-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .item-name {
+            font-size: 1.1em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-count {
+            background: rgba(255, 215, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: 700;
+        }
+
+        .item-description {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-cost {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .item-production {
+            font-size: 0.9em;
+            color: #4ade80;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-reset:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(248, 113, 113, 0.4);
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .click-button {
+                width: 250px;
+                height: 250px;
+                font-size: 6em;
+            }
+        }
+
+        /* Scrollbar custom */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">🍪 Cookie Clicker Pro</div>
+        <div class="score-display" id="scoreDisplay">0</div>
+        <div class="per-second" id="perSecond">+0/sec</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Left Sidebar: Upgrades -->
+        <div class="sidebar">
+            <div class="section-title">⬆️ Améliorations</div>
+            <div id="upgradesList"></div>
+        </div>
+
+        <!-- Center: Clicker -->
+        <div class="clicker-section">
+            <div class="click-button" id="clickButton" onclick="handleClick(event)">
+                🍪
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Clics Totaux</div>
+                    <div class="stat-value" id="totalClicks">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Par Clic</div>
+                    <div class="stat-value" id="perClick">1</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Par Seconde</div>
+                    <div class="stat-value" id="perSecStats">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Générateurs</div>
+                    <div class="stat-value" id="totalGenerators">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Auto-Clickers -->
+        <div class="sidebar">
+            <div class="section-title">🤖 Générateurs Auto</div>
+            <div id="generatorsList"></div>
+
+            <button class="btn-reset" onclick="resetGame()">🔄 Reset Progression</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GAME STATE ====================
+        const gameState = {
+            cookies: 0,
+            totalClicks: 0,
+            clickPower: 1,
+            cookiesPerSecond: 0,
+
+            upgrades: {},
+            generators: {},
+
+            stats: {
+                totalCookies: 0,
+                totalClicks: 0
+            }
+        };
+
+        // ==================== UPGRADES ====================
+        const upgradeDefinitions = {
+            click_2x: {
+                name: 'Double Clic',
+                icon: '👆',
+                description: 'Double la puissance de clic',
+                baseCost: 100,
+                effect: () => gameState.clickPower *= 2,
+                level: 0,
+                maxLevel: 1
+            },
+            click_5x: {
+                name: 'Super Clic',
+                icon: '✋',
+                description: 'x5 la puissance de clic',
+                baseCost: 1000,
+                effect: () => gameState.clickPower *= 5,
+                level: 0,
+                maxLevel: 1,
+                requires: ['click_2x']
+            },
+            click_10x: {
+                name: 'Méga Clic',
+                icon: '👊',
+                description: 'x10 la puissance de clic',
+                baseCost: 10000,
+                effect: () => gameState.clickPower *= 10,
+                level: 0,
+                maxLevel: 1,
+                requires: ['click_5x']
+            },
+            click_100x: {
+                name: 'Ultra Clic',
+                icon: '💥',
+                description: 'x100 la puissance de clic !',
+                baseCost: 100000,
+                effect: () => gameState.clickPower *= 100,
+                level: 0,
+                maxLevel: 1,
+                requires: ['click_10x']
+            },
+            auto_boost: {
+                name: 'Boost Auto',
+                icon: '⚡',
+                description: 'Générateurs +50%',
+                baseCost: 5000,
+                effect: () => {},
+                multiplier: 1.5,
+                level: 0,
+                maxLevel: 1
+            },
+            auto_boost_2: {
+                name: 'Mega Boost',
+                icon: '⚡',
+                description: 'Générateurs x2',
+                baseCost: 50000,
+                effect: () => {},
+                multiplier: 2,
+                level: 0,
+                maxLevel: 1,
+                requires: ['auto_boost']
+            },
+            multi_click: {
+                name: 'Multi-Clic',
+                icon: '🖱️',
+                description: 'Chaque clic compte double',
+                baseCost: 2500,
+                effect: () => {},
+                clickMultiplier: 2,
+                level: 0,
+                maxLevel: 1
+            },
+            multi_click_2: {
+                name: 'Super Multi-Clic',
+                icon: '🖱️',
+                description: 'Chaque clic compte x3',
+                baseCost: 25000,
+                effect: () => {},
+                clickMultiplier: 3,
+                level: 0,
+                maxLevel: 1,
+                requires: ['multi_click']
+            }
+        };
+
+        // ==================== GENERATORS ====================
+        const generatorDefinitions = {
+            cursor: {
+                name: 'Curseur',
+                icon: '☝️',
+                description: 'Clique automatiquement',
+                baseCost: 15,
+                baseProduction: 0.1,
+                costMultiplier: 1.15,
+                count: 0
+            },
+            grandma: {
+                name: 'Grand-mère',
+                icon: '👵',
+                description: 'Une gentille grand-mère qui fait des cookies',
+                baseCost: 100,
+                baseProduction: 1,
+                costMultiplier: 1.15,
+                count: 0
+            },
+            farm: {
+                name: 'Ferme',
+                icon: '🌾',
+                description: 'Cultive des ingrédients',
+                baseCost: 1100,
+                baseProduction: 8,
+                costMultiplier: 1.15,
+                count: 0
+            },
+            factory: {
+                name: 'Usine',
+                icon: '🏭',
+                description: 'Production de masse',
+                baseCost: 12000,
+                baseProduction: 47,
+                costMultiplier: 1.15,
+                count: 0
+            },
+            mine: {
+                name: 'Mine',
+                icon: '⛏️',
+                description: 'Extrait du chocolat pur',
+                baseCost: 130000,
+                baseProduction: 260,
+                costMultiplier: 1.15,
+                count: 0
+            },
+            spaceship: {
+                name: 'Vaisseau Spatial',
+                icon: '🚀',
+                description: 'Cookies depuis l\'espace',
+                baseCost: 1400000,
+                baseProduction: 1400,
+                costMultiplier: 1.15,
+                count: 0
+            },
+            portal: {
+                name: 'Portail Dimensionnel',
+                icon: '🌀',
+                description: 'Importe des cookies d\'autres dimensions',
+                baseCost: 20000000,
+                baseProduction: 7800,
+                costMultiplier: 1.15,
+                count: 0
+            }
+        };
+
+        // ==================== FUNCTIONS ====================
+        function formatNumber(num) {
+            if (num < 1000) return Math.floor(num);
+            if (num < 1000000) return (num / 1000).toFixed(2) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num < 1000000000000) return (num / 1000000000).toFixed(2) + 'B';
+            return (num / 1000000000000).toFixed(2) + 'T';
+        }
+
+        function handleClick(event) {
+            let clicks = 1;
+
+            // Multi-click upgrades
+            if (gameState.upgrades.multi_click) clicks *= upgradeDefinitions.multi_click.clickMultiplier;
+            if (gameState.upgrades.multi_click_2) clicks *= upgradeDefinitions.multi_click_2.clickMultiplier;
+
+            const cookiesGained = gameState.clickPower * clicks;
+            gameState.cookies += cookiesGained;
+            gameState.totalClicks += clicks;
+            gameState.stats.totalClicks += clicks;
+            gameState.stats.totalCookies += cookiesGained;
+
+            // Visual effect
+            createClickEffect(event.clientX, event.clientY, cookiesGained);
+
+            updateUI();
+        }
+
+        function createClickEffect(x, y, value) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.textContent = '+' + formatNumber(value);
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            effect.style.position = 'fixed';
+            document.body.appendChild(effect);
+
+            setTimeout(() => effect.remove(), 1000);
+        }
+
+        function getGeneratorCost(type) {
+            const def = generatorDefinitions[type];
+            const count = gameState.generators[type] || 0;
+            return Math.floor(def.baseCost * Math.pow(def.costMultiplier, count));
+        }
+
+        function buyGenerator(type) {
+            const cost = getGeneratorCost(type);
+
+            if (gameState.cookies >= cost) {
+                gameState.cookies -= cost;
+                gameState.generators[type] = (gameState.generators[type] || 0) + 1;
+
+                updateProduction();
+                updateUI();
+                saveGame();
+            }
+        }
+
+        function buyUpgrade(id) {
+            const upgrade = upgradeDefinitions[id];
+
+            // Check if already bought
+            if (gameState.upgrades[id]) return;
+
+            // Check requirements
+            if (upgrade.requires) {
+                const hasRequirements = upgrade.requires.every(req => gameState.upgrades[req]);
+                if (!hasRequirements) return;
+            }
+
+            if (gameState.cookies >= upgrade.baseCost) {
+                gameState.cookies -= upgrade.baseCost;
+                gameState.upgrades[id] = true;
+
+                if (upgrade.effect) upgrade.effect();
+
+                updateProduction();
+                updateUI();
+                saveGame();
+            }
+        }
+
+        function updateProduction() {
+            let total = 0;
+
+            // Calculate base production from generators
+            Object.entries(gameState.generators).forEach(([type, count]) => {
+                const def = generatorDefinitions[type];
+                total += def.baseProduction * count;
+            });
+
+            // Apply upgrade multipliers
+            if (gameState.upgrades.auto_boost) {
+                total *= upgradeDefinitions.auto_boost.multiplier;
+            }
+            if (gameState.upgrades.auto_boost_2) {
+                total *= upgradeDefinitions.auto_boost_2.multiplier;
+            }
+
+            gameState.cookiesPerSecond = total;
+        }
+
+        function updateUI() {
+            // Update header
+            document.getElementById('scoreDisplay').textContent = formatNumber(gameState.cookies);
+            document.getElementById('perSecond').textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
+
+            // Update stats
+            document.getElementById('totalClicks').textContent = formatNumber(gameState.stats.totalClicks);
+            document.getElementById('perClick').textContent = formatNumber(gameState.clickPower);
+            document.getElementById('perSecStats').textContent = formatNumber(gameState.cookiesPerSecond);
+
+            const totalGens = Object.values(gameState.generators).reduce((a, b) => a + b, 0);
+            document.getElementById('totalGenerators').textContent = totalGens;
+
+            // Update upgrades list
+            renderUpgrades();
+
+            // Update generators list
+            renderGenerators();
+        }
+
+        function renderUpgrades() {
+            const container = document.getElementById('upgradesList');
+            let html = '';
+
+            Object.entries(upgradeDefinitions).forEach(([id, upgrade]) => {
+                const owned = gameState.upgrades[id];
+                const canAfford = gameState.cookies >= upgrade.baseCost;
+                const hasRequirements = !upgrade.requires || upgrade.requires.every(req => gameState.upgrades[req]);
+
+                if (owned || hasRequirements) {
+                    html += `
+                        <div class="upgrade-item ${owned ? 'locked' : (!canAfford ? 'locked' : '')}"
+                             onclick="${!owned ? `buyUpgrade('${id}')` : ''}">
+                            <div class="item-header">
+                                <div class="item-name">${upgrade.icon} ${upgrade.name}</div>
+                            </div>
+                            <div class="item-description">${upgrade.description}</div>
+                            <div class="item-footer">
+                                ${owned ?
+                                    '<span style="color: #4ade80; font-weight: 700;">✅ ACHETÉ</span>' :
+                                    `<span class="item-cost">🍪 ${formatNumber(upgrade.baseCost)}</span>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = html || '<div style="text-align: center; opacity: 0.5;">Aucune amélioration disponible</div>';
+        }
+
+        function renderGenerators() {
+            const container = document.getElementById('generatorsList');
+            let html = '';
+
+            Object.entries(generatorDefinitions).forEach(([type, def]) => {
+                const count = gameState.generators[type] || 0;
+                const cost = getGeneratorCost(type);
+                const canAfford = gameState.cookies >= cost;
+                const production = def.baseProduction * count;
+
+                html += `
+                    <div class="generator-item ${!canAfford ? 'locked' : ''}" onclick="buyGenerator('${type}')">
+                        <div class="item-header">
+                            <div class="item-name">${def.icon} ${def.name}</div>
+                            <div class="item-count">${count}</div>
+                        </div>
+                        <div class="item-description">${def.description}</div>
+                        <div class="item-footer">
+                            <span class="item-cost">🍪 ${formatNumber(cost)}</span>
+                            <span class="item-production">+${formatNumber(production)}/s</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function gameLoop() {
+            gameState.cookies += gameState.cookiesPerSecond / 10; // Update 10 times per second
+            gameState.stats.totalCookies += gameState.cookiesPerSecond / 10;
+
+            updateUI();
+        }
+
+        function saveGame() {
+            localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
+        }
+
+        function loadGame() {
+            const save = localStorage.getItem('cookieClickerSave');
+            if (save) {
+                try {
+                    Object.assign(gameState, JSON.parse(save));
+                    updateProduction();
+                } catch (e) {
+                    console.error('Failed to load save:', e);
+                }
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Êtes-vous sûr de vouloir reset ? Toute progression sera perdue !')) {
+                localStorage.removeItem('cookieClickerSave');
+                location.reload();
+            }
+        }
+
+        // ==================== INIT ====================
+        loadGame();
+        updateProduction();
+        updateUI();
+
+        // Game loop - 10 times per second for smooth production
+        setInterval(gameLoop, 100);
+
+        // Auto-save every 5 seconds
+        setInterval(saveGame, 5000);
+
+        console.log('%c🍪 Cookie Clicker Pro loaded!', 'color: #ffd700; font-size: 20px; font-weight: bold;');
+    </script>
+</body>
+</html>
