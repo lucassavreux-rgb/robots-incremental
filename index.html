@@ -48,6 +48,12 @@
             margin-top: 10px;
         }
 
+        .per-click-display {
+            font-size: 1em;
+            color: #fbbf24;
+            margin-top: 5px;
+        }
+
         .main-container {
             display: grid;
             grid-template-columns: 350px 1fr 350px;
@@ -110,13 +116,17 @@
         }
 
         .click-effect {
-            position: absolute;
-            font-size: 2em;
+            position: fixed;
+            font-size: 2.5em;
             font-weight: 900;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 1);
+            color: #ffd700;
+            text-shadow:
+                0 0 10px rgba(255, 215, 0, 1),
+                0 0 20px rgba(255, 215, 0, 0.8),
+                2px 2px 4px rgba(0, 0, 0, 0.5);
             pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
+            animation: floatUp 1.5s ease-out forwards;
+            z-index: 9999;
         }
 
         @keyframes floatUp {
@@ -124,9 +134,13 @@
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
+            50% {
+                opacity: 1;
+                transform: translateY(-50px) scale(1.3);
+            }
             100% {
                 opacity: 0;
-                transform: translateY(-100px) scale(1.5);
+                transform: translateY(-120px) scale(1.5);
             }
         }
 
@@ -278,6 +292,7 @@
         <div class="title">🍪 Cookie Clicker Pro</div>
         <div class="score-display" id="scoreDisplay">0</div>
         <div class="per-second" id="perSecond">+0/sec</div>
+        <div class="per-click-display" id="perClickDisplay">Par clic: +1</div>
     </div>
 
     <div class="main-container">
@@ -528,13 +543,18 @@
         function createClickEffect(x, y, value) {
             const effect = document.createElement('div');
             effect.className = 'click-effect';
-            effect.textContent = '+' + formatNumber(value);
-            effect.style.left = x + 'px';
-            effect.style.top = y + 'px';
-            effect.style.position = 'fixed';
+            effect.textContent = '+' + formatNumber(value) + ' 🍪';
+
+            // Position avec un peu de variation aléatoire
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+
+            effect.style.left = (x + offsetX) + 'px';
+            effect.style.top = (y + offsetY) + 'px';
+
             document.body.appendChild(effect);
 
-            setTimeout(() => effect.remove(), 1000);
+            setTimeout(() => effect.remove(), 1500);
         }
 
         function getGeneratorCost(type) {
@@ -612,6 +632,16 @@
                 perSecondEl.textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
             }
 
+            // Calculate effective click power
+            let effectiveClickPower = gameState.clickPower;
+            if (gameState.upgrades.multi_click) effectiveClickPower *= upgradeDefinitions.multi_click.clickMultiplier;
+            if (gameState.upgrades.multi_click_2) effectiveClickPower *= upgradeDefinitions.multi_click_2.clickMultiplier;
+
+            const perClickDisplayEl = document.getElementById('perClickDisplay');
+            if (perClickDisplayEl) {
+                perClickDisplayEl.textContent = 'Par clic: +' + formatNumber(effectiveClickPower) + ' 🍪';
+            }
+
             // Update stats
             const totalClicksEl = document.getElementById('totalClicks');
             if (totalClicksEl) {
@@ -687,7 +717,19 @@
                 const count = gameState.generators[type] || 0;
                 const cost = getGeneratorCost(type);
                 const canAfford = gameState.cookies >= cost;
-                const production = def.baseProduction * count;
+
+                // Production par unité et production totale
+                let productionPerUnit = def.baseProduction;
+
+                // Appliquer les boosts aux générateurs
+                if (gameState.upgrades.auto_boost) {
+                    productionPerUnit *= upgradeDefinitions.auto_boost.multiplier;
+                }
+                if (gameState.upgrades.auto_boost_2) {
+                    productionPerUnit *= upgradeDefinitions.auto_boost_2.multiplier;
+                }
+
+                const totalProduction = productionPerUnit * count;
 
                 html += `
                     <div class="generator-item ${!canAfford ? 'locked' : ''}" data-generator-type="${type}">
@@ -698,7 +740,10 @@
                         <div class="item-description">${def.description}</div>
                         <div class="item-footer">
                             <span class="item-cost">🍪 ${formatNumber(cost)}</span>
-                            <span class="item-production">+${formatNumber(production)}/s</span>
+                            <span class="item-production" style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                                <span style="color: #4ade80;">Chaque: +${formatNumber(productionPerUnit)}/s</span>
+                                ${count > 0 ? `<span style="color: #fbbf24; font-size: 0.85em;">Total: +${formatNumber(totalProduction)}/s</span>` : ''}
+                            </span>
                         </div>
                     </div>
                 `;
