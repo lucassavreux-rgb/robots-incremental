@@ -289,7 +289,7 @@
 
         <!-- Center: Clicker -->
         <div class="clicker-section">
-            <div class="click-button" id="clickButton" onclick="handleClick(event)">
+            <div class="click-button" id="clickButton">
                 🍪
             </div>
 
@@ -318,7 +318,7 @@
             <div class="section-title">🤖 Générateurs Auto</div>
             <div id="generatorsList"></div>
 
-            <button class="btn-reset" onclick="resetGame()">🔄 Reset Progression</button>
+            <button class="btn-reset" id="resetButton">🔄 Reset Progression</button>
         </div>
     </div>
 
@@ -626,7 +626,7 @@
                 if (owned || hasRequirements) {
                     html += `
                         <div class="upgrade-item ${owned ? 'locked' : (!canAfford ? 'locked' : '')}"
-                             onclick="${!owned ? `buyUpgrade('${id}')` : ''}">
+                             data-upgrade-id="${id}" ${!owned ? 'data-can-buy="true"' : ''}>
                             <div class="item-header">
                                 <div class="item-name">${upgrade.icon} ${upgrade.name}</div>
                             </div>
@@ -643,6 +643,13 @@
             });
 
             container.innerHTML = html || '<div style="text-align: center; opacity: 0.5;">Aucune amélioration disponible</div>';
+
+            // Add click listeners to upgrades
+            container.querySelectorAll('.upgrade-item[data-can-buy="true"]').forEach(item => {
+                item.addEventListener('click', () => {
+                    buyUpgrade(item.dataset.upgradeId);
+                });
+            });
         }
 
         function renderGenerators() {
@@ -656,7 +663,7 @@
                 const production = def.baseProduction * count;
 
                 html += `
-                    <div class="generator-item ${!canAfford ? 'locked' : ''}" onclick="buyGenerator('${type}')">
+                    <div class="generator-item ${!canAfford ? 'locked' : ''}" data-generator-type="${type}">
                         <div class="item-header">
                             <div class="item-name">${def.icon} ${def.name}</div>
                             <div class="item-count">${count}</div>
@@ -671,6 +678,13 @@
             });
 
             container.innerHTML = html;
+
+            // Add click listeners to generators
+            container.querySelectorAll('.generator-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    buyGenerator(item.dataset.generatorType);
+                });
+            });
         }
 
         function gameLoop() {
@@ -704,6 +718,10 @@
         }
 
         // ==================== INIT ====================
+        // Add event listeners
+        document.getElementById('clickButton').addEventListener('click', handleClick);
+        document.getElementById('resetButton').addEventListener('click', resetGame);
+
         loadGame();
         updateProduction();
         updateUI();
