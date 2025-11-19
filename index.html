@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub - Arcade Premium</title>
+    <title>Nouveau Jeu - En Construction</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -14,548 +12,60 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: #0a0a0a;
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Animated Background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(120, 40, 200, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(40, 120, 200, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(200, 40, 120, 0.2) 0%, transparent 50%);
-            animation: bgAnimation 20s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        @keyframes bgAnimation {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
-        }
-
-        /* Floating particles */
-        .particle {
-            position: fixed;
-            width: 3px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: float 15s infinite;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(50px);
-                opacity: 0;
-            }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Header Section */
-        .header {
             text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 1s ease;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .logo {
-            font-size: 5em;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
         }
 
         h1 {
-            font-size: 4em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .subtitle {
-            font-size: 1.3em;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
-            animation: fadeIn 1.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        .stat-icon {
-            font-size: 1.5em;
-        }
-
-        .stat-text {
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* Games Grid */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 40px;
-            padding: 20px;
-        }
-
-        .game-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 1s ease backwards;
-        }
-
-        .game-card:nth-child(1) {
-            animation-delay: 0.2s;
-        }
-
-        .game-card:nth-child(2) {
-            animation-delay: 0.4s;
-        }
-
-        .game-card:nth-child(3) {
-            animation-delay: 0.6s;
-        }
-
-        .game-card:nth-child(4) {
-            animation-delay: 0.8s;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .game-card:hover::before {
-            opacity: 1;
-        }
-
-        .game-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 30px 80px rgba(102, 126, 234, 0.3);
-        }
-
-        .game-card-inner {
-            position: relative;
-            z-index: 1;
-        }
-
-        .new-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.75em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            font-size: 3em;
+            margin-bottom: 20px;
             animation: pulse 2s ease-in-out infinite;
         }
 
-        .game-icon {
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .emoji {
             font-size: 5em;
-            text-align: center;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-            animation: bounce 3s ease-in-out infinite;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
         }
 
         @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .game-title {
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: white;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        .game-description {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.8;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 1.05em;
-        }
-
-        .tags-container {
-            text-align: center;
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .game-tag {
-            display: inline-block;
-            background: rgba(102, 126, 234, 0.2);
-            color: rgba(255, 255, 255, 0.9);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.85em;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .game-tag:hover {
-            background: rgba(102, 126, 234, 0.4);
-            transform: scale(1.05);
-        }
-
-        .play-button {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border: none;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .play-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 80px;
-            padding: 30px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9em;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5em;
-            }
-
-            .logo {
-                font-size: 3em;
-            }
-
-            .games-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .game-card {
-                padding: 30px 20px;
-            }
-
-            .stats-bar {
-                gap: 15px;
-            }
-
-            .stat-item {
-                padding: 10px 20px;
-                font-size: 0.9em;
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
-    <!-- Floating Particles -->
-    <script>
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 15 + 's';
-            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-            document.body.appendChild(particle);
-        }
-    </script>
-
     <div class="container">
-        <div class="header">
-            <div class="logo">🎮</div>
-            <h1>ULTIMATE GAMES COLLECTION</h1>
-            <p class="subtitle">4 Jeux ULTRA-COMPLETS avec des heures de gameplay !</p>
-
-            <!-- User Info -->
-            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;" id="userControls">
-                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.1)); padding: 12px 25px; border-radius: 50px; border: 2px solid rgba(102, 126, 234, 0.3);">
-                    <span style="color: rgba(255,255,255,0.7);">Connecté en tant que</span>
-                    <strong id="username" style="color: #667eea; margin-left: 8px;">Utilisateur</strong>
-                </div>
-                <button id="adminButton" onclick="window.location.href='admin.html'" style="display: none; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); color: white; padding: 12px 25px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
-                    ⚙️ Panel Admin
-                </button>
-                <button onclick="logout()" style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); color: white; padding: 12px 25px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.2); font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
-                    🚪 Déconnexion
-                </button>
-            </div>
-        </div>
-
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-icon">🎯</span>
-                <span class="stat-text">4 Jeux Massifs</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">⏱️</span>
-                <span class="stat-text">100+ Heures</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">💾</span>
-                <span class="stat-text">Sauvegarde Auto</span>
-            </div>
-        </div>
-
-        <div class="games-grid">
-            <!-- AutoCraft Empire -->
-            <a href="autocraft-empire.html" class="game-card">
-                <div class="new-badge">✨ NOUVEAU</div>
-                <div class="game-card-inner">
-                    <div class="game-icon">🏭</div>
-                    <div class="game-title">AutoCraft Empire</div>
-                    <div class="game-description">
-                        Jeu d'automation et de production style Factorio !
-                        13 ressources, 6 types de bâtiments, 14 recherches technologiques.
-                        Construis des chaînes de production automatiques, débloque des technologies,
-                        gère tes ressources. Système de crafting complexe avec tech tree !
-                    </div>
-                    <div class="tags-container">
-                        <span class="game-tag">🏭 Factorio-like</span>
-                        <span class="game-tag">🤖 Automation</span>
-                        <span class="game-tag">🔬 Tech Tree</span>
-                        <span class="game-tag">⚙️ Production</span>
-                        <span class="game-tag">🏆 10 Succès</span>
-                    </div>
-                    <div class="play-button">▶ Jouer Maintenant</div>
-                </div>
-            </a>
-
-            <!-- Cosmic Clicker -->
-            <a href="cosmic-clicker.html" class="game-card">
-                <div class="new-badge">✨ NOUVEAU</div>
-                <div class="game-card-inner">
-                    <div class="game-icon">🌌</div>
-                    <div class="game-title">Cosmic Clicker Ultimate</div>
-                    <div class="game-description">
-                        Le jeu idle/clicker le plus complet !
-                        10 générateurs, 20+ upgrades, système de prestige, golden cookies,
-                        événements aléatoires, 19 succès. Clique, automatise, prestige !
-                        Des heures de progression addictive !
-                    </div>
-                    <div class="tags-container">
-                        <span class="game-tag">🍪 Idle Clicker</span>
-                        <span class="game-tag">⭐ Prestige</span>
-                        <span class="game-tag">📈 Progression</span>
-                        <span class="game-tag">🎲 Événements</span>
-                        <span class="game-tag">🏆 19 Succès</span>
-                    </div>
-                    <div class="play-button">▶ Jouer Maintenant</div>
-                </div>
-            </a>
-
-            <!-- MegaCorp Tycoon -->
-            <a href="megacorp-tycoon.html" class="game-card">
-                <div class="new-badge">✨ NOUVEAU</div>
-                <div class="game-card-inner">
-                    <div class="game-icon">🏢</div>
-                    <div class="game-title">MegaCorp Tycoon</div>
-                    <div class="game-description">
-                        Jeu de gestion d'entreprise hyper-complexe !
-                        5 départements, gestion d'employés avec compétences, recherche & développement,
-                        expansion géographique, marketing, marché dynamique.
-                        Construis un empire commercial mondial !
-                    </div>
-                    <div class="tags-container">
-                        <span class="game-tag">🏢 Business</span>
-                        <span class="game-tag">👥 Gestion</span>
-                        <span class="game-tag">🌍 Expansion</span>
-                        <span class="game-tag">🔬 R&D</span>
-                        <span class="game-tag">📈 Stratégie</span>
-                    </div>
-                    <div class="play-button">▶ Jouer Maintenant</div>
-                </div>
-            </a>
-
-            <!-- CryptoTrader Pro -->
-            <a href="crypto-trader.html" class="game-card">
-                <div class="game-card-inner">
-                    <div class="game-icon">🚀</div>
-                    <div class="game-title">CryptoTrader Pro</div>
-                    <div class="game-description">
-                        Simulateur de trading crypto ultra-réaliste avec bot intelligent IA !
-                        Trade Bitcoin, Ethereum et plus. Stratégies avancées (RSI, MACD, Bollinger),
-                        analyse technique en temps réel, système de news dynamique, sentiment du marché.
-                        Bot de trading qui fait VRAIMENT des trades !
-                    </div>
-                    <div class="tags-container">
-                        <span class="game-tag">🤖 Bot IA</span>
-                        <span class="game-tag">📈 Trading Crypto</span>
-                        <span class="game-tag">🧠 Stratégies</span>
-                        <span class="game-tag">📊 Analyse Technique</span>
-                        <span class="game-tag">💹 Marché Dynamique</span>
-                    </div>
-                    <div class="play-button">▶ Jouer Maintenant</div>
-                </div>
-            </a>
-        </div>
-
-        <div class="footer">
-            <p>🎮 Ultimate Games Collection • 4 jeux complets avec sauvegarde automatique</p>
-            <p style="margin-top: 10px;">Des centaines d'heures de gameplay ! Créé avec passion ❤️</p>
-        </div>
+        <div class="emoji">🎮</div>
+        <h1>Nouveau Jeu</h1>
+        <p>Prêt à créer quelque chose d'incroyable !</p>
+        <p style="font-size: 1em; opacity: 0.7;">Espace vide - En attente du prochain chef-d'œuvre...</p>
     </div>
-
-    <script>
-        // AUTH DISABLED - Direct access to games
-        document.getElementById('username').textContent = 'Joueur';
-        document.getElementById('adminButton').style.display = 'none';
-
-        function logout() {
-            alert('Authentification désactivée pour le moment !');
-        }
-    </script>
 </body>
 </html>
