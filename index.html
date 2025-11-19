@@ -1073,7 +1073,7 @@
                 // Log tous les 10 ticks (1 seconde)
                 gameLoopCounter++;
                 if (gameLoopCounter % 10 === 0) {
-                    console.log(`[GameLoop] Cookies: ${oldCookies.toFixed(2)} -> ${gameState.cookies.toFixed(2)} (+${(gameState.cookies - oldCookies).toFixed(2)}) | Production: ${gameState.cookiesPerSecond}/sec`);
+                    console.log(`[GameLoop] Cookies: ${oldCookies.toFixed(2)} -> ${gameState.cookies.toFixed(2)} (+${(gameState.cookies - oldCookies).toFixed(2)}) | Production: ${gameState.cookiesPerSecond}/sec | Lifetime: ${gameState.stats.totalCookies.toFixed(2)}`);
                 }
 
                 // Update display
@@ -1085,6 +1085,39 @@
                 const perSecondEl = document.getElementById('perSecond');
                 if (perSecondEl) {
                     perSecondEl.textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
+                }
+
+                // Update lifetime cookies display
+                const lifetimeCookiesEl = document.getElementById('lifetimeCookies');
+                if (lifetimeCookiesEl) {
+                    lifetimeCookiesEl.textContent = formatNumber(gameState.stats.totalCookies);
+                }
+
+                // Update prestige info
+                const nextPrestigeEl = document.getElementById('nextPrestigeInfo');
+                if (nextPrestigeEl) {
+                    if (canPrestige()) {
+                        const newPoints = calculatePrestigePoints() - gameState.totalPrestigePointsEarned;
+                        nextPrestigeEl.textContent = `✨ +${newPoints} point${newPoints > 1 ? 's' : ''} disponible${newPoints > 1 ? 's' : ''}!`;
+                        nextPrestigeEl.style.color = '#4ade80';
+                    } else {
+                        const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * 20000000;
+                        const remaining = nextMilestone - gameState.stats.totalCookies;
+                        nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
+                        nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
+                    }
+                }
+
+                // Update prestige button state
+                const prestigeButtonEl = document.getElementById('prestigeButton');
+                if (prestigeButtonEl) {
+                    if (canPrestige()) {
+                        prestigeButtonEl.style.opacity = '1';
+                        prestigeButtonEl.style.cursor = 'pointer';
+                    } else {
+                        prestigeButtonEl.style.opacity = '0.5';
+                        prestigeButtonEl.style.cursor = 'not-allowed';
+                    }
                 }
             }
         }
