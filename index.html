@@ -401,6 +401,7 @@
             prestigePoints: 0,
             prestigeUpgrades: {},
             totalPrestiges: 0,
+            totalPrestigePointsEarned: 0, // Total points gagnés (jamais diminue)
 
             stats: {
                 totalCookies: 0,
@@ -628,24 +629,23 @@
         }
 
         function canPrestige() {
-            return gameState.stats.totalCookies >= 20000000;
+            // On peut prestige si on peut gagner de nouveaux points
+            const pointsToGain = calculatePrestigePoints() - gameState.totalPrestigePointsEarned;
+            return pointsToGain > 0;
         }
 
         function doPrestige() {
-            if (!canPrestige()) {
-                alert('Tu as besoin de 20 millions de cookies lifetime pour faire un prestige!');
-                return;
-            }
-
-            const pointsToGain = calculatePrestigePoints() - gameState.prestigePoints;
+            const pointsToGain = calculatePrestigePoints() - gameState.totalPrestigePointsEarned;
 
             if (pointsToGain <= 0) {
-                alert('Tu ne gagnerais pas de nouveaux points de prestige!');
+                alert('Tu ne gagnerais pas de nouveaux points de prestige!\n\nIl te faut 20M cookies lifetime de plus pour gagner 1 point.');
                 return;
             }
 
-            if (confirm(`Faire un Prestige?\n\n+${pointsToGain} Points de Prestige\nMultiplicateur: x${getPrestigeMultiplier().toFixed(1)} → x${(getPrestigeMultiplier() + 0.5).toFixed(1)}\n\nTu vas perdre tous tes cookies, générateurs et upgrades!`)) {
-                gameState.prestigePoints = calculatePrestigePoints();
+            if (confirm(`Faire un Prestige?\n\n+${pointsToGain} Point${pointsToGain > 1 ? 's' : ''} de Prestige\nMultiplicateur: x${getPrestigeMultiplier().toFixed(1)} → x${(getPrestigeMultiplier() + 0.5).toFixed(1)}\n\nTu vas perdre tous tes cookies, générateurs et upgrades!`)) {
+                // Ajouter les nouveaux points
+                gameState.prestigePoints += pointsToGain;
+                gameState.totalPrestigePointsEarned += pointsToGain;
                 gameState.totalPrestiges++;
 
                 // Reset tout sauf prestige
@@ -668,7 +668,7 @@
                 updateUI();
                 saveGame();
 
-                alert(`Prestige effectué!\n\n+${pointsToGain} Points de Prestige\nTotal: ${gameState.prestigePoints} points\nMultiplicateur: x${getPrestigeMultiplier().toFixed(1)}`);
+                alert(`Prestige effectué!\n\n+${pointsToGain} Point${pointsToGain > 1 ? 's' : ''} de Prestige\nTotal dispo: ${gameState.prestigePoints} points\nMultiplicateur: x${getPrestigeMultiplier().toFixed(1)}`);
             }
         }
 
@@ -951,13 +951,13 @@
 
             const nextPrestigeEl = document.getElementById('nextPrestigeInfo');
             if (nextPrestigeEl) {
-                const nextMilestone = Math.ceil(gameState.stats.totalCookies / 20000000) * 20000000;
-                const remaining = nextMilestone - gameState.stats.totalCookies;
                 if (canPrestige()) {
-                    const newPoints = calculatePrestigePoints() - gameState.prestigePoints;
+                    const newPoints = calculatePrestigePoints() - gameState.totalPrestigePointsEarned;
                     nextPrestigeEl.textContent = `✨ +${newPoints} point${newPoints > 1 ? 's' : ''} disponible${newPoints > 1 ? 's' : ''}!`;
                     nextPrestigeEl.style.color = '#4ade80';
                 } else {
+                    const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * 20000000;
+                    const remaining = nextMilestone - gameState.stats.totalCookies;
                     nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
                     nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
                 }
