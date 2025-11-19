@@ -403,6 +403,11 @@
             totalPrestiges: 0,
             totalPrestigePointsEarned: 0, // Total points gagnés (jamais diminue)
 
+            // Ascension system
+            ascensionTokens: 0,
+            ascensionUpgrades: {},
+            totalAscensions: 0,
+
             stats: {
                 totalCookies: 0,
                 totalClicks: 0
@@ -494,6 +499,61 @@
             }
         };
 
+        // ==================== ASCENSION UPGRADES ====================
+        const ascensionUpgradeDefinitions = {
+            prod_divine: {
+                name: 'Production Divine',
+                icon: '⚡',
+                description: 'x3 production générateurs',
+                cost: 1,
+                multiplier: 3
+            },
+            prod_cosmic: {
+                name: 'Production Cosmique',
+                icon: '⚡',
+                description: 'x5 production générateurs',
+                cost: 3,
+                multiplier: 5,
+                requires: ['prod_divine']
+            },
+            click_divine: {
+                name: 'Clic Divin',
+                icon: '👆',
+                description: 'x5 puissance de clic',
+                cost: 2,
+                clickMultiplier: 5
+            },
+            click_cosmic: {
+                name: 'Clic Cosmique',
+                icon: '👆',
+                description: 'x10 puissance de clic',
+                cost: 5,
+                clickMultiplier: 10,
+                requires: ['click_divine']
+            },
+            cheaper_divine: {
+                name: 'Générateurs Gratuits',
+                icon: '💰',
+                description: '-25% coût générateurs',
+                cost: 4,
+                costReduction: 0.75
+            },
+            prestige_boost: {
+                name: 'Prestige Boosté',
+                icon: '🌟',
+                description: 'Points prestige x2 plus rapides (1pt/10M)',
+                cost: 3,
+                prestigeBoost: true
+            },
+            legendary_start: {
+                name: 'Départ Légendaire',
+                icon: '🚀',
+                description: 'Commence avec 1M cookies après prestige',
+                cost: 6,
+                startingCookies: 1000000
+            }
+        };
+
         // ==================== PRESTIGE UPGRADES ====================
         const prestigeUpgradeDefinitions = {
             prod_boost_1: {
@@ -547,6 +607,31 @@
                 description: 'Commence avec 1000 cookies',
                 cost: 2,
                 startingCookies: 1000
+            },
+            // Prestige++ upgrades (unlocked after 10 prestiges)
+            cookie_titan: {
+                name: 'Cookie Titan',
+                icon: '💎',
+                description: 'x5 production globale',
+                cost: 15,
+                multiplier: 5,
+                unlockCondition: () => gameState.totalPrestiges >= 10
+            },
+            eternal_clicker: {
+                name: 'Eternal Clicker',
+                icon: '💎',
+                description: 'x10 puissance de clic',
+                cost: 20,
+                clickMultiplier: 10,
+                unlockCondition: () => gameState.totalPrestiges >= 10
+            },
+            cookie_god: {
+                name: 'Cookie God',
+                icon: '💎',
+                description: 'x10 TOUT (production ET clics)',
+                cost: 50,
+                godMultiplier: 10,
+                unlockCondition: () => gameState.totalPrestiges >= 10
             }
         };
 
@@ -614,13 +699,157 @@
                 baseProduction: 7800,
                 costMultiplier: 1.15,
                 count: 0
+            },
+            alchemist: {
+                name: 'Alchimiste',
+                icon: '💼',
+                description: 'Transforme le plomb en cookies d\'or',
+                baseCost: 100000000,
+                baseProduction: 40000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.stats.totalCookies >= 100000000
+            },
+            bank: {
+                name: 'Banque',
+                icon: '🏦',
+                description: 'Les intérêts font des cookies',
+                baseCost: 500000000,
+                baseProduction: 200000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 3
+            },
+            laboratory: {
+                name: 'Laboratoire',
+                icon: '🔬',
+                description: 'Science des cookies quantiques',
+                baseCost: 3000000000,
+                baseProduction: 1000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.stats.totalCookies >= 500000000
+            },
+            timeMachine: {
+                name: 'Machine Temporelle',
+                icon: '⏰',
+                description: 'Importe des cookies du futur',
+                baseCost: 20000000000,
+                baseProduction: 6000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 5
+            },
+            multiverse: {
+                name: 'Portail Multiversel',
+                icon: '🌌',
+                description: 'Cookies de dimensions parallèles',
+                baseCost: 150000000000,
+                baseProduction: 35000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.stats.totalCookies >= 10000000000
+            },
+            alienShip: {
+                name: 'Vaisseau Alien',
+                icon: '👽',
+                description: 'Technologie extraterrestre',
+                baseCost: 1000000000000,
+                baseProduction: 200000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 10
+            },
+            blackHole: {
+                name: 'Trou Noir',
+                icon: '🌟',
+                description: 'Absorbe l\'univers en cookies',
+                baseCost: 10000000000000,
+                baseProduction: 1200000000,
+                costMultiplier: 1.15,
+                count: 0,
+                unlockCondition: () => gameState.totalPrestiges >= 10
             }
         };
 
+        // ==================== ASCENSION FUNCTIONS ====================
+        function getAscensionMultiplier() {
+            // Chaque ascension donne x2 (100%)
+            return Math.pow(2, gameState.totalAscensions);
+        }
+
+        function canAscend() {
+            return gameState.prestigePoints >= 20 && gameState.stats.totalCookies >= 100000000000;
+        }
+
+        function calculateAscensionTokens() {
+            return Math.floor(gameState.prestigePoints / 20);
+        }
+
+        function doAscension() {
+            if (!canAscend()) {
+                alert('Conditions pour Ascension:\n- Au moins 20 points de prestige\n- Au moins 100B cookies lifetime');
+                return;
+            }
+
+            const tokensToGain = calculateAscensionTokens();
+
+            if (confirm(`🌟 ASCENSION 🌟\n\nTu vas gagner ${tokensToGain} jeton${tokensToGain > 1 ? 's' : ''} d'Ascension!\nMultiplicateur: x${getAscensionMultiplier()} → x${getAscensionMultiplier() * 2}\n\n⚠️ RESET TOTAL:\n- Cookies\n- Générateurs\n- Upgrades\n- Points de Prestige\n- Prestiges effectués\n\n✅ TU GARDES:\n- Upgrades Ascension\n- Stats lifetime\n\nContinuer?`)) {
+                gameState.ascensionTokens += tokensToGain;
+                gameState.totalAscensions++;
+
+                // RESET TOTAL
+                gameState.cookies = 0;
+                gameState.totalClicks = 0;
+                gameState.clickPower = 1;
+                gameState.cookiesPerSecond = 0;
+                gameState.upgrades = {};
+                gameState.generators = {};
+                gameState.prestigePoints = 0;
+                gameState.prestigeUpgrades = {};
+                gameState.totalPrestiges = 0;
+                gameState.totalPrestigePointsEarned = 0;
+
+                // Stats lifetime reste
+
+                updateProduction();
+                updateUI();
+                saveGame();
+
+                alert(`✨ ASCENSION RÉUSSIE! ✨\n\n+${tokensToGain} Jeton${tokensToGain > 1 ? 's' : ''}\nMultiplicateur: x${getAscensionMultiplier()}\n\nTu es maintenant transcendant!`);
+            }
+        }
+
+        function buyAscensionUpgrade(id) {
+            const upgrade = ascensionUpgradeDefinitions[id];
+
+            if (gameState.ascensionUpgrades[id]) return;
+
+            if (upgrade.requires) {
+                const hasRequirements = upgrade.requires.every(req => gameState.ascensionUpgrades[req]);
+                if (!hasRequirements) {
+                    alert('Tu dois acheter les upgrades précédents!');
+                    return;
+                }
+            }
+
+            if (gameState.ascensionTokens >= upgrade.cost) {
+                gameState.ascensionTokens -= upgrade.cost;
+                gameState.ascensionUpgrades[id] = true;
+
+                updateProduction();
+                updateUI();
+                saveGame();
+            } else {
+                alert('Pas assez de jetons d\'ascension!');
+            }
+        }
+
         // ==================== PRESTIGE FUNCTIONS ====================
         function calculatePrestigePoints() {
-            // 1 point de prestige par tranche de 20 millions de cookies lifetime
-            return Math.floor(gameState.stats.totalCookies / 20000000);
+            // 1 point par 20M ou 10M si prestige boost
+            const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
+            return Math.floor(gameState.stats.totalCookies / divider);
         }
 
         function getPrestigeMultiplier() {
@@ -662,6 +891,11 @@
                 // Appliquer starting boost si acheté
                 if (gameState.prestigeUpgrades.starting_boost) {
                     gameState.cookies = prestigeUpgradeDefinitions.starting_boost.startingCookies;
+                }
+
+                // Appliquer legendary start si acheté
+                if (gameState.ascensionUpgrades.legendary_start) {
+                    gameState.cookies = ascensionUpgradeDefinitions.legendary_start.startingCookies;
                 }
 
                 updateProduction();
@@ -729,6 +963,25 @@
             // Apply global prestige multiplier
             effectiveClickPower *= getPrestigeMultiplier();
 
+            // Apply ascension click multipliers
+            if (gameState.ascensionUpgrades.click_divine) {
+                effectiveClickPower *= ascensionUpgradeDefinitions.click_divine.clickMultiplier;
+            }
+            if (gameState.ascensionUpgrades.click_cosmic) {
+                effectiveClickPower *= ascensionUpgradeDefinitions.click_cosmic.clickMultiplier;
+            }
+
+            // Apply global ascension multiplier
+            effectiveClickPower *= getAscensionMultiplier();
+
+            // Apply prestige++ click upgrades
+            if (gameState.prestigeUpgrades.eternal_clicker) {
+                effectiveClickPower *= prestigeUpgradeDefinitions.eternal_clicker.clickMultiplier;
+            }
+            if (gameState.prestigeUpgrades.cookie_god) {
+                effectiveClickPower *= prestigeUpgradeDefinitions.cookie_god.godMultiplier;
+            }
+
             const cookiesGained = effectiveClickPower * clicks;
             gameState.cookies += cookiesGained;
             gameState.totalClicks += clicks;
@@ -770,6 +1023,11 @@
             // Apply prestige cost reduction
             if (gameState.prestigeUpgrades.cheaper_gens) {
                 cost *= prestigeUpgradeDefinitions.cheaper_gens.costReduction;
+            }
+
+            // Apply ascension cost reduction
+            if (gameState.ascensionUpgrades.cheaper_divine) {
+                cost *= ascensionUpgradeDefinitions.cheaper_divine.costReduction;
             }
 
             return Math.floor(cost);
@@ -860,6 +1118,33 @@
             if (gameState.prestigeUpgrades.prod_boost_3) {
                 total *= prestigeUpgradeDefinitions.prod_boost_3.multiplier;
                 console.log('Prestige Boost Prod III x3 appliqué');
+            }
+
+            // Apply ascension multiplier (global)
+            const ascensionMulti = getAscensionMultiplier();
+            if (ascensionMulti > 1) {
+                total *= ascensionMulti;
+                console.log(`Ascension multiplier x${ascensionMulti} appliqué`);
+            }
+
+            // Apply ascension production upgrades
+            if (gameState.ascensionUpgrades.prod_divine) {
+                total *= ascensionUpgradeDefinitions.prod_divine.multiplier;
+                console.log('Ascension Prod Divine x3 appliqué');
+            }
+            if (gameState.ascensionUpgrades.prod_cosmic) {
+                total *= ascensionUpgradeDefinitions.prod_cosmic.multiplier;
+                console.log('Ascension Prod Cosmic x5 appliqué');
+            }
+
+            // Apply prestige++ upgrades
+            if (gameState.prestigeUpgrades.cookie_titan) {
+                total *= prestigeUpgradeDefinitions.cookie_titan.multiplier;
+                console.log('Cookie Titan x5 appliqué');
+            }
+            if (gameState.prestigeUpgrades.cookie_god) {
+                total *= prestigeUpgradeDefinitions.cookie_god.godMultiplier;
+                console.log('Cookie God x10 appliqué');
             }
 
             gameState.cookiesPerSecond = total;
@@ -980,6 +1265,11 @@
             let html = '';
 
             Object.entries(upgradeDefinitions).forEach(([id, upgrade]) => {
+                // Check unlock condition for prestige++ upgrades
+                if (upgrade.unlockCondition && !upgrade.unlockCondition()) {
+                    return; // Skip locked upgrades
+                }
+
                 const owned = gameState.upgrades[id];
                 const canAfford = gameState.cookies >= upgrade.baseCost;
                 const hasRequirements = !upgrade.requires || upgrade.requires.every(req => gameState.upgrades[req]);
@@ -1018,6 +1308,11 @@
             let html = '';
 
             Object.entries(generatorDefinitions).forEach(([type, def]) => {
+                // Check unlock condition
+                if (def.unlockCondition && !def.unlockCondition()) {
+                    return; // Skip locked generators
+                }
+
                 const count = gameState.generators[type] || 0;
                 const cost = getGeneratorCost(type);
                 const canAfford = gameState.cookies >= cost;
