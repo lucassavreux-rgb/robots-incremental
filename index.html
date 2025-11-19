@@ -570,7 +570,11 @@
                 gameState.cookies -= cost;
                 gameState.generators[type] = (gameState.generators[type] || 0) + 1;
 
+                console.log('Générateur acheté:', type, 'Count:', gameState.generators[type]);
+
                 updateProduction();
+                console.log('Production par seconde:', gameState.cookiesPerSecond);
+
                 updateUI();
                 saveGame();
             }
@@ -760,13 +764,20 @@
         }
 
         function gameLoop() {
-            gameState.cookies += gameState.cookiesPerSecond / 10; // Update 10 times per second
-            gameState.stats.totalCookies += gameState.cookiesPerSecond / 10;
+            if (gameState.cookiesPerSecond > 0) {
+                gameState.cookies += gameState.cookiesPerSecond / 10; // Update 10 times per second
+                gameState.stats.totalCookies += gameState.cookiesPerSecond / 10;
 
-            // Only update display, not rebuild everything
-            const scoreEl = document.getElementById('scoreDisplay');
-            if (scoreEl) {
-                scoreEl.textContent = formatNumber(gameState.cookies);
+                // Update display
+                const scoreEl = document.getElementById('scoreDisplay');
+                if (scoreEl) {
+                    scoreEl.textContent = formatNumber(gameState.cookies);
+                }
+
+                const perSecondEl = document.getElementById('perSecond');
+                if (perSecondEl) {
+                    perSecondEl.textContent = '+' + formatNumber(gameState.cookiesPerSecond) + '/sec';
+                }
             }
         }
 
@@ -802,13 +813,17 @@
         updateProduction();
         updateUI();
 
+        console.log('%c🍪 Cookie Clicker Pro loaded!', 'color: #ffd700; font-size: 20px; font-weight: bold;');
+        console.log('État initial:');
+        console.log('- Cookies:', gameState.cookies);
+        console.log('- Générateurs:', gameState.generators);
+        console.log('- Production/sec:', gameState.cookiesPerSecond);
+
         // Game loop - 10 times per second for smooth production
         setInterval(gameLoop, 100);
 
         // Auto-save every 5 seconds
         setInterval(saveGame, 5000);
-
-        console.log('%c🍪 Cookie Clicker Pro loaded!', 'color: #ffd700; font-size: 20px; font-weight: bold;');
     </script>
 </body>
 </html>
