@@ -481,7 +481,7 @@
                         <span id="prestigeMultiDisplay" style="color: #4ade80; font-weight: 900; font-size: 1.2em;">x1.0</span>
                     </div>
                     <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em;">
-                        Lifetime: <span id="lifetimeCookies">0</span>
+                        Depuis ascension: <span id="lifetimeCookies">0</span>
                     </div>
                     <div id="nextPrestigeInfo" style="color: rgba(255, 215, 0, 0.8); font-size: 0.85em; margin-top: 5px;">
                         Prochain: 20.00M
@@ -574,6 +574,7 @@
             ascensionTokens: 0,
             ascensionUpgrades: {},
             totalAscensions: 0,
+            lifetimeCookiesAtAscension: 0, // Cookies lifetime au moment de la dernière ascension
 
             // Dragon system
             dragonLevel: 0, // 0=locked, 1=egg, 2-7=evolutions
@@ -1166,6 +1167,9 @@
                 gameState.ascensionTokens += tokensToGain;
                 gameState.totalAscensions++;
 
+                // Sauvegarder les cookies lifetime au moment de l'ascension
+                gameState.lifetimeCookiesAtAscension = gameState.stats.totalCookies;
+
                 // RESET TOTAL
                 gameState.cookies = 0;
                 gameState.totalClicks = 0;
@@ -1216,8 +1220,10 @@
         // ==================== PRESTIGE FUNCTIONS ====================
         function calculatePrestigePoints() {
             // 1 point par 20M ou 10M si prestige boost
+            // Utilise seulement les cookies depuis la dernière ascension
+            const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
             const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
-            return Math.floor(gameState.stats.totalCookies / divider);
+            return Math.floor(cookiesSinceAscension / divider);
         }
 
         function getPrestigeMultiplier() {
@@ -1656,7 +1662,9 @@
 
             const lifetimeCookiesEl = document.getElementById('lifetimeCookies');
             if (lifetimeCookiesEl) {
-                lifetimeCookiesEl.textContent = formatNumber(gameState.stats.totalCookies);
+                // Afficher les cookies depuis l'ascension pour le système de prestige
+                const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
+                lifetimeCookiesEl.textContent = formatNumber(cookiesSinceAscension);
             }
 
             const nextPrestigeEl = document.getElementById('nextPrestigeInfo');
@@ -1666,8 +1674,10 @@
                     nextPrestigeEl.textContent = `✨ +${newPoints} point${newPoints > 1 ? 's' : ''} disponible${newPoints > 1 ? 's' : ''}!`;
                     nextPrestigeEl.style.color = '#4ade80';
                 } else {
-                    const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * 20000000;
-                    const remaining = nextMilestone - gameState.stats.totalCookies;
+                    const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
+                    const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
+                    const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * divider;
+                    const remaining = nextMilestone - cookiesSinceAscension;
                     nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
                     nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
                 }
@@ -2256,7 +2266,8 @@
                 // Update lifetime cookies display
                 const lifetimeCookiesEl = document.getElementById('lifetimeCookies');
                 if (lifetimeCookiesEl) {
-                    lifetimeCookiesEl.textContent = formatNumber(gameState.stats.totalCookies);
+                    const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
+                    lifetimeCookiesEl.textContent = formatNumber(cookiesSinceAscension);
                 }
 
                 // Update prestige info
@@ -2267,8 +2278,10 @@
                         nextPrestigeEl.textContent = `✨ +${newPoints} point${newPoints > 1 ? 's' : ''} disponible${newPoints > 1 ? 's' : ''}!`;
                         nextPrestigeEl.style.color = '#4ade80';
                     } else {
-                        const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * 20000000;
-                        const remaining = nextMilestone - gameState.stats.totalCookies;
+                        const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
+                        const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
+                        const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * divider;
+                        const remaining = nextMilestone - cookiesSinceAscension;
                         nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
                         nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
                     }
@@ -2299,6 +2312,11 @@
                     Object.assign(gameState, JSON.parse(save));
 
                     // Migration de save pour les nouvelles features
+                    // Ascension tracking
+                    if (gameState.lifetimeCookiesAtAscension === undefined) {
+                        gameState.lifetimeCookiesAtAscension = 0;
+                    }
+
                     // Dragon
                     if (gameState.dragonLevel === undefined) {
                         gameState.dragonLevel = 0;
