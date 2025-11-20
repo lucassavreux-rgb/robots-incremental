@@ -322,6 +322,83 @@
         </div>
     </div>
 
+    <!-- Modal Pantheon -->
+    <div id="pantheonModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; overflow-y: auto; padding: 20px;">
+        <div style="max-width: 900px; margin: 50px auto; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 20px; padding: 30px; border: 3px solid #ffd700;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: #fff; font-size: 2em; margin: 0;">⚡ Panthéon ⚡</h2>
+                <button id="closePantheon" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 1.1em;">✕</button>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.2); border-radius: 10px;">
+                <p style="margin: 0; color: #fff;">Choisis 3 dieux pour bénéficier de leurs bonus</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                <div id="godSlot0" style="padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; text-align: center; min-height: 80px; cursor: pointer; border: 2px dashed rgba(255,255,255,0.5);">
+                    <div style="color: #fff; font-size: 0.9em;">Slot 1: Vide</div>
+                </div>
+                <div id="godSlot1" style="padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; text-align: center; min-height: 80px; cursor: pointer; border: 2px dashed rgba(255,255,255,0.5);">
+                    <div style="color: #fff; font-size: 0.9em;">Slot 2: Vide</div>
+                </div>
+                <div id="godSlot2" style="padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; text-align: center; min-height: 80px; cursor: pointer; border: 2px dashed rgba(255,255,255,0.5);">
+                    <div style="color: #fff; font-size: 0.9em;">Slot 3: Vide</div>
+                </div>
+            </div>
+
+            <div id="godsList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- Modal Garden -->
+    <div id="gardenModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; overflow-y: auto; padding: 20px;">
+        <div style="max-width: 1000px; margin: 50px auto; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 20px; padding: 30px; border: 3px solid #34d399;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: #fff; font-size: 2em; margin: 0;">🌱 Jardin 🌱</h2>
+                <button id="closeGarden" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 1.1em;">✕</button>
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <div id="gardenGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 20px;"></div>
+                </div>
+                <div style="width: 300px;">
+                    <h3 style="color: #fff; margin-bottom: 10px;">Graines</h3>
+                    <div id="seedsList" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Stock Market -->
+    <div id="stockMarketModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; overflow-y: auto; padding: 20px;">
+        <div style="max-width: 1000px; margin: 50px auto; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 20px; padding: 30px; border: 3px solid #60a5fa;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: #fff; font-size: 2em; margin: 0;">📈 Stock Market 📈</h2>
+                <button id="closeStockMarket" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 1.1em;">✕</button>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.2); border-radius: 10px;">
+                <span style="color: #fff; font-weight: 700; font-size: 1.2em;">Cash: </span>
+                <span id="stockCashDisplay" style="color: #ffd700; font-weight: 900; font-size: 1.5em;">0</span>
+            </div>
+
+            <div id="stocksList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- Modal Minions -->
+    <div id="minionsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; overflow-y: auto; padding: 20px;">
+        <div style="max-width: 800px; margin: 50px auto; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-radius: 20px; padding: 30px; border: 3px solid #818cf8;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: #fff; font-size: 2em; margin: 0;">👷 Minions 👷</h2>
+                <button id="closeMinions" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 1.1em;">✕</button>
+            </div>
+
+            <div id="minionsList"></div>
+        </div>
+    </div>
+
     <div class="header">
         <div class="title">🍪 Cookie Clicker Pro</div>
         <div class="score-display" id="scoreDisplay">0</div>
@@ -449,6 +526,29 @@
                 </button>
             </div>
 
+            <!-- Advanced Systems -->
+            <div style="margin-top: 20px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 15px;">
+                <div style="font-size: 1.3em; font-weight: 700; margin-bottom: 15px; text-align: center; color: #fff;">
+                    🎮 SYSTÈMES AVANCÉS
+                </div>
+
+                <button id="pantheonButton" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; border-radius: 10px; color: white; font-weight: 700; font-size: 0.9em; cursor: pointer; transition: all 0.3s; margin-bottom: 8px;">
+                    ⚡ Panthéon
+                </button>
+
+                <button id="gardenButton" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 10px; color: white; font-weight: 700; font-size: 0.9em; cursor: pointer; transition: all 0.3s; margin-bottom: 8px;">
+                    🌱 Jardin
+                </button>
+
+                <button id="stockMarketButton" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); border: none; border-radius: 10px; color: white; font-weight: 700; font-size: 0.9em; cursor: pointer; transition: all 0.3s; margin-bottom: 8px;">
+                    📈 Stock Market
+                </button>
+
+                <button id="minionsButton" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #6366f1, #4f46e5); border: none; border-radius: 10px; color: white; font-weight: 700; font-size: 0.9em; cursor: pointer; transition: all 0.3s;">
+                    👷 Minions
+                </button>
+            </div>
+
             <button class="btn-reset" id="resetButton">🔄 Reset Progression</button>
         </div>
     </div>
@@ -481,6 +581,32 @@
 
             // Minions system
             autoClickerLevel: 0,
+            cookieBakerLevel: 0,
+            luckyFinderLevel: 0,
+            generatorBoosterLevel: 0,
+            timeBenderLevel: 0,
+
+            // Pantheon system
+            pantheonSlots: [null, null, null], // 3 slots pour les dieux
+            pantheonUnlocked: false,
+
+            // Garden system
+            gardenUnlocked: false,
+            gardenPlots: Array(36).fill(null), // 6x6 grid
+            gardenTicks: 0,
+
+            // Stock Market system
+            stockMarketUnlocked: false,
+            stocks: {
+                cookies: { shares: 0, history: [100] },
+                chocolate: { shares: 0, history: [50] },
+                sugar: { shares: 0, history: [25] },
+                butter: { shares: 0, history: [75] },
+                flour: { shares: 0, history: [30] },
+                vanilla: { shares: 0, history: [120] },
+                gold: { shares: 0, history: [200] }
+            },
+            stockCash: 10000, // Cash pour acheter des actions
 
             stats: {
                 totalCookies: 0,
@@ -843,6 +969,174 @@
                 costMultiplier: 1.15,
                 count: 0,
                 unlockCondition: () => gameState.totalPrestiges >= 10
+            }
+        };
+
+        // ==================== PANTHEON DEFINITIONS ====================
+        const pantheonGods = {
+            chronos: {
+                name: 'Chronos',
+                icon: '⏰',
+                description: 'Dieu du Temps - Production +15%',
+                productionBonus: 1.15
+            },
+            plutus: {
+                name: 'Plutus',
+                icon: '💰',
+                description: 'Dieu de la Richesse - Cookies par clic +20%',
+                clickBonus: 1.20
+            },
+            demeter: {
+                name: 'Déméter',
+                icon: '🌾',
+                description: 'Déesse de la Récolte - Générateurs +25%',
+                generatorBonus: 1.25
+            },
+            fortuna: {
+                name: 'Fortuna',
+                icon: '🍀',
+                description: 'Déesse de la Chance - Cookies dorés +50%',
+                luckyBonus: 1.50
+            },
+            hephaestus: {
+                name: 'Héphaïstos',
+                icon: '🔨',
+                description: 'Dieu de la Forge - Coûts -15%',
+                costReduction: 0.85
+            },
+            athena: {
+                name: 'Athéna',
+                icon: '🦉',
+                description: 'Déesse de la Sagesse - Tous bonus +10%',
+                globalBonus: 1.10
+            }
+        };
+
+        // ==================== GARDEN DEFINITIONS ====================
+        const gardenPlants = {
+            wheat: {
+                name: 'Blé',
+                icon: '🌾',
+                description: '+1% production',
+                cost: 100,
+                growTime: 30, // ticks (30 = 30 secondes)
+                productionBonus: 1.01,
+                mutations: []
+            },
+            clover: {
+                name: 'Trèfle',
+                icon: '🍀',
+                description: 'Cookie doré chance +2%',
+                cost: 500,
+                growTime: 60,
+                luckyBonus: 1.02,
+                mutations: []
+            },
+            cookie_plant: {
+                name: 'Cookie Plant',
+                icon: '🍪',
+                description: '+5 cookies/sec',
+                cost: 1000,
+                growTime: 90,
+                cookiesPerSecond: 5,
+                mutations: []
+            },
+            golden_clover: {
+                name: 'Trèfle Doré',
+                icon: '✨',
+                description: '+5% production',
+                cost: 5000,
+                growTime: 120,
+                productionBonus: 1.05,
+                mutations: [['clover', 'wheat']]
+            },
+            bakeberry: {
+                name: 'Baie Cookie',
+                icon: '🫐',
+                description: '+10 cookies/sec',
+                cost: 10000,
+                growTime: 150,
+                cookiesPerSecond: 10,
+                mutations: [['cookie_plant', 'wheat']]
+            },
+            chocoroot: {
+                name: 'Racine Choco',
+                icon: '🍫',
+                description: '+3% production',
+                cost: 25000,
+                growTime: 180,
+                productionBonus: 1.03,
+                mutations: []
+            },
+            sugar_lotus: {
+                name: 'Lotus Sucré',
+                icon: '🪷',
+                description: 'Multiplicateur +2%',
+                cost: 50000,
+                growTime: 240,
+                globalBonus: 1.02,
+                mutations: [['bakeberry', 'golden_clover']]
+            },
+            dragon_fruit: {
+                name: 'Fruit Dragon',
+                icon: '🐉',
+                description: 'Dragon bonus +10%',
+                cost: 100000,
+                growTime: 300,
+                dragonBonus: 1.10,
+                mutations: [['sugar_lotus', 'chocoroot']]
+            },
+            eternal_seed: {
+                name: 'Graine Éternelle',
+                icon: '💫',
+                description: '+10% TOUT',
+                cost: 500000,
+                growTime: 600,
+                godBonus: 1.10,
+                mutations: [['dragon_fruit', 'sugar_lotus', 'golden_clover']]
+            }
+        };
+
+        // ==================== MINION DEFINITIONS ====================
+        const minionDefinitions = {
+            autoClicker: {
+                name: 'Auto-Clicker',
+                icon: '👷',
+                description: '+0.1 clic/sec par niveau',
+                baseCost: 1000000,
+                costMultiplier: 2
+            },
+            cookieBaker: {
+                name: 'Cookie Baker',
+                icon: '👨‍🍳',
+                description: '+1% production par niveau',
+                baseCost: 5000000,
+                costMultiplier: 2.5,
+                productionBonus: 0.01
+            },
+            luckyFinder: {
+                name: 'Lucky Finder',
+                icon: '🔍',
+                description: 'Trouve des cookies dorés',
+                baseCost: 10000000,
+                costMultiplier: 3,
+                goldenCookieChance: 0.001
+            },
+            generatorBooster: {
+                name: 'Generator Booster',
+                icon: '⚡',
+                description: '+2% efficacité générateurs/niveau',
+                baseCost: 50000000,
+                costMultiplier: 3,
+                generatorBonus: 0.02
+            },
+            timeBender: {
+                name: 'Time Bender',
+                icon: '⌛',
+                description: 'Accélère le jeu +5%/niveau',
+                baseCost: 100000000,
+                costMultiplier: 4,
+                timeBonus: 0.05
             }
         };
 
@@ -1236,6 +1530,48 @@
                 console.log(`Dragon bonus x${dragonBonus.toFixed(2)} appliqué`);
             }
 
+            // Apply Pantheon bonuses
+            const pantheonProdBonus = getPantheonBonus('production');
+            if (pantheonProdBonus > 1) {
+                total *= pantheonProdBonus;
+                console.log(`Pantheon production bonus x${pantheonProdBonus.toFixed(2)} appliqué`);
+            }
+            const pantheonGenBonus = getPantheonBonus('generator');
+            if (pantheonGenBonus > 1) {
+                total *= pantheonGenBonus;
+                console.log(`Pantheon generator bonus x${pantheonGenBonus.toFixed(2)} appliqué`);
+            }
+
+            // Apply Minion bonuses
+            const minionProdBonus = getMinionBonus('production');
+            if (minionProdBonus > 1) {
+                total *= minionProdBonus;
+                console.log(`Minion production bonus x${minionProdBonus.toFixed(2)} appliqué`);
+            }
+            const minionGenBonus = getMinionBonus('generator');
+            if (minionGenBonus > 1) {
+                total *= minionGenBonus;
+                console.log(`Minion generator bonus x${minionGenBonus.toFixed(2)} appliqué`);
+            }
+
+            // Apply Garden bonuses
+            const gardenData = getGardenBonus('production');
+            if (gardenData.bonus > 1) {
+                total *= gardenData.bonus;
+                console.log(`Garden production bonus x${gardenData.bonus.toFixed(2)} appliqué`);
+            }
+            if (gardenData.cookiesPerSec > 0) {
+                total += gardenData.cookiesPerSec;
+                console.log(`Garden cookies/sec +${gardenData.cookiesPerSec} appliqué`);
+            }
+
+            // Apply time acceleration from Time Bender minion
+            const timeBonus = getMinionBonus('time');
+            if (timeBonus > 1) {
+                total *= timeBonus;
+                console.log(`Time Bender bonus x${timeBonus.toFixed(2)} appliqué`);
+            }
+
             gameState.cookiesPerSecond = total;
             console.log('Production FINALE par seconde:', total);
             console.log('=========================');
@@ -1568,14 +1904,310 @@
             }
         }
 
+        // ==================== PANTHEON FUNCTIONS ====================
+        function unlockPantheon() {
+            if (gameState.totalAscensions >= 1) {
+                gameState.pantheonUnlocked = true;
+                return true;
+            }
+            return false;
+        }
+
+        function assignGodToSlot(godId, slotIndex) {
+            if (!gameState.pantheonUnlocked) return;
+            if (slotIndex < 0 || slotIndex > 2) return;
+
+            // Check if god is already in another slot
+            const currentSlot = gameState.pantheonSlots.indexOf(godId);
+            if (currentSlot !== -1) {
+                gameState.pantheonSlots[currentSlot] = null;
+            }
+
+            gameState.pantheonSlots[slotIndex] = godId;
+            updateProduction();
+            updateUI();
+            saveGame();
+        }
+
+        function removeGodFromSlot(slotIndex) {
+            if (slotIndex >= 0 && slotIndex <= 2) {
+                gameState.pantheonSlots[slotIndex] = null;
+                updateProduction();
+                updateUI();
+                saveGame();
+            }
+        }
+
+        function getPantheonBonus(type) {
+            let bonus = 1;
+            gameState.pantheonSlots.forEach(godId => {
+                if (godId && pantheonGods[godId]) {
+                    const god = pantheonGods[godId];
+                    if (type === 'production' && god.productionBonus) bonus *= god.productionBonus;
+                    if (type === 'click' && god.clickBonus) bonus *= god.clickBonus;
+                    if (type === 'generator' && god.generatorBonus) bonus *= god.generatorBonus;
+                    if (type === 'cost' && god.costReduction) bonus *= god.costReduction;
+                    if (god.globalBonus) bonus *= god.globalBonus;
+                }
+            });
+            return bonus;
+        }
+
+        // ==================== GARDEN FUNCTIONS ====================
+        function unlockGarden() {
+            if (gameState.totalPrestiges >= 5) {
+                gameState.gardenUnlocked = true;
+                return true;
+            }
+            return false;
+        }
+
+        function plantSeed(plotIndex, plantId) {
+            if (!gameState.gardenUnlocked) return;
+            if (plotIndex < 0 || plotIndex >= 36) return;
+            if (gameState.gardenPlots[plotIndex] !== null) return;
+
+            const plant = gardenPlants[plantId];
+            if (!plant) return;
+            if (gameState.cookies < plant.cost) return;
+
+            gameState.cookies -= plant.cost;
+            gameState.gardenPlots[plotIndex] = {
+                id: plantId,
+                age: 0,
+                mature: false
+            };
+
+            updateUI();
+            saveGame();
+        }
+
+        function harvestPlot(plotIndex) {
+            if (plotIndex < 0 || plotIndex >= 36) return;
+            const plot = gameState.gardenPlots[plotIndex];
+            if (!plot || !plot.mature) return;
+
+            const plant = gardenPlants[plot.id];
+            // Give some reward
+            gameState.cookies += plant.cost * 2;
+            gameState.gardenPlots[plotIndex] = null;
+
+            updateUI();
+            saveGame();
+        }
+
+        function tickGarden() {
+            if (!gameState.gardenUnlocked) return;
+
+            gameState.gardenTicks++;
+
+            gameState.gardenPlots.forEach((plot, index) => {
+                if (plot && !plot.mature) {
+                    plot.age++;
+                    const plant = gardenPlants[plot.id];
+                    if (plot.age >= plant.growTime) {
+                        plot.mature = true;
+                    }
+                }
+            });
+
+            // Check for mutations every 10 ticks
+            if (gameState.gardenTicks % 10 === 0) {
+                checkGardenMutations();
+            }
+        }
+
+        function checkGardenMutations() {
+            // Simple mutation check
+            for (let i = 0; i < 36; i++) {
+                if (gameState.gardenPlots[i] === null) {
+                    // Check adjacent plots for mutation combos
+                    const adjacentPlants = getAdjacentPlants(i);
+                    Object.entries(gardenPlants).forEach(([plantId, plant]) => {
+                        if (plant.mutations && plant.mutations.length > 0) {
+                            plant.mutations.forEach(combo => {
+                                if (combo.every(reqPlant => adjacentPlants.includes(reqPlant))) {
+                                    if (Math.random() < 0.01) { // 1% chance
+                                        gameState.gardenPlots[i] = {
+                                            id: plantId,
+                                            age: 0,
+                                            mature: false
+                                        };
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        }
+
+        function getAdjacentPlants(index) {
+            const row = Math.floor(index / 6);
+            const col = index % 6;
+            const adjacent = [];
+
+            // Check all 8 directions
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    if (dr === 0 && dc === 0) continue;
+                    const newRow = row + dr;
+                    const newCol = col + dc;
+                    if (newRow >= 0 && newRow < 6 && newCol >= 0 && newCol < 6) {
+                        const adjIndex = newRow * 6 + newCol;
+                        const plot = gameState.gardenPlots[adjIndex];
+                        if (plot && plot.mature) {
+                            adjacent.push(plot.id);
+                        }
+                    }
+                }
+            }
+
+            return adjacent;
+        }
+
+        function getGardenBonus(type) {
+            let bonus = 1;
+            let cookiesPerSec = 0;
+
+            gameState.gardenPlots.forEach(plot => {
+                if (plot && plot.mature) {
+                    const plant = gardenPlants[plot.id];
+                    if (plant.productionBonus && type === 'production') bonus *= plant.productionBonus;
+                    if (plant.cookiesPerSecond) cookiesPerSec += plant.cookiesPerSecond;
+                    if (plant.globalBonus) bonus *= plant.globalBonus;
+                    if (plant.godBonus) bonus *= plant.godBonus;
+                }
+            });
+
+            return { bonus, cookiesPerSec };
+        }
+
+        // ==================== STOCK MARKET FUNCTIONS ====================
+        function unlockStockMarket() {
+            if (gameState.totalPrestiges >= 7) {
+                gameState.stockMarketUnlocked = true;
+                return true;
+            }
+            return false;
+        }
+
+        function buyStock(stockId, amount = 1) {
+            if (!gameState.stockMarketUnlocked) return;
+            const stock = gameState.stocks[stockId];
+            if (!stock) return;
+
+            const currentPrice = stock.history[stock.history.length - 1];
+            const totalCost = currentPrice * amount;
+
+            if (gameState.stockCash >= totalCost) {
+                gameState.stockCash -= totalCost;
+                stock.shares += amount;
+                updateUI();
+                saveGame();
+            }
+        }
+
+        function sellStock(stockId, amount = 1) {
+            if (!gameState.stockMarketUnlocked) return;
+            const stock = gameState.stocks[stockId];
+            if (!stock || stock.shares < amount) return;
+
+            const currentPrice = stock.history[stock.history.length - 1];
+            const totalValue = currentPrice * amount;
+
+            gameState.stockCash += totalValue;
+            stock.shares -= amount;
+            updateUI();
+            saveGame();
+        }
+
+        function tickStockMarket() {
+            if (!gameState.stockMarketUnlocked) return;
+
+            Object.entries(gameState.stocks).forEach(([id, stock]) => {
+                const lastPrice = stock.history[stock.history.length - 1];
+                // Random walk with slight upward bias
+                const change = (Math.random() - 0.48) * lastPrice * 0.1;
+                const newPrice = Math.max(1, lastPrice + change);
+
+                stock.history.push(newPrice);
+                if (stock.history.length > 50) {
+                    stock.history.shift(); // Keep only last 50 prices
+                }
+            });
+        }
+
+        // ==================== EXTENDED MINIONS ====================
+        function getMinionCost(minionType) {
+            const def = minionDefinitions[minionType];
+            let level = 0;
+            if (minionType === 'autoClicker') level = gameState.autoClickerLevel;
+            else if (minionType === 'cookieBaker') level = gameState.cookieBakerLevel;
+            else if (minionType === 'luckyFinder') level = gameState.luckyFinderLevel;
+            else if (minionType === 'generatorBooster') level = gameState.generatorBoosterLevel;
+            else if (minionType === 'timeBender') level = gameState.timeBenderLevel;
+
+            return Math.floor(def.baseCost * Math.pow(def.costMultiplier, level));
+        }
+
+        function buyMinion(minionType) {
+            const cost = getMinionCost(minionType);
+            if (gameState.cookies < cost) return;
+
+            gameState.cookies -= cost;
+
+            if (minionType === 'autoClicker') gameState.autoClickerLevel++;
+            else if (minionType === 'cookieBaker') gameState.cookieBakerLevel++;
+            else if (minionType === 'luckyFinder') gameState.luckyFinderLevel++;
+            else if (minionType === 'generatorBooster') gameState.generatorBoosterLevel++;
+            else if (minionType === 'timeBender') gameState.timeBenderLevel++;
+
+            updateProduction();
+            updateUI();
+            saveGame();
+        }
+
+        function getMinionBonus(type) {
+            let bonus = 1;
+
+            if (type === 'production' && gameState.cookieBakerLevel > 0) {
+                bonus *= (1 + gameState.cookieBakerLevel * minionDefinitions.cookieBaker.productionBonus);
+            }
+            if (type === 'generator' && gameState.generatorBoosterLevel > 0) {
+                bonus *= (1 + gameState.generatorBoosterLevel * minionDefinitions.generatorBooster.generatorBonus);
+            }
+            if (type === 'time' && gameState.timeBenderLevel > 0) {
+                bonus *= (1 + gameState.timeBenderLevel * minionDefinitions.timeBender.timeBonus);
+            }
+
+            return bonus;
+        }
+
         let gameLoopCounter = 0;
         function gameLoop() {
+            // Unlock systems automatically
+            unlockPantheon();
+            unlockGarden();
+            unlockStockMarket();
+
             // Auto-clicker
             if (gameState.autoClickerLevel > 0) {
                 const clicks = gameState.autoClickerLevel * 0.1; // 0.1 click per second per level
                 if (Math.random() < clicks / 10) { // Probabilistic clicking
                     handleClick({clientX: 0, clientY: 0}); // Silent click
                 }
+            }
+
+            // Tick garden every second
+            gameLoopCounter++;
+            if (gameLoopCounter % 10 === 0) {
+                tickGarden();
+            }
+
+            // Tick stock market every 10 seconds
+            if (gameLoopCounter % 100 === 0) {
+                tickStockMarket();
             }
 
             if (gameState.cookiesPerSecond > 0) {
@@ -1773,6 +2405,294 @@
             });
         }
 
+        // ==================== PANTHEON UI ====================
+        function openPantheon() {
+            if (!gameState.pantheonUnlocked) {
+                alert('🔒 Panthéon débloqué après la 1ère Ascension!');
+                return;
+            }
+            document.getElementById('pantheonModal').style.display = 'block';
+            renderPantheon();
+        }
+
+        function closePantheon() {
+            document.getElementById('pantheonModal').style.display = 'none';
+        }
+
+        function renderPantheon() {
+            // Render slots
+            for (let i = 0; i < 3; i++) {
+                const slot = document.getElementById(`godSlot${i}`);
+                const godId = gameState.pantheonSlots[i];
+                if (godId) {
+                    const god = pantheonGods[godId];
+                    slot.innerHTML = `
+                        <div style="font-size: 2em;">${god.icon}</div>
+                        <div style="color: #fff; font-weight: 700; margin-top: 5px;">${god.name}</div>
+                        <div style="color: rgba(255,255,255,0.8); font-size: 0.8em; margin-top: 3px;">${god.description}</div>
+                        <button style="margin-top: 8px; padding: 4px 8px; background: #ef4444; border: none; border-radius: 5px; color: #fff; cursor: pointer;">Retirer</button>
+                    `;
+                    slot.querySelector('button').addEventListener('click', () => {
+                        removeGodFromSlot(i);
+                        renderPantheon();
+                    });
+                } else {
+                    slot.innerHTML = `<div style="color: #fff; font-size: 0.9em;">Slot ${i+1}: Vide</div>`;
+                }
+            }
+
+            // Render gods list
+            const container = document.getElementById('godsList');
+            let html = '';
+            Object.entries(pantheonGods).forEach(([id, god]) => {
+                const isAssigned = gameState.pantheonSlots.includes(id);
+                html += `
+                    <div class="upgrade-item" data-god-id="${id}" style="cursor: pointer; opacity: ${isAssigned ? '0.5' : '1'};">
+                        <div class="item-header">
+                            <div class="item-name" style="font-size: 1.5em;">${god.icon}</div>
+                            <div style="font-weight: 700; color: #fff;">${god.name}</div>
+                        </div>
+                        <div class="item-description" style="color: rgba(255,255,255,0.9);">${god.description}</div>
+                        ${isAssigned ? '<div style="color: #4ade80; font-weight: 700; margin-top: 5px;">✅ ASSIGNÉ</div>' : ''}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+
+            // Add click listeners
+            container.querySelectorAll('.upgrade-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const godId = item.dataset.godId;
+                    const emptySlot = gameState.pantheonSlots.indexOf(null);
+                    if (emptySlot !== -1) {
+                        assignGodToSlot(godId, emptySlot);
+                        renderPantheon();
+                    } else {
+                        alert('Tous les slots sont pleins! Retire un dieu d\'abord.');
+                    }
+                });
+            });
+        }
+
+        // ==================== GARDEN UI ====================
+        function openGarden() {
+            if (!gameState.gardenUnlocked) {
+                alert('🔒 Jardin débloqué après 5 prestiges!');
+                return;
+            }
+            document.getElementById('gardenModal').style.display = 'block';
+            renderGarden();
+        }
+
+        function closeGarden() {
+            document.getElementById('gardenModal').style.display = 'none';
+        }
+
+        let selectedPlant = null;
+
+        function renderGarden() {
+            // Render grid
+            const grid = document.getElementById('gardenGrid');
+            let gridHtml = '';
+            for (let i = 0; i < 36; i++) {
+                const plot = gameState.gardenPlots[i];
+                let content = '';
+                let bgColor = 'rgba(139, 69, 19, 0.3)';
+                if (plot) {
+                    const plant = gardenPlants[plot.id];
+                    content = `<div style="font-size: 2em;">${plant.icon}</div>`;
+                    bgColor = plot.mature ? 'rgba(34, 197, 94, 0.3)' : 'rgba(251, 191, 36, 0.3)';
+                }
+                gridHtml += `
+                    <div data-plot-index="${i}" style="
+                        aspect-ratio: 1;
+                        background: ${bgColor};
+                        border: 2px solid rgba(255,255,255,0.3);
+                        border-radius: 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    ">${content}</div>
+                `;
+            }
+            grid.innerHTML = gridHtml;
+
+            // Add click listeners to plots
+            grid.querySelectorAll('[data-plot-index]').forEach(plotDiv => {
+                const index = parseInt(plotDiv.dataset.plotIndex);
+                plotDiv.addEventListener('click', () => {
+                    const plot = gameState.gardenPlots[index];
+                    if (plot && plot.mature) {
+                        harvestPlot(index);
+                        renderGarden();
+                    } else if (!plot && selectedPlant) {
+                        plantSeed(index, selectedPlant);
+                        renderGarden();
+                    }
+                });
+            });
+
+            // Render seeds list
+            const seedsList = document.getElementById('seedsList');
+            let seedsHtml = '';
+            Object.entries(gardenPlants).forEach(([id, plant]) => {
+                const isSelected = selectedPlant === id;
+                seedsHtml += `
+                    <div class="upgrade-item" data-plant-id="${id}" style="margin-bottom: 10px; cursor: pointer; border: ${isSelected ? '2px solid #ffd700' : '2px solid transparent'};">
+                        <div class="item-header">
+                            <div class="item-name" style="font-size: 1.2em;">${plant.icon} ${plant.name}</div>
+                        </div>
+                        <div class="item-description" style="font-size: 0.8em; color: rgba(255,255,255,0.8);">${plant.description}</div>
+                        <div class="item-footer">
+                            <span style="color: #ffd700; font-weight: 700;">🍪 ${formatNumber(plant.cost)}</span>
+                            <span style="color: #4ade80; font-size: 0.8em;">${plant.growTime}s</span>
+                        </div>
+                    </div>
+                `;
+            });
+            seedsList.innerHTML = seedsHtml;
+
+            // Add click listeners to seeds
+            seedsList.querySelectorAll('[data-plant-id]').forEach(seedDiv => {
+                seedDiv.addEventListener('click', () => {
+                    selectedPlant = seedDiv.dataset.plantId;
+                    renderGarden();
+                });
+            });
+        }
+
+        // ==================== STOCK MARKET UI ====================
+        function openStockMarket() {
+            if (!gameState.stockMarketUnlocked) {
+                alert('🔒 Stock Market débloqué après 7 prestiges!');
+                return;
+            }
+            document.getElementById('stockMarketModal').style.display = 'block';
+            renderStockMarket();
+        }
+
+        function closeStockMarket() {
+            document.getElementById('stockMarketModal').style.display = 'none';
+        }
+
+        function renderStockMarket() {
+            const cashDisplay = document.getElementById('stockCashDisplay');
+            if (cashDisplay) {
+                cashDisplay.textContent = formatNumber(gameState.stockCash);
+            }
+
+            const container = document.getElementById('stocksList');
+            let html = '';
+
+            const stockNames = {
+                cookies: 'Cookie Corp',
+                chocolate: 'Choco Industries',
+                sugar: 'Sugar Inc',
+                butter: 'Butter Co',
+                flour: 'Flour Corp',
+                vanilla: 'Vanilla Ltd',
+                gold: 'Golden Cookies'
+            };
+
+            Object.entries(gameState.stocks).forEach(([id, stock]) => {
+                const currentPrice = stock.history[stock.history.length - 1];
+                const prevPrice = stock.history[stock.history.length - 2] || currentPrice;
+                const change = ((currentPrice - prevPrice) / prevPrice * 100).toFixed(2);
+                const changeColor = change >= 0 ? '#4ade80' : '#ef4444';
+
+                html += `
+                    <div class="upgrade-item" style="margin-bottom: 15px;">
+                        <div class="item-header">
+                            <div class="item-name">${stockNames[id]}</div>
+                            <div style="color: ${changeColor}; font-weight: 700;">${change >= 0 ? '+' : ''}${change}%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span style="color: #ffd700; font-weight: 700;">Prix: $${currentPrice.toFixed(2)}</span>
+                            <span style="color: #4ade80; font-weight: 700;">Détenu: ${stock.shares}</span>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 10px;">
+                            <button data-stock-id="${id}" data-action="buy" style="flex: 1; padding: 8px; background: #10b981; border: none; border-radius: 6px; color: white; font-weight: 700; cursor: pointer;">Acheter</button>
+                            <button data-stock-id="${id}" data-action="sell" style="flex: 1; padding: 8px; background: #ef4444; border: none; border-radius: 6px; color: white; font-weight: 700; cursor: pointer;">Vendre</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Add click listeners
+            container.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const stockId = btn.dataset.stockId;
+                    const action = btn.dataset.action;
+                    if (action === 'buy') {
+                        buyStock(stockId, 1);
+                    } else {
+                        sellStock(stockId, 1);
+                    }
+                    renderStockMarket();
+                });
+            });
+        }
+
+        // ==================== MINIONS UI ====================
+        function openMinions() {
+            if (gameState.totalPrestiges < 3) {
+                alert('🔒 Minions débloqués après 3 prestiges!');
+                return;
+            }
+            document.getElementById('minionsModal').style.display = 'block';
+            renderMinions();
+        }
+
+        function closeMinions() {
+            document.getElementById('minionsModal').style.display = 'none';
+        }
+
+        function renderMinions() {
+            const container = document.getElementById('minionsList');
+            let html = '';
+
+            const minionLevels = {
+                autoClicker: gameState.autoClickerLevel,
+                cookieBaker: gameState.cookieBakerLevel,
+                luckyFinder: gameState.luckyFinderLevel,
+                generatorBooster: gameState.generatorBoosterLevel,
+                timeBender: gameState.timeBenderLevel
+            };
+
+            Object.entries(minionDefinitions).forEach(([id, minion]) => {
+                const level = minionLevels[id];
+                const cost = getMinionCost(id);
+                const canAfford = gameState.cookies >= cost;
+
+                html += `
+                    <div class="upgrade-item ${!canAfford ? 'locked' : ''}" data-minion-id="${id}" style="margin-bottom: 15px; cursor: pointer;">
+                        <div class="item-header">
+                            <div class="item-name">${minion.icon} ${minion.name}</div>
+                            <div class="item-count">Lvl ${level}</div>
+                        </div>
+                        <div class="item-description">${minion.description}</div>
+                        <div class="item-footer">
+                            <span class="item-cost">🍪 ${formatNumber(cost)}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Add click listeners
+            container.querySelectorAll('[data-minion-id]').forEach(item => {
+                item.addEventListener('click', () => {
+                    buyMinion(item.dataset.minionId);
+                    renderMinions();
+                });
+            });
+        }
+
         // ==================== INIT ====================
         // Add event listeners
         document.getElementById('clickButton').addEventListener('click', handleClick);
@@ -1785,6 +2705,14 @@
         document.getElementById('closeAscensionShop').addEventListener('click', closeAscensionShop);
         document.getElementById('feedDragonBtn').addEventListener('click', feedDragon);
         document.getElementById('buyAutoClickerBtn').addEventListener('click', buyAutoClicker);
+        document.getElementById('pantheonButton').addEventListener('click', openPantheon);
+        document.getElementById('closePantheon').addEventListener('click', closePantheon);
+        document.getElementById('gardenButton').addEventListener('click', openGarden);
+        document.getElementById('closeGarden').addEventListener('click', closeGarden);
+        document.getElementById('stockMarketButton').addEventListener('click', openStockMarket);
+        document.getElementById('closeStockMarket').addEventListener('click', closeStockMarket);
+        document.getElementById('minionsButton').addEventListener('click', openMinions);
+        document.getElementById('closeMinions').addEventListener('click', closeMinions);
 
         loadGame();
         updateProduction();
