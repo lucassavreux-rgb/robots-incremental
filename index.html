@@ -629,9 +629,9 @@
             click_5x: {
                 name: 'Super Clic',
                 icon: '✋',
-                description: 'x5 la puissance de clic',
+                description: 'x3.5 la puissance de clic',
                 baseCost: 1000,
-                effect: () => gameState.clickPower *= 5,
+                effect: () => gameState.clickPower *= 3.5,
                 level: 0,
                 maxLevel: 1,
                 requires: ['click_2x']
@@ -639,9 +639,9 @@
             click_10x: {
                 name: 'Méga Clic',
                 icon: '👊',
-                description: 'x10 la puissance de clic',
+                description: 'x7 la puissance de clic',
                 baseCost: 10000,
-                effect: () => gameState.clickPower *= 10,
+                effect: () => gameState.clickPower *= 7,
                 level: 0,
                 maxLevel: 1,
                 requires: ['click_5x']
@@ -649,9 +649,9 @@
             click_100x: {
                 name: 'Ultra Clic',
                 icon: '💥',
-                description: 'x50 la puissance de clic !',
+                description: 'x25 la puissance de clic !',
                 baseCost: 100000,
-                effect: () => gameState.clickPower *= 50,
+                effect: () => gameState.clickPower *= 25,
                 level: 0,
                 maxLevel: 1,
                 requires: ['click_10x']
@@ -680,20 +680,20 @@
             multi_click: {
                 name: 'Multi-Clic',
                 icon: '🖱️',
-                description: 'Chaque clic compte double',
+                description: 'Chaque clic compte x1.5',
                 baseCost: 2500,
                 effect: () => {},
-                clickMultiplier: 2,
+                clickMultiplier: 1.5,
                 level: 0,
                 maxLevel: 1
             },
             multi_click_2: {
                 name: 'Super Multi-Clic',
                 icon: '🖱️',
-                description: 'Chaque clic compte x3',
+                description: 'Chaque clic compte x2.5',
                 baseCost: 25000,
                 effect: () => {},
-                clickMultiplier: 3,
+                clickMultiplier: 2.5,
                 level: 0,
                 maxLevel: 1,
                 requires: ['multi_click']
