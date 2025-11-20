@@ -358,6 +358,24 @@
                 <button id="closeGarden" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 1.1em;">✕</button>
             </div>
 
+            <!-- Garden Stats Panel -->
+            <div id="gardenStats" style="background: rgba(255,255,255,0.2); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">
+                    <div>
+                        <div style="font-size: 0.85em; color: rgba(255,255,255,0.8);">Plantes Matures</div>
+                        <div id="gardenMaturePlants" style="font-size: 1.5em; font-weight: 700; color: #ffd700;">0/36</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85em; color: rgba(255,255,255,0.8);">Bonus Production</div>
+                        <div id="gardenProductionBonus" style="font-size: 1.5em; font-weight: 700; color: #4ade80;">x1.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85em; color: rgba(255,255,255,0.8);">Cookies/sec Jardin</div>
+                        <div id="gardenCookiesPerSec" style="font-size: 1.5em; font-weight: 700; color: #fbbf24;">+0/s</div>
+                    </div>
+                </div>
+            </div>
+
             <div style="display: flex; gap: 20px;">
                 <div style="flex: 1;">
                     <div id="gardenGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 20px;"></div>
@@ -2200,12 +2218,64 @@
             if (!plot || !plot.mature) return;
 
             const plant = gardenPlants[plot.id];
-            // Give some reward
-            gameState.cookies += plant.cost * 2;
+            // Give some reward - 2x le coût de la plante
+            const reward = plant.cost * 2;
+            gameState.cookies += reward;
+            gameState.stats.totalCookies += reward;
+
+            // Effet visuel de récolte
+            showGardenHarvestEffect(plant.icon, plant.name, reward);
+
+            // Vider la parcelle
             gameState.gardenPlots[plotIndex] = null;
 
             updateUI();
             saveGame();
+        }
+
+        function showGardenHarvestEffect(icon, plantName, reward) {
+            // Créer une notification temporaire au centre de l'écran
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 15px;
+                font-size: 1.5em;
+                font-weight: 700;
+                z-index: 20001;
+                box-shadow: 0 10px 40px rgba(16, 185, 129, 0.5);
+                border: 3px solid #34d399;
+                animation: harvestPop 1.5s ease-out forwards;
+                text-align: center;
+            `;
+            notification.innerHTML = `
+                <div style="font-size: 2em; margin-bottom: 10px;">${icon}</div>
+                <div style="font-size: 0.8em; margin-bottom: 5px;">${plantName} récolté!</div>
+                <div style="color: #ffd700; font-size: 1em;">+${formatNumber(reward)} 🍪</div>
+            `;
+
+            // Ajouter l'animation CSS si elle n'existe pas
+            if (!document.getElementById('harvestAnimationStyle')) {
+                const style = document.createElement('style');
+                style.id = 'harvestAnimationStyle';
+                style.textContent = `
+                    @keyframes harvestPop {
+                        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+                        20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+                        80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                        100% { opacity: 0; transform: translate(-50%, -60%) scale(0.8); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 1500);
         }
 
         function tickGarden() {
@@ -2905,15 +2975,19 @@
             let seedsHtml = '';
             Object.entries(gardenPlants).forEach(([id, plant]) => {
                 const isSelected = selectedPlant === id;
+                const harvestReward = plant.cost * 2;
                 seedsHtml += `
                     <div class="upgrade-item" data-plant-id="${id}" style="margin-bottom: 10px; cursor: pointer; border: ${isSelected ? '2px solid #ffd700' : '2px solid transparent'};">
                         <div class="item-header">
                             <div class="item-name" style="font-size: 1.2em;">${plant.icon} ${plant.name}</div>
                         </div>
                         <div class="item-description" style="font-size: 0.8em; color: rgba(255,255,255,0.8);">${plant.description}</div>
-                        <div class="item-footer">
-                            <span style="color: #ffd700; font-weight: 700;">🍪 ${formatNumber(plant.cost)}</span>
-                            <span style="color: #4ade80; font-size: 0.8em;">${plant.growTime}s</span>
+                        <div class="item-footer" style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start;">
+                            <div style="display: flex; gap: 10px; width: 100%; justify-content: space-between;">
+                                <span style="color: #ef4444; font-weight: 700; font-size: 0.9em;">💰 Coût: ${formatNumber(plant.cost)}</span>
+                                <span style="color: #4ade80; font-size: 0.85em;">⏱️ ${plant.growTime}s</span>
+                            </div>
+                            <span style="color: #ffd700; font-weight: 700; font-size: 0.85em;">🌾 Récolte: +${formatNumber(harvestReward)} 🍪</span>
                         </div>
                     </div>
                 `;
@@ -2927,6 +3001,39 @@
                     renderGarden();
                 });
             });
+
+            // Update garden stats
+            updateGardenStats();
+        }
+
+        function updateGardenStats() {
+            // Count mature plants
+            let maturePlants = 0;
+            gameState.gardenPlots.forEach(plot => {
+                if (plot && plot.mature) maturePlants++;
+            });
+
+            // Get garden bonuses
+            const gardenData = getGardenBonus('production');
+
+            // Update stats display
+            const maturePlantsEl = document.getElementById('gardenMaturePlants');
+            if (maturePlantsEl) {
+                maturePlantsEl.textContent = `${maturePlants}/36`;
+                maturePlantsEl.style.color = maturePlants > 0 ? '#4ade80' : '#ffd700';
+            }
+
+            const productionBonusEl = document.getElementById('gardenProductionBonus');
+            if (productionBonusEl) {
+                productionBonusEl.textContent = `x${gardenData.bonus.toFixed(2)}`;
+                productionBonusEl.style.color = gardenData.bonus > 1 ? '#4ade80' : '#fff';
+            }
+
+            const cookiesPerSecEl = document.getElementById('gardenCookiesPerSec');
+            if (cookiesPerSecEl) {
+                cookiesPerSecEl.textContent = gardenData.cookiesPerSec > 0 ? `+${formatNumber(gardenData.cookiesPerSec)}/s` : '+0/s';
+                cookiesPerSecEl.style.color = gardenData.cookiesPerSec > 0 ? '#fbbf24' : '#fff';
+            }
         }
 
         // ==================== STOCK MARKET UI ====================
