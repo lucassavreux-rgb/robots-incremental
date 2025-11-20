@@ -1687,8 +1687,8 @@
             // Update ascension info
             const ascensionSection = document.getElementById('ascensionSection');
             if (ascensionSection) {
-                // Show/hide ascension section
-                if (canAscend() || gameState.totalAscensions > 0) {
+                // Show/hide ascension section - Afficher dès qu'on a 5+ prestiges ou des ascensions
+                if (gameState.totalPrestiges >= 5 || gameState.totalAscensions > 0 || canAscend()) {
                     ascensionSection.style.display = 'block';
                 } else {
                     ascensionSection.style.display = 'none';
@@ -1719,6 +1719,27 @@
             // Update dragon & minions UI
             updateDragonUI();
             updateMinionUI();
+
+            // Update advanced systems buttons visibility
+            const pantheonBtn = document.getElementById('pantheonButton');
+            if (pantheonBtn) {
+                pantheonBtn.style.display = (gameState.totalAscensions >= 1) ? 'block' : 'none';
+            }
+
+            const gardenBtn = document.getElementById('gardenButton');
+            if (gardenBtn) {
+                gardenBtn.style.display = (gameState.totalPrestiges >= 5) ? 'block' : 'none';
+            }
+
+            const stockMarketBtn = document.getElementById('stockMarketButton');
+            if (stockMarketBtn) {
+                stockMarketBtn.style.display = (gameState.totalPrestiges >= 7) ? 'block' : 'none';
+            }
+
+            const minionsBtn = document.getElementById('minionsButton');
+            if (minionsBtn) {
+                minionsBtn.style.display = (gameState.totalPrestiges >= 3) ? 'block' : 'none';
+            }
         }
 
         function renderUpgrades() {
@@ -2276,6 +2297,49 @@
             if (save) {
                 try {
                     Object.assign(gameState, JSON.parse(save));
+
+                    // Migration de save pour les nouvelles features
+                    // Dragon
+                    if (gameState.dragonLevel === undefined) {
+                        gameState.dragonLevel = 0;
+                        // Unlock dragon rétroactivement si on a déjà fait au moins 1 prestige
+                        if (gameState.totalPrestiges >= 1) {
+                            gameState.dragonLevel = 1;
+                            console.log('🐉 Dragon débloqué rétroactivement!');
+                        }
+                    }
+                    if (gameState.dragonFed === undefined) gameState.dragonFed = 0;
+
+                    // Minions
+                    if (gameState.cookieBakerLevel === undefined) gameState.cookieBakerLevel = 0;
+                    if (gameState.luckyFinderLevel === undefined) gameState.luckyFinderLevel = 0;
+                    if (gameState.generatorBoosterLevel === undefined) gameState.generatorBoosterLevel = 0;
+                    if (gameState.timeBenderLevel === undefined) gameState.timeBenderLevel = 0;
+
+                    // Pantheon
+                    if (gameState.pantheonSlots === undefined) gameState.pantheonSlots = [null, null, null];
+                    if (gameState.pantheonUnlocked === undefined) gameState.pantheonUnlocked = false;
+
+                    // Garden
+                    if (gameState.gardenUnlocked === undefined) gameState.gardenUnlocked = false;
+                    if (gameState.gardenPlots === undefined) gameState.gardenPlots = Array(36).fill(null);
+                    if (gameState.gardenTicks === undefined) gameState.gardenTicks = 0;
+
+                    // Stock Market
+                    if (gameState.stockMarketUnlocked === undefined) gameState.stockMarketUnlocked = false;
+                    if (gameState.stocks === undefined) {
+                        gameState.stocks = {
+                            cookies: { shares: 0, history: [100] },
+                            chocolate: { shares: 0, history: [50] },
+                            sugar: { shares: 0, history: [25] },
+                            butter: { shares: 0, history: [75] },
+                            flour: { shares: 0, history: [30] },
+                            vanilla: { shares: 0, history: [120] },
+                            gold: { shares: 0, history: [200] }
+                        };
+                    }
+                    if (gameState.stockCash === undefined) gameState.stockCash = 10000;
+
                     updateProduction();
                 } catch (e) {
                     console.error('Failed to load save:', e);
