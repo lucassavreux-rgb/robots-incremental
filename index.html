@@ -525,7 +525,7 @@
                         Depuis ascension: <span id="lifetimeCookies">0</span>
                     </div>
                     <div id="nextPrestigeInfo" style="color: rgba(255, 215, 0, 0.8); font-size: 0.85em; margin-top: 5px;">
-                        Prochain: 20.00M
+                        Calcul en cours...
                     </div>
                 </div>
 
@@ -595,6 +595,9 @@
     </div>
 
     <script>
+        // ==================== DEBUG MODE ====================
+        const DEBUG = false; // Mettre à true pour activer les logs de debug
+
         // ==================== GAME STATE ====================
         const gameState = {
             cookies: 0,
@@ -1501,7 +1504,7 @@
         }
 
         function handleClick(event) {
-            console.log('Click détecté!', event);
+            if (DEBUG) console.log('Click détecté!', event);
 
             let clicks = 1;
             let effectiveClickPower = gameState.clickPower;
@@ -1546,7 +1549,7 @@
             gameState.stats.totalClicks += clicks;
             gameState.stats.totalCookies += cookiesGained;
 
-            console.log('Cookies gagnés:', cookiesGained, 'Total:', gameState.cookies);
+            if (DEBUG) console.log('Cookies gagnés:', cookiesGained, 'Total:', gameState.cookies);
 
             // Visual effect - seulement si event a les coordonnées
             if (event && event.clientX !== undefined && event.clientY !== undefined) {
@@ -1598,10 +1601,10 @@
                 gameState.cookies -= cost;
                 gameState.generators[type] = (gameState.generators[type] || 0) + 1;
 
-                console.log('Générateur acheté:', type, 'Count:', gameState.generators[type]);
+                if (DEBUG) console.log('Générateur acheté:', type, 'Count:', gameState.generators[type]);
 
                 updateProduction();
-                console.log('Production par seconde:', gameState.cookiesPerSecond);
+                if (DEBUG) console.log('Production par seconde:', gameState.cookiesPerSecond);
 
                 updateUI();
                 saveGame();
@@ -1635,128 +1638,130 @@
         function updateProduction() {
             let total = 0;
 
-            console.log('=== CALCUL PRODUCTION ===');
+            if (DEBUG) console.log('=== CALCUL PRODUCTION ===');
 
             // Calculate base production from generators
             Object.entries(gameState.generators).forEach(([type, count]) => {
                 const def = generatorDefinitions[type];
                 const production = def.baseProduction * count;
-                console.log(`${type}: ${count} x ${def.baseProduction} = ${production}`);
+                if (DEBUG) console.log(`${type}: ${count} x ${def.baseProduction} = ${production}`);
                 total += production;
             });
 
-            console.log('Total AVANT boosts:', total);
+            if (DEBUG) console.log('Total AVANT boosts:', total);
 
             // Apply upgrade multipliers
             if (gameState.upgrades.auto_boost) {
                 total *= upgradeDefinitions.auto_boost.multiplier;
-                console.log('Boost x1.5 appliqué');
+                if (DEBUG) console.log('Boost x1.5 appliqué');
             }
             if (gameState.upgrades.auto_boost_2) {
                 total *= upgradeDefinitions.auto_boost_2.multiplier;
-                console.log('Boost x2 appliqué');
+                if (DEBUG) console.log('Boost x2 appliqué');
             }
 
             // Apply prestige multiplier (global)
             const prestigeMulti = getPrestigeMultiplier();
             if (prestigeMulti > 1) {
                 total *= prestigeMulti;
-                console.log(`Prestige multiplier x${prestigeMulti.toFixed(1)} appliqué`);
+                if (DEBUG) console.log(`Prestige multiplier x${prestigeMulti.toFixed(1)} appliqué`);
             }
 
             // Apply prestige production upgrades
             if (gameState.prestigeUpgrades.prod_boost_1) {
                 total *= prestigeUpgradeDefinitions.prod_boost_1.multiplier;
-                console.log('Prestige Boost Prod I x1.5 appliqué');
+                if (DEBUG) console.log('Prestige Boost Prod I x1.5 appliqué');
             }
             if (gameState.prestigeUpgrades.prod_boost_2) {
                 total *= prestigeUpgradeDefinitions.prod_boost_2.multiplier;
-                console.log('Prestige Boost Prod II x2 appliqué');
+                if (DEBUG) console.log('Prestige Boost Prod II x2 appliqué');
             }
             if (gameState.prestigeUpgrades.prod_boost_3) {
                 total *= prestigeUpgradeDefinitions.prod_boost_3.multiplier;
-                console.log('Prestige Boost Prod III x3 appliqué');
+                if (DEBUG) console.log('Prestige Boost Prod III x3 appliqué');
             }
 
             // Apply ascension multiplier (global)
             const ascensionMulti = getAscensionMultiplier();
             if (ascensionMulti > 1) {
                 total *= ascensionMulti;
-                console.log(`Ascension multiplier x${ascensionMulti} appliqué`);
+                if (DEBUG) console.log(`Ascension multiplier x${ascensionMulti} appliqué`);
             }
 
             // Apply ascension production upgrades
             if (gameState.ascensionUpgrades.prod_divine) {
                 total *= ascensionUpgradeDefinitions.prod_divine.multiplier;
-                console.log('Ascension Prod Divine x3 appliqué');
+                if (DEBUG) console.log('Ascension Prod Divine x3 appliqué');
             }
             if (gameState.ascensionUpgrades.prod_cosmic) {
                 total *= ascensionUpgradeDefinitions.prod_cosmic.multiplier;
-                console.log('Ascension Prod Cosmic x5 appliqué');
+                if (DEBUG) console.log('Ascension Prod Cosmic x5 appliqué');
             }
 
             // Apply prestige++ upgrades
             if (gameState.prestigeUpgrades.cookie_titan) {
                 total *= prestigeUpgradeDefinitions.cookie_titan.multiplier;
-                console.log('Cookie Titan x5 appliqué');
+                if (DEBUG) console.log('Cookie Titan x5 appliqué');
             }
             if (gameState.prestigeUpgrades.cookie_god) {
                 total *= prestigeUpgradeDefinitions.cookie_god.godMultiplier;
-                console.log('Cookie God x10 appliqué');
+                if (DEBUG) console.log('Cookie God x10 appliqué');
             }
 
             // Apply dragon bonus
             const dragonBonus = getDragonBonus();
             if (dragonBonus > 1) {
                 total *= dragonBonus;
-                console.log(`Dragon bonus x${dragonBonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Dragon bonus x${dragonBonus.toFixed(2)} appliqué`);
             }
 
             // Apply Pantheon bonuses
             const pantheonProdBonus = getPantheonBonus('production');
             if (pantheonProdBonus > 1) {
                 total *= pantheonProdBonus;
-                console.log(`Pantheon production bonus x${pantheonProdBonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Pantheon production bonus x${pantheonProdBonus.toFixed(2)} appliqué`);
             }
             const pantheonGenBonus = getPantheonBonus('generator');
             if (pantheonGenBonus > 1) {
                 total *= pantheonGenBonus;
-                console.log(`Pantheon generator bonus x${pantheonGenBonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Pantheon generator bonus x${pantheonGenBonus.toFixed(2)} appliqué`);
             }
 
             // Apply Minion bonuses
             const minionProdBonus = getMinionBonus('production');
             if (minionProdBonus > 1) {
                 total *= minionProdBonus;
-                console.log(`Minion production bonus x${minionProdBonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Minion production bonus x${minionProdBonus.toFixed(2)} appliqué`);
             }
             const minionGenBonus = getMinionBonus('generator');
             if (minionGenBonus > 1) {
                 total *= minionGenBonus;
-                console.log(`Minion generator bonus x${minionGenBonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Minion generator bonus x${minionGenBonus.toFixed(2)} appliqué`);
             }
 
             // Apply Garden bonuses
             const gardenData = getGardenBonus('production');
             if (gardenData.bonus > 1) {
                 total *= gardenData.bonus;
-                console.log(`Garden production bonus x${gardenData.bonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Garden production bonus x${gardenData.bonus.toFixed(2)} appliqué`);
             }
             if (gardenData.cookiesPerSec > 0) {
                 total += gardenData.cookiesPerSec;
-                console.log(`Garden cookies/sec +${gardenData.cookiesPerSec} appliqué`);
+                if (DEBUG) console.log(`Garden cookies/sec +${gardenData.cookiesPerSec} appliqué`);
             }
 
             // Apply time acceleration from Time Bender minion
             const timeBonus = getMinionBonus('time');
             if (timeBonus > 1) {
                 total *= timeBonus;
-                console.log(`Time Bender bonus x${timeBonus.toFixed(2)} appliqué`);
+                if (DEBUG) console.log(`Time Bender bonus x${timeBonus.toFixed(2)} appliqué`);
             }
 
             gameState.cookiesPerSecond = total;
-            console.log('Production FINALE par seconde:', total);
-            console.log('=========================');
+            if (DEBUG) {
+                console.log('Production FINALE par seconde:', total);
+                console.log('=========================');
+            }
         }
 
         function updateUI() {
@@ -2422,9 +2427,8 @@
                 gameState.cookies += gameState.cookiesPerSecond / 10; // Update 10 times per second
                 gameState.stats.totalCookies += gameState.cookiesPerSecond / 10;
 
-                // Log tous les 10 ticks (1 seconde)
-                gameLoopCounter++;
-                if (gameLoopCounter % 10 === 0) {
+                // Log tous les 10 ticks (1 seconde) - compteur déjà incrémenté ligne 2410
+                if (DEBUG && gameLoopCounter % 10 === 0) {
                     console.log(`[GameLoop] Cookies: ${oldCookies.toFixed(2)} -> ${gameState.cookies.toFixed(2)} (+${(gameState.cookies - oldCookies).toFixed(2)}) | Production: ${gameState.cookiesPerSecond}/sec | Lifetime: ${gameState.stats.totalCookies.toFixed(2)}`);
                 }
 
@@ -2500,7 +2504,7 @@
                         // Unlock dragon rétroactivement si on a déjà fait au moins 1 prestige
                         if (gameState.totalPrestiges >= 1) {
                             gameState.dragonLevel = 1;
-                            console.log('🐉 Dragon débloqué rétroactivement!');
+                            if (DEBUG) console.log('🐉 Dragon débloqué rétroactivement!');
                         }
                     }
                     if (gameState.dragonFed === undefined) gameState.dragonFed = 0;
@@ -2554,7 +2558,24 @@
                         }, 500);
                     }
                 } catch (e) {
-                    console.error('Failed to load save:', e);
+                    console.error('❌ Erreur lors du chargement de la sauvegarde:', e);
+                    console.error('Détails:', e.message);
+
+                    // Proposer de reset la save corrompue
+                    const shouldReset = confirm(
+                        '⚠️ ERREUR DE SAUVEGARDE\n\n' +
+                        'Votre sauvegarde est corrompue et ne peut pas être chargée.\n\n' +
+                        'Voulez-vous supprimer la sauvegarde corrompue et recommencer ?\n\n' +
+                        'Note: Si vous refusez, le jeu démarrera sans charger la sauvegarde.'
+                    );
+
+                    if (shouldReset) {
+                        localStorage.removeItem('cookieClickerSave');
+                        alert('✅ Sauvegarde supprimée. Le jeu va recharger avec une nouvelle partie.');
+                        location.reload();
+                    } else {
+                        alert('⚠️ Le jeu démarre sans charger la sauvegarde. Vos données ne sont pas perdues, mais vous ne pouvez pas y accéder pour le moment.');
+                    }
                 }
             }
         }
@@ -3115,16 +3136,18 @@
         updateProduction();
         updateUI();
 
-        console.log('%c🍪 Cookie Clicker Pro loaded!', 'color: #ffd700; font-size: 20px; font-weight: bold;');
-        console.log('%c VERSION 1.1 - Grand-mère=3/sec, Ferme=12/sec', 'color: #4ade80; font-weight: bold;');
-        console.log('Définitions générateurs:');
-        console.log('- Curseur:', generatorDefinitions.cursor.baseProduction, '/sec');
-        console.log('- Grand-mère:', generatorDefinitions.grandma.baseProduction, '/sec');
-        console.log('- Ferme:', generatorDefinitions.farm.baseProduction, '/sec');
-        console.log('État initial:');
-        console.log('- Cookies:', gameState.cookies);
-        console.log('- Générateurs:', gameState.generators);
-        console.log('- Production/sec:', gameState.cookiesPerSecond);
+        if (DEBUG) {
+            console.log('%c🍪 Cookie Clicker Pro loaded!', 'color: #ffd700; font-size: 20px; font-weight: bold;');
+            console.log('%c VERSION 1.1 - Grand-mère=3/sec, Ferme=12/sec', 'color: #4ade80; font-weight: bold;');
+            console.log('Définitions générateurs:');
+            console.log('- Curseur:', generatorDefinitions.cursor.baseProduction, '/sec');
+            console.log('- Grand-mère:', generatorDefinitions.grandma.baseProduction, '/sec');
+            console.log('- Ferme:', generatorDefinitions.farm.baseProduction, '/sec');
+            console.log('État initial:');
+            console.log('- Cookies:', gameState.cookies);
+            console.log('- Générateurs:', gameState.generators);
+            console.log('- Production/sec:', gameState.cookiesPerSecond);
+        }
 
         // Game loop - 10 times per second for smooth production
         setInterval(gameLoop, 100);
