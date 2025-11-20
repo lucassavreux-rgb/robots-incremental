@@ -807,54 +807,54 @@
                 name: 'Temps Hors Ligne I',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 4h',
-                cost: 3,
+                cost: 5,
                 maxTime: 14400, // 4h en secondes
-                unlockCondition: () => gameState.totalPrestiges >= 3
+                unlockCondition: () => gameState.totalPrestiges >= 5
             },
             offline_8h: {
                 name: 'Temps Hors Ligne II',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 8h',
-                cost: 5,
+                cost: 9,
                 maxTime: 28800, // 8h
                 requires: ['offline_4h'],
-                unlockCondition: () => gameState.totalPrestiges >= 3
+                unlockCondition: () => gameState.totalPrestiges >= 8
             },
             offline_12h: {
                 name: 'Temps Hors Ligne III',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 12h',
-                cost: 8,
+                cost: 14,
                 maxTime: 43200, // 12h
                 requires: ['offline_8h'],
-                unlockCondition: () => gameState.totalPrestiges >= 3
+                unlockCondition: () => gameState.totalPrestiges >= 12
             },
             offline_24h: {
                 name: 'Temps Hors Ligne IV',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 24h (1 jour)',
-                cost: 12,
+                cost: 20,
                 maxTime: 86400, // 24h
                 requires: ['offline_12h'],
-                unlockCondition: () => gameState.totalPrestiges >= 5
+                unlockCondition: () => gameState.totalPrestiges >= 18
             },
             offline_36h: {
                 name: 'Temps Hors Ligne V',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 36h',
-                cost: 18,
+                cost: 31,
                 maxTime: 129600, // 36h
                 requires: ['offline_24h'],
-                unlockCondition: () => gameState.totalPrestiges >= 7
+                unlockCondition: () => gameState.totalPrestiges >= 25
             },
             offline_50h: {
                 name: 'Temps Hors Ligne MAX',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 50h (MAX)',
-                cost: 25,
+                cost: 43,
                 maxTime: 180000, // 50h
                 requires: ['offline_36h'],
-                unlockCondition: () => gameState.totalPrestiges >= 10
+                unlockCondition: () => gameState.totalPrestiges >= 35
             }
         };
 
@@ -871,7 +871,7 @@
                 name: 'Boost Production II',
                 icon: '⭐',
                 description: '+100% production générateurs',
-                cost: 3,
+                cost: 5,
                 multiplier: 2,
                 requires: ['prod_boost_1']
             },
@@ -879,7 +879,7 @@
                 name: 'Boost Production III',
                 icon: '⭐',
                 description: '+200% production générateurs',
-                cost: 7,
+                cost: 12,
                 multiplier: 3,
                 requires: ['prod_boost_2']
             },
@@ -887,14 +887,14 @@
                 name: 'Boost Clic I',
                 icon: '👆',
                 description: '+100% puissance de clic',
-                cost: 2,
+                cost: 3,
                 clickMultiplier: 2
             },
             click_boost_2: {
                 name: 'Boost Clic II',
                 icon: '👆',
                 description: '+300% puissance de clic',
-                cost: 5,
+                cost: 9,
                 clickMultiplier: 4,
                 requires: ['click_boost_1']
             },
@@ -902,14 +902,14 @@
                 name: 'Générateurs moins chers',
                 icon: '💰',
                 description: '-10% coût générateurs',
-                cost: 4,
+                cost: 7,
                 costReduction: 0.9
             },
             starting_boost: {
                 name: 'Départ boosté',
                 icon: '🚀',
                 description: 'Commence avec 1000 cookies',
-                cost: 2,
+                cost: 3,
                 startingCookies: 1000
             },
             // Prestige++ upgrades (unlocked after 10 prestiges)
@@ -917,7 +917,7 @@
                 name: 'Cookie Titan',
                 icon: '💎',
                 description: 'x5 production globale',
-                cost: 15,
+                cost: 26,
                 multiplier: 5,
                 unlockCondition: () => gameState.totalPrestiges >= 10
             },
@@ -925,7 +925,7 @@
                 name: 'Eternal Clicker',
                 icon: '💎',
                 description: 'x10 puissance de clic',
-                cost: 20,
+                cost: 34,
                 clickMultiplier: 10,
                 unlockCondition: () => gameState.totalPrestiges >= 10
             },
@@ -933,7 +933,7 @@
                 name: 'Cookie God',
                 icon: '💎',
                 description: 'x10 TOUT (production ET clics)',
-                cost: 50,
+                cost: 85,
                 godMultiplier: 10,
                 unlockCondition: () => gameState.totalPrestiges >= 10
             }
@@ -1381,7 +1381,8 @@
 
             const maxTime = getMaxOfflineTime();
             const effectiveTime = Math.min(timeDiff, maxTime);
-            const cookiesEarned = gameState.cookiesPerSecond * effectiveTime;
+            // Gains hors ligne divisés par 2 pour équilibrer le jeu
+            const cookiesEarned = (gameState.cookiesPerSecond * effectiveTime) / 2;
 
             return {
                 timeAway: timeDiff,
@@ -1394,10 +1395,10 @@
 
         // ==================== PRESTIGE FUNCTIONS ====================
         function calculatePrestigePoints() {
-            // 1 point par 20M ou 10M si prestige boost
+            // 1 point par 70M ou 35M si prestige boost
             // Utilise seulement les cookies depuis la dernière ascension
             const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
-            const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
+            const divider = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
             return Math.floor(cookiesSinceAscension / divider);
         }
 
@@ -1416,7 +1417,7 @@
             const pointsToGain = calculatePrestigePoints() - gameState.totalPrestigePointsEarned;
 
             if (pointsToGain <= 0) {
-                alert('Tu ne gagnerais pas de nouveaux points de prestige!\n\nIl te faut 20M cookies lifetime de plus pour gagner 1 point.');
+                alert('Tu ne gagnerais pas de nouveaux points de prestige!\n\nIl te faut 70M cookies lifetime de plus pour gagner 1 point.');
                 return;
             }
 
@@ -1850,7 +1851,7 @@
                     nextPrestigeEl.style.color = '#4ade80';
                 } else {
                     const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
-                    const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
+                    const divider = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
                     const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * divider;
                     const remaining = nextMilestone - cookiesSinceAscension;
                     nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
@@ -2454,7 +2455,7 @@
                         nextPrestigeEl.style.color = '#4ade80';
                     } else {
                         const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
-                        const divider = gameState.ascensionUpgrades.prestige_boost ? 10000000 : 20000000;
+                        const divider = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
                         const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * divider;
                         const remaining = nextMilestone - cookiesSinceAscension;
                         nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
@@ -2816,16 +2817,42 @@
                 const plot = gameState.gardenPlots[i];
                 let content = '';
                 let bgColor = 'rgba(139, 69, 19, 0.3)';
+                let borderColor = 'rgba(255,255,255,0.3)';
+
                 if (plot) {
                     const plant = gardenPlants[plot.id];
-                    content = `<div style="font-size: 2em;">${plant.icon}</div>`;
-                    bgColor = plot.mature ? 'rgba(34, 197, 94, 0.3)' : 'rgba(251, 191, 36, 0.3)';
+                    if (plot.mature) {
+                        // Plante mature - prête à récolter
+                        content = `
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                                <div style="font-size: 2em;">${plant.icon}</div>
+                                <div style="font-size: 0.5em; font-weight: 700; color: #fff; background: rgba(34, 197, 94, 0.8); padding: 2px 4px; border-radius: 3px; white-space: nowrap;">PRÊT!</div>
+                            </div>
+                        `;
+                        bgColor = 'rgba(34, 197, 94, 0.3)';
+                        borderColor = '#10b981';
+                    } else {
+                        // Plante en croissance
+                        const progress = Math.floor((plot.age / plant.growTime) * 100);
+                        content = `
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                                <div style="font-size: 2em;">${plant.icon}</div>
+                                <div style="font-size: 0.45em; font-weight: 700; color: #fff; background: rgba(251, 191, 36, 0.8); padding: 2px 4px; border-radius: 3px;">${progress}%</div>
+                            </div>
+                        `;
+                        bgColor = 'rgba(251, 191, 36, 0.3)';
+                        borderColor = '#fbbf24';
+                    }
+                } else {
+                    // Parcelle vide
+                    content = `<div style="font-size: 0.6em; color: rgba(255,255,255,0.5); text-align: center;">Vide</div>`;
                 }
+
                 gridHtml += `
                     <div data-plot-index="${i}" style="
                         aspect-ratio: 1;
                         background: ${bgColor};
-                        border: 2px solid rgba(255,255,255,0.3);
+                        border: 3px solid ${borderColor};
                         border-radius: 8px;
                         display: flex;
                         align-items: center;
