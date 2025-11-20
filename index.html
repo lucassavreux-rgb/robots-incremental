@@ -399,6 +399,43 @@
         </div>
     </div>
 
+    <!-- Modal Offline Earnings -->
+    <div id="offlineEarningsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 20000; padding: 20px;">
+        <div style="max-width: 600px; margin: 100px auto; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 20px; padding: 40px; border: 3px solid #ffd700; text-align: center; box-shadow: 0 0 50px rgba(251, 191, 36, 0.5);">
+            <div style="font-size: 4em; margin-bottom: 20px;">💰</div>
+            <h2 style="color: #fff; font-size: 2.5em; margin: 0 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">GAINS HORS LIGNE!</h2>
+
+            <div style="background: rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 25px; margin-bottom: 25px;">
+                <div style="color: #fff; font-size: 1.2em; margin-bottom: 15px;">
+                    <span style="opacity: 0.9;">Tu étais absent pendant:</span>
+                    <div id="offlineTimeAway" style="font-size: 1.5em; font-weight: 900; color: #ffd700; margin-top: 5px;">-</div>
+                </div>
+
+                <div style="border-top: 2px solid rgba(255, 255, 255, 0.3); padding-top: 15px; margin-top: 15px;">
+                    <div style="color: #fff; font-size: 1.1em; margin-bottom: 10px;">
+                        <span style="opacity: 0.9;">Production pendant:</span>
+                        <div id="offlineTimeUsed" style="font-size: 1.3em; font-weight: 700; color: #4ade80; margin-top: 5px;">-</div>
+                    </div>
+                </div>
+
+                <div style="border-top: 2px solid rgba(255, 255, 255, 0.3); padding-top: 15px; margin-top: 15px;">
+                    <div style="color: #fff; font-size: 1.3em; margin-bottom: 10px;">
+                        <span style="opacity: 0.9;">Tu as gagné:</span>
+                        <div id="offlineCookiesEarned" style="font-size: 2em; font-weight: 900; color: #ffd700; margin-top: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">-</div>
+                    </div>
+                </div>
+
+                <div id="offlineCapWarning" style="display: none; margin-top: 15px; padding: 10px; background: rgba(239, 68, 68, 0.3); border-radius: 8px; color: #fff; font-size: 0.9em;">
+                    ⚠️ Limite atteinte! Améliore ton temps hors ligne dans le Shop Prestige.
+                </div>
+            </div>
+
+            <button id="collectOfflineEarnings" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 1.3em; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                🍪 COLLECTER LES COOKIES! 🍪
+            </button>
+        </div>
+    </div>
+
     <div class="header">
         <div class="title">🍪 Cookie Clicker Pro</div>
         <div class="score-display" id="scoreDisplay">0</div>
@@ -609,6 +646,11 @@
             },
             stockCash: 10000, // Cash pour acheter des actions
 
+            // Offline earnings system
+            lastPlayTime: Date.now(),
+            maxOfflineTime: 7200, // 2 heures en secondes (2 * 60 * 60)
+            offlineTimeUpgrades: {}, // Upgrades pour augmenter le temps max
+
             stats: {
                 totalCookies: 0,
                 totalClicks: 0
@@ -752,6 +794,63 @@
                 description: 'Commence avec 1M cookies après prestige',
                 cost: 6,
                 startingCookies: 1000000
+            }
+        };
+
+        // ==================== OFFLINE TIME UPGRADES ====================
+        const offlineTimeUpgradeDefinitions = {
+            offline_4h: {
+                name: 'Temps Hors Ligne I',
+                icon: '⏰',
+                description: 'Augmente le temps hors ligne à 4h',
+                cost: 3,
+                maxTime: 14400, // 4h en secondes
+                unlockCondition: () => gameState.totalPrestiges >= 3
+            },
+            offline_8h: {
+                name: 'Temps Hors Ligne II',
+                icon: '⏰',
+                description: 'Augmente le temps hors ligne à 8h',
+                cost: 5,
+                maxTime: 28800, // 8h
+                requires: ['offline_4h'],
+                unlockCondition: () => gameState.totalPrestiges >= 3
+            },
+            offline_12h: {
+                name: 'Temps Hors Ligne III',
+                icon: '⏰',
+                description: 'Augmente le temps hors ligne à 12h',
+                cost: 8,
+                maxTime: 43200, // 12h
+                requires: ['offline_8h'],
+                unlockCondition: () => gameState.totalPrestiges >= 3
+            },
+            offline_24h: {
+                name: 'Temps Hors Ligne IV',
+                icon: '⏰',
+                description: 'Augmente le temps hors ligne à 24h (1 jour)',
+                cost: 12,
+                maxTime: 86400, // 24h
+                requires: ['offline_12h'],
+                unlockCondition: () => gameState.totalPrestiges >= 5
+            },
+            offline_36h: {
+                name: 'Temps Hors Ligne V',
+                icon: '⏰',
+                description: 'Augmente le temps hors ligne à 36h',
+                cost: 18,
+                maxTime: 129600, // 36h
+                requires: ['offline_24h'],
+                unlockCondition: () => gameState.totalPrestiges >= 7
+            },
+            offline_50h: {
+                name: 'Temps Hors Ligne MAX',
+                icon: '⏰',
+                description: 'Augmente le temps hors ligne à 50h (MAX)',
+                cost: 25,
+                maxTime: 180000, // 50h
+                requires: ['offline_36h'],
+                unlockCondition: () => gameState.totalPrestiges >= 10
             }
         };
 
@@ -1215,6 +1314,78 @@
             } else {
                 alert('Pas assez de jetons d\'ascension!');
             }
+        }
+
+        // ==================== OFFLINE EARNINGS FUNCTIONS ====================
+        function getMaxOfflineTime() {
+            let maxTime = 7200; // 2h de base
+
+            // Check all offline time upgrades
+            Object.entries(offlineTimeUpgradeDefinitions).forEach(([id, upgrade]) => {
+                if (gameState.offlineTimeUpgrades[id]) {
+                    maxTime = upgrade.maxTime;
+                }
+            });
+
+            return maxTime;
+        }
+
+        function buyOfflineTimeUpgrade(id) {
+            const upgrade = offlineTimeUpgradeDefinitions[id];
+
+            // Check if already bought
+            if (gameState.offlineTimeUpgrades[id]) return;
+
+            // Check requirements
+            if (upgrade.requires) {
+                const hasRequirements = upgrade.requires.every(req => gameState.offlineTimeUpgrades[req]);
+                if (!hasRequirements) {
+                    alert('Tu dois acheter les upgrades précédents!');
+                    return;
+                }
+            }
+
+            // Check unlock condition
+            if (upgrade.unlockCondition && !upgrade.unlockCondition()) {
+                alert('Upgrade pas encore débloqué!');
+                return;
+            }
+
+            if (gameState.prestigePoints >= upgrade.cost) {
+                gameState.prestigePoints -= upgrade.cost;
+                gameState.offlineTimeUpgrades[id] = true;
+                gameState.maxOfflineTime = upgrade.maxTime;
+
+                updateUI();
+                saveGame();
+
+                // Re-render prestige shop to update
+                if (document.getElementById('prestigeShopModal').style.display === 'block') {
+                    renderPrestigeUpgrades();
+                }
+            } else {
+                alert('Pas assez de points de prestige!');
+            }
+        }
+
+        function calculateOfflineEarnings() {
+            const now = Date.now();
+            const timeDiff = (now - gameState.lastPlayTime) / 1000; // en secondes
+
+            // Minimum 10 secondes pour éviter les micro-absences
+            if (timeDiff < 10) return null;
+
+            const maxTime = getMaxOfflineTime();
+            const effectiveTime = Math.min(timeDiff, maxTime);
+            const cookiesEarned = gameState.cookiesPerSecond * effectiveTime;
+
+            return {
+                timeAway: timeDiff,
+                timeUsed: effectiveTime,
+                maxTime: maxTime,
+                cookiesEarned: cookiesEarned,
+                wasCapped: timeDiff > maxTime
+            };
         }
 
         // ==================== PRESTIGE FUNCTIONS ====================
@@ -2302,6 +2473,7 @@
         }
 
         function saveGame() {
+            gameState.lastPlayTime = Date.now(); // Update last play time
             localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
         }
 
@@ -2358,7 +2530,24 @@
                     }
                     if (gameState.stockCash === undefined) gameState.stockCash = 10000;
 
+                    // Offline earnings
+                    if (gameState.lastPlayTime === undefined) gameState.lastPlayTime = Date.now();
+                    if (gameState.maxOfflineTime === undefined) gameState.maxOfflineTime = 7200;
+                    if (gameState.offlineTimeUpgrades === undefined) gameState.offlineTimeUpgrades = {};
+
                     updateProduction();
+
+                    // Calculate offline earnings AFTER updateProduction()
+                    const offlineData = calculateOfflineEarnings();
+                    if (offlineData && offlineData.cookiesEarned > 0) {
+                        // Store offline data globally for the modal
+                        window.offlineEarningsData = offlineData;
+
+                        // Show modal after a short delay to let UI load
+                        setTimeout(() => {
+                            showOfflineEarningsModal(offlineData);
+                        }, 500);
+                    }
                 } catch (e) {
                     console.error('Failed to load save:', e);
                 }
@@ -2421,12 +2610,55 @@
                 }
             });
 
+            // Add offline time upgrades section if unlocked
+            if (gameState.totalPrestiges >= 3) {
+                html += '<div style="margin: 30px 0; padding: 15px; background: rgba(251, 191, 36, 0.2); border-radius: 10px; text-align: center;"><h3 style="color: #fbbf24; margin: 0;">⏰ TEMPS HORS LIGNE</h3><p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 5px 0 0 0;">Actuellement: ' + formatTime(getMaxOfflineTime()) + '</p></div>';
+
+                Object.entries(offlineTimeUpgradeDefinitions).forEach(([id, upgrade]) => {
+                    // Check unlock condition
+                    if (upgrade.unlockCondition && !upgrade.unlockCondition()) {
+                        return; // Skip if not unlocked yet
+                    }
+
+                    const owned = gameState.offlineTimeUpgrades[id];
+                    const canAfford = gameState.prestigePoints >= upgrade.cost;
+                    const hasRequirements = !upgrade.requires || upgrade.requires.every(req => gameState.offlineTimeUpgrades[req]);
+
+                    if (owned || hasRequirements) {
+                        const hoursMax = upgrade.maxTime / 3600;
+                        html += `
+                            <div class="upgrade-item ${owned ? 'locked' : (!canAfford ? 'locked' : '')}"
+                                 data-offline-upgrade-id="${id}" ${!owned ? 'data-can-buy-offline="true"' : ''} style="margin-bottom: 15px;">
+                                <div class="item-header">
+                                    <div class="item-name">${upgrade.icon} ${upgrade.name}</div>
+                                </div>
+                                <div class="item-description">${upgrade.description} (${hoursMax}h max)</div>
+                                <div class="item-footer">
+                                    ${owned ?
+                                        '<span style="color: #4ade80; font-weight: 700;">✅ ACHETÉ</span>' :
+                                        `<span class="item-cost" style="color: #ffd700;">⭐ ${upgrade.cost} Points</span>`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
             container.innerHTML = html || '<div style="text-align: center; opacity: 0.5; padding: 20px;">Aucune amélioration disponible</div>';
 
-            // Add click listeners
+            // Add click listeners for prestige upgrades
             container.querySelectorAll('.upgrade-item[data-can-buy-prestige="true"]').forEach(item => {
                 item.addEventListener('click', () => {
                     buyPrestigeUpgrade(item.dataset.prestigeUpgradeId);
+                    renderPrestigeUpgrades();
+                });
+            });
+
+            // Add click listeners for offline upgrades
+            container.querySelectorAll('.upgrade-item[data-can-buy-offline="true"]').forEach(item => {
+                item.addEventListener('click', () => {
+                    buyOfflineTimeUpgrade(item.dataset.offlineUpgradeId);
                     renderPrestigeUpgrades();
                 });
             });
@@ -2719,6 +2951,54 @@
             });
         }
 
+        // ==================== OFFLINE EARNINGS UI ====================
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+
+            if (hours > 0) {
+                return `${hours}h ${minutes}m ${secs}s`;
+            } else if (minutes > 0) {
+                return `${minutes}m ${secs}s`;
+            } else {
+                return `${secs}s`;
+            }
+        }
+
+        function showOfflineEarningsModal(data) {
+            // Populate modal with data
+            document.getElementById('offlineTimeAway').textContent = formatTime(data.timeAway);
+            document.getElementById('offlineTimeUsed').textContent = formatTime(data.timeUsed);
+            document.getElementById('offlineCookiesEarned').textContent = formatNumber(data.cookiesEarned) + ' 🍪';
+
+            // Show warning if capped
+            const warningEl = document.getElementById('offlineCapWarning');
+            if (data.wasCapped) {
+                warningEl.style.display = 'block';
+                const hoursMax = data.maxTime / 3600;
+                warningEl.innerHTML = `⚠️ Limite de ${hoursMax}h atteinte! Améliore ton temps hors ligne dans le Shop Prestige.`;
+            } else {
+                warningEl.style.display = 'none';
+            }
+
+            // Show modal
+            document.getElementById('offlineEarningsModal').style.display = 'block';
+        }
+
+        function collectOfflineEarnings() {
+            if (window.offlineEarningsData) {
+                gameState.cookies += window.offlineEarningsData.cookiesEarned;
+                gameState.stats.totalCookies += window.offlineEarningsData.cookiesEarned;
+                window.offlineEarningsData = null;
+
+                updateUI();
+                saveGame();
+
+                document.getElementById('offlineEarningsModal').style.display = 'none';
+            }
+        }
+
         // ==================== MINIONS UI ====================
         function openMinions() {
             if (gameState.totalPrestiges < 3) {
@@ -2795,6 +3075,7 @@
         document.getElementById('closeStockMarket').addEventListener('click', closeStockMarket);
         document.getElementById('minionsButton').addEventListener('click', openMinions);
         document.getElementById('closeMinions').addEventListener('click', closeMinions);
+        document.getElementById('collectOfflineEarnings').addEventListener('click', collectOfflineEarnings);
 
         loadGame();
         updateProduction();
