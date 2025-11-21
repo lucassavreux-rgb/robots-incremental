@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗼 Tower Defense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .game-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .canvas-container {
+            position: relative;
+        }
+
+        canvas {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: #0a1929;
+        }
+
+        .sidebar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats {
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-weight: 600;
+        }
+
+        .stat-value {
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        .upgrades {
+            margin-top: 20px;
+        }
+
+        .upgrades h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .upgrade-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .upgrade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-name {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .upgrade-level {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .upgrade-description {
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 10px;
+        }
+
+        .upgrade-button {
+            width: 100%;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .upgrade-button:hover {
+            transform: scale(1.05);
+        }
+
+        .upgrade-button:disabled {
+            background: rgba(100,100,100,0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+        }
+
+        .game-over h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ef4444;
+        }
+
+        .game-over p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .restart-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .restart-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1200px) {
+            .game-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='index.html'">← Retour</button>
+
+    <div class="header">
+        <h1>🗼 Tower Defense</h1>
+    </div>
+
+    <div class="game-container">
+        <div class="canvas-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div id="gameOver" class="game-over">
+                <h2>Game Over!</h2>
+                <p id="finalStats"></p>
+                <button class="restart-button" onclick="restartGame()">Rejouer</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="stats">
+                <h3>📊 Statistiques</h3>
+                <div class="stat-item">
+                    <span class="stat-label">❤️ Vies</span>
+                    <span class="stat-value" id="lives">20</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">💰 Or</span>
+                    <span class="stat-value" id="gold">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🌊 Vague</span>
+                    <span class="stat-value" id="wave">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">💀 Kills</span>
+                    <span class="stat-value" id="kills">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">⏱️ Temps</span>
+                    <span class="stat-value" id="time">0s</span>
+                </div>
+            </div>
+
+            <div class="upgrades">
+                <h3>⚡ Améliorations</h3>
+
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <span class="upgrade-name">💥 Dégâts</span>
+                        <span class="upgrade-level" id="damageLevel">Niv. 1</span>
+                    </div>
+                    <div class="upgrade-description">+10 dégâts par niveau</div>
+                    <button class="upgrade-button" id="damageButton" onclick="buyUpgrade('damage')">
+                        Améliorer (💰 <span id="damageCost">50</span>)
+                    </button>
+                </div>
+
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <span class="upgrade-name">⚡ Vitesse de tir</span>
+                        <span class="upgrade-level" id="fireRateLevel">Niv. 1</span>
+                    </div>
+                    <div class="upgrade-description">+20% de vitesse par niveau</div>
+                    <button class="upgrade-button" id="fireRateButton" onclick="buyUpgrade('fireRate')">
+                        Améliorer (💰 <span id="fireRateCost">75</span>)
+                    </button>
+                </div>
+
+                <div class="upgrade-card">
+                    <div class="upgrade-header">
+                        <span class="upgrade-name">🎯 Portée</span>
+                        <span class="upgrade-level" id="rangeLevel">Niv. 1</span>
+                    </div>
+                    <div class="upgrade-description">+30 pixels de portée</div>
+                    <button class="upgrade-button" id="rangeButton" onclick="buyUpgrade('range')">
+                        Améliorer (💰 <span id="rangeCost">100</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // État du jeu
+        const gameState = {
+            lives: 20,
+            gold: 100,
+            wave: 1,
+            kills: 0,
+            startTime: Date.now(),
+            gameOver: false,
+
+            // Position de la tour (centre)
+            tower: {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                radius: 25,
+                damage: 10,
+                fireRate: 1000, // ms entre chaque tir
+                range: 200,
+                lastShot: 0,
+                level: {
+                    damage: 1,
+                    fireRate: 1,
+                    range: 1
+                }
+            },
+
+            enemies: [],
+            projectiles: [],
+
+            // Coûts des upgrades
+            upgradeCosts: {
+                damage: 50,
+                fireRate: 75,
+                range: 100
+            },
+
+            // Paramètres de vague
+            waveSettings: {
+                enemiesPerWave: 5,
+                spawnInterval: 2000,
+                lastSpawn: 0,
+                enemiesSpawned: 0
+            }
+        };
+
+        // Classe Enemy
+        class Enemy {
+            constructor(wave) {
+                // Spawn aléatoire sur les bords
+                const side = Math.floor(Math.random() * 4);
+                switch(side) {
+                    case 0: // Haut
+                        this.x = Math.random() * canvas.width;
+                        this.y = -20;
+                        break;
+                    case 1: // Droite
+                        this.x = canvas.width + 20;
+                        this.y = Math.random() * canvas.height;
+                        break;
+                    case 2: // Bas
+                        this.x = Math.random() * canvas.width;
+                        this.y = canvas.height + 20;
+                        break;
+                    case 3: // Gauche
+                        this.x = -20;
+                        this.y = Math.random() * canvas.height;
+                        break;
+                }
+
+                this.radius = 10;
+                this.speed = 0.5 + (wave * 0.1); // Augmente avec les vagues
+                this.hp = 20 + (wave * 10);
+                this.maxHp = this.hp;
+                this.reward = 10 + (wave * 2);
+                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            }
+
+            update() {
+                // Se déplace vers le centre
+                const dx = gameState.tower.x - this.x;
+                const dy = gameState.tower.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 1) {
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                }
+
+                // Si atteint le centre, perd une vie
+                if (distance < gameState.tower.radius + this.radius) {
+                    gameState.lives--;
+                    return false; // Détruire cet ennemi
+                }
+
+                return true;
+            }
+
+            draw() {
+                // Corps de l'ennemi
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Barre de vie
+                const barWidth = this.radius * 2;
+                const barHeight = 4;
+                const hpPercent = this.hp / this.maxHp;
+
+                ctx.fillStyle = '#333';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.radius - 8, barWidth, barHeight);
+
+                ctx.fillStyle = hpPercent > 0.5 ? '#4ade80' : (hpPercent > 0.25 ? '#fbbf24' : '#ef4444');
+                ctx.fillRect(this.x - barWidth/2, this.y - this.radius - 8, barWidth * hpPercent, barHeight);
+            }
+
+            takeDamage(damage) {
+                this.hp -= damage;
+                return this.hp <= 0;
+            }
+        }
+
+        // Classe Projectile
+        class Projectile {
+            constructor(x, y, targetX, targetY) {
+                this.x = x;
+                this.y = y;
+                const dx = targetX - x;
+                const dy = targetY - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                this.vx = (dx / distance) * 5;
+                this.vy = (dy / distance) * 5;
+                this.radius = 5;
+                this.damage = gameState.tower.damage;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Hors de l'écran ?
+                return this.x >= 0 && this.x <= canvas.width &&
+                       this.y >= 0 && this.y <= canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Effet de glow
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#fbbf24';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            checkCollision(enemy) {
+                const dx = this.x - enemy.x;
+                const dy = this.y - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < this.radius + enemy.radius;
+            }
+        }
+
+        // Dessiner la tour
+        function drawTower() {
+            const tower = gameState.tower;
+
+            // Cercle de portée (semi-transparent)
+            ctx.fillStyle = 'rgba(74, 222, 128, 0.1)';
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(tower.x, tower.y, tower.range, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Base de la tour
+            ctx.fillStyle = '#1e40af';
+            ctx.beginPath();
+            ctx.arc(tower.x, tower.y, tower.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bordure
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Canon (pointe vers l'ennemi le plus proche)
+            const nearestEnemy = findNearestEnemy();
+            if (nearestEnemy) {
+                const dx = nearestEnemy.x - tower.x;
+                const dy = nearestEnemy.y - tower.y;
+                const angle = Math.atan2(dy, dx);
+
+                ctx.strokeStyle = '#60a5fa';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(tower.x, tower.y);
+                ctx.lineTo(
+                    tower.x + Math.cos(angle) * tower.radius,
+                    tower.y + Math.sin(angle) * tower.radius
+                );
+                ctx.stroke();
+            }
+
+            // Icône
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🗼', tower.x, tower.y);
+        }
+
+        // Trouver l'ennemi le plus proche
+        function findNearestEnemy() {
+            let nearest = null;
+            let minDistance = Infinity;
+
+            for (const enemy of gameState.enemies) {
+                const dx = enemy.x - gameState.tower.x;
+                const dy = enemy.y - gameState.tower.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance <= gameState.tower.range && distance < minDistance) {
+                    minDistance = distance;
+                    nearest = enemy;
+                }
+            }
+
+            return nearest;
+        }
+
+        // Tirer sur l'ennemi le plus proche
+        function shootAtEnemy() {
+            const now = Date.now();
+            if (now - gameState.tower.lastShot < gameState.tower.fireRate) {
+                return;
+            }
+
+            const target = findNearestEnemy();
+            if (target) {
+                gameState.projectiles.push(
+                    new Projectile(gameState.tower.x, gameState.tower.y, target.x, target.y)
+                );
+                gameState.tower.lastShot = now;
+            }
+        }
+
+        // Spawn un ennemi
+        function spawnEnemy() {
+            const now = Date.now();
+            if (now - gameState.waveSettings.lastSpawn < gameState.waveSettings.spawnInterval) {
+                return;
+            }
+
+            if (gameState.waveSettings.enemiesSpawned < gameState.waveSettings.enemiesPerWave) {
+                gameState.enemies.push(new Enemy(gameState.wave));
+                gameState.waveSettings.enemiesSpawned++;
+                gameState.waveSettings.lastSpawn = now;
+            } else if (gameState.enemies.length === 0) {
+                // Vague terminée, passer à la suivante
+                nextWave();
+            }
+        }
+
+        // Passer à la vague suivante
+        function nextWave() {
+            gameState.wave++;
+            gameState.waveSettings.enemiesPerWave += 3;
+            gameState.waveSettings.enemiesSpawned = 0;
+            gameState.gold += 50; // Bonus de vague
+        }
+
+        // Acheter une amélioration
+        function buyUpgrade(type) {
+            const cost = gameState.upgradeCosts[type];
+            if (gameState.gold < cost) return;
+
+            gameState.gold -= cost;
+
+            switch(type) {
+                case 'damage':
+                    gameState.tower.damage += 10;
+                    gameState.tower.level.damage++;
+                    gameState.upgradeCosts.damage = Math.floor(gameState.upgradeCosts.damage * 1.5);
+                    break;
+                case 'fireRate':
+                    gameState.tower.fireRate = Math.max(100, gameState.tower.fireRate * 0.8);
+                    gameState.tower.level.fireRate++;
+                    gameState.upgradeCosts.fireRate = Math.floor(gameState.upgradeCosts.fireRate * 1.5);
+                    break;
+                case 'range':
+                    gameState.tower.range += 30;
+                    gameState.tower.level.range++;
+                    gameState.upgradeCosts.range = Math.floor(gameState.upgradeCosts.range * 1.5);
+                    break;
+            }
+
+            updateUI();
+        }
+
+        // Mettre à jour l'UI
+        function updateUI() {
+            document.getElementById('lives').textContent = gameState.lives;
+            document.getElementById('gold').textContent = gameState.gold;
+            document.getElementById('wave').textContent = gameState.wave;
+            document.getElementById('kills').textContent = gameState.kills;
+
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            document.getElementById('time').textContent = elapsed + 's';
+
+            // Niveaux
+            document.getElementById('damageLevel').textContent = 'Niv. ' + gameState.tower.level.damage;
+            document.getElementById('fireRateLevel').textContent = 'Niv. ' + gameState.tower.level.fireRate;
+            document.getElementById('rangeLevel').textContent = 'Niv. ' + gameState.tower.level.range;
+
+            // Coûts et boutons
+            document.getElementById('damageCost').textContent = gameState.upgradeCosts.damage;
+            document.getElementById('fireRateCost').textContent = gameState.upgradeCosts.fireRate;
+            document.getElementById('rangeCost').textContent = gameState.upgradeCosts.range;
+
+            document.getElementById('damageButton').disabled = gameState.gold < gameState.upgradeCosts.damage;
+            document.getElementById('fireRateButton').disabled = gameState.gold < gameState.upgradeCosts.fireRate;
+            document.getElementById('rangeButton').disabled = gameState.gold < gameState.upgradeCosts.range;
+        }
+
+        // Boucle de jeu
+        function gameLoop() {
+            if (gameState.gameOver) return;
+
+            // Vérifier game over
+            if (gameState.lives <= 0) {
+                endGame();
+                return;
+            }
+
+            // Effacer le canvas
+            ctx.fillStyle = '#0a1929';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Dessiner la tour
+            drawTower();
+
+            // Spawn ennemis
+            spawnEnemy();
+
+            // Tirer
+            shootAtEnemy();
+
+            // Mettre à jour et dessiner les ennemis
+            gameState.enemies = gameState.enemies.filter(enemy => {
+                const alive = enemy.update();
+                if (alive) {
+                    enemy.draw();
+                }
+                return alive;
+            });
+
+            // Mettre à jour et dessiner les projectiles
+            gameState.projectiles = gameState.projectiles.filter(projectile => {
+                const inBounds = projectile.update();
+                if (!inBounds) return false;
+
+                // Vérifier collision avec ennemis
+                for (let i = 0; i < gameState.enemies.length; i++) {
+                    const enemy = gameState.enemies[i];
+                    if (projectile.checkCollision(enemy)) {
+                        if (enemy.takeDamage(projectile.damage)) {
+                            // Ennemi tué
+                            gameState.gold += enemy.reward;
+                            gameState.kills++;
+                            gameState.enemies.splice(i, 1);
+                        }
+                        return false; // Détruire le projectile
+                    }
+                }
+
+                projectile.draw();
+                return true;
+            });
+
+            // Mettre à jour l'UI
+            updateUI();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Fin de partie
+        function endGame() {
+            gameState.gameOver = true;
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            document.getElementById('finalStats').innerHTML = `
+                Vague atteinte : ${gameState.wave}<br>
+                Ennemis tués : ${gameState.kills}<br>
+                Temps survécu : ${elapsed}s
+            `;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        // Redémarrer
+        function restartGame() {
+            location.reload();
+        }
+
+        // Démarrer le jeu
+        updateUI();
+        gameLoop();
+    </script>
+</body>
+</html>
