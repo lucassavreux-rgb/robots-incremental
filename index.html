@@ -828,7 +828,7 @@
                 name: 'Temps Hors Ligne I',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 4h',
-                cost: 5,
+                cost: 25, // 5 × 5
                 maxTime: 14400, // 4h en secondes
                 unlockCondition: () => gameState.totalPrestiges >= 5
             },
@@ -836,7 +836,7 @@
                 name: 'Temps Hors Ligne II',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 8h',
-                cost: 9,
+                cost: 45, // 9 × 5
                 maxTime: 28800, // 8h
                 requires: ['offline_4h'],
                 unlockCondition: () => gameState.totalPrestiges >= 8
@@ -845,7 +845,7 @@
                 name: 'Temps Hors Ligne III',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 12h',
-                cost: 14,
+                cost: 70, // 14 × 5
                 maxTime: 43200, // 12h
                 requires: ['offline_8h'],
                 unlockCondition: () => gameState.totalPrestiges >= 12
@@ -854,7 +854,7 @@
                 name: 'Temps Hors Ligne IV',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 24h (1 jour)',
-                cost: 20,
+                cost: 100, // 20 × 5
                 maxTime: 86400, // 24h
                 requires: ['offline_12h'],
                 unlockCondition: () => gameState.totalPrestiges >= 18
@@ -863,7 +863,7 @@
                 name: 'Temps Hors Ligne V',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 36h',
-                cost: 31,
+                cost: 155, // 31 × 5
                 maxTime: 129600, // 36h
                 requires: ['offline_24h'],
                 unlockCondition: () => gameState.totalPrestiges >= 25
@@ -872,7 +872,7 @@
                 name: 'Temps Hors Ligne MAX',
                 icon: '⏰',
                 description: 'Augmente le temps hors ligne à 50h (MAX)',
-                cost: 43,
+                cost: 215, // 43 × 5
                 maxTime: 180000, // 50h
                 requires: ['offline_36h'],
                 unlockCondition: () => gameState.totalPrestiges >= 35
@@ -892,7 +892,7 @@
                 name: 'Boost Production II',
                 icon: '⭐',
                 description: '+100% production générateurs',
-                cost: 5,
+                cost: 25, // 5 × 5
                 multiplier: 2,
                 requires: ['prod_boost_1']
             },
@@ -900,7 +900,7 @@
                 name: 'Boost Production III',
                 icon: '⭐',
                 description: '+200% production générateurs',
-                cost: 12,
+                cost: 60, // 12 × 5
                 multiplier: 3,
                 requires: ['prod_boost_2']
             },
@@ -908,14 +908,14 @@
                 name: 'Boost Clic I',
                 icon: '👆',
                 description: '+100% puissance de clic',
-                cost: 3,
+                cost: 15, // 3 × 5
                 clickMultiplier: 2
             },
             click_boost_2: {
                 name: 'Boost Clic II',
                 icon: '👆',
                 description: '+300% puissance de clic',
-                cost: 9,
+                cost: 45, // 9 × 5
                 clickMultiplier: 4,
                 requires: ['click_boost_1']
             },
@@ -923,14 +923,14 @@
                 name: 'Générateurs moins chers',
                 icon: '💰',
                 description: '-10% coût générateurs',
-                cost: 7,
+                cost: 35, // 7 × 5
                 costReduction: 0.9
             },
             starting_boost: {
                 name: 'Départ boosté',
                 icon: '🚀',
                 description: 'Commence avec 1000 cookies',
-                cost: 3,
+                cost: 15, // 3 × 5
                 startingCookies: 1000
             },
             // Prestige++ upgrades (unlocked after 10 prestiges)
@@ -938,7 +938,7 @@
                 name: 'Cookie Titan',
                 icon: '💎',
                 description: 'x5 production globale',
-                cost: 26,
+                cost: 130, // 26 × 5
                 multiplier: 5,
                 unlockCondition: () => gameState.totalPrestiges >= 10
             },
@@ -946,7 +946,7 @@
                 name: 'Eternal Clicker',
                 icon: '💎',
                 description: 'x10 puissance de clic',
-                cost: 34,
+                cost: 170, // 34 × 5
                 clickMultiplier: 10,
                 unlockCondition: () => gameState.totalPrestiges >= 10
             },
@@ -954,7 +954,7 @@
                 name: 'Cookie God',
                 icon: '💎',
                 description: 'x10 TOUT (production ET clics)',
-                cost: 85,
+                cost: 425, // 85 × 5
                 godMultiplier: 10,
                 unlockCondition: () => gameState.totalPrestiges >= 10
             }
@@ -1416,11 +1416,53 @@
 
         // ==================== PRESTIGE FUNCTIONS ====================
         function calculatePrestigePoints() {
-            // 1 point par 70M ou 35M si prestige boost
-            // Utilise seulement les cookies depuis la dernière ascension
+            // Système progressif : 70M pour les 5 premiers, puis double tous les 5 paliers
+            // Palier 0 (points 1-5) : 70M/point (ou 35M avec boost)
+            // Palier 1 (points 6-10) : 140M/point
+            // Palier 2 (points 11-15) : 280M/point
+            // etc.
+
             const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
-            const divider = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
-            return Math.floor(cookiesSinceAscension / divider);
+            const basePrice = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
+
+            let remainingCookies = cookiesSinceAscension;
+            let totalPoints = 0;
+            let currentTier = 0; // 0 = points 1-5, 1 = points 6-10, etc.
+
+            while (remainingCookies > 0) {
+                // Prix du point dans ce tier
+                const tierMultiplier = Math.pow(2, currentTier); // 1, 2, 4, 8, etc.
+                const pricePerPoint = basePrice * tierMultiplier;
+
+                // Coût total du tier (5 points)
+                const tierCost = pricePerPoint * 5;
+
+                if (remainingCookies >= tierCost) {
+                    // On peut acheter tout le tier
+                    totalPoints += 5;
+                    remainingCookies -= tierCost;
+                    currentTier++;
+                } else {
+                    // On peut acheter une partie du tier
+                    const pointsInThisTier = Math.floor(remainingCookies / pricePerPoint);
+                    totalPoints += pointsInThisTier;
+                    break;
+                }
+            }
+
+            return totalPoints;
+        }
+
+        function getNextPrestigePointCost() {
+            // Retourne le coût du prochain point de prestige
+            const currentPoints = gameState.totalPrestigePointsEarned;
+            const basePrice = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
+
+            // Quel tier ? (0 = points 1-5, 1 = points 6-10, etc.)
+            const currentTier = Math.floor(currentPoints / 5);
+            const tierMultiplier = Math.pow(2, currentTier);
+
+            return basePrice * tierMultiplier;
         }
 
         function getPrestigeMultiplier() {
@@ -1438,7 +1480,8 @@
             const pointsToGain = calculatePrestigePoints() - gameState.totalPrestigePointsEarned;
 
             if (pointsToGain <= 0) {
-                alert('Tu ne gagnerais pas de nouveaux points de prestige!\n\nIl te faut 70M cookies lifetime de plus pour gagner 1 point.');
+                const nextCost = getNextPrestigePointCost();
+                alert(`Tu ne gagnerais pas de nouveaux points de prestige!\n\nIl te faut ${formatNumber(nextCost)} cookies lifetime de plus pour gagner 1 point.`);
                 return;
             }
 
@@ -1874,10 +1917,24 @@
                     nextPrestigeEl.style.color = '#4ade80';
                 } else {
                     const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
-                    const divider = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
-                    const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * divider;
+                    const nextCost = getNextPrestigePointCost();
+
+                    // Calculer combien de cookies ont déjà été dépensés dans le tier actuel
+                    const currentPoints = gameState.totalPrestigePointsEarned;
+                    const basePrice = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
+
+                    // Calculer le total dépensé jusqu'au point actuel
+                    let totalSpent = 0;
+                    for (let tier = 0; tier < Math.floor(currentPoints / 5); tier++) {
+                        totalSpent += basePrice * Math.pow(2, tier) * 5;
+                    }
+                    const pointsInCurrentTier = currentPoints % 5;
+                    const currentTier = Math.floor(currentPoints / 5);
+                    totalSpent += basePrice * Math.pow(2, currentTier) * pointsInCurrentTier;
+
+                    const nextMilestone = totalSpent + nextCost;
                     const remaining = nextMilestone - cookiesSinceAscension;
-                    nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
+                    nextPrestigeEl.textContent = `Prochain (${formatNumber(nextCost)}): ${formatNumber(remaining)} restants`;
                     nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
                 }
             }
@@ -2529,10 +2586,24 @@
                         nextPrestigeEl.style.color = '#4ade80';
                     } else {
                         const cookiesSinceAscension = gameState.stats.totalCookies - gameState.lifetimeCookiesAtAscension;
-                        const divider = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
-                        const nextMilestone = (gameState.totalPrestigePointsEarned + 1) * divider;
+                        const nextCost = getNextPrestigePointCost();
+
+                        // Calculer combien de cookies ont déjà été dépensés dans le tier actuel
+                        const currentPoints = gameState.totalPrestigePointsEarned;
+                        const basePrice = gameState.ascensionUpgrades.prestige_boost ? 35000000 : 70000000;
+
+                        // Calculer le total dépensé jusqu'au point actuel
+                        let totalSpent = 0;
+                        for (let tier = 0; tier < Math.floor(currentPoints / 5); tier++) {
+                            totalSpent += basePrice * Math.pow(2, tier) * 5;
+                        }
+                        const pointsInCurrentTier = currentPoints % 5;
+                        const currentTier = Math.floor(currentPoints / 5);
+                        totalSpent += basePrice * Math.pow(2, currentTier) * pointsInCurrentTier;
+
+                        const nextMilestone = totalSpent + nextCost;
                         const remaining = nextMilestone - cookiesSinceAscension;
-                        nextPrestigeEl.textContent = `Prochain: ${formatNumber(remaining)} restants`;
+                        nextPrestigeEl.textContent = `Prochain (${formatNumber(nextCost)}): ${formatNumber(remaining)} restants`;
                         nextPrestigeEl.style.color = 'rgba(255, 215, 0, 0.8)';
                     }
                 }
