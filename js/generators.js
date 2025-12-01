@@ -136,6 +136,8 @@ function buyGenerator(generatorId) {
 
     const cost = calculateGeneratorCost(genData, currentLevel);
 
+    console.log('Tentative achat:', generatorId, '| Coût:', cost, '| Coins:', gameState.coins, '| Peut acheter:', canAfford(cost));
+
     if (!canAfford(cost)) {
         showNotification('Pas assez de coins !', 'error');
         return;
@@ -157,8 +159,10 @@ function buyGenerator(generatorId) {
     // Stats
     gameState.stats.generatorsBought++;
 
-    // Mettre à jour les quêtes
-    updateQuestProgress('generators_bought', 1);
+    // Mettre à jour les quêtes (si la fonction existe)
+    if (typeof updateQuestProgress === 'function') {
+        updateQuestProgress('generators_bought', 1);
+    }
 
     // Recalculer CPS
     gameState.cps = calculateTotalCPS();
