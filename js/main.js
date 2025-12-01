@@ -122,8 +122,9 @@ function switchTab(tabName) {
     }
 }
 
-// Variable pour l'auto-refresh des boutons
+// Variable pour l'auto-refresh des boutons et du boss UI
 let lastButtonRefresh = 0;
+let lastBossUIUpdate = 0;
 
 /**
  * Boucle de jeu principale
@@ -147,7 +148,6 @@ function gameLoop() {
         if (GameState.boss.hp.lessThanOrEqual(0)) {
             defeatBoss();
         }
-        updateBossUI();
     }
 
     // Nettoyer les événements expirés
@@ -163,7 +163,7 @@ function gameLoop() {
     // Mettre à jour les cooldowns des pets
     updatePetsUI();
 
-    // Auto-refresh des boutons (1 fois par seconde)
+    // Auto-refresh des boutons et du boss UI (1 fois par seconde)
     if (now - lastButtonRefresh >= 1000) {
         if (typeof updateGeneratorsButtonsOnly === 'function') {
             updateGeneratorsButtonsOnly();
@@ -172,6 +172,12 @@ function gameLoop() {
             updateUpgradesButtonsOnly();
         }
         lastButtonRefresh = now;
+    }
+
+    // Mettre à jour l'UI du boss (cooldown countdown)
+    if (now - lastBossUIUpdate >= 1000) {
+        updateBossUI();
+        lastBossUIUpdate = now;
     }
 
     GameState.lastTick = now;
