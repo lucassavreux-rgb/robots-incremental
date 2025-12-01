@@ -444,10 +444,11 @@ function getGeneratorCost(generatorId) {
 
 /**
  * Calcule les RP obtenus au prestige
- * Formula: floor(max(0, sqrt(currentShards / 1e6)))
+ * Formula: floor(max(0, sqrt(currentShards / 5e6)))
+ * 5M Shards = 1 RP, 20M = 2 RP, 45M = 3 RP, etc.
  */
 function calculatePrestigeRP() {
-    const divider = new BigNumber(1000000);
+    const divider = new BigNumber(5000000); // 5M Shards pour 1 RP
     const ratio = GameState.shards.divide(divider);
 
     if (ratio.lessThan(1)) return 0;

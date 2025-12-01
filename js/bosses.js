@@ -62,8 +62,8 @@ function defeatBoss() {
     GameState.prestige.currentRP += rewardRP;
     GameState.prestige.totalRP += rewardRP;
 
-    // Chance d'artefact (20%)
-    if (Math.random() < 0.20) {
+    // Chance d'artefact (10% - réduit pour rendre le jeu plus long)
+    if (Math.random() < 0.10) {
         const availableArtefacts = ARTEFACTS.filter(a => !GameState.artefacts.owned.includes(a.id));
         if (availableArtefacts.length > 0) {
             const randomArtefact = availableArtefacts[Math.floor(Math.random() * availableArtefacts.length)];

@@ -468,7 +468,7 @@ const PETS = [
         id: "pet_wolf",
         name: "Loup Spectral",
         obtainType: "boss_drop",
-        dropRate: 0.15, // 15% de drop
+        dropRate: 0.08, // 8% de drop (réduit pour rendre le jeu plus long)
         rarity: "rare",
         passiveBonusType: "cps_global",
         passiveValue: 0.12,
@@ -482,7 +482,7 @@ const PETS = [
         id: "pet_tiger",
         name: "Tigre Cosmique",
         obtainType: "boss_drop",
-        dropRate: 0.08, // 8% de drop
+        dropRate: 0.04, // 4% de drop (réduit)
         rarity: "epic",
         passiveBonusType: "cpc",
         passiveValue: 0.25,
@@ -496,7 +496,7 @@ const PETS = [
         id: "pet_leviathan",
         name: "Léviathan des Abysses",
         obtainType: "boss_drop",
-        dropRate: 0.03, // 3% de drop (très rare)
+        dropRate: 0.015, // 1.5% de drop (très rare - réduit)
         rarity: "legendary",
         passiveBonusType: "global",
         passiveValue: 0.30,
