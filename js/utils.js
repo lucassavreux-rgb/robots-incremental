@@ -13,6 +13,18 @@
  * Pour activer les logs de debug: Dans la console, tape: window.DEBUG_MULTIPLIERS = true
  */
 function calculateTotalCPC() {
+    // IMPORTANT: Calculer le flatBonus AVANT de l'utiliser
+    let flatBonus = 0;
+    GameState.upgrades.forEach(upgradeId => {
+        const upgrade = UPGRADES.find(u => u.id === upgradeId);
+        if (!upgrade) return;
+        if (upgrade.type === 'click' && upgrade.effectType === 'flat') {
+            flatBonus += upgrade.value;
+        }
+    });
+    GameState.click.flatBonus = new BigNumber(flatBonus);
+
+    // Maintenant calculer le CPC avec la bonne valeur
     let cpc = GameState.click.base.add(GameState.click.flatBonus);
 
     // DEBUG: Log de départ (seulement si activé)
@@ -144,7 +156,6 @@ function getPrestigeMultiplier() {
  */
 function getUpgradeClickMultiplier() {
     let multiplier = 1;
-    let flatBonus = 0;
 
     GameState.upgrades.forEach(upgradeId => {
         const upgrade = UPGRADES.find(u => u.id === upgradeId);
@@ -153,18 +164,12 @@ function getUpgradeClickMultiplier() {
         if (upgrade.type === 'click') {
             if (upgrade.effectType === 'multiplier') {
                 multiplier *= upgrade.value;
-            } else if (upgrade.effectType === 'flat') {
-                flatBonus += upgrade.value;
             }
+            // Le flatBonus est géré directement dans calculateTotalCPC()
         } else if (upgrade.type === 'global' && upgrade.effectType === 'all_multiplier') {
             multiplier *= upgrade.value;
         }
     });
-
-    // Ajouter le flat bonus à la base
-    if (flatBonus > 0) {
-        GameState.click.flatBonus = new BigNumber(flatBonus);
-    }
 
     return multiplier;
 }
