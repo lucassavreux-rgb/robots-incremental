@@ -78,8 +78,8 @@ const UPGRADES = [
     // Click upgrades
     {
         id: "click_flat_1",
-        name: "Better Finger",
-        description: "+1 Shard per click",
+        name: "Meilleur Doigt",
+        description: "+1 Shard par clic",
         cost: 100,
         type: "click",
         effectType: "flat",
@@ -87,8 +87,8 @@ const UPGRADES = [
     },
     {
         id: "click_flat_2",
-        name: "Strong Fingers",
-        description: "+10 Shards per click",
+        name: "Doigts Puissants",
+        description: "+10 Shards par clic",
         cost: 1000,
         type: "click",
         effectType: "flat",
@@ -96,8 +96,8 @@ const UPGRADES = [
     },
     {
         id: "click_flat_3",
-        name: "Powerful Hands",
-        description: "+100 Shards per click",
+        name: "Mains Surpuissantes",
+        description: "+100 Shards par clic",
         cost: 50000,
         type: "click",
         effectType: "flat",
@@ -105,8 +105,8 @@ const UPGRADES = [
     },
     {
         id: "click_mult_1",
-        name: "Click Amplifier",
-        description: "×2 click power",
+        name: "Amplificateur de Clic",
+        description: "×2 puissance de clic",
         cost: 10000,
         type: "click",
         effectType: "multiplier",
@@ -114,8 +114,8 @@ const UPGRADES = [
     },
     {
         id: "click_mult_2",
-        name: "Quantum Clicker",
-        description: "×3 click power",
+        name: "Cliqueur Quantique",
+        description: "×3 puissance de clic",
         cost: 500000,
         type: "click",
         effectType: "multiplier",
@@ -123,8 +123,8 @@ const UPGRADES = [
     },
     {
         id: "click_crit_1",
-        name: "Precision Strike",
-        description: "+5% crit chance",
+        name: "Frappe Précise",
+        description: "+5% chance de critique",
         cost: 25000,
         type: "click",
         effectType: "crit_chance",
@@ -132,8 +132,8 @@ const UPGRADES = [
     },
     {
         id: "click_crit_2",
-        name: "Master Striker",
-        description: "+10% crit chance",
+        name: "Maître Frappeur",
+        description: "+10% chance de critique",
         cost: 250000,
         type: "click",
         effectType: "crit_chance",
@@ -141,8 +141,8 @@ const UPGRADES = [
     },
     {
         id: "click_crit_mult_1",
-        name: "Devastating Blow",
-        description: "+2 to crit multiplier",
+        name: "Coup Dévastateur",
+        description: "+2 au multiplicateur critique",
         cost: 100000,
         type: "click",
         effectType: "crit_multiplier",
@@ -151,8 +151,8 @@ const UPGRADES = [
     // Generator specific
     {
         id: "generator_mine_mult_1",
-        name: "Enhanced Mining",
-        description: "×2 Shard Mine production",
+        name: "Minage Amélioré",
+        description: "×2 production Shard Mine",
         cost: 50000,
         type: "generator",
         effectType: "specific",
@@ -161,8 +161,8 @@ const UPGRADES = [
     },
     {
         id: "generator_factory_mult_1",
-        name: "Nano Optimization",
-        description: "×2 Nano Factory production",
+        name: "Optimisation Nano",
+        description: "×2 production Nano Factory",
         cost: 200000,
         type: "generator",
         effectType: "specific",
@@ -171,8 +171,8 @@ const UPGRADES = [
     },
     {
         id: "generator_lab_mult_1",
-        name: "Crystal Enhancement",
-        description: "×2 Crystal Lab production",
+        name: "Amélioration Cristalline",
+        description: "×2 production Crystal Lab",
         cost: 1000000,
         type: "generator",
         effectType: "specific",
@@ -182,8 +182,8 @@ const UPGRADES = [
     // Global upgrades
     {
         id: "global_cps_mult_1",
-        name: "Production Boost I",
-        description: "×1.5 global CPS",
+        name: "Boost de Production I",
+        description: "×1.5 CPS global",
         cost: 25000,
         type: "global",
         effectType: "cps_multiplier",
@@ -191,8 +191,8 @@ const UPGRADES = [
     },
     {
         id: "global_cps_mult_2",
-        name: "Production Boost II",
-        description: "×2 global CPS",
+        name: "Boost de Production II",
+        description: "×2 CPS global",
         cost: 250000,
         type: "global",
         effectType: "cps_multiplier",
@@ -200,8 +200,8 @@ const UPGRADES = [
     },
     {
         id: "global_cps_mult_3",
-        name: "Production Boost III",
-        description: "×3 global CPS",
+        name: "Boost de Production III",
+        description: "×3 CPS global",
         cost: 5000000,
         type: "global",
         effectType: "cps_multiplier",
@@ -209,8 +209,8 @@ const UPGRADES = [
     },
     {
         id: "global_all_mult_1",
-        name: "Universal Amplifier I",
-        description: "×1.5 CPC and CPS",
+        name: "Amplificateur Universel I",
+        description: "×1.5 CPC et CPS",
         cost: 1000000,
         type: "global",
         effectType: "all_multiplier",
@@ -218,8 +218,8 @@ const UPGRADES = [
     },
     {
         id: "global_all_mult_2",
-        name: "Universal Amplifier II",
-        description: "×2 CPC and CPS",
+        name: "Amplificateur Universel II",
+        description: "×2 CPC et CPS",
         cost: 10000000,
         type: "global",
         effectType: "all_multiplier",
@@ -227,8 +227,8 @@ const UPGRADES = [
     },
     {
         id: "global_all_mult_3",
-        name: "Universal Amplifier III",
-        description: "×5 CPC and CPS",
+        name: "Amplificateur Universel III",
+        description: "×5 CPC et CPS",
         cost: 500000000,
         type: "global",
         effectType: "all_multiplier",
@@ -236,8 +236,8 @@ const UPGRADES = [
     },
     {
         id: "generator_cost_1",
-        name: "Efficient Production I",
-        description: "-10% generator costs",
+        name: "Production Efficace I",
+        description: "-10% coût générateurs",
         cost: 500000,
         type: "global",
         effectType: "cost_reduction",
@@ -245,8 +245,8 @@ const UPGRADES = [
     },
     {
         id: "generator_cost_2",
-        name: "Efficient Production II",
-        description: "-15% generator costs",
+        name: "Production Efficace II",
+        description: "-15% coût générateurs",
         cost: 10000000,
         type: "global",
         effectType: "cost_reduction",
@@ -254,8 +254,8 @@ const UPGRADES = [
     },
     {
         id: "generator_cost_3",
-        name: "Efficient Production III",
-        description: "-20% generator costs",
+        name: "Production Efficace III",
+        description: "-20% coût générateurs",
         cost: 250000000,
         type: "global",
         effectType: "cost_reduction",
@@ -326,7 +326,7 @@ const TALENTS = {
         {
             id: "t_gen_2",
             name: "Production Focalisée",
-            description: "+10% CPS for all generators per level",
+            description: "+10% CPS pour tous les générateurs par niveau",
             branch: "generators",
             tier: 2,
             rpCost: 10,
@@ -337,7 +337,7 @@ const TALENTS = {
         {
             id: "t_gen_3",
             name: "Optimisation des Coûts",
-            description: "-1% generator costs per level (max -50%)",
+            description: "-1% coût générateurs par niveau (max -50%)",
             branch: "generators",
             tier: 3,
             rpCost: 15,
@@ -348,7 +348,7 @@ const TALENTS = {
         {
             id: "t_gen_4",
             name: "Super Production",
-            description: "+15% CPS global per level",
+            description: "+15% CPS global par niveau",
             branch: "generators",
             tier: 4,
             rpCost: 30,
@@ -372,7 +372,7 @@ const TALENTS = {
         {
             id: "t_prestige_2",
             name: "Accélération Cosmique",
-            description: "+5% RP gained per level",
+            description: "+5% RP gagnés par niveau",
             branch: "prestige",
             tier: 2,
             rpCost: 20,
@@ -382,8 +382,8 @@ const TALENTS = {
         },
         {
             id: "t_prestige_3",
-            name: "Rebirth Express",
-            description: "Keep 5% of generators per level after prestige",
+            name: "Renaissance Express",
+            description: "Conserve 5% des générateurs par niveau après prestige",
             branch: "prestige",
             tier: 3,
             rpCost: 30,
@@ -394,7 +394,7 @@ const TALENTS = {
         {
             id: "t_prestige_4",
             name: "Maître de Renaissance",
-            description: "+10% RP effectiveness per level",
+            description: "+10% efficacité RP par niveau",
             branch: "prestige",
             tier: 4,
             rpCost: 40,
@@ -413,7 +413,7 @@ const ARTEFACTS = [
         rarity: "epic",
         effectType: "cpc_multiplier",
         value: 3,
-        description: "×3 click power"
+        description: "×3 puissance de clic"
     },
     {
         id: "a_mine_amulet",
@@ -422,7 +422,7 @@ const ARTEFACTS = [
         effectType: "generator_specific",
         targetGenerator: "shard_mine",
         value: 4,
-        description: "×4 Shard Mine production"
+        description: "×4 production Shard Mine"
     },
     {
         id: "a_global_core",
@@ -431,7 +431,7 @@ const ARTEFACTS = [
         effectType: "global_multiplier",
         cpsValue: 2,
         cpcValue: 2,
-        description: "×2 CPS and ×2 CPC"
+        description: "×2 CPS et ×2 CPC"
     },
     {
         id: "a_prestige_orb",
@@ -439,7 +439,7 @@ const ARTEFACTS = [
         rarity: "legendary",
         effectType: "rp_gain",
         value: 0.25,
-        description: "+25% RP on prestige"
+        description: "+25% RP au prestige"
     },
     {
         id: "a_factory_gem",
@@ -448,7 +448,7 @@ const ARTEFACTS = [
         effectType: "generator_specific",
         targetGenerator: "nano_factory",
         value: 3,
-        description: "×3 Nano Factory production"
+        description: "×3 production Nano Factory"
     },
     {
         id: "a_crit_blade",
@@ -457,7 +457,7 @@ const ARTEFACTS = [
         effectType: "crit",
         critChance: 0.15,
         critMultiplier: 5,
-        description: "+15% crit chance and +5 crit multiplier"
+        description: "+15% chance critique et +5 multiplicateur critique"
     }
 ];
 
@@ -465,25 +465,25 @@ const ARTEFACTS = [
 const PETS = [
     {
         id: "pet_fox",
-        name: "Shard Fox",
+        name: "Renard des Shards",
         passiveBonusType: "cps_global",
         passiveValue: 0.10,
         activeBonusType: "cpc",
         activeMultiplier: 5,
         activeDurationSeconds: 10,
         cooldownSeconds: 120,
-        description: "Passive: +10% CPS | Active: ×5 CPC for 10s"
+        description: "Passif: +10% CPS | Actif: ×5 CPC pendant 10s"
     },
     {
         id: "pet_dragon",
-        name: "Crystal Dragon",
+        name: "Dragon de Cristal",
         passiveBonusType: "cpc",
         passiveValue: 0.20,
         activeBonusType: "cps_global",
         activeMultiplier: 3,
         activeDurationSeconds: 15,
         cooldownSeconds: 180,
-        description: "Passive: +20% CPC | Active: ×3 CPS for 15s"
+        description: "Passif: +20% CPC | Actif: ×3 CPS pendant 15s"
     },
     {
         id: "pet_phoenix",
@@ -494,7 +494,7 @@ const PETS = [
         activeMultiplier: 10,
         activeDurationSeconds: 5,
         cooldownSeconds: 300,
-        description: "Passive: +15% all production | Active: ×10 all for 5s"
+        description: "Passif: +15% toute production | Actif: ×10 tout pendant 5s"
     }
 ];
 
@@ -563,7 +563,7 @@ const EVENTS = [
     {
         id: "event_double_production",
         name: "Production Double",
-        description: "×2 all production",
+        description: "×2 toute production",
         type: "all_multiplier",
         multiplier: 2,
         duration: 60
