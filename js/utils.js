@@ -416,11 +416,11 @@ function getGeneratorCost(generatorId) {
 
 /**
  * Calcule les RP obtenus au prestige
- * Formula: floor(max(0, sqrt(totalShardsEarned / 1e6)))
+ * Formula: floor(max(0, sqrt(currentShards / 1e6)))
  */
 function calculatePrestigeRP() {
     const divider = new BigNumber(1000000);
-    const ratio = GameState.stats.totalShardsEarned.divide(divider);
+    const ratio = GameState.shards.divide(divider);
 
     if (ratio.lessThan(1)) return 0;
 
