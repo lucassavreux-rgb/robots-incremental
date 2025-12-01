@@ -3,189 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 Game Hub - Sélection de Jeux</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            font-size: 1.2em;
-            margin-bottom: 50px;
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            padding: 20px;
-        }
-
-        .game-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .game-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        }
-
-        .game-icon {
-            font-size: 5em;
-            margin-bottom: 20px;
-        }
-
-        .game-title {
-            font-size: 1.8em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .game-description {
-            color: #666;
-            font-size: 1em;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .game-status {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .status-available {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-new {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .play-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .play-button:hover {
-            transform: scale(1.05);
-        }
-
-        .play-button:active {
-            transform: scale(0.95);
-        }
-
-        .footer {
-            text-align: center;
-            color: rgba(255,255,255,0.8);
-            margin-top: 50px;
-            font-size: 0.9em;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            .games-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Clicker Game Ultimate</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🎮 Game Hub</h1>
-        <p class="subtitle">Choisissez votre aventure</p>
+    <!-- Header avec stats principales -->
+    <header>
+        <div class="header-container">
+            <h1>⚡ Clicker Game Ultimate</h1>
+            <div class="main-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Coins:</span>
+                    <span id="coins-display" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CPC:</span>
+                    <span id="cpc-display" class="stat-value">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CPS:</span>
+                    <span id="cps-display" class="stat-value">0</span>
+                </div>
+                <div class="stat-item prestige-stat">
+                    <span class="stat-label">RP:</span>
+                    <span id="rp-display" class="stat-value">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
 
-        <div class="games-grid">
-            <!-- Cookie Clicker Card -->
-            <div class="game-card" onclick="window.location.href='cookie-clicker.html'">
-                <div class="game-icon">🍪</div>
-                <h2 class="game-title">Cookie Clicker Pro</h2>
-                <div class="game-status status-available">Disponible</div>
-                <p class="game-description">
-                    Un jeu incrémental addictif avec prestige, ascension, dragon, panthéon, jardin et bien plus !
-                </p>
-                <button class="play-button">Jouer Maintenant</button>
+    <!-- Main container -->
+    <div class="main-container">
+        <!-- Zone de clic à gauche -->
+        <div class="left-panel">
+            <div class="click-zone">
+                <button id="main-click-btn" class="main-click-button">
+                    <span class="click-icon">💰</span>
+                    <span class="click-text">CLICK ME!</span>
+                </button>
+                <div id="click-effect-container"></div>
             </div>
 
-            <!-- Tower Defense Card -->
-            <div class="game-card" onclick="window.location.href='tower-defense.html'">
-                <div class="game-icon">🗼</div>
-                <h2 class="game-title">Tower Defense</h2>
-                <div class="game-status status-new">Nouveau !</div>
-                <p class="game-description">
-                    Défendez votre tour centrale contre des vagues d'ennemis ! Améliorez votre puissance et survivez.
-                </p>
-                <button class="play-button">Jouer Maintenant</button>
+            <!-- Boss fight section -->
+            <div class="boss-section">
+                <h3>🐲 Boss Fight</h3>
+                <div id="boss-info">
+                    <div class="boss-name">Boss #<span id="boss-number">1</span></div>
+                    <div class="boss-hp-bar">
+                        <div id="boss-hp-fill" class="boss-hp-fill"></div>
+                        <span id="boss-hp-text" class="boss-hp-text">100 / 100</span>
+                    </div>
+                    <div class="boss-timer">Next boss: <span id="boss-timer">--:--</span></div>
+                </div>
+            </div>
+
+            <!-- Active pet display -->
+            <div class="active-pet-section">
+                <h3>🐾 Active Pet</h3>
+                <div id="active-pet-display">
+                    <span id="active-pet-name">None</span>
+                    <button id="active-pet-ability" class="pet-ability-btn" disabled>Use Ability</button>
+                </div>
             </div>
         </div>
 
-        <div class="footer">
-            <p>Sélectionnez un jeu pour commencer l'aventure</p>
+        <!-- Panel central avec onglets -->
+        <div class="center-panel">
+            <!-- Navigation tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="generators">Générateurs</button>
+                <button class="tab-btn" data-tab="upgrades">Upgrades</button>
+                <button class="tab-btn" data-tab="prestige">Prestige</button>
+                <button class="tab-btn" data-tab="talents">Talents</button>
+                <button class="tab-btn" data-tab="pets">Pets</button>
+                <button class="tab-btn" data-tab="artefacts">Artefacts</button>
+                <button class="tab-btn" data-tab="quests">Quêtes</button>
+            </div>
+
+            <!-- Tab content -->
+            <div class="tab-content">
+                <!-- Générateurs Tab -->
+                <div id="generators-tab" class="tab-panel active">
+                    <h2>⚙️ Générateurs</h2>
+                    <p class="tab-description">Achetez des générateurs pour produire des coins automatiquement</p>
+                    <div id="generators-list" class="generators-list"></div>
+                </div>
+
+                <!-- Upgrades Tab -->
+                <div id="upgrades-tab" class="tab-panel">
+                    <h2>⬆️ Upgrades</h2>
+                    <p class="tab-description">Améliorez votre CPC, CPS et débloquez de nouveaux bonus</p>
+                    <div id="upgrades-list" class="upgrades-list"></div>
+                </div>
+
+                <!-- Prestige Tab -->
+                <div id="prestige-tab" class="tab-panel">
+                    <h2>🌟 Prestige</h2>
+                    <p class="tab-description">Recommencez avec des bonus permanents</p>
+                    <div class="prestige-container">
+                        <div class="prestige-info">
+                            <p>Total coins gagnés: <span id="total-coins-earned">0</span></p>
+                            <p>RP disponibles après prestige: <span id="rp-after-prestige">0</span></p>
+                            <p class="prestige-warning">⚠️ Le prestige réinitialise tous vos coins, générateurs et upgrades !</p>
+                        </div>
+                        <button id="prestige-btn" class="prestige-button" disabled>
+                            🌟 PRESTIGE 🌟
+                        </button>
+                        <div class="prestige-bonuses">
+                            <h3>Bonus actuels du prestige</h3>
+                            <div id="prestige-bonuses-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Talents Tab -->
+                <div id="talents-tab" class="tab-panel">
+                    <h2>🎯 Arbre de Talents</h2>
+                    <p class="tab-description">Dépensez des RP pour débloquer des talents permanents</p>
+                    <div class="talents-container">
+                        <div class="talent-branch">
+                            <h3>🖱️ Branche Clic</h3>
+                            <div id="talents-click-list" class="talents-list"></div>
+                        </div>
+                        <div class="talent-branch">
+                            <h3>⚙️ Branche Générateurs</h3>
+                            <div id="talents-generators-list" class="talents-list"></div>
+                        </div>
+                        <div class="talent-branch">
+                            <h3>🌟 Branche Prestige</h3>
+                            <div id="talents-prestige-list" class="talents-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pets Tab -->
+                <div id="pets-tab" class="tab-panel">
+                    <h2>🐾 Pets</h2>
+                    <p class="tab-description">Débloquez et améliorez des pets pour des bonus puissants</p>
+                    <div id="pets-list" class="pets-list"></div>
+                </div>
+
+                <!-- Artefacts Tab -->
+                <div id="artefacts-tab" class="tab-panel">
+                    <h2>💎 Artefacts</h2>
+                    <p class="tab-description">Équipez des artefacts rares pour des bonus massifs</p>
+                    <div class="artefacts-info">
+                        <p>Artefacts équipés: <span id="equipped-artefacts-count">0</span> / 3</p>
+                        <p>Set bonus actif: <span id="active-set-bonus">Aucun</span></p>
+                    </div>
+                    <div id="artefacts-list" class="artefacts-list"></div>
+                </div>
+
+                <!-- Quêtes Tab -->
+                <div id="quests-tab" class="tab-panel">
+                    <h2>📜 Quêtes Journalières</h2>
+                    <p class="tab-description">Complétez des quêtes pour des récompenses bonus</p>
+                    <div id="quests-list" class="quests-list"></div>
+                    <div class="quest-reset-timer">
+                        Renouvellement dans: <span id="quest-reset-timer">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right panel avec événements et boosters -->
+        <div class="right-panel">
+            <div class="events-section">
+                <h3>⚡ Événements Actifs</h3>
+                <div id="active-events" class="active-events-list">
+                    <p class="no-events">Aucun événement actif</p>
+                </div>
+            </div>
+
+            <div class="boosters-section">
+                <h3>🚀 Boosters</h3>
+                <button id="power-boost-btn" class="booster-btn">
+                    <span class="booster-name">Power Boost x2</span>
+                    <span class="booster-cooldown" id="power-boost-cooldown">Ready</span>
+                </button>
+                <button id="frenzy-boost-btn" class="booster-btn">
+                    <span class="booster-name">Frenzy Mode</span>
+                    <span class="booster-cooldown" id="frenzy-boost-cooldown">Ready</span>
+                </button>
+            </div>
+
+            <div class="stats-section">
+                <h3>📊 Statistiques</h3>
+                <div class="stats-details">
+                    <p>Total clics: <span id="total-clicks">0</span></p>
+                    <p>Total coins gagnés: <span id="stats-total-coins">0</span></p>
+                    <p>Temps de jeu: <span id="playtime">0s</span></p>
+                    <p>Critiques: <span id="critical-hits">0</span></p>
+                    <p>Boss vaincus: <span id="bosses-defeated">0</span></p>
+                </div>
+            </div>
+
+            <div class="save-section">
+                <h3>💾 Sauvegarde</h3>
+                <button id="manual-save-btn" class="action-btn">Sauvegarder</button>
+                <button id="export-save-btn" class="action-btn">Exporter</button>
+                <button id="import-save-btn" class="action-btn">Importer</button>
+                <button id="reset-save-btn" class="action-btn danger">Réinitialiser</button>
+                <p class="auto-save-info">Auto-save: <span id="auto-save-timer">10s</span></p>
+            </div>
         </div>
     </div>
+
+    <!-- Modal pour import de sauvegarde -->
+    <div id="import-modal" class="modal">
+        <div class="modal-content">
+            <h2>Importer une sauvegarde</h2>
+            <textarea id="import-textarea" placeholder="Collez votre sauvegarde ici..."></textarea>
+            <div class="modal-buttons">
+                <button id="confirm-import-btn" class="action-btn">Importer</button>
+                <button id="cancel-import-btn" class="action-btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/numbers.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/save.js"></script>
+    <script src="js/generators.js"></script>
+    <script src="js/upgrades.js"></script>
+    <script src="js/prestige.js"></script>
+    <script src="js/talents.js"></script>
+    <script src="js/pets.js"></script>
+    <script src="js/artefacts.js"></script>
+    <script src="js/quests.js"></script>
+    <script src="js/bosses.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
