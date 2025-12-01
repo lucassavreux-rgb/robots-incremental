@@ -45,7 +45,42 @@ function buyUpgrade(upgradeId) {
 }
 
 /**
- * Met à jour l'UI des upgrades
+ * Met à jour seulement les boutons (sans recréer le DOM)
+ */
+function updateUpgradesButtonsOnly() {
+    const container = document.getElementById('upgrades-list');
+    if (!container) return;
+
+    const upgradeItems = container.querySelectorAll('.upgrade-item');
+    let displayIndex = 0;
+
+    UPGRADES.forEach(upgrade => {
+        const purchased = GameState.upgrades.includes(upgrade.id);
+        if (purchased) return; // Upgrade déjà acheté
+
+        const cost = new BigNumber(upgrade.cost);
+        const canAfford = GameState.shards.greaterThanOrEqual(cost);
+
+        const item = upgradeItems[displayIndex];
+        if (!item) return;
+
+        // Mettre à jour classe disabled
+        if (canAfford) {
+            item.classList.remove('disabled');
+        } else {
+            item.classList.add('disabled');
+        }
+
+        // Mettre à jour bouton
+        const buyBtn = item.querySelector('.btn-buy');
+        if (buyBtn) buyBtn.disabled = !canAfford;
+
+        displayIndex++;
+    });
+}
+
+/**
+ * Met à jour l'UI des upgrades (re-render complet)
  */
 function updateUpgradesUI() {
     const container = document.getElementById('upgrades-list');

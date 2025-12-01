@@ -5,23 +5,34 @@
  * Gestion des événements temporaires
  */
 
+// Variable pour éviter de spam les événements
+let lastEventTime = 0;
+const EVENT_COOLDOWN = 120000; // 2 minutes entre chaque événement
+
 /**
  * Déclenche un événement aléatoire
  */
 function triggerRandomEvent() {
-    // 1% de chance par seconde
-    if (Math.random() > 0.01) return;
+    const now = Date.now();
+
+    // Cooldown de 2 minutes entre les événements
+    if (now - lastEventTime < EVENT_COOLDOWN) return;
+
+    // 0.05% de chance à chaque appel (appelé 60 fois par seconde dans la game loop)
+    // Donc environ 3% de chance par seconde, mais avec le cooldown de 2 minutes
+    if (Math.random() > 0.0005) return;
 
     const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
 
     // Ajouter l'événement
-    const now = Date.now();
     GameState.activeEvents.push({
         id: event.id,
         type: event.type,
         multiplier: event.multiplier,
         endTime: now + (event.duration * 1000)
     });
+
+    lastEventTime = now;
 
     recalculateProduction();
     updateStatsUI();

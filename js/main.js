@@ -122,6 +122,9 @@ function switchTab(tabName) {
     }
 }
 
+// Variable pour l'auto-refresh des boutons
+let lastButtonRefresh = 0;
+
 /**
  * Boucle de jeu principale
  */
@@ -159,6 +162,17 @@ function gameLoop() {
 
     // Mettre à jour les cooldowns des pets
     updatePetsUI();
+
+    // Auto-refresh des boutons (1 fois par seconde)
+    if (now - lastButtonRefresh >= 1000) {
+        if (typeof updateGeneratorsButtonsOnly === 'function') {
+            updateGeneratorsButtonsOnly();
+        }
+        if (typeof updateUpgradesButtonsOnly === 'function') {
+            updateUpgradesButtonsOnly();
+        }
+        lastButtonRefresh = now;
+    }
 
     GameState.lastTick = now;
 }
