@@ -13,6 +13,22 @@ function initUpgrades() {
 }
 
 /**
+ * Met à jour l'état des boutons upgrades sans re-render complet
+ */
+function updateUpgradesButtons() {
+    UPGRADES_DATA.forEach(upgrade => {
+        const isPurchased = gameState.upgrades.includes(upgrade.id);
+        if (isPurchased) return; // Déjà acheté, pas besoin de mettre à jour
+
+        const canPurchase = canAfford(upgrade.price);
+        const button = document.querySelector(`.buy-btn[data-upgrade="${upgrade.id}"]`);
+        if (button) {
+            button.disabled = !canPurchase;
+        }
+    });
+}
+
+/**
  * Affiche la liste des upgrades
  */
 function renderUpgradesList() {
@@ -129,8 +145,10 @@ function buyUpgrade(upgradeId) {
     gameState.cps = calculateTotalCPS();
 
     // Rafraîchir l'affichage
-    renderUpgradesList();
-    renderGeneratorsList(); // Pour mettre à jour les coûts si réduction
+    renderUpgradesList(); // Re-render pour afficher le nouvel état
+    if (typeof updateGeneratorsButtons === 'function') {
+        updateGeneratorsButtons(); // Mettre à jour les coûts si réduction
+    }
     updateMainStats();
 
     showNotification(`${upgrade.name} acheté !`, 'success');
