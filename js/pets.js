@@ -14,6 +14,33 @@ function initPets() {
 }
 
 /**
+ * Met à jour l'état des boutons pets sans re-render complet
+ */
+function updatePetsButtons() {
+    PETS_DATA.forEach(petData => {
+        const petState = gameState.pets.find(p => p.id === petData.id);
+        const isUnlocked = petState !== undefined;
+        const level = petState ? petState.level : 0;
+
+        if (!isUnlocked) {
+            // Bouton de déblocage
+            const canUnlock = gameState.prestigePoints >= petData.unlockCost;
+            const unlockBtn = document.querySelector(`.buy-btn[data-pet="unlock-${petData.id}"]`);
+            if (unlockBtn) {
+                unlockBtn.disabled = !canUnlock;
+            }
+        } else if (level < petData.maxLevel) {
+            // Bouton d'amélioration
+            const canUpgrade = gameState.prestigePoints >= petData.upgradeCost;
+            const upgradeBtn = document.querySelector(`.upgrade-btn[data-pet="upgrade-${petData.id}"]`);
+            if (upgradeBtn) {
+                upgradeBtn.disabled = !canUpgrade;
+            }
+        }
+    });
+}
+
+/**
  * Affiche la liste des pets
  */
 function renderPetsList() {
@@ -42,12 +69,23 @@ function renderPetsList() {
                     </div>
                 </div>
                 <div class="item-action">
-                    <button class="buy-btn" onclick="unlockPet('${petData.id}')"
+                    <button class="buy-btn" data-pet="unlock-${petData.id}"
                             ${!canUnlock ? 'disabled' : ''}>
                         Débloquer: ${petData.unlockCost} RP
                     </button>
                 </div>
             `;
+
+            container.appendChild(petDiv);
+
+            // Attacher l'événement
+            const unlockBtn = petDiv.querySelector('.buy-btn');
+            if (unlockBtn) {
+                unlockBtn.addEventListener('click', () => {
+                    console.log('Déblocage pet:', petData.id);
+                    unlockPet(petData.id);
+                });
+            }
         } else {
             // Pet débloqué
             const canUpgrade = level < petData.maxLevel &&
@@ -75,21 +113,42 @@ function renderPetsList() {
                 </div>
                 <div class="item-action">
                     ${!isActive ?
-                        `<button class="equip-btn" onclick="setActivePet('${petData.id}')">
+                        `<button class="equip-btn" data-pet="activate-${petData.id}">
                             Activer
                         </button>` :
                         '<span style="color: #28a745;">✓ ACTIF</span>'}
                     ${level < petData.maxLevel ?
-                        `<button class="upgrade-btn" onclick="upgradePet('${petData.id}')"
+                        `<button class="upgrade-btn" data-pet="upgrade-${petData.id}"
                                 ${!canUpgrade ? 'disabled' : ''}>
                             Améliorer: ${petData.upgradeCost} RP
                         </button>` :
                         '<span style="color: #ffc107;">★ MAX</span>'}
                 </div>
             `;
-        }
 
-        container.appendChild(petDiv);
+            container.appendChild(petDiv);
+
+            // Attacher les événements
+            if (!isActive) {
+                const activateBtn = petDiv.querySelector('.equip-btn');
+                if (activateBtn) {
+                    activateBtn.addEventListener('click', () => {
+                        console.log('Activation pet:', petData.id);
+                        setActivePet(petData.id);
+                    });
+                }
+            }
+
+            if (level < petData.maxLevel) {
+                const upgradeBtn = petDiv.querySelector('.upgrade-btn');
+                if (upgradeBtn) {
+                    upgradeBtn.addEventListener('click', () => {
+                        console.log('Amélioration pet:', petData.id);
+                        upgradePet(petData.id);
+                    });
+                }
+            }
+        }
     });
 }
 
