@@ -30,6 +30,9 @@ body {
     color: var(--text-light);
     min-height: 100vh;
     overflow-x: hidden;
+    /* Empêcher le zoom et améliorer le touch sur mobile */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ===================================
@@ -128,6 +131,10 @@ header {
     font-size: 1.2em;
     color: white;
     font-weight: bold;
+    /* Empêcher le zoom au double-tap sur mobile */
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .main-click-button:hover {

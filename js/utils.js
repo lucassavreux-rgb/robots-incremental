@@ -107,10 +107,10 @@ function formatTimeMS(ms) {
  * Vérifie si le joueur peut acheter quelque chose
  */
 function canAfford(cost) {
-    if (typeof cost === 'number') {
-        return gameState.coins >= cost;
-    }
-    return toBigNumber(gameState.coins).greaterThanOrEqual(cost);
+    // Toujours comparer en nombres normaux pour simplifier
+    const costNum = (typeof cost === 'number') ? cost : cost.toNumber();
+    const coinsNum = (typeof gameState.coins === 'number') ? gameState.coins : gameState.coins;
+    return coinsNum >= costNum;
 }
 
 /**

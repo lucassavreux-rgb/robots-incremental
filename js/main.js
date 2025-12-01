@@ -147,9 +147,11 @@ function handleClick(event) {
     // Stats
     gameState.stats.totalClicks++;
 
-    // Quêtes
-    updateQuestProgress('clicks', 1);
-    updateQuestProgress('coins', coinsGained);
+    // Quêtes (si la fonction existe)
+    if (typeof updateQuestProgress === 'function') {
+        updateQuestProgress('clicks', 1);
+        updateQuestProgress('coins', coinsGained);
+    }
 
     // Effet visuel
     createClickEffect(event.clientX, event.clientY, coinsGained, isCritical);
@@ -227,7 +229,9 @@ function startGameLoop() {
         if (gameState.cps > 0) {
             const coinsProduced = gameState.cps * delta;
             addCoins(coinsProduced);
-            updateQuestProgress('coins', coinsProduced);
+            if (typeof updateQuestProgress === 'function') {
+                updateQuestProgress('coins', coinsProduced);
+            }
         }
 
         // Playtime
@@ -292,3 +296,26 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('beforeunload', () => {
     saveGame();
 });
+
+// Empêcher le zoom par pinch sur mobile
+document.addEventListener('gesturestart', (e) => {
+    e.preventDefault();
+});
+
+document.addEventListener('gesturechange', (e) => {
+    e.preventDefault();
+});
+
+document.addEventListener('gestureend', (e) => {
+    e.preventDefault();
+});
+
+// Empêcher le double-tap zoom
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false);
