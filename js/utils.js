@@ -108,8 +108,11 @@ function formatTimeMS(ms) {
  */
 function canAfford(cost) {
     // Toujours comparer en nombres normaux pour simplifier
-    const costNum = (typeof cost === 'number') ? cost : cost.toNumber();
-    const coinsNum = (typeof gameState.coins === 'number') ? gameState.coins : gameState.coins;
+    const costNum = (typeof cost === 'number') ? cost : (cost.toNumber ? cost.toNumber() : parseFloat(cost));
+    const coinsNum = (typeof gameState.coins === 'number') ? gameState.coins : (gameState.coins.toNumber ? gameState.coins.toNumber() : parseFloat(gameState.coins));
+
+    console.log('canAfford check:', { coins: coinsNum, cost: costNum, result: coinsNum >= costNum });
+
     return coinsNum >= costNum;
 }
 
@@ -117,11 +120,16 @@ function canAfford(cost) {
  * Déduit un coût des coins du joueur
  */
 function spendCoins(cost) {
+    const before = gameState.coins;
+
     if (typeof cost === 'number') {
         gameState.coins -= cost;
     } else {
         gameState.coins = toBigNumber(gameState.coins).subtract(cost).toNumber();
     }
+
+    console.log('spendCoins:', { before, cost, after: gameState.coins });
+
     updateMainStats();
 }
 
