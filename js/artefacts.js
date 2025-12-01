@@ -76,19 +76,35 @@ function renderArtefactsList() {
                 </div>
                 <div class="item-action">
                     ${isEquipped ?
-                        `<button class="equip-btn" onclick="unequipArtefact('${artefact.id}')">
+                        `<button class="equip-btn" data-artefact="unequip-${artefact.id}">
                             Déséquiper
                         </button>` :
-                        `<button class="equip-btn" onclick="equipArtefact('${artefact.id}')"
+                        `<button class="equip-btn" data-artefact="equip-${artefact.id}"
                                 ${gameState.equippedArtefacts.length >= 3 ? 'disabled' : ''}>
                             Équiper
                         </button>`
                     }
                 </div>
             `;
-        }
 
-        container.appendChild(artefactDiv);
+            container.appendChild(artefactDiv);
+
+            // Attacher l'événement
+            const equipBtn = artefactDiv.querySelector('.equip-btn');
+            if (equipBtn) {
+                equipBtn.addEventListener('click', () => {
+                    if (isEquipped) {
+                        console.log('Déséquipement artefact:', artefact.id);
+                        unequipArtefact(artefact.id);
+                    } else {
+                        console.log('Équipement artefact:', artefact.id);
+                        equipArtefact(artefact.id);
+                    }
+                });
+            }
+        } else {
+            container.appendChild(artefactDiv);
+        }
     });
 }
 

@@ -13,6 +13,29 @@ function initTalents() {
 }
 
 /**
+ * Met à jour l'état des boutons talents sans re-render complet
+ */
+function updateTalentsButtons() {
+    ['click', 'generators', 'prestige'].forEach(branchName => {
+        const talents = TALENTS_DATA[branchName];
+        const branchState = gameState.talents[branchName] || [];
+
+        talents.forEach(talent => {
+            const talentState = branchState.find(t => t.id === talent.id);
+            const currentLevel = talentState ? talentState.level : 0;
+
+            if (currentLevel >= talent.maxLevel) return; // Déjà max
+
+            const canUpgrade = gameState.prestigePoints >= talent.cost;
+            const button = document.querySelector(`.upgrade-btn[data-talent="${branchName}-${talent.id}"]`);
+            if (button) {
+                button.disabled = !canUpgrade;
+            }
+        });
+    });
+}
+
+/**
  * Affiche tous les talents
  */
 function renderTalentsList() {
@@ -74,7 +97,7 @@ function renderTalentBranch(branchName, containerId) {
                     `<br>Coût: ${talent.cost} RP` : ''}
             </div>
             ${currentLevel < talent.maxLevel && requirementMet ?
-                `<button class="upgrade-btn" onclick="upgradeTalent('${branchName}', '${talent.id}')"
+                `<button class="upgrade-btn" data-talent="${branchName}-${talent.id}"
                         ${!canUpgrade ? 'disabled' : ''}>
                     Améliorer
                 </button>` :
@@ -84,6 +107,17 @@ function renderTalentBranch(branchName, containerId) {
         `;
 
         container.appendChild(talentDiv);
+
+        // Attacher l'événement si le bouton existe
+        if (currentLevel < talent.maxLevel && requirementMet) {
+            const upgradeBtn = talentDiv.querySelector('.upgrade-btn');
+            if (upgradeBtn) {
+                upgradeBtn.addEventListener('click', () => {
+                    console.log('Achat talent:', branchName, talent.id);
+                    upgradeTalent(branchName, talent.id);
+                });
+            }
+        }
     });
 }
 

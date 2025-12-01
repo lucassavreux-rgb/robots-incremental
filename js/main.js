@@ -260,6 +260,12 @@ function startGameLoop() {
             if (typeof updateUpgradesButtons === 'function') {
                 updateUpgradesButtons();
             }
+            if (typeof updateTalentsButtons === 'function') {
+                updateTalentsButtons();
+            }
+            if (typeof updatePetsButtons === 'function') {
+                updatePetsButtons();
+            }
         }
     }, 100);
 }
