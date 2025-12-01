@@ -1,596 +1,571 @@
 /**
  * =====================================================
- * DATA.JS - Données du Jeu
+ * DATA.JS - Game Data Constants
  * =====================================================
- * Toutes les configurations : générateurs, upgrades,
- * talents, pets, artefacts, quêtes
+ * Toutes les données du jeu (générateurs, upgrades, talents, etc.)
  */
 
-/**
- * ========== GÉNÉRATEURS ==========
- * Minimum 6 générateurs avec scaling exponentiel
- */
-const GENERATORS_DATA = [
+// ========== GÉNÉRATEURS ==========
+const GENERATORS = [
     {
-        id: 'cursor',
-        name: '🖱️ Curseur',
-        description: 'Clique automatiquement pour vous',
-        basePrice: 15,
-        baseProduction: 0.1,
-        priceMultiplier: 1.15,
-        icon: '🖱️',
-        milestones: [25, 50, 100, 200, 400] // Niveaux où bonus x2
+        id: "click_drone",
+        name: "Click Drone",
+        baseCost: 50,
+        costMultiplier: 1.15,
+        baseCps: 0.5,
+        cpsGrowthPerLevel: 1.05
     },
     {
-        id: 'grandma',
-        name: '👵 Mamie',
-        description: 'Une gentille mamie qui génère des coins',
-        basePrice: 100,
-        baseProduction: 1,
-        priceMultiplier: 1.15,
-        icon: '👵',
-        milestones: [25, 50, 100, 200, 400]
+        id: "shard_mine",
+        name: "Shard Mine",
+        baseCost: 500,
+        costMultiplier: 1.15,
+        baseCps: 5,
+        cpsGrowthPerLevel: 1.06
     },
     {
-        id: 'farm',
-        name: '🌾 Ferme',
-        description: 'Cultive des coins dorés',
-        basePrice: 1100,
-        baseProduction: 8,
-        priceMultiplier: 1.15,
-        icon: '🌾',
-        milestones: [25, 50, 100, 200, 400]
+        id: "nano_factory",
+        name: "Nano Factory",
+        baseCost: 5000,
+        costMultiplier: 1.16,
+        baseCps: 40,
+        cpsGrowthPerLevel: 1.06
     },
     {
-        id: 'mine',
-        name: '⛏️ Mine',
-        description: 'Extrait des coins du sol',
-        basePrice: 12000,
-        baseProduction: 47,
-        priceMultiplier: 1.15,
-        icon: '⛏️',
-        milestones: [25, 50, 100, 200, 400]
+        id: "crystal_lab",
+        name: "Crystal Laboratory",
+        baseCost: 50000,
+        costMultiplier: 1.17,
+        baseCps: 300,
+        cpsGrowthPerLevel: 1.07
     },
     {
-        id: 'factory',
-        name: '🏭 Usine',
-        description: 'Produit des coins en masse',
-        basePrice: 130000,
-        baseProduction: 260,
-        priceMultiplier: 1.15,
-        icon: '🏭',
-        milestones: [25, 50, 100, 200, 400]
+        id: "temporal_reactor",
+        name: "Temporal Reactor",
+        baseCost: 600000,
+        costMultiplier: 1.18,
+        baseCps: 2500,
+        cpsGrowthPerLevel: 1.07
     },
     {
-        id: 'bank',
-        name: '🏦 Banque',
-        description: 'Investit et multiplie vos coins',
-        basePrice: 1400000,
-        baseProduction: 1400,
-        priceMultiplier: 1.15,
-        icon: '🏦',
-        milestones: [25, 50, 100, 200, 400]
+        id: "dimensional_portal",
+        name: "Dimensional Portal",
+        baseCost: 7000000,
+        costMultiplier: 1.19,
+        baseCps: 20000,
+        cpsGrowthPerLevel: 1.08
     },
     {
-        id: 'temple',
-        name: '🛕 Temple',
-        description: 'Temple sacré générant des richesses divines',
-        basePrice: 20000000,
-        baseProduction: 7800,
-        priceMultiplier: 1.15,
-        icon: '🛕',
-        milestones: [25, 50, 100, 200, 400]
+        id: "galactic_core",
+        name: "Galactic Core",
+        baseCost: 90000000,
+        costMultiplier: 1.20,
+        baseCps: 150000,
+        cpsGrowthPerLevel: 1.08
     },
     {
-        id: 'wizard',
-        name: '🧙 Magicien',
-        description: 'Utilise la magie pour créer des coins',
-        basePrice: 330000000,
-        baseProduction: 44000,
-        priceMultiplier: 1.15,
-        icon: '🧙',
-        milestones: [25, 50, 100, 200, 400]
+        id: "quantum_singularity",
+        name: "Quantum Singularity",
+        baseCost: 1200000000,
+        costMultiplier: 1.21,
+        baseCps: 1200000,
+        cpsGrowthPerLevel: 1.09
     }
 ];
 
-/**
- * ========== UPGRADES ==========
- * Upgrades globales pour CPC, CPS, critiques, etc.
- */
-const UPGRADES_DATA = [
-    // Upgrades CPC
+// ========== UPGRADES ==========
+const UPGRADES = [
+    // Click upgrades
     {
-        id: 'cpc1',
-        name: 'Doigts Rapides',
-        description: 'Double votre CPC',
-        type: 'cpc',
-        effect: 2,
-        price: 100,
-        requirement: null
+        id: "click_flat_1",
+        name: "Better Finger",
+        description: "+1 Shard per click",
+        cost: 100,
+        type: "click",
+        effectType: "flat",
+        value: 1
     },
     {
-        id: 'cpc2',
-        name: 'Main Bionique',
-        description: 'Triple votre CPC',
-        type: 'cpc',
-        effect: 3,
-        price: 1000,
-        requirement: 'cpc1'
+        id: "click_flat_2",
+        name: "Strong Fingers",
+        description: "+10 Shards per click",
+        cost: 1000,
+        type: "click",
+        effectType: "flat",
+        value: 10
     },
     {
-        id: 'cpc3',
-        name: 'Pouvoir Surhumain',
-        description: 'x5 CPC',
-        type: 'cpc',
-        effect: 5,
-        price: 10000,
-        requirement: 'cpc2'
+        id: "click_flat_3",
+        name: "Powerful Hands",
+        description: "+100 Shards per click",
+        cost: 50000,
+        type: "click",
+        effectType: "flat",
+        value: 100
     },
     {
-        id: 'cpc4',
-        name: 'Force Divine',
-        description: 'x10 CPC',
-        type: 'cpc',
-        effect: 10,
-        price: 100000,
-        requirement: 'cpc3'
-    },
-
-    // Upgrades CPS
-    {
-        id: 'cps1',
-        name: 'Efficacité I',
-        description: 'Double la production de tous les générateurs',
-        type: 'cps',
-        effect: 2,
-        price: 500,
-        requirement: null
+        id: "click_mult_1",
+        name: "Click Amplifier",
+        description: "×2 click power",
+        cost: 10000,
+        type: "click",
+        effectType: "multiplier",
+        value: 2
     },
     {
-        id: 'cps2',
-        name: 'Efficacité II',
-        description: 'x3 production globale',
-        type: 'cps',
-        effect: 3,
-        price: 5000,
-        requirement: 'cps1'
+        id: "click_mult_2",
+        name: "Quantum Clicker",
+        description: "×3 click power",
+        cost: 500000,
+        type: "click",
+        effectType: "multiplier",
+        value: 3
     },
     {
-        id: 'cps3',
-        name: 'Efficacité III',
-        description: 'x5 production globale',
-        type: 'cps',
-        effect: 5,
-        price: 50000,
-        requirement: 'cps2'
-    },
-
-    // Critiques
-    {
-        id: 'crit1',
-        name: 'Coup Chanceux',
-        description: '5% de chance de critique (x5 coins)',
-        type: 'critical',
-        critChance: 0.05,
-        critMultiplier: 5,
-        price: 1000,
-        requirement: null
+        id: "click_crit_1",
+        name: "Precision Strike",
+        description: "+5% crit chance",
+        cost: 25000,
+        type: "click",
+        effectType: "crit_chance",
+        value: 0.05
     },
     {
-        id: 'crit2',
-        name: 'Frappe Précise',
-        description: '10% de chance de critique (x5 coins)',
-        type: 'critical',
-        critChance: 0.10,
-        critMultiplier: 5,
-        price: 10000,
-        requirement: 'crit1'
+        id: "click_crit_2",
+        name: "Master Striker",
+        description: "+10% crit chance",
+        cost: 250000,
+        type: "click",
+        effectType: "crit_chance",
+        value: 0.10
     },
     {
-        id: 'crit3',
-        name: 'Maître Critique',
-        description: '15% de chance de critique (x10 coins)',
-        type: 'critical',
-        critChance: 0.15,
-        critMultiplier: 10,
-        price: 100000,
-        requirement: 'crit2'
+        id: "click_crit_mult_1",
+        name: "Devastating Blow",
+        description: "+2 to crit multiplier",
+        cost: 100000,
+        type: "click",
+        effectType: "crit_multiplier",
+        value: 2
     },
-
-    // Réduction de coûts
+    // Generator specific
     {
-        id: 'cost1',
-        name: 'Négociateur',
-        description: 'Réduit le coût des générateurs de 5%',
-        type: 'cost_reduction',
-        effect: 0.05,
-        price: 5000,
-        requirement: null
+        id: "generator_mine_mult_1",
+        name: "Enhanced Mining",
+        description: "×2 Shard Mine production",
+        cost: 50000,
+        type: "generator",
+        effectType: "specific",
+        targetGenerator: "shard_mine",
+        value: 2
     },
     {
-        id: 'cost2',
-        name: 'Économiste',
-        description: 'Réduit le coût des générateurs de 10%',
-        type: 'cost_reduction',
-        effect: 0.10,
-        price: 50000,
-        requirement: 'cost1'
+        id: "generator_factory_mult_1",
+        name: "Nano Optimization",
+        description: "×2 Nano Factory production",
+        cost: 200000,
+        type: "generator",
+        effectType: "specific",
+        targetGenerator: "nano_factory",
+        value: 2
+    },
+    {
+        id: "generator_lab_mult_1",
+        name: "Crystal Enhancement",
+        description: "×2 Crystal Lab production",
+        cost: 1000000,
+        type: "generator",
+        effectType: "specific",
+        targetGenerator: "crystal_lab",
+        value: 2
+    },
+    // Global upgrades
+    {
+        id: "global_cps_mult_1",
+        name: "Production Boost I",
+        description: "×1.5 global CPS",
+        cost: 25000,
+        type: "global",
+        effectType: "cps_multiplier",
+        value: 1.5
+    },
+    {
+        id: "global_cps_mult_2",
+        name: "Production Boost II",
+        description: "×2 global CPS",
+        cost: 250000,
+        type: "global",
+        effectType: "cps_multiplier",
+        value: 2
+    },
+    {
+        id: "global_cps_mult_3",
+        name: "Production Boost III",
+        description: "×3 global CPS",
+        cost: 5000000,
+        type: "global",
+        effectType: "cps_multiplier",
+        value: 3
+    },
+    {
+        id: "global_all_mult_1",
+        name: "Universal Amplifier I",
+        description: "×1.5 CPC and CPS",
+        cost: 1000000,
+        type: "global",
+        effectType: "all_multiplier",
+        value: 1.5
+    },
+    {
+        id: "global_all_mult_2",
+        name: "Universal Amplifier II",
+        description: "×2 CPC and CPS",
+        cost: 10000000,
+        type: "global",
+        effectType: "all_multiplier",
+        value: 2
+    },
+    {
+        id: "global_all_mult_3",
+        name: "Universal Amplifier III",
+        description: "×5 CPC and CPS",
+        cost: 500000000,
+        type: "global",
+        effectType: "all_multiplier",
+        value: 5
+    },
+    {
+        id: "generator_cost_1",
+        name: "Efficient Production I",
+        description: "-10% generator costs",
+        cost: 500000,
+        type: "global",
+        effectType: "cost_reduction",
+        value: 0.10
+    },
+    {
+        id: "generator_cost_2",
+        name: "Efficient Production II",
+        description: "-15% generator costs",
+        cost: 10000000,
+        type: "global",
+        effectType: "cost_reduction",
+        value: 0.15
+    },
+    {
+        id: "generator_cost_3",
+        name: "Efficient Production III",
+        description: "-20% generator costs",
+        cost: 250000000,
+        type: "global",
+        effectType: "cost_reduction",
+        value: 0.20
     }
 ];
 
-/**
- * ========== TALENTS ==========
- * 3 branches : Clic, Générateurs, Prestige
- */
-const TALENTS_DATA = {
+// ========== TALENTS ==========
+const TALENTS = {
     click: [
         {
-            id: 'talent_click_1',
-            name: 'Clic Puissant I',
-            description: '+50% CPC',
-            type: 'cpc_bonus',
-            effect: 0.5,
-            cost: 1,
+            id: "t_click_1",
+            name: "Doigts d'Acier",
+            description: "+5% CPC per level",
+            branch: "click",
+            tier: 1,
+            rpCost: 5,
+            maxLevel: 10,
+            effectType: "cpc_multiplier",
+            valuePerLevel: 0.05
+        },
+        {
+            id: "t_click_2",
+            name: "Critiques Précis",
+            description: "+2% crit chance per level (max 50%)",
+            branch: "click",
+            tier: 2,
+            rpCost: 10,
+            maxLevel: 10,
+            effectType: "crit_chance",
+            valuePerLevel: 0.02
+        },
+        {
+            id: "t_click_3",
+            name: "Explosion Critique",
+            description: "+0.5 crit multiplier per level (max 20)",
+            branch: "click",
+            tier: 3,
+            rpCost: 15,
+            maxLevel: 10,
+            effectType: "crit_multiplier",
+            valuePerLevel: 0.5
+        },
+        {
+            id: "t_click_4",
+            name: "Maître du Clic",
+            description: "+10% CPC per level",
+            branch: "click",
+            tier: 4,
+            rpCost: 25,
             maxLevel: 5,
-            requirement: null
-        },
-        {
-            id: 'talent_click_2',
-            name: 'Clic Puissant II',
-            description: '+100% CPC',
-            type: 'cpc_bonus',
-            effect: 1.0,
-            cost: 3,
-            maxLevel: 5,
-            requirement: 'talent_click_1'
-        },
-        {
-            id: 'talent_click_3',
-            name: 'Critique Amélioré',
-            description: '+5% chance de critique',
-            type: 'crit_chance',
-            effect: 0.05,
-            cost: 5,
-            maxLevel: 3,
-            requirement: 'talent_click_1'
-        },
-        {
-            id: 'talent_click_4',
-            name: 'Auto-clicker',
-            description: 'Gagne 10% de ton CPC par seconde',
-            type: 'auto_click',
-            effect: 0.1,
-            cost: 10,
-            maxLevel: 1,
-            requirement: 'talent_click_2'
+            effectType: "cpc_multiplier",
+            valuePerLevel: 0.10
         }
     ],
     generators: [
         {
-            id: 'talent_gen_1',
-            name: 'Production I',
-            description: '+50% CPS',
-            type: 'cps_bonus',
-            effect: 0.5,
-            cost: 1,
+            id: "t_gen_1",
+            name: "Efficacité Industrielle",
+            description: "+3% CPS global per level",
+            branch: "generators",
+            tier: 1,
+            rpCost: 5,
+            maxLevel: 10,
+            effectType: "cps_multiplier",
+            valuePerLevel: 0.03
+        },
+        {
+            id: "t_gen_2",
+            name: "Production Focalisée",
+            description: "+10% CPS for all generators per level",
+            branch: "generators",
+            tier: 2,
+            rpCost: 10,
+            maxLevel: 8,
+            effectType: "cps_multiplier",
+            valuePerLevel: 0.10
+        },
+        {
+            id: "t_gen_3",
+            name: "Optimisation des Coûts",
+            description: "-1% generator costs per level (max -50%)",
+            branch: "generators",
+            tier: 3,
+            rpCost: 15,
+            maxLevel: 10,
+            effectType: "cost_reduction",
+            valuePerLevel: 0.01
+        },
+        {
+            id: "t_gen_4",
+            name: "Super Production",
+            description: "+15% CPS global per level",
+            branch: "generators",
+            tier: 4,
+            rpCost: 30,
             maxLevel: 5,
-            requirement: null
-        },
-        {
-            id: 'talent_gen_2',
-            name: 'Production II',
-            description: '+100% CPS',
-            type: 'cps_bonus',
-            effect: 1.0,
-            cost: 3,
-            maxLevel: 5,
-            requirement: 'talent_gen_1'
-        },
-        {
-            id: 'talent_gen_3',
-            name: 'Réduction de Prix',
-            description: 'Les générateurs coûtent 10% moins cher',
-            type: 'cost_reduction',
-            effect: 0.1,
-            cost: 5,
-            maxLevel: 3,
-            requirement: 'talent_gen_1'
-        },
-        {
-            id: 'talent_gen_4',
-            name: 'Synergie',
-            description: '+1% CPS par type de générateur possédé',
-            type: 'synergy',
-            effect: 0.01,
-            cost: 10,
-            maxLevel: 1,
-            requirement: 'talent_gen_2'
+            effectType: "cps_multiplier",
+            valuePerLevel: 0.15
         }
     ],
     prestige: [
         {
-            id: 'talent_pres_1',
-            name: 'Prestige Puissant I',
-            description: '+20% RP gagnés au prestige',
-            type: 'rp_bonus',
-            effect: 0.2,
-            cost: 2,
-            maxLevel: 5,
-            requirement: null
+            id: "t_prestige_1",
+            name: "Renaissance Puissante",
+            description: "+2% RP effectiveness per level",
+            branch: "prestige",
+            tier: 1,
+            rpCost: 5,
+            maxLevel: 10,
+            effectType: "rp_effectiveness",
+            valuePerLevel: 0.02
         },
         {
-            id: 'talent_pres_2',
-            name: 'Prestige Puissant II',
-            description: '+50% RP gagnés au prestige',
-            type: 'rp_bonus',
-            effect: 0.5,
-            cost: 5,
+            id: "t_prestige_2",
+            name: "Accélération Cosmique",
+            description: "+5% RP gained per level",
+            branch: "prestige",
+            tier: 2,
+            rpCost: 20,
+            maxLevel: 5,
+            effectType: "rp_gain",
+            valuePerLevel: 0.05
+        },
+        {
+            id: "t_prestige_3",
+            name: "Rebirth Express",
+            description: "Keep 5% of generators per level after prestige",
+            branch: "prestige",
+            tier: 3,
+            rpCost: 30,
             maxLevel: 3,
-            requirement: 'talent_pres_1'
+            effectType: "keep_generators",
+            valuePerLevel: 0.05
         },
         {
-            id: 'talent_pres_3',
-            name: 'Héritage',
-            description: 'Garde 10% de tes coins après prestige',
-            type: 'keep_coins',
-            effect: 0.1,
-            cost: 15,
-            maxLevel: 1,
-            requirement: 'talent_pres_1'
-        },
-        {
-            id: 'talent_pres_4',
-            name: 'Bonus RP Passif',
-            description: '+10% à tous les bonus RP',
-            type: 'rp_bonus_mult',
-            effect: 0.1,
-            cost: 20,
+            id: "t_prestige_4",
+            name: "Maître de Renaissance",
+            description: "+10% RP effectiveness per level",
+            branch: "prestige",
+            tier: 4,
+            rpCost: 40,
             maxLevel: 5,
-            requirement: 'talent_pres_2'
+            effectType: "rp_effectiveness",
+            valuePerLevel: 0.10
         }
     ]
 };
 
-/**
- * ========== PETS ==========
- * Pets passifs et actifs
- */
-const PETS_DATA = [
+// ========== ARTEFACTS ==========
+const ARTEFACTS = [
     {
-        id: 'pet_dog',
-        name: '🐕 Chien Fidèle',
-        description: 'Un compagnon loyal qui booste votre CPS',
-        unlockCost: 5, // RP
-        upgradeCost: 10, // RP par niveau
-        maxLevel: 10,
-        passiveEffect: {
-            type: 'cps_bonus',
-            baseValue: 0.2, // +20% par niveau
-            perLevel: 0.2
-        },
-        activeAbility: {
-            name: 'Aboiement Motivant',
-            description: 'x3 CPS pendant 10 secondes',
-            multiplier: 3,
-            duration: 10000, // ms
-            cooldown: 60000 // ms
-        },
-        icon: '🐕'
+        id: "a_click_ring",
+        name: "Anneau du Clic Infini",
+        rarity: "epic",
+        effectType: "cpc_multiplier",
+        value: 3,
+        description: "×3 click power"
     },
     {
-        id: 'pet_cat',
-        name: '🐈 Chat Chanceux',
-        description: 'Un chat qui améliore vos critiques',
-        unlockCost: 10,
-        upgradeCost: 15,
-        maxLevel: 10,
-        passiveEffect: {
-            type: 'crit_chance',
-            baseValue: 0.03, // +3% par niveau
-            perLevel: 0.03
-        },
-        activeAbility: {
-            name: 'Ronronnement Mystique',
-            description: 'Garantit des critiques pendant 5 secondes',
-            multiplier: 1,
-            duration: 5000,
-            cooldown: 90000
-        },
-        icon: '🐈'
+        id: "a_mine_amulet",
+        name: "Amulette de la Mine",
+        rarity: "rare",
+        effectType: "generator_specific",
+        targetGenerator: "shard_mine",
+        value: 4,
+        description: "×4 Shard Mine production"
     },
     {
-        id: 'pet_dragon',
-        name: '🐉 Dragon',
-        description: 'Créature légendaire ultra-puissante',
-        unlockCost: 50,
-        upgradeCost: 50,
-        maxLevel: 5,
-        passiveEffect: {
-            type: 'global_mult',
-            baseValue: 0.5, // +50% tout par niveau
-            perLevel: 0.5
-        },
-        activeAbility: {
-            name: 'Souffle Ardent',
-            description: 'x10 production totale pendant 15 secondes',
-            multiplier: 10,
-            duration: 15000,
-            cooldown: 180000
-        },
-        icon: '🐉'
+        id: "a_global_core",
+        name: "Cœur Cristallin",
+        rarity: "legendary",
+        effectType: "global_multiplier",
+        cpsValue: 2,
+        cpcValue: 2,
+        description: "×2 CPS and ×2 CPC"
+    },
+    {
+        id: "a_prestige_orb",
+        name: "Orbe de Renaissance",
+        rarity: "legendary",
+        effectType: "rp_gain",
+        value: 0.25,
+        description: "+25% RP on prestige"
+    },
+    {
+        id: "a_factory_gem",
+        name: "Gemme Nano",
+        rarity: "rare",
+        effectType: "generator_specific",
+        targetGenerator: "nano_factory",
+        value: 3,
+        description: "×3 Nano Factory production"
+    },
+    {
+        id: "a_crit_blade",
+        name: "Lame Critique",
+        rarity: "epic",
+        effectType: "crit",
+        critChance: 0.15,
+        critMultiplier: 5,
+        description: "+15% crit chance and +5 crit multiplier"
     }
 ];
 
-/**
- * ========== ARTEFACTS ==========
- * Objets rares avec bonus forts
- */
-const ARTEFACTS_DATA = [
+// ========== PETS ==========
+const PETS = [
     {
-        id: 'artefact_ring',
-        name: '💍 Anneau du Pouvoir',
-        description: 'x2 CPC',
-        rarity: 'rare',
-        effect: {
-            type: 'cpc_mult',
-            value: 2
-        },
-        set: 'power'
+        id: "pet_fox",
+        name: "Shard Fox",
+        passiveBonusType: "cps_global",
+        passiveValue: 0.10,
+        activeBonusType: "cpc",
+        activeMultiplier: 5,
+        activeDurationSeconds: 10,
+        cooldownSeconds: 120,
+        description: "Passive: +10% CPS | Active: ×5 CPC for 10s"
     },
     {
-        id: 'artefact_crown',
-        name: '👑 Couronne Royale',
-        description: 'x3 production des Banques',
-        rarity: 'epic',
-        effect: {
-            type: 'generator_mult',
-            generator: 'bank',
-            value: 3
-        },
-        set: 'royal'
+        id: "pet_dragon",
+        name: "Crystal Dragon",
+        passiveBonusType: "cpc",
+        passiveValue: 0.20,
+        activeBonusType: "cps_global",
+        activeMultiplier: 3,
+        activeDurationSeconds: 15,
+        cooldownSeconds: 180,
+        description: "Passive: +20% CPC | Active: ×3 CPS for 15s"
     },
     {
-        id: 'artefact_staff',
-        name: '🔱 Bâton Magique',
-        description: 'x5 production des Magiciens',
-        rarity: 'epic',
-        effect: {
-            type: 'generator_mult',
-            generator: 'wizard',
-            value: 5
-        },
-        set: 'magic'
-    },
-    {
-        id: 'artefact_orb',
-        name: '🔮 Orbe Mystique',
-        description: 'x2 CPS global',
-        rarity: 'legendary',
-        effect: {
-            type: 'cps_mult',
-            value: 2
-        },
-        set: 'magic'
-    },
-    {
-        id: 'artefact_sword',
-        name: '⚔️ Épée Légendaire',
-        description: 'x3 dégâts aux boss',
-        rarity: 'legendary',
-        effect: {
-            type: 'boss_damage',
-            value: 3
-        },
-        set: 'power'
-    },
-    {
-        id: 'artefact_shield',
-        name: '🛡️ Bouclier Ancien',
-        description: '+50% RP au prestige',
-        rarity: 'rare',
-        effect: {
-            type: 'rp_bonus',
-            value: 0.5
-        },
-        set: 'royal'
+        id: "pet_phoenix",
+        name: "Phoenix Éternel",
+        passiveBonusType: "global",
+        passiveValue: 0.15,
+        activeBonusType: "global",
+        activeMultiplier: 10,
+        activeDurationSeconds: 5,
+        cooldownSeconds: 300,
+        description: "Passive: +15% all production | Active: ×10 all for 5s"
     }
 ];
 
-/**
- * ========== SET BONUS ==========
- * Bonus si plusieurs artefacts du même set équipés
- */
-const ARTEFACT_SETS = {
-    power: {
-        name: 'Set du Pouvoir',
-        bonuses: {
-            2: { description: '+100% CPC', type: 'cpc_mult', value: 2 },
-            3: { description: 'x5 CPC et CPS', type: 'global_mult', value: 5 }
-        }
+// ========== QUÊTES ==========
+const QUESTS = [
+    {
+        id: "quest_clicks_1000",
+        description: "Cliquer 1 000 fois",
+        targetType: "clicks",
+        targetValue: 1000,
+        rewardShards: 10000,
+        rewardRP: 1
     },
-    royal: {
-        name: 'Set Royal',
-        bonuses: {
-            2: { description: '+50% coins gagnés', type: 'coin_mult', value: 1.5 },
-            3: { description: 'x3 tout', type: 'global_mult', value: 3 }
-        }
+    {
+        id: "quest_shards_1e7",
+        description: "Gagner 10M Shards",
+        targetType: "shards_earned",
+        targetValue: 10000000,
+        rewardShards: 100000,
+        rewardRP: 5
     },
-    magic: {
-        name: 'Set Magique',
-        bonuses: {
-            2: { description: '+100% CPS', type: 'cps_mult', value: 2 },
-            3: { description: 'x10 production Magiciens', type: 'generator_mult', generator: 'wizard', value: 10 }
-        }
+    {
+        id: "quest_boss_1",
+        description: "Tuer 1 boss",
+        targetType: "boss_killed",
+        targetValue: 1,
+        rewardShards: 50000,
+        rewardRP: 3
+    },
+    {
+        id: "quest_prestige_1",
+        description: "Effectuer 1 prestige",
+        targetType: "prestige_done",
+        targetValue: 1,
+        rewardShards: 0,
+        rewardRP: 10
+    },
+    {
+        id: "quest_generators_10",
+        description: "Acheter 10 générateurs",
+        targetType: "generators_bought",
+        targetValue: 10,
+        rewardShards: 5000,
+        rewardRP: 2
     }
-};
+];
 
-/**
- * ========== QUÊTES ==========
- * Quêtes journalières
- */
-const QUESTS_TEMPLATES = [
+// ========== ÉVÉNEMENTS ==========
+const EVENTS = [
     {
-        id: 'quest_clicks',
-        name: 'Cliqueur Acharné',
-        description: 'Faire {target} clics',
-        type: 'clicks',
-        targetBase: 100,
-        targetScaling: 1.5,
-        reward: {
-            type: 'rp',
-            base: 2,
-            scaling: 1.3
-        }
+        id: "event_click_frenzy",
+        name: "Folie du Clic",
+        description: "×10 CPC",
+        type: "cpc_multiplier",
+        multiplier: 10,
+        duration: 30
     },
     {
-        id: 'quest_coins',
-        name: 'Richesse',
-        description: 'Gagner {target} coins',
-        type: 'coins',
-        targetBase: 10000,
-        targetScaling: 2,
-        reward: {
-            type: 'boost',
-            duration: 30000 // 30s boost x2
-        }
+        id: "event_shard_storm",
+        name: "Tempête de Shards",
+        description: "×5 CPS",
+        type: "cps_multiplier",
+        multiplier: 5,
+        duration: 20
     },
     {
-        id: 'quest_boss',
-        name: 'Chasseur de Boss',
-        description: 'Vaincre {target} boss',
-        type: 'bosses',
-        targetBase: 3,
-        targetScaling: 1.2,
-        reward: {
-            type: 'rp',
-            base: 5,
-            scaling: 1.5
-        }
-    },
-    {
-        id: 'quest_prestige',
-        name: 'Renaître',
-        description: 'Faire un prestige',
-        type: 'prestige',
-        targetBase: 1,
-        targetScaling: 1,
-        reward: {
-            type: 'rp',
-            base: 10,
-            scaling: 1
-        }
-    },
-    {
-        id: 'quest_generators',
-        name: 'Investisseur',
-        description: 'Acheter {target} générateurs',
-        type: 'generators_bought',
-        targetBase: 50,
-        targetScaling: 1.5,
-        reward: {
-            type: 'coins',
-            base: 50000,
-            scaling: 3
-        }
+        id: "event_double_production",
+        name: "Production Double",
+        description: "×2 all production",
+        type: "all_multiplier",
+        multiplier: 2,
+        duration: 60
     }
 ];

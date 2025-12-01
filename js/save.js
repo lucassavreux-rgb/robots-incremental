@@ -1,51 +1,62 @@
 /**
  * =====================================================
- * SAVE.JS - Système de Sauvegarde
+ * SAVE.JS - Save/Load System
  * =====================================================
- * Sauvegarde localStorage, export/import, auto-save
+ * Gestion de la sauvegarde localStorage
  */
 
-const SAVE_KEY = 'clickerGameUltimate_save';
-const AUTOSAVE_INTERVAL = 10000; // 10 secondes
-
-/**
- * Initialise le système de sauvegarde
- */
-function initSaveSystem() {
-    // Boutons
-    document.getElementById('manual-save-btn')?.addEventListener('click', saveGame);
-    document.getElementById('export-save-btn')?.addEventListener('click', exportSave);
-    document.getElementById('import-save-btn')?.addEventListener('click', openImportModal);
-    document.getElementById('reset-save-btn')?.addEventListener('click', resetSave);
-    document.getElementById('confirm-import-btn')?.addEventListener('click', importSave);
-    document.getElementById('cancel-import-btn')?.addEventListener('click', closeImportModal);
-
-    // Auto-save
-    setInterval(() => {
-        saveGame();
-        updateAutoSaveTimer();
-    }, AUTOSAVE_INTERVAL);
-
-    // Charger la sauvegarde au démarrage
-    loadGame();
-}
+const SAVE_KEY = 'shard_clicker_save';
 
 /**
  * Sauvegarde le jeu
  */
 function saveGame() {
     try {
+        // Convertir BigNumbers en objets sérialisables
         const saveData = {
-            version: '1.0',
-            timestamp: Date.now(),
-            state: gameState
+            shards: { mantissa: GameState.shards.mantissa, exponent: GameState.shards.exponent },
+            totalCps: { mantissa: GameState.totalCps.mantissa, exponent: GameState.totalCps.exponent },
+            totalCpc: { mantissa: GameState.totalCpc.mantissa, exponent: GameState.totalCpc.exponent },
+            click: {
+                base: { mantissa: GameState.click.base.mantissa, exponent: GameState.click.base.exponent },
+                flatBonus: { mantissa: GameState.click.flatBonus.mantissa, exponent: GameState.click.flatBonus.exponent },
+                multiplier: { mantissa: GameState.click.multiplier.mantissa, exponent: GameState.click.multiplier.exponent },
+                critChance: GameState.click.critChance,
+                critMultiplier: GameState.click.critMultiplier
+            },
+            generators: GameState.generators,
+            upgrades: GameState.upgrades,
+            prestige: GameState.prestige,
+            talents: GameState.talents,
+            artefacts: GameState.artefacts,
+            pets: GameState.pets,
+            boss: {
+                active: GameState.boss.active,
+                hp: { mantissa: GameState.boss.hp.mantissa, exponent: GameState.boss.hp.exponent },
+                maxHp: { mantissa: GameState.boss.maxHp.mantissa, exponent: GameState.boss.maxHp.exponent },
+                defeated: GameState.boss.defeated,
+                cooldown: GameState.boss.cooldown
+            },
+            quests: GameState.quests,
+            stats: {
+                totalClicks: GameState.stats.totalClicks,
+                totalShardsEarned: { mantissa: GameState.stats.totalShardsEarned.mantissa, exponent: GameState.stats.totalShardsEarned.exponent },
+                playTime: GameState.stats.playTime,
+                generatorsBought: GameState.stats.generatorsBought,
+                upgradesBought: GameState.stats.upgradesBought
+            },
+            lastSave: Date.now()
         };
 
         localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
-        console.log('Jeu sauvegardé');
+        GameState.lastSave = Date.now();
+
+        showNotification("Game saved!", "success");
+        return true;
     } catch (error) {
-        console.error('Erreur de sauvegarde:', error);
-        showNotification('Erreur de sauvegarde !', 'error');
+        console.error("Save error:", error);
+        showNotification("Save failed!", "error");
+        return false;
     }
 }
 
@@ -54,119 +65,90 @@ function saveGame() {
  */
 function loadGame() {
     try {
-        const savedData = localStorage.getItem(SAVE_KEY);
+        const saveDataStr = localStorage.getItem(SAVE_KEY);
+        if (!saveDataStr) return false;
 
-        if (!savedData) {
-            console.log('Aucune sauvegarde trouvée, nouvelle partie');
-            return false;
+        const saveData = JSON.parse(saveDataStr);
+
+        // Restaurer les BigNumbers
+        GameState.shards = new BigNumber(0);
+        GameState.shards.mantissa = saveData.shards.mantissa;
+        GameState.shards.exponent = saveData.shards.exponent;
+
+        GameState.totalCps = new BigNumber(0);
+        GameState.totalCps.mantissa = saveData.totalCps.mantissa;
+        GameState.totalCps.exponent = saveData.totalCps.exponent;
+
+        GameState.totalCpc = new BigNumber(0);
+        GameState.totalCpc.mantissa = saveData.totalCpc.mantissa;
+        GameState.totalCpc.exponent = saveData.totalCpc.exponent;
+
+        GameState.click.base = new BigNumber(0);
+        GameState.click.base.mantissa = saveData.click.base.mantissa;
+        GameState.click.base.exponent = saveData.click.base.exponent;
+
+        GameState.click.flatBonus = new BigNumber(0);
+        GameState.click.flatBonus.mantissa = saveData.click.flatBonus.mantissa;
+        GameState.click.flatBonus.exponent = saveData.click.flatBonus.exponent;
+
+        GameState.click.multiplier = new BigNumber(0);
+        GameState.click.multiplier.mantissa = saveData.click.multiplier.mantissa;
+        GameState.click.multiplier.exponent = saveData.click.multiplier.exponent;
+
+        GameState.click.critChance = saveData.click.critChance;
+        GameState.click.critMultiplier = saveData.click.critMultiplier;
+
+        GameState.generators = saveData.generators;
+        GameState.upgrades = saveData.upgrades;
+        GameState.prestige = saveData.prestige;
+        GameState.talents = saveData.talents;
+        GameState.artefacts = saveData.artefacts;
+        GameState.pets = saveData.pets;
+
+        GameState.boss.active = saveData.boss.active;
+        GameState.boss.hp = new BigNumber(0);
+        GameState.boss.hp.mantissa = saveData.boss.hp.mantissa;
+        GameState.boss.hp.exponent = saveData.boss.hp.exponent;
+        GameState.boss.maxHp = new BigNumber(0);
+        GameState.boss.maxHp.mantissa = saveData.boss.maxHp.mantissa;
+        GameState.boss.maxHp.exponent = saveData.boss.maxHp.exponent;
+        GameState.boss.defeated = saveData.boss.defeated;
+        GameState.boss.cooldown = saveData.boss.cooldown;
+
+        GameState.quests = saveData.quests;
+
+        GameState.stats.totalClicks = saveData.stats.totalClicks;
+        GameState.stats.totalShardsEarned = new BigNumber(0);
+        GameState.stats.totalShardsEarned.mantissa = saveData.stats.totalShardsEarned.mantissa;
+        GameState.stats.totalShardsEarned.exponent = saveData.stats.totalShardsEarned.exponent;
+        GameState.stats.playTime = saveData.stats.playTime;
+        GameState.stats.generatorsBought = saveData.stats.generatorsBought;
+        GameState.stats.upgradesBought = saveData.stats.upgradesBought;
+
+        // Calculer le temps offline
+        const now = Date.now();
+        const offlineTime = (now - saveData.lastSave) / 1000; // en secondes
+        const offlineShards = GameState.totalCps.multiply(offlineTime);
+        GameState.shards = GameState.shards.add(offlineShards);
+
+        if (offlineTime > 60) {
+            showNotification(`Welcome back! Earned ${formatNumber(offlineShards)} Shards offline!`, "info");
         }
 
-        const saveData = JSON.parse(savedData);
-        const loadedState = saveData.state;
-
-        // Fusionner avec l'état par défaut pour les nouveaux champs
-        Object.assign(gameState, loadedState);
-
-        console.log('Jeu chargé');
-        showNotification('Sauvegarde chargée !', 'success');
+        recalculateProduction();
         return true;
     } catch (error) {
-        console.error('Erreur de chargement:', error);
-        showNotification('Erreur de chargement !', 'error');
+        console.error("Load error:", error);
+        showNotification("Load failed! Starting new game.", "error");
         return false;
     }
 }
 
 /**
- * Exporte la sauvegarde en base64
+ * Réinitialise le jeu
  */
-function exportSave() {
-    try {
-        const saveData = {
-            version: '1.0',
-            timestamp: Date.now(),
-            state: gameState
-        };
-
-        const json = JSON.stringify(saveData);
-        const base64 = btoa(json);
-
-        // Copier dans le presse-papier
-        navigator.clipboard.writeText(base64).then(() => {
-            showNotification('Sauvegarde copiée dans le presse-papier !', 'success');
-        }).catch(() => {
-            // Fallback: afficher dans une alerte
-            prompt('Copiez cette sauvegarde:', base64);
-        });
-    } catch (error) {
-        console.error('Erreur d\'export:', error);
-        showNotification('Erreur d\'export !', 'error');
-    }
-}
-
-/**
- * Ouvre le modal d'import
- */
-function openImportModal() {
-    document.getElementById('import-modal').classList.add('active');
-}
-
-/**
- * Ferme le modal d'import
- */
-function closeImportModal() {
-    document.getElementById('import-modal').classList.remove('active');
-    document.getElementById('import-textarea').value = '';
-}
-
-/**
- * Importe une sauvegarde
- */
-function importSave() {
-    try {
-        const base64 = document.getElementById('import-textarea').value.trim();
-
-        if (!base64) {
-            showNotification('Aucune sauvegarde fournie !', 'error');
-            return;
-        }
-
-        const json = atob(base64);
-        const saveData = JSON.parse(json);
-
-        // Vérifier la version
-        if (saveData.version !== '1.0') {
-            if (!confirm('Version de sauvegarde différente. Continuer ?')) {
-                return;
-            }
-        }
-
-        // Charger l'état
-        Object.assign(gameState, saveData.state);
-
-        // Rafraîchir tout
-        initializeGame();
-
-        closeImportModal();
-        showNotification('Sauvegarde importée !', 'success');
-
-        // Sauvegarder
-        saveGame();
-    } catch (error) {
-        console.error('Erreur d\'import:', error);
-        showNotification('Sauvegarde invalide !', 'error');
-    }
-}
-
-/**
- * Réinitialise la sauvegarde
- */
-function resetSave() {
-    if (!confirm('ATTENTION : Cela supprimera toute votre progression !\n\nÊtes-vous VRAIMENT sûr ?')) {
-        return;
-    }
-
-    if (!confirm('Dernière confirmation : TOUT sera perdu !')) {
+function resetGame() {
+    if (!confirm("Are you sure you want to reset ALL progress? This cannot be undone!")) {
         return;
     }
 
@@ -175,9 +157,50 @@ function resetSave() {
 }
 
 /**
- * Met à jour le timer d'auto-save
+ * Exporte la sauvegarde
  */
-function updateAutoSaveTimer() {
-    const seconds = AUTOSAVE_INTERVAL / 1000;
-    document.getElementById('auto-save-timer').textContent = seconds + 's';
+function exportSave() {
+    const saveDataStr = localStorage.getItem(SAVE_KEY);
+    if (!saveDataStr) {
+        showNotification("No save to export!", "error");
+        return;
+    }
+
+    const blob = new Blob([saveDataStr], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'shard_clicker_save.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showNotification("Save exported!", "success");
+}
+
+/**
+ * Importe une sauvegarde
+ */
+function importSave() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.txt';
+
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const saveDataStr = event.target.result;
+                localStorage.setItem(SAVE_KEY, saveDataStr);
+                location.reload();
+            } catch (error) {
+                showNotification("Import failed! Invalid save file.", "error");
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    input.click();
 }

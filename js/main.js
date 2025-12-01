@@ -1,342 +1,242 @@
 /**
  * =====================================================
- * MAIN.JS - Boucle Principale du Jeu
+ * MAIN.JS - Main Game Loop & UI
  * =====================================================
- * Initialisation, game loop, état du jeu
+ * Boucle de jeu principale et gestion de l'interface
  */
 
 /**
- * État global du jeu
+ * Affiche une notification
  */
-const gameState = {
-    // Monnaie
-    coins: 0,
-    prestigePoints: 0,
-
-    // Stats de base
-    baseCPC: 1,
-    cpc: 1,
-    cps: 0,
-
-    // Critiques
-    criticalChance: 0,
-    criticalMultiplier: 2,
-    guaranteedCrits: false,
-
-    // Générateurs
-    generators: [],
-
-    // Upgrades achetés
-    upgrades: [],
-
-    // Talents (par branche)
-    talents: {
-        click: [],
-        generators: [],
-        prestige: []
-    },
-
-    // Pets
-    pets: [],
-    activePet: null,
-
-    // Artefacts
-    unlockedArtefacts: [],
-    equippedArtefacts: [],
-
-    // Quêtes
-    activeQuests: [],
-    questsLastReset: null,
-
-    // Boss
-    currentBoss: null,
-    nextBossTime: Date.now() + (5 * 60 * 1000), // 5 minutes
-
-    // Événements actifs
-    activeEvents: [],
-
-    // Cooldowns
-    cooldowns: {},
-
-    // Statistiques
-    stats: {
-        totalClicks: 0,
-        totalCoinsEarned: 0,
-        playtime: 0,
-        criticalHits: 0,
-        bossesDefeated: 0,
-        prestigeCount: 0,
-        generatorsBought: 0
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notifications');
+    if (!container) {
+        console.log(`[${type}] ${message}`);
+        return;
     }
-};
+
+    const div = document.createElement('div');
+    div.className = `notification notification-${type}`;
+    div.textContent = message;
+
+    container.appendChild(div);
+
+    setTimeout(() => {
+        div.classList.add('notification-fade');
+        setTimeout(() => div.remove(), 500);
+    }, 3000);
+}
+
+/**
+ * Met à jour les stats principales
+ */
+function updateStatsUI() {
+    // Shards
+    const shardsEl = document.getElementById('shards-count');
+    if (shardsEl) {
+        shardsEl.textContent = formatNumber(GameState.shards);
+    }
+
+    // CPS
+    const cpsEl = document.getElementById('cps-count');
+    if (cpsEl) {
+        cpsEl.textContent = formatNumber(GameState.totalCps);
+    }
+
+    // CPC
+    const cpcEl = document.getElementById('cpc-count');
+    if (cpcEl) {
+        cpcEl.textContent = formatNumber(GameState.totalCpc);
+    }
+
+    // Crit chance & multiplier
+    const critChanceEl = document.getElementById('crit-chance');
+    if (critChanceEl) {
+        critChanceEl.textContent = (GameState.click.critChance * 100).toFixed(1) + '%';
+    }
+
+    const critMultEl = document.getElementById('crit-multiplier');
+    if (critMultEl) {
+        critMultEl.textContent = 'x' + GameState.click.critMultiplier.toFixed(1);
+    }
+
+    // Stats
+    const totalClicksEl = document.getElementById('total-clicks');
+    if (totalClicksEl) {
+        totalClicksEl.textContent = GameState.stats.totalClicks;
+    }
+
+    const totalShardsEl = document.getElementById('total-shards');
+    if (totalShardsEl) {
+        totalShardsEl.textContent = formatNumber(GameState.stats.totalShardsEarned);
+    }
+
+    const playTimeEl = document.getElementById('play-time');
+    if (playTimeEl) {
+        const hours = Math.floor(GameState.stats.playTime / 3600);
+        const minutes = Math.floor((GameState.stats.playTime % 3600) / 60);
+        const seconds = Math.floor(GameState.stats.playTime % 60);
+        playTimeEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
+    }
+}
+
+/**
+ * Met à jour toute l'interface
+ */
+function updateAllUI() {
+    updateStatsUI();
+    updateGeneratorsUI();
+    updateUpgradesUI();
+    updatePrestigeUI();
+    updateTalentsUI();
+    updateArtefactsUI();
+    updatePetsUI();
+    updateQuestsUI();
+    updateBossUI();
+    updateEventsUI();
+}
+
+/**
+ * Change d'onglet
+ */
+function switchTab(tabName) {
+    // Masquer tous les onglets
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Désactiver tous les boutons d'onglet
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Activer l'onglet sélectionné
+    const tabContent = document.getElementById(`tab-${tabName}`);
+    if (tabContent) {
+        tabContent.classList.add('active');
+    }
+
+    const tabButton = document.querySelector(`[data-tab="${tabName}"]`);
+    if (tabButton) {
+        tabButton.classList.add('active');
+    }
+}
+
+/**
+ * Boucle de jeu principale
+ */
+function gameLoop() {
+    const now = Date.now();
+    const delta = (now - GameState.lastTick) / 1000; // en secondes
+
+    // Production passive
+    const shardsGained = GameState.totalCps.multiply(delta);
+    GameState.shards = GameState.shards.add(shardsGained);
+    GameState.stats.totalShardsEarned = GameState.stats.totalShardsEarned.add(shardsGained);
+
+    // Temps de jeu
+    GameState.stats.playTime += delta;
+
+    // Dégâts au boss (CPS)
+    if (GameState.boss.active) {
+        const bossDamage = GameState.totalCps.multiply(delta);
+        GameState.boss.hp = GameState.boss.hp.subtract(bossDamage);
+        if (GameState.boss.hp.lessThanOrEqual(0)) {
+            defeatBoss();
+        }
+        updateBossUI();
+    }
+
+    // Nettoyer les événements expirés
+    cleanupExpiredEvents();
+
+    // Événements aléatoires
+    triggerRandomEvent();
+
+    // Mettre à jour l'UI
+    updateStatsUI();
+    updateEventsUI();
+
+    // Mettre à jour les cooldowns des pets
+    updatePetsUI();
+
+    GameState.lastTick = now;
+}
+
+/**
+ * Sauvegarde automatique
+ */
+function autoSave() {
+    saveGame();
+}
 
 /**
  * Initialise le jeu
  */
-function initializeGame() {
-    console.log('🎮 Initialisation de Clicker Game Ultimate...');
+function initGame() {
+    console.log("🎮 Shard Clicker - Initializing...");
 
-    // Charger la sauvegarde
-    loadGame();
+    // Charger ou initialiser
+    const loaded = loadGame();
+    if (!loaded) {
+        initializeState();
+        generateDailyQuests();
+    }
 
-    // Initialiser tous les systèmes
-    initTabs();
-    initGenerators();
-    initUpgrades();
-    initPrestige();
-    initTalents();
-    initPets();
-    initArtefacts();
-    initQuests();
-    initBosses();
-    initSaveSystem();
+    // Event listeners
+    const clickBtn = document.getElementById('main-click-button');
+    if (clickBtn) {
+        clickBtn.addEventListener('click', handleMainClick);
+    }
 
-    // Initialiser les événements
-    initClickEvents();
-    initBoosterEvents();
-
-    // Recalculer les stats
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
-
-    // Mettre à jour l'affichage
-    updateMainStats();
-    updateStatsDisplay();
-
-    // Démarrer la boucle de jeu
-    startGameLoop();
-
-    console.log('✅ Jeu initialisé !');
-}
-
-/**
- * Initialise les événements de clic
- */
-function initClickEvents() {
-    const clickBtn = document.getElementById('main-click-btn');
-
-    clickBtn.addEventListener('click', (e) => {
-        handleClick(e);
+    // Onglets
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchTab(btn.dataset.tab);
+        });
     });
 
-    // Attaquer le boss au clic aussi
-    clickBtn.addEventListener('click', () => {
-        if (gameState.currentBoss) {
-            attackBoss();
-        }
-    });
-}
-
-/**
- * Gère un clic
- */
-function handleClick(event) {
-    try {
-        console.log('👆 CLIC détecté! CPC:', gameState.cpc);
-
-        let coinsGained = gameState.cpc;
-        let isCritical = false;
-
-        // Vérifier critique
-        if (gameState.guaranteedCrits || Math.random() < gameState.criticalChance) {
-            coinsGained *= gameState.criticalMultiplier;
-            isCritical = true;
-            gameState.stats.criticalHits++;
-            console.log('   💥 Critique! x' + gameState.criticalMultiplier);
-        }
-
-        console.log('   Coins gagnés:', coinsGained);
-
-        // Ajouter les coins
-        addCoins(coinsGained);
-
-        // Stats
-        gameState.stats.totalClicks++;
-
-        // Quêtes (si la fonction existe)
-        if (typeof updateQuestProgress === 'function') {
-            updateQuestProgress('clicks', 1);
-            updateQuestProgress('coins', coinsGained);
-        }
-
-        // Effet visuel
-        createClickEffect(event.clientX, event.clientY, coinsGained, isCritical);
-
-        console.log('   ✅ Clic traité, total coins:', gameState.coins);
-    } catch (error) {
-        console.error('💥 ERREUR dans handleClick:', error);
-        console.error('Stack:', error.stack);
-        alert('ERREUR CLIC ! Ouvre la console (F12) et fais une capture !');
-    }
-}
-
-/**
- * Initialise les boosters
- */
-function initBoosterEvents() {
-    document.getElementById('power-boost-btn')?.addEventListener('click', () => {
-        usePowerBoost();
-    });
-
-    document.getElementById('frenzy-boost-btn')?.addEventListener('click', () => {
-        useFrenzyBoost();
-    });
-}
-
-/**
- * Utilise le Power Boost
- */
-function usePowerBoost() {
-    const cooldownKey = 'power_boost';
-    const now = Date.now();
-
-    if (gameState.cooldowns[cooldownKey] && gameState.cooldowns[cooldownKey] > now) {
-        const timeLeft = Math.ceil((gameState.cooldowns[cooldownKey] - now) / 1000);
-        showNotification(`Cooldown: ${timeLeft}s`, 'error');
-        return;
+    // Boutons de sauvegarde
+    const saveBtn = document.getElementById('save-button');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveGame);
     }
 
-    // Activer le boost
-    addActiveEvent('power_boost', 2, 30000);
-
-    // Cooldown de 2 minutes
-    gameState.cooldowns[cooldownKey] = now + (2 * 60 * 1000);
-
-    showNotification('Power Boost x2 activé !', 'success');
-}
-
-/**
- * Utilise le Frenzy Boost
- */
-function useFrenzyBoost() {
-    const cooldownKey = 'frenzy_boost';
-    const now = Date.now();
-
-    if (gameState.cooldowns[cooldownKey] && gameState.cooldowns[cooldownKey] > now) {
-        const timeLeft = Math.ceil((gameState.cooldowns[cooldownKey] - now) / 1000);
-        showNotification(`Cooldown: ${timeLeft}s`, 'error');
-        return;
+    const resetBtn = document.getElementById('reset-button');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetGame);
     }
 
-    // Activer le frenzy (CPC x50, CPS x10)
-    addActiveEvent('frenzy', 50, 10000);
-
-    // Cooldown de 5 minutes
-    gameState.cooldowns[cooldownKey] = now + (5 * 60 * 1000);
-
-    showNotification('Frenzy Mode activé !', 'success');
-}
-
-/**
- * Démarre la boucle de jeu (tick ~100ms)
- */
-function startGameLoop() {
-    let lastTick = Date.now();
-
-    setInterval(() => {
-        const now = Date.now();
-        const delta = (now - lastTick) / 1000; // en secondes
-        lastTick = now;
-
-        // Production automatique (CPS)
-        if (gameState.cps > 0) {
-            const coinsProduced = gameState.cps * delta;
-            addCoins(coinsProduced);
-            if (typeof updateQuestProgress === 'function') {
-                updateQuestProgress('coins', coinsProduced);
-            }
-        }
-
-        // Playtime
-        gameState.stats.playtime += delta;
-
-        // Nettoyer les événements expirés
-        cleanupExpiredEvents();
-
-        // Mettre à jour les cooldowns des boosters
-        updateBoosterCooldowns();
-
-        // Mettre à jour le timer du boss
-        updateBossTimer();
-
-        // Mettre à jour le timer des quêtes
-        updateQuestResetTimer();
-
-        // Rafraîchir l'affichage des stats (toutes les secondes)
-        if (Math.floor(now / 1000) !== Math.floor((now - 100) / 1000)) {
-            updateStatsDisplay();
-
-            // Mettre à jour l'état des boutons d'achat (toutes les secondes)
-            if (typeof updateGeneratorsButtons === 'function') {
-                updateGeneratorsButtons();
-            }
-            if (typeof updateUpgradesButtons === 'function') {
-                updateUpgradesButtons();
-            }
-            if (typeof updateTalentsButtons === 'function') {
-                updateTalentsButtons();
-            }
-            if (typeof updatePetsButtons === 'function') {
-                updatePetsButtons();
-            }
-        }
-    }, 100);
-}
-
-/**
- * Met à jour l'affichage des cooldowns des boosters
- */
-function updateBoosterCooldowns() {
-    const now = Date.now();
-
-    // Power Boost
-    const powerCooldown = gameState.cooldowns['power_boost'];
-    if (powerCooldown && powerCooldown > now) {
-        const timeLeft = Math.ceil((powerCooldown - now) / 1000);
-        document.getElementById('power-boost-cooldown').textContent = timeLeft + 's';
-        document.getElementById('power-boost-btn').disabled = true;
-    } else {
-        document.getElementById('power-boost-cooldown').textContent = 'Ready';
-        document.getElementById('power-boost-btn').disabled = false;
+    const exportBtn = document.getElementById('export-button');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportSave);
     }
 
-    // Frenzy Boost
-    const frenzyCooldown = gameState.cooldowns['frenzy_boost'];
-    if (frenzyCooldown && frenzyCooldown > now) {
-        const timeLeft = Math.ceil((frenzyCooldown - now) / 1000);
-        document.getElementById('frenzy-boost-cooldown').textContent = timeLeft + 's';
-        document.getElementById('frenzy-boost-btn').disabled = true;
-    } else {
-        document.getElementById('frenzy-boost-cooldown').textContent = 'Ready';
-        document.getElementById('frenzy-boost-btn').disabled = false;
+    const importBtn = document.getElementById('import-button');
+    if (importBtn) {
+        importBtn.addEventListener('click', importSave);
     }
+
+    // Quêtes
+    const generateQuestsBtn = document.getElementById('generate-quests-button');
+    if (generateQuestsBtn) {
+        generateQuestsBtn.addEventListener('click', generateDailyQuests);
+    }
+
+    // Afficher l'onglet par défaut
+    switchTab('generators');
+
+    // UI initiale
+    updateAllUI();
+
+    // Boucle de jeu (60 FPS)
+    setInterval(gameLoop, 1000 / 60);
+
+    // Sauvegarde automatique (toutes les 10 secondes)
+    setInterval(autoSave, 10000);
+
+    console.log("✅ Game initialized!");
 }
 
-/**
- * Démarre le jeu quand la page est chargée
- */
-document.addEventListener('DOMContentLoaded', () => {
-    initializeGame();
-});
-
-// Sauvegarder avant de quitter
-window.addEventListener('beforeunload', () => {
-    saveGame();
-});
-
-// Empêcher le zoom par pinch sur mobile
-document.addEventListener('gesturestart', (e) => {
-    e.preventDefault();
-});
-
-document.addEventListener('gesturechange', (e) => {
-    e.preventDefault();
-});
-
-document.addEventListener('gestureend', (e) => {
-    e.preventDefault();
-});
-
-// Note: Le double-tap zoom est déjà bloqué par touch-action: manipulation dans le CSS
-// et le meta viewport user-scalable=no. Pas besoin de preventDefault sur touchend
-// car ça bloquerait aussi les clics rapides légitimes.
+// Démarrer le jeu au chargement
+document.addEventListener('DOMContentLoaded', initGame);

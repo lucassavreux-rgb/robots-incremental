@@ -1,213 +1,144 @@
 /**
  * =====================================================
- * ARTEFACTS.JS - Système d'Artefacts
+ * ARTEFACTS.JS - Artefact System
  * =====================================================
- * Artefacts rares avec bonus puissants et set effects
+ * Gestion des artefacts
  */
-
-/**
- * Initialise le système d'artefacts
- */
-function initArtefacts() {
-    renderArtefactsList();
-    updateArtefactsInfo();
-}
-
-/**
- * Affiche la liste des artefacts
- */
-function renderArtefactsList() {
-    const container = document.getElementById('artefacts-list');
-    container.innerHTML = '';
-
-    ARTEFACTS_DATA.forEach(artefact => {
-        const isUnlocked = gameState.unlockedArtefacts.includes(artefact.id);
-        const isEquipped = gameState.equippedArtefacts.includes(artefact.id);
-
-        const artefactDiv = document.createElement('div');
-        artefactDiv.classList.add('artefact-item');
-
-        if (isEquipped) {
-            artefactDiv.classList.add('equipped');
-        }
-
-        const rarityClass = artefact.rarity;
-
-        if (!isUnlocked) {
-            artefactDiv.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${artefact.name} 🔒</div>
-                    <span class="artefact-rarity ${rarityClass}">${artefact.rarity}</span>
-                    <div class="item-description">Artefact verrouillé</div>
-                    <div class="item-stats">Obtenez-le via prestige ou boss</div>
-                </div>
-            `;
-        } else {
-            let effectText = '';
-            switch (artefact.effect.type) {
-                case 'cpc_mult':
-                    effectText = `x${artefact.effect.value} CPC`;
-                    break;
-                case 'cps_mult':
-                    effectText = `x${artefact.effect.value} CPS`;
-                    break;
-                case 'generator_mult':
-                    effectText = `x${artefact.effect.value} production ${artefact.effect.generator}`;
-                    break;
-                case 'boss_damage':
-                    effectText = `x${artefact.effect.value} dégâts boss`;
-                    break;
-                case 'rp_bonus':
-                    effectText = `+${(artefact.effect.value * 100).toFixed(0)}% RP`;
-                    break;
-                default:
-                    effectText = 'Bonus spécial';
-            }
-
-            artefactDiv.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${artefact.name}</div>
-                    <span class="artefact-rarity ${rarityClass}">${artefact.rarity}</span>
-                    <div class="item-description">${artefact.description}</div>
-                    <div class="item-stats">
-                        ${effectText}<br>
-                        Set: ${artefact.set}
-                    </div>
-                </div>
-                <div class="item-action">
-                    ${isEquipped ?
-                        `<button class="equip-btn" data-artefact="unequip-${artefact.id}">
-                            Déséquiper
-                        </button>` :
-                        `<button class="equip-btn" data-artefact="equip-${artefact.id}"
-                                ${gameState.equippedArtefacts.length >= 3 ? 'disabled' : ''}>
-                            Équiper
-                        </button>`
-                    }
-                </div>
-            `;
-
-            container.appendChild(artefactDiv);
-
-            // Attacher l'événement
-            const equipBtn = artefactDiv.querySelector('.equip-btn');
-            if (equipBtn) {
-                equipBtn.addEventListener('click', () => {
-                    if (isEquipped) {
-                        console.log('Déséquipement artefact:', artefact.id);
-                        unequipArtefact(artefact.id);
-                    } else {
-                        console.log('Équipement artefact:', artefact.id);
-                        equipArtefact(artefact.id);
-                    }
-                });
-            }
-        } else {
-            container.appendChild(artefactDiv);
-        }
-    });
-}
 
 /**
  * Équipe un artefact
  */
 function equipArtefact(artefactId) {
-    if (gameState.equippedArtefacts.length >= 3) {
-        showNotification('Maximum 3 artefacts équipés !', 'error');
-        return;
+    // Vérifier si possédé
+    if (!GameState.artefacts.owned.includes(artefactId)) {
+        showNotification("You don't own this artefact!", "error");
+        return false;
     }
 
-    if (!gameState.unlockedArtefacts.includes(artefactId)) {
-        showNotification('Artefact non débloqué !', 'error');
-        return;
+    // Vérifier si déjà équipé
+    if (GameState.artefacts.equipped.includes(artefactId)) {
+        showNotification("Already equipped!", "error");
+        return false;
     }
 
-    if (gameState.equippedArtefacts.includes(artefactId)) {
-        showNotification('Artefact déjà équipé !', 'error');
-        return;
+    // Vérifier le nombre de slots (max 3)
+    if (GameState.artefacts.equipped.length >= 3) {
+        showNotification("Maximum 3 artefacts equipped! Unequip one first.", "error");
+        return false;
     }
 
-    gameState.equippedArtefacts.push(artefactId);
+    // Équiper
+    GameState.artefacts.equipped.push(artefactId);
 
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
+    // Recalculer
+    updateCritStats();
+    recalculateProduction();
 
-    renderArtefactsList();
-    updateArtefactsInfo();
-    updateMainStats();
+    // UI
+    updateArtefactsUI();
+    updateStatsUI();
 
-    const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-    showNotification(`${artefact.name} équipé !`, 'success');
+    const artefact = ARTEFACTS.find(a => a.id === artefactId);
+    showNotification(`Equipped ${artefact.name}!`, "success");
+    return true;
 }
 
 /**
  * Déséquipe un artefact
  */
 function unequipArtefact(artefactId) {
-    const index = gameState.equippedArtefacts.indexOf(artefactId);
-    if (index === -1) return;
+    const index = GameState.artefacts.equipped.indexOf(artefactId);
+    if (index === -1) {
+        showNotification("Not equipped!", "error");
+        return false;
+    }
 
-    gameState.equippedArtefacts.splice(index, 1);
+    // Déséquiper
+    GameState.artefacts.equipped.splice(index, 1);
 
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
+    // Recalculer
+    updateCritStats();
+    recalculateProduction();
 
-    renderArtefactsList();
-    updateArtefactsInfo();
-    updateMainStats();
+    // UI
+    updateArtefactsUI();
+    updateStatsUI();
 
-    const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-    showNotification(`${artefact.name} déséquipé !`, 'success');
+    const artefact = ARTEFACTS.find(a => a.id === artefactId);
+    showNotification(`Unequipped ${artefact.name}!`, "success");
+    return true;
 }
 
 /**
- * Met à jour les infos d'artefacts
+ * Ajoute un artefact à l'inventaire
  */
-function updateArtefactsInfo() {
-    document.getElementById('equipped-artefacts-count').textContent =
-        gameState.equippedArtefacts.length;
+function addArtefact(artefactId) {
+    if (GameState.artefacts.owned.includes(artefactId)) {
+        return false; // Déjà possédé
+    }
 
-    const setBonus = calculateSetBonus();
-    if (setBonus) {
-        document.getElementById('active-set-bonus').textContent = setBonus.description;
+    GameState.artefacts.owned.push(artefactId);
+    updateArtefactsUI();
+
+    const artefact = ARTEFACTS.find(a => a.id === artefactId);
+    showNotification(`Found ${artefact.name}!`, "success");
+    return true;
+}
+
+/**
+ * Met à jour l'UI des artefacts
+ */
+function updateArtefactsUI() {
+    const container = document.getElementById('artefacts-list');
+    if (!container) return;
+
+    container.innerHTML = '<h3>Equipped Artefacts</h3><div id="equipped-artefacts"></div><h3>Inventory</h3><div id="inventory-artefacts"></div>';
+
+    const equippedContainer = document.getElementById('equipped-artefacts');
+    const inventoryContainer = document.getElementById('inventory-artefacts');
+
+    // Artefacts équipés
+    if (GameState.artefacts.equipped.length === 0) {
+        equippedContainer.innerHTML = '<p>No artefacts equipped</p>';
     } else {
-        document.getElementById('active-set-bonus').textContent = 'Aucun';
+        GameState.artefacts.equipped.forEach(artefactId => {
+            const artefact = ARTEFACTS.find(a => a.id === artefactId);
+            if (!artefact) return;
+
+            const div = document.createElement('div');
+            div.className = `artefact-item rarity-${artefact.rarity}`;
+            div.innerHTML = `
+                <div class="artefact-info">
+                    <div class="artefact-name">${artefact.name}</div>
+                    <div class="artefact-description">${artefact.description}</div>
+                    <div class="artefact-rarity">${artefact.rarity}</div>
+                </div>
+                <button class="btn btn-unequip" onclick="unequipArtefact('${artefact.id}')">Unequip</button>
+            `;
+            equippedContainer.appendChild(div);
+        });
     }
-}
 
-/**
- * Débloque un artefact aléatoire
- */
-function unlockRandomArtefact() {
-    const locked = ARTEFACTS_DATA.filter(a =>
-        !gameState.unlockedArtefacts.includes(a.id));
+    // Inventaire
+    const unequipped = GameState.artefacts.owned.filter(id => !GameState.artefacts.equipped.includes(id));
+    if (unequipped.length === 0) {
+        inventoryContainer.innerHTML = '<p>No artefacts in inventory</p>';
+    } else {
+        unequipped.forEach(artefactId => {
+            const artefact = ARTEFACTS.find(a => a.id === artefactId);
+            if (!artefact) return;
 
-    if (locked.length === 0) {
-        showNotification('Tous les artefacts débloqués !', 'info');
-        return null;
+            const div = document.createElement('div');
+            div.className = `artefact-item rarity-${artefact.rarity}`;
+            div.innerHTML = `
+                <div class="artefact-info">
+                    <div class="artefact-name">${artefact.name}</div>
+                    <div class="artefact-description">${artefact.description}</div>
+                    <div class="artefact-rarity">${artefact.rarity}</div>
+                </div>
+                <button class="btn btn-equip" onclick="equipArtefact('${artefact.id}')">Equip</button>
+            `;
+            inventoryContainer.appendChild(div);
+        });
     }
-
-    // Probabilité basée sur la rareté
-    const rarityWeights = {
-        'common': 50,
-        'rare': 30,
-        'epic': 15,
-        'legendary': 5
-    };
-
-    const weightedPool = [];
-    locked.forEach(artefact => {
-        const weight = rarityWeights[artefact.rarity] || 10;
-        for (let i = 0; i < weight; i++) {
-            weightedPool.push(artefact);
-        }
-    });
-
-    const selected = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-    gameState.unlockedArtefacts.push(selected.id);
-
-    renderArtefactsList();
-    showNotification(`Artefact débloqué : ${selected.name} (${selected.rarity})!`, 'success');
-
-    return selected;
 }

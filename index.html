@@ -1,239 +1,218 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clicker Game Ultimate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shard Clicker - Idle Incremental Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header avec stats principales -->
-    <header>
-        <div class="header-container">
-            <h1>⚡ Clicker Game Ultimate</h1>
-            <div class="main-stats">
+    <div id="notifications"></div>
+
+    <div class="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1>⚡ Shard Clicker</h1>
+            <div class="header-stats">
                 <div class="stat-item">
-                    <span class="stat-label">Coins:</span>
-                    <span id="coins-display" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">CPC:</span>
-                    <span id="cpc-display" class="stat-value">1</span>
+                    <span class="stat-label">Shards:</span>
+                    <span id="shards-count" class="stat-value">0</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">CPS:</span>
-                    <span id="cps-display" class="stat-value">0</span>
+                    <span id="cps-count" class="stat-value">0</span>
                 </div>
-                <div class="stat-item prestige-stat">
+                <div class="stat-item">
+                    <span class="stat-label">CPC:</span>
+                    <span id="cpc-count" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
                     <span class="stat-label">RP:</span>
-                    <span id="rp-display" class="stat-value">0</span>
+                    <span id="current-rp" class="stat-value">0</span>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main container -->
-    <div class="main-container">
-        <!-- Zone de clic à gauche -->
-        <div class="left-panel">
-            <div class="click-zone">
-                <button id="main-click-btn" class="main-click-button">
-                    <span class="click-icon">💰</span>
-                    <span class="click-text">CLICK ME!</span>
-                </button>
-                <div id="click-effect-container"></div>
-            </div>
-
-            <!-- Boss fight section -->
-            <div class="boss-section">
-                <h3>🐲 Boss Fight</h3>
-                <div id="boss-info">
-                    <div class="boss-name">Boss #<span id="boss-number">1</span></div>
-                    <div class="boss-hp-bar">
-                        <div id="boss-hp-fill" class="boss-hp-fill"></div>
-                        <span id="boss-hp-text" class="boss-hp-text">100 / 100</span>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Click Zone -->
+            <div class="left-panel">
+                <div class="click-zone">
+                    <button id="main-click-button" class="main-click-btn">
+                        💎 CLICK
+                    </button>
+                    <div class="click-stats">
+                        <div>Crit Chance: <span id="crit-chance">5.0%</span></div>
+                        <div>Crit Multiplier: <span id="crit-multiplier">x3.0</span></div>
                     </div>
-                    <div class="boss-timer">Next boss: <span id="boss-timer">--:--</span></div>
+                </div>
+
+                <!-- Boss Section -->
+                <div id="boss-container" class="boss-section"></div>
+
+                <!-- Active Events -->
+                <div class="events-section">
+                    <h3>Active Events</h3>
+                    <div id="active-events"></div>
                 </div>
             </div>
 
-            <!-- Active pet display -->
-            <div class="active-pet-section">
-                <h3>🐾 Active Pet</h3>
-                <div id="active-pet-display">
-                    <span id="active-pet-name">None</span>
-                    <button id="active-pet-ability" class="pet-ability-btn" disabled>Use Ability</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Panel central avec onglets -->
-        <div class="center-panel">
-            <!-- Navigation tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="generators">Générateurs</button>
-                <button class="tab-btn" data-tab="upgrades">Upgrades</button>
-                <button class="tab-btn" data-tab="prestige">Prestige</button>
-                <button class="tab-btn" data-tab="talents">Talents</button>
-                <button class="tab-btn" data-tab="pets">Pets</button>
-                <button class="tab-btn" data-tab="artefacts">Artefacts</button>
-                <button class="tab-btn" data-tab="quests">Quêtes</button>
-            </div>
-
-            <!-- Tab content -->
-            <div class="tab-content">
-                <!-- Générateurs Tab -->
-                <div id="generators-tab" class="tab-panel active">
-                    <h2>⚙️ Générateurs</h2>
-                    <p class="tab-description">Achetez des générateurs pour produire des coins automatiquement</p>
-                    <div id="generators-list" class="generators-list"></div>
+            <!-- Right Panel: Tabs -->
+            <div class="right-panel">
+                <!-- Tab Buttons -->
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="generators">Generators</button>
+                    <button class="tab-button" data-tab="upgrades">Upgrades</button>
+                    <button class="tab-button" data-tab="prestige">Prestige</button>
+                    <button class="tab-button" data-tab="talents">Talents</button>
+                    <button class="tab-button" data-tab="artefacts">Artefacts</button>
+                    <button class="tab-button" data-tab="pets">Pets</button>
+                    <button class="tab-button" data-tab="quests">Quests</button>
+                    <button class="tab-button" data-tab="stats">Stats</button>
+                    <button class="tab-button" data-tab="settings">Settings</button>
                 </div>
 
-                <!-- Upgrades Tab -->
-                <div id="upgrades-tab" class="tab-panel">
-                    <h2>⬆️ Upgrades</h2>
-                    <p class="tab-description">Améliorez votre CPC, CPS et débloquez de nouveaux bonus</p>
-                    <div id="upgrades-list" class="upgrades-list"></div>
-                </div>
+                <!-- Tab Contents -->
+                <div class="tab-content-container">
+                    <!-- Generators Tab -->
+                    <div id="tab-generators" class="tab-content active">
+                        <h2>Generators</h2>
+                        <div id="generators-list" class="item-list"></div>
+                    </div>
 
-                <!-- Prestige Tab -->
-                <div id="prestige-tab" class="tab-panel">
-                    <h2>🌟 Prestige</h2>
-                    <p class="tab-description">Recommencez avec des bonus permanents</p>
-                    <div class="prestige-container">
+                    <!-- Upgrades Tab -->
+                    <div id="tab-upgrades" class="tab-content">
+                        <h2>Upgrades</h2>
+                        <div id="upgrades-list" class="item-list"></div>
+                    </div>
+
+                    <!-- Prestige Tab -->
+                    <div id="tab-prestige" class="tab-content">
+                        <h2>Prestige / Renaissance</h2>
                         <div class="prestige-info">
-                            <p>Total coins gagnés: <span id="total-coins-earned">0</span></p>
-                            <p>RP disponibles après prestige: <span id="rp-after-prestige">0</span></p>
-                            <p class="prestige-warning">⚠️ Le prestige réinitialise tous vos coins, générateurs et upgrades !</p>
-                        </div>
-                        <button id="prestige-btn" class="prestige-button" disabled>
-                            🌟 PRESTIGE 🌟
-                        </button>
-                        <div class="prestige-bonuses">
-                            <h3>Bonus actuels du prestige</h3>
-                            <div id="prestige-bonuses-list"></div>
+                            <p>Prestige resets your Shards, generators, and upgrades, but grants you Renaissance Points (RP).</p>
+                            <p>RP provide permanent multipliers to CPC and CPS.</p>
+
+                            <div class="prestige-stats">
+                                <div>Current RP: <span id="current-rp">0</span></div>
+                                <div>Total RP: <span id="total-rp">0</span></div>
+                                <div>RP Multiplier: <span id="prestige-multiplier">x1.00</span></div>
+                                <div>RP on Prestige: <span id="rp-gain">0</span></div>
+                            </div>
+
+                            <button id="prestige-button" class="btn btn-prestige" onclick="doPrestige()">
+                                Prestige
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Talents Tab -->
-                <div id="talents-tab" class="tab-panel">
-                    <h2>🎯 Arbre de Talents</h2>
-                    <p class="tab-description">Dépensez des RP pour débloquer des talents permanents</p>
-                    <div class="talents-container">
-                        <div class="talent-branch">
-                            <h3>🖱️ Branche Clic</h3>
-                            <div id="talents-click-list" class="talents-list"></div>
-                        </div>
-                        <div class="talent-branch">
-                            <h3>⚙️ Branche Générateurs</h3>
-                            <div id="talents-generators-list" class="talents-list"></div>
-                        </div>
-                        <div class="talent-branch">
-                            <h3>🌟 Branche Prestige</h3>
-                            <div id="talents-prestige-list" class="talents-list"></div>
+                    <!-- Talents Tab -->
+                    <div id="tab-talents" class="tab-content">
+                        <h2>Talent Tree</h2>
+                        <div class="talents-container">
+                            <div class="talent-branch">
+                                <h3>🎯 Click Branch</h3>
+                                <div id="talents-click-list" class="item-list"></div>
+                            </div>
+                            <div class="talent-branch">
+                                <h3>🏭 Generators Branch</h3>
+                                <div id="talents-generators-list" class="item-list"></div>
+                            </div>
+                            <div class="talent-branch">
+                                <h3>✨ Prestige Branch</h3>
+                                <div id="talents-prestige-list" class="item-list"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Pets Tab -->
-                <div id="pets-tab" class="tab-panel">
-                    <h2>🐾 Pets</h2>
-                    <p class="tab-description">Débloquez et améliorez des pets pour des bonus puissants</p>
-                    <div id="pets-list" class="pets-list"></div>
-                </div>
-
-                <!-- Artefacts Tab -->
-                <div id="artefacts-tab" class="tab-panel">
-                    <h2>💎 Artefacts</h2>
-                    <p class="tab-description">Équipez des artefacts rares pour des bonus massifs</p>
-                    <div class="artefacts-info">
-                        <p>Artefacts équipés: <span id="equipped-artefacts-count">0</span> / 3</p>
-                        <p>Set bonus actif: <span id="active-set-bonus">Aucun</span></p>
+                    <!-- Artefacts Tab -->
+                    <div id="tab-artefacts" class="tab-content">
+                        <h2>Artefacts</h2>
+                        <p>Equip up to 3 artefacts for powerful bonuses.</p>
+                        <div id="artefacts-list" class="item-list"></div>
                     </div>
-                    <div id="artefacts-list" class="artefacts-list"></div>
-                </div>
 
-                <!-- Quêtes Tab -->
-                <div id="quests-tab" class="tab-panel">
-                    <h2>📜 Quêtes Journalières</h2>
-                    <p class="tab-description">Complétez des quêtes pour des récompenses bonus</p>
-                    <div id="quests-list" class="quests-list"></div>
-                    <div class="quest-reset-timer">
-                        Renouvellement dans: <span id="quest-reset-timer">--:--:--</span>
+                    <!-- Pets Tab -->
+                    <div id="tab-pets" class="tab-content">
+                        <h2>Pets</h2>
+                        <p>Pets provide passive bonuses and active abilities.</p>
+                        <div id="pets-list" class="item-list"></div>
+                    </div>
+
+                    <!-- Quests Tab -->
+                    <div id="tab-quests" class="tab-content">
+                        <h2>Daily Quests</h2>
+                        <button id="generate-quests-button" class="btn btn-generate">Generate New Quests</button>
+                        <div id="quests-list" class="item-list"></div>
+                    </div>
+
+                    <!-- Stats Tab -->
+                    <div id="tab-stats" class="tab-content">
+                        <h2>Statistics</h2>
+                        <div class="stats-container">
+                            <div class="stat-row">
+                                <span>Total Clicks:</span>
+                                <span id="total-clicks">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Total Shards Earned:</span>
+                                <span id="total-shards">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Play Time:</span>
+                                <span id="play-time">0h 0m 0s</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Generators Bought:</span>
+                                <span id="generators-bought">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Upgrades Bought:</span>
+                                <span id="upgrades-bought">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Bosses Defeated:</span>
+                                <span id="bosses-defeated">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="tab-settings" class="tab-content">
+                        <h2>Settings</h2>
+                        <div class="settings-container">
+                            <button id="save-button" class="btn btn-save">💾 Save Now</button>
+                            <button id="export-button" class="btn btn-export">📤 Export Save</button>
+                            <button id="import-button" class="btn btn-import">📥 Import Save</button>
+                            <button id="reset-button" class="btn btn-reset">🗑️ Reset Game</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right panel avec événements et boosters -->
-        <div class="right-panel">
-            <div class="events-section">
-                <h3>⚡ Événements Actifs</h3>
-                <div id="active-events" class="active-events-list">
-                    <p class="no-events">Aucun événement actif</p>
-                </div>
-            </div>
-
-            <div class="boosters-section">
-                <h3>🚀 Boosters</h3>
-                <button id="power-boost-btn" class="booster-btn">
-                    <span class="booster-name">Power Boost x2</span>
-                    <span class="booster-cooldown" id="power-boost-cooldown">Ready</span>
-                </button>
-                <button id="frenzy-boost-btn" class="booster-btn">
-                    <span class="booster-name">Frenzy Mode</span>
-                    <span class="booster-cooldown" id="frenzy-boost-cooldown">Ready</span>
-                </button>
-            </div>
-
-            <div class="stats-section">
-                <h3>📊 Statistiques</h3>
-                <div class="stats-details">
-                    <p>Total clics: <span id="total-clicks">0</span></p>
-                    <p>Total coins gagnés: <span id="stats-total-coins">0</span></p>
-                    <p>Temps de jeu: <span id="playtime">0s</span></p>
-                    <p>Critiques: <span id="critical-hits">0</span></p>
-                    <p>Boss vaincus: <span id="bosses-defeated">0</span></p>
-                </div>
-            </div>
-
-            <div class="save-section">
-                <h3>💾 Sauvegarde</h3>
-                <button id="manual-save-btn" class="action-btn">Sauvegarder</button>
-                <button id="export-save-btn" class="action-btn">Exporter</button>
-                <button id="import-save-btn" class="action-btn">Importer</button>
-                <button id="reset-save-btn" class="action-btn danger">Réinitialiser</button>
-                <p class="auto-save-info">Auto-save: <span id="auto-save-timer">10s</span></p>
-            </div>
-        </div>
+        <!-- Footer -->
+        <footer class="game-footer">
+            <p>Shard Clicker v1.0 | Auto-saves every 10 seconds</p>
+        </footer>
     </div>
 
-    <!-- Modal pour import de sauvegarde -->
-    <div id="import-modal" class="modal">
-        <div class="modal-content">
-            <h2>Importer une sauvegarde</h2>
-            <textarea id="import-textarea" placeholder="Collez votre sauvegarde ici..."></textarea>
-            <div class="modal-buttons">
-                <button id="confirm-import-btn" class="action-btn">Importer</button>
-                <button id="cancel-import-btn" class="action-btn">Annuler</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
+    <!-- Scripts - Load in correct order -->
     <script src="js/numbers.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/state.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/save.js"></script>
     <script src="js/generators.js"></script>
+    <script src="js/click.js"></script>
     <script src="js/upgrades.js"></script>
     <script src="js/prestige.js"></script>
     <script src="js/talents.js"></script>
-    <script src="js/pets.js"></script>
     <script src="js/artefacts.js"></script>
+    <script src="js/pets.js"></script>
     <script src="js/quests.js"></script>
     <script src="js/bosses.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/save.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

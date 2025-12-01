@@ -1,215 +1,78 @@
 /**
  * =====================================================
- * TALENTS.JS - Arbre de Talents
+ * TALENTS.JS - Talent Tree System
  * =====================================================
- * Dépense de RP pour débloquer des talents permanents
+ * Gestion de l'arbre de talents
  */
 
 /**
- * Initialise le système de talents
+ * Achète un niveau de talent
  */
-function initTalents() {
-    renderTalentsList();
+function buyTalent(branchName, talentId) {
+    const talent = TALENTS[branchName].find(t => t.id === talentId);
+    if (!talent) return false;
+
+    const currentLevel = GameState.talents[branchName][talentId] || 0;
+
+    if (currentLevel >= talent.maxLevel) {
+        showNotification("Talent already maxed!", "error");
+        return false;
+    }
+
+    if (GameState.prestige.currentRP < talent.rpCost) {
+        showNotification("Not enough RP!", "error");
+        return false;
+    }
+
+    // Acheter
+    GameState.prestige.currentRP -= talent.rpCost;
+    GameState.talents[branchName][talentId] = currentLevel + 1;
+
+    // Recalculer
+    updateCritStats();
+    recalculateProduction();
+
+    // UI
+    updateTalentsUI();
+    updatePrestigeUI();
+    updateStatsUI();
+
+    showNotification(`${talent.name} upgraded!`, "success");
+    return true;
 }
 
 /**
- * Met à jour l'état des boutons talents sans re-render complet
+ * Met à jour l'UI des talents
  */
-function updateTalentsButtons() {
-    ['click', 'generators', 'prestige'].forEach(branchName => {
-        const talents = TALENTS_DATA[branchName];
-        const branchState = gameState.talents[branchName] || [];
+function updateTalentsUI() {
+    for (let branchName in TALENTS) {
+        const containerId = `talents-${branchName}-list`;
+        const container = document.getElementById(containerId);
+        if (!container) continue;
 
-        talents.forEach(talent => {
-            const talentState = branchState.find(t => t.id === talent.id);
-            const currentLevel = talentState ? talentState.level : 0;
+        container.innerHTML = '';
 
-            if (currentLevel >= talent.maxLevel) return; // Déjà max
+        TALENTS[branchName].forEach(talent => {
+            const level = GameState.talents[branchName][talent.id] || 0;
+            const canBuy = GameState.prestige.currentRP >= talent.rpCost && level < talent.maxLevel;
 
-            const canUpgrade = gameState.prestigePoints >= talent.cost;
-            const button = document.querySelector(`.upgrade-btn[data-talent="${branchName}-${talent.id}"]`);
-            if (button) {
-                button.disabled = !canUpgrade;
-            }
+            const div = document.createElement('div');
+            div.className = 'talent-item' + (level > 0 ? ' talent-purchased' : '') + (canBuy ? '' : ' disabled');
+            div.innerHTML = `
+                <div class="talent-info">
+                    <div class="talent-name">${talent.name}</div>
+                    <div class="talent-description">${talent.description}</div>
+                    <div class="talent-level">Level: ${level}/${talent.maxLevel}</div>
+                </div>
+                <div class="talent-actions">
+                    <div class="talent-cost">${talent.rpCost} RP</div>
+                    <button class="btn btn-buy" onclick="buyTalent('${branchName}', '${talent.id}')" ${canBuy ? '' : 'disabled'}>
+                        ${level >= talent.maxLevel ? 'MAX' : 'Upgrade'}
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(div);
         });
-    });
-}
-
-/**
- * Affiche tous les talents
- */
-function renderTalentsList() {
-    // Branche Clic
-    renderTalentBranch('click', 'talents-click-list');
-    // Branche Générateurs
-    renderTalentBranch('generators', 'talents-generators-list');
-    // Branche Prestige
-    renderTalentBranch('prestige', 'talents-prestige-list');
-}
-
-/**
- * Affiche une branche de talents
- */
-function renderTalentBranch(branchName, containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-
-    const talents = TALENTS_DATA[branchName];
-    const branchState = gameState.talents[branchName] || [];
-
-    talents.forEach(talent => {
-        const talentState = branchState.find(t => t.id === talent.id);
-        const currentLevel = talentState ? talentState.level : 0;
-
-        const talentDiv = document.createElement('div');
-        talentDiv.classList.add('talent-item');
-
-        if (currentLevel > 0) {
-            talentDiv.classList.add('unlocked');
-        }
-
-        // Vérifier si on peut améliorer
-        const canUpgrade = currentLevel < talent.maxLevel &&
-                          gameState.prestigePoints >= talent.cost;
-
-        // Vérifier le prérequis
-        const requirementMet = !talent.requirement ||
-                              branchState.some(t => t.id === talent.requirement && t.level > 0);
-
-        // Calculer l'effet total
-        const totalEffect = talent.effect * currentLevel;
-        let effectText = '';
-        if (talent.type.includes('bonus') || talent.type.includes('chance') || talent.type.includes('reduction')) {
-            effectText = `${(totalEffect * 100).toFixed(0)}%`;
-        } else {
-            effectText = totalEffect.toFixed(1);
-        }
-
-        talentDiv.innerHTML = `
-            <div class="talent-name">${talent.name}</div>
-            <div class="talent-effect">
-                ${talent.description}
-                ${currentLevel > 0 ? `<br><strong>Effet: ${effectText}</strong>` : ''}
-            </div>
-            <div class="talent-cost">
-                Niveau: ${currentLevel} / ${talent.maxLevel}
-                ${currentLevel < talent.maxLevel ?
-                    `<br>Coût: ${talent.cost} RP` : ''}
-            </div>
-            ${currentLevel < talent.maxLevel && requirementMet ?
-                `<button class="upgrade-btn" data-talent="${branchName}-${talent.id}"
-                        ${!canUpgrade ? 'disabled' : ''}>
-                    Améliorer
-                </button>` :
-                (currentLevel >= talent.maxLevel ?
-                    '<span style="color: #28a745; font-weight: bold;">✓ MAX</span>' :
-                    '<span style="color: #dc3545;">🔒 Bloqué</span>')}
-        `;
-
-        container.appendChild(talentDiv);
-
-        // Attacher l'événement si le bouton existe
-        if (currentLevel < talent.maxLevel && requirementMet) {
-            const upgradeBtn = talentDiv.querySelector('.upgrade-btn');
-            if (upgradeBtn) {
-                upgradeBtn.addEventListener('click', () => {
-                    console.log('Achat talent:', branchName, talent.id);
-                    upgradeTalent(branchName, talent.id);
-                });
-            }
-        }
-    });
-}
-
-/**
- * Améliore un talent
- */
-function upgradeTalent(branchName, talentId) {
-    console.log('🌳 ACHAT TALENT:', branchName, talentId);
-    try {
-        const talent = TALENTS_DATA[branchName].find(t => t.id === talentId);
-        if (!talent) {
-            console.error('   ❌ Talent introuvable!');
-            return;
-        }
-
-        const branchState = gameState.talents[branchName] || [];
-        const talentState = branchState.find(t => t.id === talentId);
-        const currentLevel = talentState ? talentState.level : 0;
-
-        console.log('   Niveau actuel:', currentLevel, '/', talent.maxLevel);
-        console.log('   RP disponibles:', gameState.prestigePoints, '/ requis:', talent.cost);
-
-        // Vérifications
-        if (currentLevel >= talent.maxLevel) {
-            console.log('   ❌ Max level atteint');
-            showNotification('Talent déjà au maximum !', 'error');
-            return;
-        }
-
-        if (gameState.prestigePoints < talent.cost) {
-            console.log('   ❌ Pas assez de RP');
-            showNotification('Pas assez de RP !', 'error');
-            return;
-        }
-
-        // Vérifier le prérequis
-        if (talent.requirement &&
-            !branchState.some(t => t.id === talent.requirement && t.level > 0)) {
-            console.log('   ❌ Prérequis non rempli');
-            showNotification('Prérequis non rempli !', 'error');
-            return;
-        }
-
-        console.log('   ✅ Vérifications OK');
-
-        // Acheter
-        console.log('   Dépense RP...');
-        gameState.prestigePoints -= talent.cost;
-        console.log('   RP restants:', gameState.prestigePoints);
-
-        // Améliorer
-        console.log('   Amélioration talent...');
-        if (talentState) {
-            talentState.level++;
-        } else {
-            if (!gameState.talents[branchName]) {
-                gameState.talents[branchName] = [];
-            }
-            gameState.talents[branchName].push({ id: talentId, level: 1 });
-        }
-        console.log('   Nouveau niveau:', talentState ? talentState.level : 1);
-
-        // Recalculer tout
-        console.log('   Recalcul CPC/CPS...');
-        try {
-            gameState.cpc = calculateTotalCPC();
-            gameState.cps = calculateTotalCPS();
-            console.log('   CPC:', gameState.cpc, 'CPS:', gameState.cps);
-        } catch (error) {
-            console.error('   💥 Erreur calcul CPC/CPS:', error);
-        }
-
-        // Rafraîchir (ne PAS re-render generators, juste update les boutons)
-        console.log('   Refresh UI...');
-        console.log('   - renderTalentsList()');
-        renderTalentsList();
-        console.log('   - updateGeneratorsButtons()');
-        if (typeof updateGeneratorsButtons === 'function') {
-            updateGeneratorsButtons();
-        }
-        console.log('   - updateMainStats()');
-        updateMainStats();
-        console.log('   - updatePrestigeDisplay()');
-        if (typeof updatePrestigeDisplay === 'function') {
-            updatePrestigeDisplay();
-        }
-
-        console.log('✅ TALENT ACHETÉ:', talent.name);
-        showNotification(`${talent.name} amélioré !`, 'success');
-    } catch (error) {
-        console.error('💥 ERREUR CRITIQUE dans upgradeTalent:', error);
-        console.error('Stack:', error.stack);
-        alert('ERREUR ACHAT TALENT ! Ouvre la console (F12) et fais une capture !');
     }
 }

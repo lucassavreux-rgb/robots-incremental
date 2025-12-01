@@ -1,124 +1,131 @@
 /**
  * =====================================================
- * BOSSES.JS - Système de Boss Fights
+ * BOSSES.JS - Boss Fight System
  * =====================================================
- * Boss qui apparaissent régulièrement avec récompenses
+ * Gestion des combats de boss
  */
 
 /**
- * Initialise le système de boss
+ * Lance un combat de boss
  */
-function initBosses() {
-    updateBossDisplay();
-}
-
-/**
- * Met à jour l'affichage du boss
- */
-function updateBossDisplay() {
-    if (!gameState.currentBoss) {
-        document.getElementById('boss-number').textContent = gameState.stats.bossesDefeated + 1;
-        document.getElementById('boss-hp-text').textContent = 'Aucun boss';
-        document.getElementById('boss-hp-fill').style.width = '0%';
-        document.getElementById('boss-timer').textContent = '--:--';
+function startBoss() {
+    if (GameState.boss.active) {
+        showNotification("A boss is already active!", "error");
         return;
     }
 
-    const boss = gameState.currentBoss;
-    const hpPercent = (boss.currentHP / boss.maxHP) * 100;
-
-    document.getElementById('boss-number').textContent = boss.number;
-    document.getElementById('boss-hp-fill').style.width = hpPercent + '%';
-    document.getElementById('boss-hp-text').textContent =
-        `${formatNumber(boss.currentHP)} / ${formatNumber(boss.maxHP)}`;
-}
-
-/**
- * Met à jour le timer du prochain boss
- */
-function updateBossTimer() {
+    // Vérifier cooldown
     const now = Date.now();
-    const nextBossTime = gameState.nextBossTime || now;
-    const timeLeft = Math.max(0, nextBossTime - now);
-
-    if (timeLeft === 0 && !gameState.currentBoss) {
-        spawnBoss();
+    if (GameState.boss.cooldown > now) {
+        const remaining = Math.ceil((GameState.boss.cooldown - now) / 1000);
+        showNotification(`Cooldown: ${remaining}s remaining`, "error");
+        return;
     }
 
-    document.getElementById('boss-timer').textContent = formatTimeMS(timeLeft);
-}
+    // Calculer HP du boss
+    const baseBossHP = 100000;
+    const hp = new BigNumber(baseBossHP).multiply(
+        new BigNumber(Math.pow(1.5, GameState.boss.defeated))
+    );
 
-/**
- * Fait apparaître un boss
- */
-function spawnBoss() {
-    const bossNumber = gameState.stats.bossesDefeated + 1;
+    // Activer le boss
+    GameState.boss.active = true;
+    GameState.boss.hp = hp;
+    GameState.boss.maxHp = hp;
 
-    // HP exponentiel
-    const baseHP = 1000;
-    const maxHP = Math.floor(baseHP * Math.pow(2, bossNumber - 1));
-
-    gameState.currentBoss = {
-        number: bossNumber,
-        maxHP: maxHP,
-        currentHP: maxHP
-    };
-
-    updateBossDisplay();
-    showNotification(`Boss #${bossNumber} apparu !`, 'info');
-}
-
-/**
- * Attaque le boss
- */
-function attackBoss() {
-    if (!gameState.currentBoss) return;
-
-    const boss = gameState.currentBoss;
-    let damage = gameState.cpc;
-
-    // Bonus des artefacts
-    gameState.equippedArtefacts.forEach(artefactId => {
-        const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-        if (artefact && artefact.effect.type === 'boss_damage') {
-            damage *= artefact.effect.value;
+    // Timer de 30 secondes
+    setTimeout(() => {
+        if (GameState.boss.active) {
+            failBoss();
         }
-    });
+    }, 30000);
 
-    boss.currentHP -= damage;
-
-    if (boss.currentHP <= 0) {
-        defeatBoss();
-    }
-
-    updateBossDisplay();
+    updateBossUI();
+    showNotification("Boss spawned! You have 30 seconds!", "info");
 }
 
 /**
- * Défait le boss
+ * Boss vaincu
  */
 function defeatBoss() {
-    const bossNumber = gameState.currentBoss.number;
+    if (!GameState.boss.active) return;
+
+    GameState.boss.active = false;
+    GameState.boss.defeated++;
+    GameState.boss.cooldown = Date.now() + (5 * 60 * 1000); // 5 minutes
 
     // Récompenses
-    const coinsReward = 1000 * Math.pow(2, bossNumber - 1);
-    addCoins(coinsReward);
+    const rewardShards = GameState.boss.maxHp.multiply(10);
+    const rewardRP = Math.max(1, Math.floor(GameState.boss.defeated / 5));
 
-    // Chance d'artefact (10%)
-    if (Math.random() < 0.1) {
-        unlockRandomArtefact();
+    GameState.shards = GameState.shards.add(rewardShards);
+    GameState.prestige.currentRP += rewardRP;
+    GameState.prestige.totalRP += rewardRP;
+
+    // Chance d'artefact (20%)
+    if (Math.random() < 0.20) {
+        const availableArtefacts = ARTEFACTS.filter(a => !GameState.artefacts.owned.includes(a.id));
+        if (availableArtefacts.length > 0) {
+            const randomArtefact = availableArtefacts[Math.floor(Math.random() * availableArtefacts.length)];
+            addArtefact(randomArtefact.id);
+        }
     }
 
-    // Stats
-    gameState.stats.bossesDefeated++;
+    updateBossUI();
+    updateStatsUI();
+    updatePrestigeUI();
+    updateQuestProgress('boss_killed', 1);
 
-    // Quêtes
-    updateQuestProgress('bosses', 1);
+    showNotification(`Boss defeated! Rewards: ${formatNumber(rewardShards)} Shards, ${rewardRP} RP`, "success");
+}
 
-    // Prochain boss dans 5 minutes
-    gameState.nextBossTime = Date.now() + (5 * 60 * 1000);
-    gameState.currentBoss = null;
+/**
+ * Boss échoué (timeout)
+ */
+function failBoss() {
+    if (!GameState.boss.active) return;
 
-    updateBossDisplay();
-    showNotification(`Boss #${bossNumber} vaincu ! +${formatNumber(coinsReward)} coins`, 'success');
+    GameState.boss.active = false;
+    GameState.boss.cooldown = Date.now() + (5 * 60 * 1000); // 5 minutes
+
+    updateBossUI();
+    showNotification("Boss escaped!", "error");
+}
+
+/**
+ * Met à jour l'UI du boss
+ */
+function updateBossUI() {
+    const container = document.getElementById('boss-container');
+    if (!container) return;
+
+    if (!GameState.boss.active) {
+        // Afficher le bouton de lancement
+        const now = Date.now();
+        const onCooldown = GameState.boss.cooldown > now;
+        const cooldownRemaining = onCooldown ? Math.ceil((GameState.boss.cooldown - now) / 1000) : 0;
+
+        container.innerHTML = `
+            <div class="boss-info">
+                <p>Bosses defeated: ${GameState.boss.defeated}</p>
+                <button class="btn btn-boss" onclick="startBoss()" ${onCooldown ? 'disabled' : ''}>
+                    ${onCooldown ? `Cooldown: ${cooldownRemaining}s` : 'Start Boss Fight'}
+                </button>
+            </div>
+        `;
+    } else {
+        // Afficher le boss actif
+        const hpPercentage = GameState.boss.hp.divide(GameState.boss.maxHp).multiply(100).toNumber();
+
+        container.innerHTML = `
+            <div class="boss-active">
+                <h3>BOSS FIGHT!</h3>
+                <div class="boss-hp-bar">
+                    <div class="boss-hp-fill" style="width: ${hpPercentage}%"></div>
+                </div>
+                <p>${formatNumber(GameState.boss.hp)} / ${formatNumber(GameState.boss.maxHp)} HP</p>
+                <p>Click to deal damage!</p>
+            </div>
+        `;
+    }
 }
