@@ -151,100 +151,120 @@ function addCoins(amount) {
  * Calcule le CPC total avec tous les bonus
  */
 function calculateTotalCPC() {
-    let cpc = gameState.baseCPC;
+    try {
+        let cpc = gameState.baseCPC || 1;
 
-    // Bonus des upgrades CPC
-    gameState.upgrades.forEach(upgradeId => {
-        const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
-        if (upgrade && upgrade.type === 'cpc') {
-            cpc *= upgrade.effect;
+        // Bonus des upgrades CPC
+        if (Array.isArray(gameState.upgrades)) {
+            gameState.upgrades.forEach(upgradeId => {
+                const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
+                if (upgrade && upgrade.type === 'cpc' && upgrade.effect) {
+                    cpc *= upgrade.effect;
+                }
+            });
         }
-    });
 
-    // Bonus des talents
-    const cpcTalentBonus = calculateTalentBonus('cpc_bonus');
-    cpc *= (1 + cpcTalentBonus);
+        // Bonus des talents
+        const cpcTalentBonus = calculateTalentBonus('cpc_bonus') || 0;
+        cpc *= (1 + cpcTalentBonus);
 
-    // Bonus des artefacts
-    const cpcArtefactMult = calculateArtefactBonus('cpc_mult');
-    cpc *= cpcArtefactMult;
+        // Bonus des artefacts
+        const cpcArtefactMult = calculateArtefactBonus('cpc_mult') || 1;
+        cpc *= cpcArtefactMult;
 
-    // Bonus du prestige
-    const prestigeCPCBonus = gameState.prestigePoints * 0.01; // 1% par RP
-    cpc *= (1 + prestigeCPCBonus);
+        // Bonus du prestige
+        const prestigeCPCBonus = (gameState.prestigePoints || 0) * 0.01; // 1% par RP
+        cpc *= (1 + prestigeCPCBonus);
 
-    // Bonus global
-    const globalMult = calculateGlobalMultiplier();
-    cpc *= globalMult;
+        // Bonus global
+        const globalMult = calculateGlobalMultiplier() || 1;
+        cpc *= globalMult;
 
-    return cpc;
+        return cpc;
+    } catch (error) {
+        console.error('ERREUR CRITIQUE calculateTotalCPC:', error);
+        return gameState.baseCPC || 1;
+    }
 }
 
 /**
  * Calcule le CPS total avec tous les bonus
  */
 function calculateTotalCPS() {
-    let cps = 0;
+    try {
+        let cps = 0;
 
-    // Production de base des générateurs
-    gameState.generators.forEach(gen => {
-        const genData = GENERATORS_DATA.find(g => g.id === gen.id);
-        if (!genData) return;
+        // Production de base des générateurs
+        if (Array.isArray(gameState.generators)) {
+            gameState.generators.forEach(gen => {
+                const genData = GENERATORS_DATA.find(g => g.id === gen.id);
+                if (!genData || !gen.level) return;
 
-        let genProduction = genData.baseProduction * gen.level;
+                let genProduction = (genData.baseProduction || 0) * gen.level;
 
-        // Bonus des milestones
-        genData.milestones.forEach(milestone => {
-            if (gen.level >= milestone) {
-                genProduction *= 2;
-            }
-        });
+                // Bonus des milestones
+                if (Array.isArray(genData.milestones)) {
+                    genData.milestones.forEach(milestone => {
+                        if (gen.level >= milestone) {
+                            genProduction *= 2;
+                        }
+                    });
+                }
 
-        cps += genProduction;
-    });
-
-    // Bonus des upgrades CPS
-    gameState.upgrades.forEach(upgradeId => {
-        const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
-        if (upgrade && upgrade.type === 'cps') {
-            cps *= upgrade.effect;
+                cps += genProduction;
+            });
         }
-    });
 
-    // Bonus des talents
-    const cpsTalentBonus = calculateTalentBonus('cps_bonus');
-    cps *= (1 + cpsTalentBonus);
+        // Bonus des upgrades CPS
+        if (Array.isArray(gameState.upgrades)) {
+            gameState.upgrades.forEach(upgradeId => {
+                const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
+                if (upgrade && upgrade.type === 'cps' && upgrade.effect) {
+                    cps *= upgrade.effect;
+                }
+            });
+        }
 
-    // Bonus des pets
-    const cpsPetBonus = calculatePetBonus('cps_bonus');
-    cps *= (1 + cpsPetBonus);
+        // Bonus des talents
+        const cpsTalentBonus = calculateTalentBonus('cps_bonus') || 0;
+        cps *= (1 + cpsTalentBonus);
 
-    // Bonus des artefacts
-    const cpsArtefactMult = calculateArtefactBonus('cps_mult');
-    cps *= cpsArtefactMult;
+        // Bonus des pets
+        const cpsPetBonus = calculatePetBonus('cps_bonus') || 0;
+        cps *= (1 + cpsPetBonus);
 
-    // Bonus du prestige
-    const prestigeCPSBonus = gameState.prestigePoints * 0.02; // 2% par RP
-    cps *= (1 + prestigeCPSBonus);
+        // Bonus des artefacts
+        const cpsArtefactMult = calculateArtefactBonus('cps_mult') || 1;
+        cps *= cpsArtefactMult;
 
-    // Bonus global
-    const globalMult = calculateGlobalMultiplier();
-    cps *= globalMult;
+        // Bonus du prestige
+        const prestigeCPSBonus = (gameState.prestigePoints || 0) * 0.02; // 2% par RP
+        cps *= (1 + prestigeCPSBonus);
 
-    // Auto-click bonus (talent)
-    const autoClickBonus = calculateTalentBonus('auto_click');
-    if (autoClickBonus > 0) {
-        cps += calculateTotalCPC() * autoClickBonus;
+        // Bonus global
+        const globalMult = calculateGlobalMultiplier() || 1;
+        cps *= globalMult;
+
+        // Auto-click bonus (talent)
+        const autoClickBonus = calculateTalentBonus('auto_click') || 0;
+        if (autoClickBonus > 0) {
+            cps += calculateTotalCPC() * autoClickBonus;
+        }
+
+        // Événements actifs
+        if (Array.isArray(gameState.activeEvents)) {
+            gameState.activeEvents.forEach(event => {
+                if (event && event.type === 'cps_boost' && event.multiplier) {
+                    cps *= event.multiplier;
+                }
+            });
+        }
+
+        return cps;
+    } catch (error) {
+        console.error('ERREUR CRITIQUE calculateTotalCPS:', error);
+        return 0;
     }
-
-    // Événements actifs
-    gameState.activeEvents.forEach(event => {
-        if (event.type === 'cps_boost') {
-            cps *= event.multiplier;
-        }
-    });
-
-    return cps;
 }
 
 /**
@@ -253,12 +273,17 @@ function calculateTotalCPS() {
 function calculateGlobalMultiplier() {
     let mult = 1;
 
-    // Bonus des artefacts globaux
-    mult *= calculateArtefactBonus('global_mult');
+    try {
+        // Bonus des artefacts globaux
+        mult *= calculateArtefactBonus('global_mult');
 
-    // Bonus des pets globaux
-    const petGlobalBonus = calculatePetBonus('global_mult');
-    mult *= (1 + petGlobalBonus);
+        // Bonus des pets globaux
+        const petGlobalBonus = calculatePetBonus('global_mult');
+        mult *= (1 + petGlobalBonus);
+    } catch (error) {
+        console.error('Erreur calculateGlobalMultiplier:', error);
+        return 1;
+    }
 
     return mult;
 }
@@ -339,27 +364,36 @@ function calculateArtefactBonus(type) {
     let mult = 1;
     let bonus = 0;
 
-    gameState.equippedArtefacts.forEach(artefactId => {
-        const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-        if (!artefact) return;
+    try {
+        if (!Array.isArray(gameState.equippedArtefacts)) {
+            return type.includes('mult') ? 1 : 0;
+        }
 
-        if (artefact.effect.type === type) {
+        gameState.equippedArtefacts.forEach(artefactId => {
+            const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
+            if (!artefact || !artefact.effect) return;
+
+            if (artefact.effect.type === type) {
+                if (type.includes('mult')) {
+                    mult *= artefact.effect.value || 1;
+                } else {
+                    bonus += artefact.effect.value || 0;
+                }
+            }
+        });
+
+        // Set bonus
+        const setBonus = calculateSetBonus();
+        if (setBonus && setBonus.type === type) {
             if (type.includes('mult')) {
-                mult *= artefact.effect.value;
+                mult *= setBonus.value || 1;
             } else {
-                bonus += artefact.effect.value;
+                bonus += setBonus.value || 0;
             }
         }
-    });
-
-    // Set bonus
-    const setBonus = calculateSetBonus();
-    if (setBonus && setBonus.type === type) {
-        if (type.includes('mult')) {
-            mult *= setBonus.value;
-        } else {
-            bonus += setBonus.value;
-        }
+    } catch (error) {
+        console.error('Erreur calculateArtefactBonus:', error);
+        return type.includes('mult') ? 1 : 0;
     }
 
     return type.includes('mult') ? mult : bonus;
@@ -369,27 +403,36 @@ function calculateArtefactBonus(type) {
  * Calcule le set bonus actif
  */
 function calculateSetBonus() {
-    const setCounts = {};
-
-    // Compter les artefacts par set
-    gameState.equippedArtefacts.forEach(artefactId => {
-        const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-        if (artefact && artefact.set) {
-            setCounts[artefact.set] = (setCounts[artefact.set] || 0) + 1;
+    try {
+        if (!Array.isArray(gameState.equippedArtefacts)) {
+            return null;
         }
-    });
 
-    // Trouver le meilleur set bonus
-    let bestBonus = null;
-    for (const setName in setCounts) {
-        const count = setCounts[setName];
-        const setData = ARTEFACT_SETS[setName];
-        if (setData && setData.bonuses[count]) {
-            bestBonus = setData.bonuses[count];
+        const setCounts = {};
+
+        // Compter les artefacts par set
+        gameState.equippedArtefacts.forEach(artefactId => {
+            const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
+            if (artefact && artefact.set) {
+                setCounts[artefact.set] = (setCounts[artefact.set] || 0) + 1;
+            }
+        });
+
+        // Trouver le meilleur set bonus
+        let bestBonus = null;
+        for (const setName in setCounts) {
+            const count = setCounts[setName];
+            const setData = ARTEFACT_SETS[setName];
+            if (setData && setData.bonuses && setData.bonuses[count]) {
+                bestBonus = setData.bonuses[count];
+            }
         }
+
+        return bestBonus;
+    } catch (error) {
+        console.error('Erreur calculateSetBonus:', error);
+        return null;
     }
-
-    return bestBonus;
 }
 
 /**

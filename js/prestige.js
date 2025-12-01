@@ -93,51 +93,75 @@ function renderPrestigeBonuses() {
  * Effectue un prestige
  */
 function doPrestige() {
-    const rpGain = calculatePrestigeRP();
+    try {
+        const rpGain = calculatePrestigeRP();
 
-    if (rpGain === 0) {
-        showNotification('Pas assez de coins pour un prestige !', 'error');
-        return;
+        if (rpGain === 0) {
+            showNotification('Pas assez de coins pour un prestige !', 'error');
+            return;
+        }
+
+        // Confirmer
+        if (!confirm(`Êtes-vous sûr de vouloir faire un prestige ?\n\nVous gagnerez ${formatNumber(rpGain)} RP.\n\nTous vos coins, générateurs et upgrades seront réinitialisés !`)) {
+            return;
+        }
+
+        // Gagner les RP
+        gameState.prestigePoints += rpGain;
+
+        // Vérifier le talent "Héritage" avec protection
+        let keepCoins = 0;
+        try {
+            keepCoins = calculateTalentBonus('keep_coins') || 0;
+        } catch (error) {
+            console.error('Erreur calcul keepCoins:', error);
+            keepCoins = 0;
+        }
+        const coinsToKeep = Math.floor(gameState.coins * keepCoins);
+
+        // Reset
+        gameState.coins = coinsToKeep;
+        gameState.generators = [];
+        gameState.upgrades = [];
+        gameState.baseCPC = 1;
+        gameState.criticalChance = 0;
+        gameState.criticalMultiplier = 2;
+
+        // Recalculer tout avec protection
+        try {
+            gameState.cpc = calculateTotalCPC();
+        } catch (error) {
+            console.error('Erreur calcul CPC après prestige:', error);
+            gameState.cpc = gameState.baseCPC;
+        }
+
+        try {
+            gameState.cps = calculateTotalCPS();
+        } catch (error) {
+            console.error('Erreur calcul CPS après prestige:', error);
+            gameState.cps = 0;
+        }
+
+        // Stats
+        gameState.stats.prestigeCount++;
+
+        // Quêtes
+        if (typeof updateQuestProgress === 'function') {
+            updateQuestProgress('prestige', 1);
+        }
+
+        // Rafraîchir tout - Re-render car tout est reset
+        renderGeneratorsList();
+        renderUpgradesList();
+        renderTalentsList();
+        updatePrestigeDisplay();
+        updateMainStats();
+
+        showNotification(`Prestige effectué ! +${formatNumber(rpGain)} RP`, 'success');
+    } catch (error) {
+        console.error('ERREUR CRITIQUE pendant prestige:', error);
+        showNotification('Erreur pendant le prestige ! Vérifie la console.', 'error');
     }
-
-    // Confirmer
-    if (!confirm(`Êtes-vous sûr de vouloir faire un prestige ?\n\nVous gagnerez ${formatNumber(rpGain)} RP.\n\nTous vos coins, générateurs et upgrades seront réinitialisés !`)) {
-        return;
-    }
-
-    // Gagner les RP
-    gameState.prestigePoints += rpGain;
-
-    // Vérifier le talent "Héritage"
-    const keepCoins = calculateTalentBonus('keep_coins');
-    const coinsToKeep = Math.floor(gameState.coins * keepCoins);
-
-    // Reset
-    gameState.coins = coinsToKeep;
-    gameState.generators = [];
-    gameState.upgrades = [];
-    gameState.baseCPC = 1;
-    gameState.criticalChance = 0;
-    gameState.criticalMultiplier = 2;
-
-    // Recalculer tout
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
-
-    // Stats
-    gameState.stats.prestigeCount++;
-
-    // Quêtes
-    updateQuestProgress('prestige', 1);
-
-    // Rafraîchir tout
-    renderGeneratorsList();
-    renderUpgradesList();
-    renderTalentsList();
-    updatePrestigeDisplay();
-    updateMainStats();
-
-    showNotification(`Prestige effectué ! +${formatNumber(rpGain)} RP`, 'success');
 }
 
 // Événement du bouton prestige
