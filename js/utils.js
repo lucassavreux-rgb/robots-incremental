@@ -1,504 +1,501 @@
 /**
  * =====================================================
- * UTILS.JS - Fonctions Utilitaires
+ * UTILS.JS - Utility Functions
  * =====================================================
- * Fonctions helper pour le jeu
+ * Fonctions de calcul et utilitaires
  */
 
 /**
- * Gère le changement d'onglets
- */
-function initTabs() {
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabPanels = document.querySelectorAll('.tab-panel');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const targetTab = button.dataset.tab;
-
-            // Désactiver tous les onglets
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabPanels.forEach(panel => panel.classList.remove('active'));
-
-            // Activer l'onglet cliqué
-            button.classList.add('active');
-            document.getElementById(`${targetTab}-tab`).classList.add('active');
-        });
-    });
-}
-
-/**
- * Crée un effet visuel lors du clic
- */
-function createClickEffect(x, y, amount, isCritical = false) {
-    const container = document.getElementById('click-effect-container');
-    const effect = document.createElement('div');
-    effect.classList.add('click-effect');
-    effect.textContent = '+' + formatNumber(amount);
-
-    if (isCritical) {
-        effect.style.color = '#ff6b00';
-        effect.style.fontSize = '2em';
-        effect.textContent = 'CRIT! +' + formatNumber(amount);
-    }
-
-    // Position relative au container
-    const rect = container.getBoundingClientRect();
-    effect.style.left = (x - rect.left) + 'px';
-    effect.style.top = (y - rect.top) + 'px';
-
-    container.appendChild(effect);
-
-    // Supprimer après l'animation
-    setTimeout(() => {
-        effect.remove();
-    }, 1000);
-}
-
-/**
- * Met à jour l'affichage des stats principales
- */
-function updateMainStats() {
-    document.getElementById('coins-display').textContent = formatNumber(gameState.coins);
-    document.getElementById('cpc-display').textContent = formatNumber(gameState.cpc);
-    document.getElementById('cps-display').textContent = formatNumber(gameState.cps);
-    document.getElementById('rp-display').textContent = formatNumber(gameState.prestigePoints);
-}
-
-/**
- * Met à jour les statistiques
- */
-function updateStatsDisplay() {
-    document.getElementById('total-clicks').textContent = formatNumber(gameState.stats.totalClicks);
-    document.getElementById('stats-total-coins').textContent = formatNumber(gameState.stats.totalCoinsEarned);
-    document.getElementById('playtime').textContent = formatTime(gameState.stats.playtime);
-    document.getElementById('critical-hits').textContent = formatNumber(gameState.stats.criticalHits);
-    document.getElementById('bosses-defeated').textContent = formatNumber(gameState.stats.bossesDefeated);
-}
-
-/**
- * Formate un temps en secondes vers HH:MM:SS
- */
-function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-
-    if (hours > 0) {
-        return `${hours}h ${minutes}m ${secs}s`;
-    } else if (minutes > 0) {
-        return `${minutes}m ${secs}s`;
-    } else {
-        return `${secs}s`;
-    }
-}
-
-/**
- * Formate un temps en millisecondes vers MM:SS
- */
-function formatTimeMS(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-}
-
-/**
- * Vérifie si le joueur peut acheter quelque chose
- */
-function canAfford(cost) {
-    // Toujours comparer en nombres normaux pour simplifier
-    const costNum = (typeof cost === 'number') ? cost : (cost.toNumber ? cost.toNumber() : parseFloat(cost));
-    const coinsNum = (typeof gameState.coins === 'number') ? gameState.coins : (gameState.coins.toNumber ? gameState.coins.toNumber() : parseFloat(gameState.coins));
-
-    console.log('canAfford check:', { coins: coinsNum, cost: costNum, result: coinsNum >= costNum });
-
-    return coinsNum >= costNum;
-}
-
-/**
- * Déduit un coût des coins du joueur
- */
-function spendCoins(cost) {
-    const before = gameState.coins;
-
-    if (typeof cost === 'number') {
-        gameState.coins -= cost;
-    } else {
-        gameState.coins = toBigNumber(gameState.coins).subtract(cost).toNumber();
-    }
-
-    console.log('spendCoins:', { before, cost, after: gameState.coins });
-
-    updateMainStats();
-}
-
-/**
- * Ajoute des coins au joueur
- */
-function addCoins(amount) {
-    const oldCoins = gameState.coins;
-    if (typeof amount === 'number') {
-        gameState.coins += amount;
-    } else {
-        gameState.coins = toBigNumber(gameState.coins).add(amount).toNumber();
-    }
-    gameState.stats.totalCoinsEarned += (gameState.coins - oldCoins);
-    updateMainStats();
-}
-
-/**
- * Calcule le CPC total avec tous les bonus
+ * Calcule le CPC total
+ * Formula: CPC = (base + flatBonus) × globalClickMultiplier × prestigeClickMultiplier
+ *          × talentsClickMultiplier × artefactsClickMultiplier × eventClickMultiplier
  */
 function calculateTotalCPC() {
-    try {
-        let cpc = gameState.baseCPC || 1;
+    let cpc = GameState.click.base.add(GameState.click.flatBonus);
 
-        // Bonus des upgrades CPC
-        if (Array.isArray(gameState.upgrades)) {
-            gameState.upgrades.forEach(upgradeId => {
-                const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
-                if (upgrade && upgrade.type === 'cpc' && upgrade.effect) {
-                    cpc *= upgrade.effect;
-                }
-            });
-        }
+    // Multiplier de base
+    cpc = cpc.multiply(GameState.click.multiplier);
 
-        // Bonus des talents
-        const cpcTalentBonus = calculateTalentBonus('cpc_bonus') || 0;
-        cpc *= (1 + cpcTalentBonus);
+    // Multiplier des upgrades
+    const upgradeMultiplier = getUpgradeClickMultiplier();
+    cpc = cpc.multiply(upgradeMultiplier);
 
-        // Bonus des artefacts
-        const cpcArtefactMult = calculateArtefactBonus('cpc_mult') || 1;
-        cpc *= cpcArtefactMult;
+    // Multiplier de prestige
+    const prestigeMultiplier = getPrestigeMultiplier();
+    cpc = cpc.multiply(prestigeMultiplier);
 
-        // Bonus du prestige
-        const prestigeCPCBonus = (gameState.prestigePoints || 0) * 0.01; // 1% par RP
-        cpc *= (1 + prestigeCPCBonus);
+    // Multiplier des talents
+    const talentMultiplier = getTalentClickMultiplier();
+    cpc = cpc.multiply(talentMultiplier);
 
-        // Bonus global
-        const globalMult = calculateGlobalMultiplier() || 1;
-        cpc *= globalMult;
+    // Multiplier des artefacts
+    const artefactMultiplier = getArtefactClickMultiplier();
+    cpc = cpc.multiply(artefactMultiplier);
 
-        return cpc;
-    } catch (error) {
-        console.error('ERREUR CRITIQUE calculateTotalCPC:', error);
-        return gameState.baseCPC || 1;
-    }
+    // Multiplier des pets
+    const petMultiplier = getPetClickMultiplier();
+    cpc = cpc.multiply(petMultiplier);
+
+    // Multiplier des événements
+    const eventMultiplier = getEventClickMultiplier();
+    cpc = cpc.multiply(eventMultiplier);
+
+    return cpc;
 }
 
 /**
- * Calcule le CPS total avec tous les bonus
+ * Calcule le CPS total
  */
 function calculateTotalCPS() {
-    try {
-        let cps = 0;
+    let totalCps = new BigNumber(0);
 
-        // Production de base des générateurs
-        if (Array.isArray(gameState.generators)) {
-            gameState.generators.forEach(gen => {
-                const genData = GENERATORS_DATA.find(g => g.id === gen.id);
-                if (!genData || !gen.level) return;
+    // Pour chaque générateur
+    GENERATORS.forEach(gen => {
+        const level = GameState.generators[gen.id] || 0;
+        if (level === 0) return;
 
-                let genProduction = (genData.baseProduction || 0) * gen.level;
+        // Production de base: baseCps * (cpsGrowthPerLevel ^ (level - 1))
+        let production = new BigNumber(gen.baseCps).multiply(
+            new BigNumber(Math.pow(gen.cpsGrowthPerLevel, level - 1))
+        );
 
-                // Bonus des milestones
-                if (Array.isArray(genData.milestones)) {
-                    genData.milestones.forEach(milestone => {
-                        if (gen.level >= milestone) {
-                            genProduction *= 2;
-                        }
-                    });
-                }
+        // Bonus de milestone: x2 tous les 25 niveaux
+        const milestoneBonus = Math.pow(2, Math.floor(level / 25));
+        production = production.multiply(milestoneBonus);
 
-                cps += genProduction;
-            });
-        }
+        // Multiplier spécifique au générateur (upgrades)
+        const genSpecificMult = getGeneratorSpecificMultiplier(gen.id);
+        production = production.multiply(genSpecificMult);
 
-        // Bonus des upgrades CPS
-        if (Array.isArray(gameState.upgrades)) {
-            gameState.upgrades.forEach(upgradeId => {
-                const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
-                if (upgrade && upgrade.type === 'cps' && upgrade.effect) {
-                    cps *= upgrade.effect;
-                }
-            });
-        }
-
-        // Bonus des talents
-        const cpsTalentBonus = calculateTalentBonus('cps_bonus') || 0;
-        cps *= (1 + cpsTalentBonus);
-
-        // Bonus des pets
-        const cpsPetBonus = calculatePetBonus('cps_bonus') || 0;
-        cps *= (1 + cpsPetBonus);
-
-        // Bonus des artefacts
-        const cpsArtefactMult = calculateArtefactBonus('cps_mult') || 1;
-        cps *= cpsArtefactMult;
-
-        // Bonus du prestige
-        const prestigeCPSBonus = (gameState.prestigePoints || 0) * 0.02; // 2% par RP
-        cps *= (1 + prestigeCPSBonus);
-
-        // Bonus global
-        const globalMult = calculateGlobalMultiplier() || 1;
-        cps *= globalMult;
-
-        // Auto-click bonus (talent)
-        const autoClickBonus = calculateTalentBonus('auto_click') || 0;
-        if (autoClickBonus > 0) {
-            cps += calculateTotalCPC() * autoClickBonus;
-        }
-
-        // Événements actifs
-        if (Array.isArray(gameState.activeEvents)) {
-            gameState.activeEvents.forEach(event => {
-                if (event && event.type === 'cps_boost' && event.multiplier) {
-                    cps *= event.multiplier;
-                }
-            });
-        }
-
-        return cps;
-    } catch (error) {
-        console.error('ERREUR CRITIQUE calculateTotalCPS:', error);
-        return 0;
-    }
-}
-
-/**
- * Calcule le multiplicateur global de tous les bonus
- */
-function calculateGlobalMultiplier() {
-    let mult = 1;
-
-    try {
-        // Bonus des artefacts globaux
-        mult *= calculateArtefactBonus('global_mult');
-
-        // Bonus des pets globaux
-        const petGlobalBonus = calculatePetBonus('global_mult');
-        mult *= (1 + petGlobalBonus);
-    } catch (error) {
-        console.error('Erreur calculateGlobalMultiplier:', error);
-        return 1;
-    }
-
-    return mult;
-}
-
-/**
- * Calcule le bonus des talents d'un type donné
- */
-function calculateTalentBonus(type) {
-    let bonus = 0;
-
-    try {
-        if (!gameState.talents || typeof gameState.talents !== 'object') {
-            return 0;
-        }
-
-        Object.values(gameState.talents).forEach(talentList => {
-            if (!Array.isArray(talentList)) return;
-
-            talentList.forEach(talentProgress => {
-                if (!talentProgress || !talentProgress.id) return;
-
-                const talent = findTalentById(talentProgress.id);
-                if (talent && talent.type === type && talent.effect && talentProgress.level) {
-                    bonus += talent.effect * talentProgress.level;
-                }
-            });
-        });
-    } catch (error) {
-        console.error('Erreur calculateTalentBonus:', error);
-        return 0;
-    }
-
-    return bonus;
-}
-
-/**
- * Trouve un talent par son ID
- */
-function findTalentById(id) {
-    for (const branch in TALENTS_DATA) {
-        const talent = TALENTS_DATA[branch].find(t => t.id === id);
-        if (talent) return talent;
-    }
-    return null;
-}
-
-/**
- * Calcule le bonus des pets d'un type donné
- */
-function calculatePetBonus(type) {
-    let bonus = 0;
-
-    try {
-        if (!Array.isArray(gameState.pets)) {
-            return 0;
-        }
-
-        gameState.pets.forEach(petProgress => {
-            if (!petProgress || !petProgress.id) return;
-
-            const petData = PETS_DATA.find(p => p.id === petProgress.id);
-            if (petData && petData.passiveEffect && petData.passiveEffect.type === type) {
-                bonus += petData.passiveEffect.baseValue * petProgress.level;
-            }
-        });
-    } catch (error) {
-        console.error('Erreur calculatePetBonus:', error);
-        return 0;
-    }
-
-    return bonus;
-}
-
-/**
- * Calcule le bonus des artefacts d'un type donné
- */
-function calculateArtefactBonus(type) {
-    let mult = 1;
-    let bonus = 0;
-
-    try {
-        if (!Array.isArray(gameState.equippedArtefacts)) {
-            return type.includes('mult') ? 1 : 0;
-        }
-
-        gameState.equippedArtefacts.forEach(artefactId => {
-            const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-            if (!artefact || !artefact.effect) return;
-
-            if (artefact.effect.type === type) {
-                if (type.includes('mult')) {
-                    mult *= artefact.effect.value || 1;
-                } else {
-                    bonus += artefact.effect.value || 0;
-                }
-            }
-        });
-
-        // Set bonus
-        const setBonus = calculateSetBonus();
-        if (setBonus && setBonus.type === type) {
-            if (type.includes('mult')) {
-                mult *= setBonus.value || 1;
-            } else {
-                bonus += setBonus.value || 0;
-            }
-        }
-    } catch (error) {
-        console.error('Erreur calculateArtefactBonus:', error);
-        return type.includes('mult') ? 1 : 0;
-    }
-
-    return type.includes('mult') ? mult : bonus;
-}
-
-/**
- * Calcule le set bonus actif
- */
-function calculateSetBonus() {
-    try {
-        if (!Array.isArray(gameState.equippedArtefacts)) {
-            return null;
-        }
-
-        const setCounts = {};
-
-        // Compter les artefacts par set
-        gameState.equippedArtefacts.forEach(artefactId => {
-            const artefact = ARTEFACTS_DATA.find(a => a.id === artefactId);
-            if (artefact && artefact.set) {
-                setCounts[artefact.set] = (setCounts[artefact.set] || 0) + 1;
-            }
-        });
-
-        // Trouver le meilleur set bonus
-        let bestBonus = null;
-        for (const setName in setCounts) {
-            const count = setCounts[setName];
-            const setData = ARTEFACT_SETS[setName];
-            if (setData && setData.bonuses && setData.bonuses[count]) {
-                bestBonus = setData.bonuses[count];
-            }
-        }
-
-        return bestBonus;
-    } catch (error) {
-        console.error('Erreur calculateSetBonus:', error);
-        return null;
-    }
-}
-
-/**
- * Affiche une notification temporaire
- */
-function showNotification(message, type = 'info') {
-    // Simple console log pour l'instant
-    // Peut être amélioré avec un système de toast
-    console.log(`[${type.toUpperCase()}] ${message}`);
-}
-
-/**
- * Ajoute un événement actif
- */
-function addActiveEvent(eventType, multiplier, duration) {
-    const event = {
-        type: eventType,
-        multiplier: multiplier,
-        endTime: Date.now() + duration
-    };
-    gameState.activeEvents.push(event);
-    updateActiveEventsDisplay();
-}
-
-/**
- * Met à jour l'affichage des événements actifs
- */
-function updateActiveEventsDisplay() {
-    const container = document.getElementById('active-events');
-
-    if (gameState.activeEvents.length === 0) {
-        container.innerHTML = '<p class="no-events">Aucun événement actif</p>';
-        return;
-    }
-
-    container.innerHTML = '';
-    gameState.activeEvents.forEach(event => {
-        const timeLeft = Math.max(0, event.endTime - Date.now());
-        const eventDiv = document.createElement('div');
-        eventDiv.classList.add('event-item');
-        eventDiv.innerHTML = `
-            <div class="event-name">${getEventName(event.type)} x${event.multiplier}</div>
-            <div class="event-duration">${formatTimeMS(timeLeft)}</div>
-        `;
-        container.appendChild(eventDiv);
+        totalCps = totalCps.add(production);
     });
+
+    // Multiplier global de CPS (upgrades)
+    const upgradeMultiplier = getUpgradeCpsMultiplier();
+    totalCps = totalCps.multiply(upgradeMultiplier);
+
+    // Multiplier de prestige
+    const prestigeMultiplier = getPrestigeMultiplier();
+    totalCps = totalCps.multiply(prestigeMultiplier);
+
+    // Multiplier des talents
+    const talentMultiplier = getTalentCpsMultiplier();
+    totalCps = totalCps.multiply(talentMultiplier);
+
+    // Multiplier des artefacts
+    const artefactMultiplier = getArtefactCpsMultiplier();
+    totalCps = totalCps.multiply(artefactMultiplier);
+
+    // Multiplier des pets
+    const petMultiplier = getPetCpsMultiplier();
+    totalCps = totalCps.multiply(petMultiplier);
+
+    // Multiplier des événements
+    const eventMultiplier = getEventCpsMultiplier();
+    totalCps = totalCps.multiply(eventMultiplier);
+
+    return totalCps;
 }
 
 /**
- * Obtient le nom d'un type d'événement
+ * Calcule le multiplicateur de prestige
+ * prestigeMultiplier = 1 + (totalRP × 0.01)
  */
-function getEventName(type) {
-    const names = {
-        'cps_boost': '⚡ Boost CPS',
-        'cpc_boost': '💥 Boost CPC',
-        'frenzy': '🔥 Frenzy Mode',
-        'power_boost': '🚀 Power Boost'
-    };
-    return names[type] || 'Événement';
+function getPrestigeMultiplier() {
+    let baseMultiplier = 1 + (GameState.prestige.totalRP * 0.01);
+
+    // Bonus des talents de prestige (effectiveness)
+    const effectivenessBonus = getTalentPrestigeEffectiveness();
+    baseMultiplier *= (1 + effectivenessBonus);
+
+    return baseMultiplier;
 }
 
 /**
- * Nettoie les événements expirés
+ * Calcule le multiplicateur de clic des upgrades
  */
-function cleanupExpiredEvents() {
-    const now = Date.now();
-    gameState.activeEvents = gameState.activeEvents.filter(event => event.endTime > now);
-    updateActiveEventsDisplay();
+function getUpgradeClickMultiplier() {
+    let multiplier = 1;
+    let flatBonus = 0;
+
+    GameState.upgrades.forEach(upgradeId => {
+        const upgrade = UPGRADES.find(u => u.id === upgradeId);
+        if (!upgrade) return;
+
+        if (upgrade.type === 'click') {
+            if (upgrade.effectType === 'multiplier') {
+                multiplier *= upgrade.value;
+            } else if (upgrade.effectType === 'flat') {
+                flatBonus += upgrade.value;
+            }
+        } else if (upgrade.type === 'global' && upgrade.effectType === 'all_multiplier') {
+            multiplier *= upgrade.value;
+        }
+    });
+
+    // Ajouter le flat bonus à la base
+    if (flatBonus > 0) {
+        GameState.click.flatBonus = new BigNumber(flatBonus);
+    }
+
+    return multiplier;
+}
+
+/**
+ * Calcule le multiplicateur de CPS des upgrades
+ */
+function getUpgradeCpsMultiplier() {
+    let multiplier = 1;
+
+    GameState.upgrades.forEach(upgradeId => {
+        const upgrade = UPGRADES.find(u => u.id === upgradeId);
+        if (!upgrade) return;
+
+        if (upgrade.type === 'global') {
+            if (upgrade.effectType === 'cps_multiplier') {
+                multiplier *= upgrade.value;
+            } else if (upgrade.effectType === 'all_multiplier') {
+                multiplier *= upgrade.value;
+            }
+        }
+    });
+
+    return multiplier;
+}
+
+/**
+ * Calcule le multiplicateur spécifique d'un générateur
+ */
+function getGeneratorSpecificMultiplier(generatorId) {
+    let multiplier = 1;
+
+    GameState.upgrades.forEach(upgradeId => {
+        const upgrade = UPGRADES.find(u => u.id === upgradeId);
+        if (!upgrade) return;
+
+        if (upgrade.type === 'generator' &&
+            upgrade.effectType === 'specific' &&
+            upgrade.targetGenerator === generatorId) {
+            multiplier *= upgrade.value;
+        }
+    });
+
+    // Artefacts
+    GameState.artefacts.equipped.forEach(artefactId => {
+        const artefact = ARTEFACTS.find(a => a.id === artefactId);
+        if (!artefact) return;
+
+        if (artefact.effectType === 'generator_specific' &&
+            artefact.targetGenerator === generatorId) {
+            multiplier *= artefact.value;
+        }
+    });
+
+    return multiplier;
+}
+
+/**
+ * Multiplicateurs des talents
+ */
+function getTalentClickMultiplier() {
+    let multiplier = 1;
+
+    const clickTalents = GameState.talents.click;
+    for (let talentId in clickTalents) {
+        const level = clickTalents[talentId];
+        const talent = TALENTS.click.find(t => t.id === talentId);
+        if (!talent) continue;
+
+        if (talent.effectType === 'cpc_multiplier') {
+            multiplier *= (1 + talent.valuePerLevel * level);
+        }
+    }
+
+    return multiplier;
+}
+
+function getTalentCpsMultiplier() {
+    let multiplier = 1;
+
+    const genTalents = GameState.talents.generators;
+    for (let talentId in genTalents) {
+        const level = genTalents[talentId];
+        const talent = TALENTS.generators.find(t => t.id === talentId);
+        if (!talent) continue;
+
+        if (talent.effectType === 'cps_multiplier') {
+            multiplier *= (1 + talent.valuePerLevel * level);
+        }
+    }
+
+    return multiplier;
+}
+
+function getTalentPrestigeEffectiveness() {
+    let bonus = 0;
+
+    const prestigeTalents = GameState.talents.prestige;
+    for (let talentId in prestigeTalents) {
+        const level = prestigeTalents[talentId];
+        const talent = TALENTS.prestige.find(t => t.id === talentId);
+        if (!talent) continue;
+
+        if (talent.effectType === 'rp_effectiveness') {
+            bonus += talent.valuePerLevel * level;
+        }
+    }
+
+    return bonus;
+}
+
+/**
+ * Multiplicateurs des artefacts
+ */
+function getArtefactClickMultiplier() {
+    let multiplier = 1;
+
+    GameState.artefacts.equipped.forEach(artefactId => {
+        const artefact = ARTEFACTS.find(a => a.id === artefactId);
+        if (!artefact) return;
+
+        if (artefact.effectType === 'cpc_multiplier') {
+            multiplier *= artefact.value;
+        } else if (artefact.effectType === 'global_multiplier') {
+            multiplier *= artefact.cpcValue;
+        } else if (artefact.effectType === 'crit') {
+            // Géré séparément dans les stats de crit
+        }
+    });
+
+    return multiplier;
+}
+
+function getArtefactCpsMultiplier() {
+    let multiplier = 1;
+
+    GameState.artefacts.equipped.forEach(artefactId => {
+        const artefact = ARTEFACTS.find(a => a.id === artefactId);
+        if (!artefact) return;
+
+        if (artefact.effectType === 'global_multiplier') {
+            multiplier *= artefact.cpsValue;
+        }
+    });
+
+    return multiplier;
+}
+
+/**
+ * Multiplicateurs des pets
+ */
+function getPetClickMultiplier() {
+    let multiplier = 1;
+
+    GameState.pets.owned.forEach(petId => {
+        const pet = PETS.find(p => p.id === petId);
+        if (!pet) return;
+
+        if (pet.passiveBonusType === 'cpc') {
+            multiplier *= (1 + pet.passiveValue);
+        } else if (pet.passiveBonusType === 'global') {
+            multiplier *= (1 + pet.passiveValue);
+        }
+    });
+
+    // Bonus actif
+    const activeEvent = GameState.activeEvents.find(e => e.type === 'pet_cpc');
+    if (activeEvent) {
+        multiplier *= activeEvent.multiplier;
+    }
+
+    return multiplier;
+}
+
+function getPetCpsMultiplier() {
+    let multiplier = 1;
+
+    GameState.pets.owned.forEach(petId => {
+        const pet = PETS.find(p => p.id === petId);
+        if (!pet) return;
+
+        if (pet.passiveBonusType === 'cps_global') {
+            multiplier *= (1 + pet.passiveValue);
+        } else if (pet.passiveBonusType === 'global') {
+            multiplier *= (1 + pet.passiveValue);
+        }
+    });
+
+    // Bonus actif
+    const activeEvent = GameState.activeEvents.find(e => e.type === 'pet_cps');
+    if (activeEvent) {
+        multiplier *= activeEvent.multiplier;
+    }
+
+    return multiplier;
+}
+
+/**
+ * Multiplicateurs des événements
+ */
+function getEventClickMultiplier() {
+    let multiplier = 1;
+
+    GameState.activeEvents.forEach(event => {
+        if (event.type === 'cpc_multiplier' || event.type === 'all_multiplier') {
+            multiplier *= event.multiplier;
+        }
+    });
+
+    return multiplier;
+}
+
+function getEventCpsMultiplier() {
+    let multiplier = 1;
+
+    GameState.activeEvents.forEach(event => {
+        if (event.type === 'cps_multiplier' || event.type === 'all_multiplier') {
+            multiplier *= event.multiplier;
+        }
+    });
+
+    return multiplier;
+}
+
+/**
+ * Calcule la réduction de coût des générateurs
+ */
+function getGeneratorCostReduction() {
+    let reduction = 0;
+
+    // Upgrades
+    GameState.upgrades.forEach(upgradeId => {
+        const upgrade = UPGRADES.find(u => u.id === upgradeId);
+        if (!upgrade) return;
+
+        if (upgrade.effectType === 'cost_reduction') {
+            reduction += upgrade.value;
+        }
+    });
+
+    // Talents
+    const genTalents = GameState.talents.generators;
+    for (let talentId in genTalents) {
+        const level = genTalents[talentId];
+        const talent = TALENTS.generators.find(t => t.id === talentId);
+        if (!talent) continue;
+
+        if (talent.effectType === 'cost_reduction') {
+            reduction += talent.valuePerLevel * level;
+        }
+    }
+
+    // Cap à 50%
+    return Math.min(reduction, 0.50);
+}
+
+/**
+ * Calcule le coût d'un générateur au niveau actuel
+ */
+function getGeneratorCost(generatorId) {
+    const gen = GENERATORS.find(g => g.id === generatorId);
+    if (!gen) return new BigNumber(0);
+
+    const level = GameState.generators[generatorId] || 0;
+
+    // Formule: baseCost * (costMultiplier ^ level)
+    let cost = new BigNumber(gen.baseCost).multiply(
+        new BigNumber(Math.pow(gen.costMultiplier, level))
+    );
+
+    // Réduction de coût
+    const reduction = getGeneratorCostReduction();
+    cost = cost.multiply(1 - reduction);
+
+    return cost;
+}
+
+/**
+ * Calcule les RP obtenus au prestige
+ * Formula: floor(max(0, sqrt(totalShardsEarned / 1e6)))
+ */
+function calculatePrestigeRP() {
+    const divider = new BigNumber(1000000);
+    const ratio = GameState.stats.totalShardsEarned.divide(divider);
+
+    if (ratio.lessThan(1)) return 0;
+
+    let rp = Math.floor(ratio.sqrt().toNumber());
+
+    // Bonus des talents
+    const genTalents = GameState.talents.prestige;
+    for (let talentId in genTalents) {
+        const level = genTalents[talentId];
+        const talent = TALENTS.prestige.find(t => t.id === talentId);
+        if (!talent) continue;
+
+        if (talent.effectType === 'rp_gain') {
+            rp *= (1 + talent.valuePerLevel * level);
+        }
+    }
+
+    // Bonus des artefacts
+    GameState.artefacts.equipped.forEach(artefactId => {
+        const artefact = ARTEFACTS.find(a => a.id === artefactId);
+        if (!artefact) return;
+
+        if (artefact.effectType === 'rp_gain') {
+            rp *= (1 + artefact.value);
+        }
+    });
+
+    return Math.floor(rp);
+}
+
+/**
+ * Met à jour les stats de critique
+ */
+function updateCritStats() {
+    let critChance = GameState.click.critChance;
+    let critMultiplier = GameState.click.critMultiplier;
+
+    // Upgrades
+    GameState.upgrades.forEach(upgradeId => {
+        const upgrade = UPGRADES.find(u => u.id === upgradeId);
+        if (!upgrade) return;
+
+        if (upgrade.effectType === 'crit_chance') {
+            critChance += upgrade.value;
+        } else if (upgrade.effectType === 'crit_multiplier') {
+            critMultiplier += upgrade.value;
+        }
+    });
+
+    // Talents
+    const clickTalents = GameState.talents.click;
+    for (let talentId in clickTalents) {
+        const level = clickTalents[talentId];
+        const talent = TALENTS.click.find(t => t.id === talentId);
+        if (!talent) continue;
+
+        if (talent.effectType === 'crit_chance') {
+            critChance += talent.valuePerLevel * level;
+        } else if (talent.effectType === 'crit_multiplier') {
+            critMultiplier += talent.valuePerLevel * level;
+        }
+    }
+
+    // Artefacts
+    GameState.artefacts.equipped.forEach(artefactId => {
+        const artefact = ARTEFACTS.find(a => a.id === artefactId);
+        if (!artefact) return;
+
+        if (artefact.effectType === 'crit') {
+            critChance += artefact.critChance || 0;
+            critMultiplier += artefact.critMultiplier || 0;
+        }
+    });
+
+    // Caps
+    GameState.click.critChance = Math.min(critChance, 0.50);
+    GameState.click.critMultiplier = Math.min(critMultiplier, 20);
 }
