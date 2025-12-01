@@ -180,8 +180,12 @@ function unlockPet(petId) {
         gameState.activePet = petId;
     }
 
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
+    try {
+        gameState.cpc = calculateTotalCPC();
+        gameState.cps = calculateTotalCPS();
+    } catch (error) {
+        console.error('Erreur calcul CPC/CPS:', error);
+    }
 
     renderPetsList();
     updateActivePetDisplay();
@@ -212,8 +216,12 @@ function upgradePet(petId) {
     gameState.prestigePoints -= petData.upgradeCost;
     petState.level++;
 
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
+    try {
+        gameState.cpc = calculateTotalCPC();
+        gameState.cps = calculateTotalCPS();
+    } catch (error) {
+        console.error('Erreur calcul CPC/CPS:', error);
+    }
 
     renderPetsList();
     updateMainStats();
