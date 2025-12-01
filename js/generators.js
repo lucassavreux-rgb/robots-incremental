@@ -26,8 +26,8 @@ function buyGenerator(generatorId) {
     // Recalculer production
     recalculateProduction();
 
-    // Mise à jour UI
-    updateGeneratorsUI();
+    // Mise à jour UI (SANS recréer le DOM)
+    updateGeneratorsButtonsOnly();
     updateStatsUI();
 
     // Quête
@@ -59,7 +59,7 @@ function buyMaxGenerators(generatorId) {
 
     GameState.stats.generatorsBought += bought;
     recalculateProduction();
-    updateGeneratorsUI();
+    updateGeneratorsButtonsOnly();
     updateStatsUI();
     updateQuestProgress('generators_bought', bought);
 
@@ -67,7 +67,63 @@ function buyMaxGenerators(generatorId) {
 }
 
 /**
- * Met à jour l'UI des générateurs
+ * Met à jour seulement les boutons (sans recréer le DOM)
+ */
+function updateGeneratorsButtonsOnly() {
+    GENERATORS.forEach(gen => {
+        const level = GameState.generators[gen.id] || 0;
+        const cost = getGeneratorCost(gen.id);
+        const canAfford = GameState.shards.greaterThanOrEqual(cost);
+
+        // Calculer la production de ce générateur
+        let production = new BigNumber(0);
+        if (level > 0) {
+            production = new BigNumber(gen.baseCps).multiply(
+                new BigNumber(Math.pow(gen.cpsGrowthPerLevel, level - 1))
+            );
+            const milestoneBonus = Math.pow(2, Math.floor(level / 25));
+            production = production.multiply(milestoneBonus);
+            production = production.multiply(getGeneratorSpecificMultiplier(gen.id));
+        }
+
+        // Trouver tous les éléments pour ce générateur
+        const container = document.getElementById('generators-list');
+        if (!container) return;
+
+        const genItems = container.querySelectorAll('.generator-item');
+        genItems.forEach((item, index) => {
+            if (index !== GENERATORS.findIndex(g => g.id === gen.id)) return;
+
+            // Mettre à jour classe disabled
+            if (canAfford) {
+                item.classList.remove('disabled');
+            } else {
+                item.classList.add('disabled');
+            }
+
+            // Mettre à jour level
+            const levelEl = item.querySelector('.generator-level');
+            if (levelEl) levelEl.textContent = `Level: ${level}`;
+
+            // Mettre à jour production
+            const prodEl = item.querySelector('.generator-production');
+            if (prodEl) prodEl.textContent = `${formatNumber(production)} Shards/s`;
+
+            // Mettre à jour coût
+            const costEl = item.querySelector('.generator-cost');
+            if (costEl) costEl.textContent = `${formatNumber(cost)} Shards`;
+
+            // Mettre à jour boutons
+            const buyBtn = item.querySelector('.btn-buy');
+            const buyMaxBtn = item.querySelector('.btn-buy-max');
+            if (buyBtn) buyBtn.disabled = !canAfford;
+            if (buyMaxBtn) buyMaxBtn.disabled = !canAfford;
+        });
+    });
+}
+
+/**
+ * Met à jour l'UI des générateurs (re-render complet)
  */
 function updateGeneratorsUI() {
     const container = document.getElementById('generators-list');
