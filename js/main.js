@@ -267,6 +267,16 @@ function initGame() {
     setInterval(autoSave, 10000);
 
     console.log("✅ Game initialized!");
+    console.log("");
+    console.log("📊 === MULTIPLICATEURS ACTUELS ===");
+    console.log("  RP Total:", GameState.prestige.totalRP);
+    console.log("  Prestige Multiplier:", getPrestigeMultiplier().toFixed(2) + "x");
+    console.log("  CPC Total:", formatNumber(GameState.totalCpc));
+    console.log("  CPS Total:", formatNumber(GameState.totalCps));
+    console.log("");
+    console.log("💡 Pour voir les détails de calcul à chaque clic:");
+    console.log("   Tape: window.DEBUG_MULTIPLIERS = true");
+    console.log("   Puis clique dans le jeu!");
 }
 
 // Démarrer le jeu au chargement
