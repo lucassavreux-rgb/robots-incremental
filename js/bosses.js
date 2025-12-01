@@ -71,12 +71,20 @@ function defeatBoss() {
         }
     }
 
+    // Chance de pet drop (basé sur le dropRate de chaque pet)
+    const bossPets = PETS.filter(p => p.obtainType === 'boss_drop' && !GameState.pets.owned.includes(p.id));
+    bossPets.forEach(pet => {
+        if (Math.random() < pet.dropRate) {
+            unlockPet(pet.id);
+        }
+    });
+
     updateBossUI();
     updateStatsUI();
     updatePrestigeUI();
     updateQuestProgress('boss_killed', 1);
 
-    showNotification(`Boss defeated! Rewards: ${formatNumber(rewardShards)} Shards, ${rewardRP} RP`, "success");
+    showNotification(`Boss vaincu ! Récompenses: ${formatNumber(rewardShards)} Shards, ${rewardRP} RP`, "success");
 }
 
 /**

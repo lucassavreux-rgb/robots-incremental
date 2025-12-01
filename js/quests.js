@@ -67,6 +67,11 @@ function completeQuest(questId) {
         GameState.prestige.totalRP += quest.rewardRP;
     }
 
+    // Récompense de pet
+    if (quest.rewardPet) {
+        unlockPet(quest.rewardPet);
+    }
+
     // Marquer comme complétée
     GameState.quests.completed.push(questId);
     const index = GameState.quests.active.indexOf(questId);
@@ -78,7 +83,7 @@ function completeQuest(questId) {
     updateStatsUI();
     updatePrestigeUI();
 
-    showNotification(`Quest completed! Rewards claimed!`, "success");
+    showNotification(`Quête complétée ! Récompenses réclamées !`, "success");
 }
 
 /**
@@ -114,9 +119,10 @@ function updateQuestsUI() {
                     <span>${formatNumber(progress)} / ${formatNumber(quest.targetValue)}</span>
                 </div>
                 <div class="quest-rewards">
-                    Rewards:
+                    Récompenses:
                     ${quest.rewardShards ? formatNumber(quest.rewardShards) + ' Shards' : ''}
                     ${quest.rewardRP ? quest.rewardRP + ' RP' : ''}
+                    ${quest.rewardPet ? '<strong>🐾 PET !</strong>' : ''}
                 </div>
             </div>
         `;

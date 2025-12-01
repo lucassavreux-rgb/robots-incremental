@@ -91,6 +91,7 @@ function updateAllUI() {
     updateTalentsUI();
     updateArtefactsUI();
     updatePetsUI();
+    updatePetShopUI();
     updateQuestsUI();
     updateBossUI();
     updateEventsUI();
@@ -170,6 +171,9 @@ function gameLoop() {
         }
         if (typeof updateUpgradesButtonsOnly === 'function') {
             updateUpgradesButtonsOnly();
+        }
+        if (typeof updatePetShopUI === 'function') {
+            updatePetShopUI();
         }
         lastButtonRefresh = now;
     }
