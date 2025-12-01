@@ -146,7 +146,10 @@ function gameLoop() {
     if (GameState.boss.active) {
         const bossDamage = GameState.totalCps.multiply(delta);
         GameState.boss.hp = GameState.boss.hp.subtract(bossDamage);
+
+        // Vérifier défaite (empêcher HP négatifs)
         if (GameState.boss.hp.lessThanOrEqual(0)) {
+            GameState.boss.hp = new BigNumber(0); // Forcer à 0
             defeatBoss();
         }
     }

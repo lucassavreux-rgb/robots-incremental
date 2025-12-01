@@ -25,9 +25,14 @@ function handleMainClick() {
     // Dégâts au boss si actif
     if (GameState.boss.active) {
         GameState.boss.hp = GameState.boss.hp.subtract(cpc);
+
+        // Vérifier défaite (empêcher HP négatifs)
         if (GameState.boss.hp.lessThanOrEqual(0)) {
+            GameState.boss.hp = new BigNumber(0); // Forcer à 0
             defeatBoss();
         }
+
+        updateBossUI();
     }
 
     // Animation de clic
