@@ -252,6 +252,14 @@ function startGameLoop() {
         // Rafraîchir l'affichage des stats (toutes les secondes)
         if (Math.floor(now / 1000) !== Math.floor((now - 100) / 1000)) {
             updateStatsDisplay();
+
+            // Mettre à jour l'état des boutons d'achat (toutes les secondes)
+            if (typeof updateGeneratorsButtons === 'function') {
+                updateGeneratorsButtons();
+            }
+            if (typeof updateUpgradesButtons === 'function') {
+                updateUpgradesButtons();
+            }
         }
     }, 100);
 }
@@ -310,12 +318,6 @@ document.addEventListener('gestureend', (e) => {
     e.preventDefault();
 });
 
-// Empêcher le double-tap zoom
-let lastTouchEnd = 0;
-document.addEventListener('touchend', (event) => {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-    }
-    lastTouchEnd = now;
-}, false);
+// Note: Le double-tap zoom est déjà bloqué par touch-action: manipulation dans le CSS
+// et le meta viewport user-scalable=no. Pas besoin de preventDefault sur touchend
+// car ça bloquerait aussi les clics rapides légitimes.

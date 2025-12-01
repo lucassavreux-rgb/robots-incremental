@@ -13,6 +13,47 @@ function initGenerators() {
 }
 
 /**
+ * Met à jour l'état des boutons (disabled/enabled) sans re-render complet
+ */
+function updateGeneratorsButtons() {
+    GENERATORS_DATA.forEach(genData => {
+        const genState = gameState.generators.find(g => g.id === genData.id);
+        const level = genState ? genState.level : 0;
+        const cost = calculateGeneratorCost(genData, level);
+        const canBuy = canAfford(cost);
+
+        // Trouver l'item complet pour mettre à jour plusieurs éléments
+        const buttons = document.querySelectorAll(`.buy-btn[data-generator="${genData.id}"]`);
+        buttons.forEach(button => {
+            const genItem = button.closest('.generator-item');
+            if (!genItem) return;
+
+            // Mettre à jour le bouton
+            button.disabled = !canBuy;
+            button.textContent = formatNumber(cost) + ' coins';
+
+            // Mettre à jour le niveau affiché
+            const levelDisplay = genItem.querySelector('.item-level');
+            if (levelDisplay) {
+                levelDisplay.textContent = 'Lvl ' + level;
+            }
+
+            // Mettre à jour la production affichée
+            const production = calculateGeneratorProduction(genData, level);
+            const milestonesReached = genData.milestones.filter(m => level >= m).length;
+            const statsDiv = genItem.querySelector('.item-stats');
+            if (statsDiv) {
+                statsDiv.innerHTML = `
+                    Production: ${formatNumber(production)}/s |
+                    Niveau: ${level} |
+                    Milestones: ${milestonesReached}/${genData.milestones.length}
+                `;
+            }
+        });
+    });
+}
+
+/**
  * Affiche la liste des générateurs
  */
 function renderGeneratorsList() {
@@ -175,10 +216,10 @@ function buyGenerator(generatorId) {
     // Recalculer CPS
     gameState.cps = calculateTotalCPS();
 
-    // Rafraîchir l'affichage
-    console.log('Avant renderGeneratorsList - coins:', gameState.coins);
-    renderGeneratorsList();
-    console.log('Après renderGeneratorsList - coins:', gameState.coins);
+    // Rafraîchir l'affichage (plus besoin de re-render tout, juste update les boutons)
+    console.log('Avant updateGeneratorsButtons - coins:', gameState.coins);
+    updateGeneratorsButtons();
+    console.log('Après updateGeneratorsButtons - coins:', gameState.coins);
     updateMainStats();
 
     showNotification(`${genData.name} acheté !`, 'success');
