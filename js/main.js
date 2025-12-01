@@ -131,30 +131,43 @@ function initClickEvents() {
  * Gère un clic
  */
 function handleClick(event) {
-    let coinsGained = gameState.cpc;
-    let isCritical = false;
+    try {
+        console.log('👆 CLIC détecté! CPC:', gameState.cpc);
 
-    // Vérifier critique
-    if (gameState.guaranteedCrits || Math.random() < gameState.criticalChance) {
-        coinsGained *= gameState.criticalMultiplier;
-        isCritical = true;
-        gameState.stats.criticalHits++;
+        let coinsGained = gameState.cpc;
+        let isCritical = false;
+
+        // Vérifier critique
+        if (gameState.guaranteedCrits || Math.random() < gameState.criticalChance) {
+            coinsGained *= gameState.criticalMultiplier;
+            isCritical = true;
+            gameState.stats.criticalHits++;
+            console.log('   💥 Critique! x' + gameState.criticalMultiplier);
+        }
+
+        console.log('   Coins gagnés:', coinsGained);
+
+        // Ajouter les coins
+        addCoins(coinsGained);
+
+        // Stats
+        gameState.stats.totalClicks++;
+
+        // Quêtes (si la fonction existe)
+        if (typeof updateQuestProgress === 'function') {
+            updateQuestProgress('clicks', 1);
+            updateQuestProgress('coins', coinsGained);
+        }
+
+        // Effet visuel
+        createClickEffect(event.clientX, event.clientY, coinsGained, isCritical);
+
+        console.log('   ✅ Clic traité, total coins:', gameState.coins);
+    } catch (error) {
+        console.error('💥 ERREUR dans handleClick:', error);
+        console.error('Stack:', error.stack);
+        alert('ERREUR CLIC ! Ouvre la console (F12) et fais une capture !');
     }
-
-    // Ajouter les coins
-    addCoins(coinsGained);
-
-    // Stats
-    gameState.stats.totalClicks++;
-
-    // Quêtes (si la fonction existe)
-    if (typeof updateQuestProgress === 'function') {
-        updateQuestProgress('clicks', 1);
-        updateQuestProgress('coins', coinsGained);
-    }
-
-    // Effet visuel
-    createClickEffect(event.clientX, event.clientY, coinsGained, isCritical);
 }
 
 /**

@@ -125,61 +125,91 @@ function renderTalentBranch(branchName, containerId) {
  * Améliore un talent
  */
 function upgradeTalent(branchName, talentId) {
-    const talent = TALENTS_DATA[branchName].find(t => t.id === talentId);
-    if (!talent) return;
-
-    const branchState = gameState.talents[branchName] || [];
-    const talentState = branchState.find(t => t.id === talentId);
-    const currentLevel = talentState ? talentState.level : 0;
-
-    // Vérifications
-    if (currentLevel >= talent.maxLevel) {
-        showNotification('Talent déjà au maximum !', 'error');
-        return;
-    }
-
-    if (gameState.prestigePoints < talent.cost) {
-        showNotification('Pas assez de RP !', 'error');
-        return;
-    }
-
-    // Vérifier le prérequis
-    if (talent.requirement &&
-        !branchState.some(t => t.id === talent.requirement && t.level > 0)) {
-        showNotification('Prérequis non rempli !', 'error');
-        return;
-    }
-
-    // Acheter
-    gameState.prestigePoints -= talent.cost;
-
-    // Améliorer
-    if (talentState) {
-        talentState.level++;
-    } else {
-        if (!gameState.talents[branchName]) {
-            gameState.talents[branchName] = [];
-        }
-        gameState.talents[branchName].push({ id: talentId, level: 1 });
-    }
-
-    // Recalculer tout
+    console.log('🌳 ACHAT TALENT:', branchName, talentId);
     try {
-        gameState.cpc = calculateTotalCPC();
-        gameState.cps = calculateTotalCPS();
+        const talent = TALENTS_DATA[branchName].find(t => t.id === talentId);
+        if (!talent) {
+            console.error('   ❌ Talent introuvable!');
+            return;
+        }
+
+        const branchState = gameState.talents[branchName] || [];
+        const talentState = branchState.find(t => t.id === talentId);
+        const currentLevel = talentState ? talentState.level : 0;
+
+        console.log('   Niveau actuel:', currentLevel, '/', talent.maxLevel);
+        console.log('   RP disponibles:', gameState.prestigePoints, '/ requis:', talent.cost);
+
+        // Vérifications
+        if (currentLevel >= talent.maxLevel) {
+            console.log('   ❌ Max level atteint');
+            showNotification('Talent déjà au maximum !', 'error');
+            return;
+        }
+
+        if (gameState.prestigePoints < talent.cost) {
+            console.log('   ❌ Pas assez de RP');
+            showNotification('Pas assez de RP !', 'error');
+            return;
+        }
+
+        // Vérifier le prérequis
+        if (talent.requirement &&
+            !branchState.some(t => t.id === talent.requirement && t.level > 0)) {
+            console.log('   ❌ Prérequis non rempli');
+            showNotification('Prérequis non rempli !', 'error');
+            return;
+        }
+
+        console.log('   ✅ Vérifications OK');
+
+        // Acheter
+        console.log('   Dépense RP...');
+        gameState.prestigePoints -= talent.cost;
+        console.log('   RP restants:', gameState.prestigePoints);
+
+        // Améliorer
+        console.log('   Amélioration talent...');
+        if (talentState) {
+            talentState.level++;
+        } else {
+            if (!gameState.talents[branchName]) {
+                gameState.talents[branchName] = [];
+            }
+            gameState.talents[branchName].push({ id: talentId, level: 1 });
+        }
+        console.log('   Nouveau niveau:', talentState ? talentState.level : 1);
+
+        // Recalculer tout
+        console.log('   Recalcul CPC/CPS...');
+        try {
+            gameState.cpc = calculateTotalCPC();
+            gameState.cps = calculateTotalCPS();
+            console.log('   CPC:', gameState.cpc, 'CPS:', gameState.cps);
+        } catch (error) {
+            console.error('   💥 Erreur calcul CPC/CPS:', error);
+        }
+
+        // Rafraîchir (ne PAS re-render generators, juste update les boutons)
+        console.log('   Refresh UI...');
+        console.log('   - renderTalentsList()');
+        renderTalentsList();
+        console.log('   - updateGeneratorsButtons()');
+        if (typeof updateGeneratorsButtons === 'function') {
+            updateGeneratorsButtons();
+        }
+        console.log('   - updateMainStats()');
+        updateMainStats();
+        console.log('   - updatePrestigeDisplay()');
+        if (typeof updatePrestigeDisplay === 'function') {
+            updatePrestigeDisplay();
+        }
+
+        console.log('✅ TALENT ACHETÉ:', talent.name);
+        showNotification(`${talent.name} amélioré !`, 'success');
     } catch (error) {
-        console.error('Erreur calcul CPC/CPS:', error);
+        console.error('💥 ERREUR CRITIQUE dans upgradeTalent:', error);
+        console.error('Stack:', error.stack);
+        alert('ERREUR ACHAT TALENT ! Ouvre la console (F12) et fais une capture !');
     }
-
-    // Rafraîchir (ne PAS re-render generators, juste update les boutons)
-    renderTalentsList();
-    if (typeof updateGeneratorsButtons === 'function') {
-        updateGeneratorsButtons();
-    }
-    updateMainStats();
-    if (typeof updatePrestigeDisplay === 'function') {
-        updatePrestigeDisplay();
-    }
-
-    showNotification(`${talent.name} amélioré !`, 'success');
 }
