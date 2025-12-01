@@ -178,6 +178,10 @@ function gameLoop() {
         if (typeof updatePetShopUI === 'function') {
             updatePetShopUI();
         }
+        // Refresh du prestige UI (important pour le bouton prestige)
+        if (typeof updatePrestigeUI === 'function') {
+            updatePrestigeUI();
+        }
         lastButtonRefresh = now;
     }
 

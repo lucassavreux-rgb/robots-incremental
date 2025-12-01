@@ -9,46 +9,64 @@
  * Calcule le CPC total
  * Formula: CPC = (base + flatBonus) × globalClickMultiplier × prestigeClickMultiplier
  *          × talentsClickMultiplier × artefactsClickMultiplier × eventClickMultiplier
+ *
+ * Pour activer les logs de debug: Dans la console, tape: window.DEBUG_MULTIPLIERS = true
  */
 function calculateTotalCPC() {
     let cpc = GameState.click.base.add(GameState.click.flatBonus);
 
-    // DEBUG: Log de départ
-    console.log("🔍 [CPC CALCUL] Base + Flat:", cpc.toString());
+    // DEBUG: Log de départ (seulement si activé)
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("🔍 [CPC CALCUL] Base + Flat:", cpc.toString());
+    }
 
     // Multiplier de base
     cpc = cpc.multiply(GameState.click.multiplier);
-    console.log("  ├─ Après multiplier de base:", cpc.toString(), "(x" + GameState.click.multiplier + ")");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  ├─ Après multiplier de base:", cpc.toString(), "(x" + GameState.click.multiplier + ")");
+    }
 
     // Multiplier des upgrades
     const upgradeMultiplier = getUpgradeClickMultiplier();
     cpc = cpc.multiply(upgradeMultiplier);
-    console.log("  ├─ Après upgrades:", cpc.toString(), "(x" + upgradeMultiplier + ")");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  ├─ Après upgrades:", cpc.toString(), "(x" + upgradeMultiplier + ")");
+    }
 
     // Multiplier de prestige
     const prestigeMultiplier = getPrestigeMultiplier();
     cpc = cpc.multiply(prestigeMultiplier);
-    console.log("  ├─ Après prestige:", cpc.toString(), "(x" + prestigeMultiplier.toFixed(2) + ") [RP: " + GameState.prestige.totalRP + "]");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  ├─ Après prestige:", cpc.toString(), "(x" + prestigeMultiplier.toFixed(2) + ") [RP: " + GameState.prestige.totalRP + "]");
+    }
 
     // Multiplier des talents
     const talentMultiplier = getTalentClickMultiplier();
     cpc = cpc.multiply(talentMultiplier);
-    console.log("  ├─ Après talents:", cpc.toString(), "(x" + talentMultiplier.toFixed(2) + ")");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  ├─ Après talents:", cpc.toString(), "(x" + talentMultiplier.toFixed(2) + ")");
+    }
 
     // Multiplier des artefacts
     const artefactMultiplier = getArtefactClickMultiplier();
     cpc = cpc.multiply(artefactMultiplier);
-    console.log("  ├─ Après artefacts:", cpc.toString(), "(x" + artefactMultiplier + ")");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  ├─ Après artefacts:", cpc.toString(), "(x" + artefactMultiplier + ")");
+    }
 
     // Multiplier des pets
     const petMultiplier = getPetClickMultiplier();
     cpc = cpc.multiply(petMultiplier);
-    console.log("  ├─ Après pets:", cpc.toString(), "(x" + petMultiplier.toFixed(2) + ")");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  ├─ Après pets:", cpc.toString(), "(x" + petMultiplier.toFixed(2) + ")");
+    }
 
     // Multiplier des événements
     const eventMultiplier = getEventClickMultiplier();
     cpc = cpc.multiply(eventMultiplier);
-    console.log("  └─ ✅ FINAL CPC:", cpc.toString(), "(x" + eventMultiplier + ")");
+    if (window.DEBUG_MULTIPLIERS) {
+        console.log("  └─ ✅ FINAL CPC:", cpc.toString(), "(x" + eventMultiplier + ")");
+    }
 
     return cpc;
 }
