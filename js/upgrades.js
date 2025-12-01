@@ -67,7 +67,7 @@ function renderUpgradesList() {
             <div class="item-action">
                 ${isPurchased
                     ? '<span style="color: #28a745; font-weight: bold;">✓ ACHETÉ</span>'
-                    : `<button class="buy-btn" onclick="buyUpgrade('${upgrade.id}')" ${!canPurchase ? 'disabled' : ''}>
+                    : `<button class="buy-btn" data-upgrade="${upgrade.id}" ${!canPurchase ? 'disabled' : ''}>
                         ${formatNumber(upgrade.price)} coins
                     </button>`
                 }
@@ -75,6 +75,17 @@ function renderUpgradesList() {
         `;
 
         container.appendChild(upgradeDiv);
+
+        // Attacher l'événement si pas acheté
+        if (!isPurchased) {
+            const buyBtn = upgradeDiv.querySelector('.buy-btn');
+            if (buyBtn) {
+                buyBtn.addEventListener('click', () => {
+                    console.log('Achat upgrade:', upgrade.id);
+                    buyUpgrade(upgrade.id);
+                });
+            }
+        }
     });
 }
 

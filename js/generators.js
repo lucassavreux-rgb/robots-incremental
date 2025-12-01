@@ -34,6 +34,7 @@ function renderGeneratorsList() {
 
         // Vérifier si achetable
         const canBuy = canAfford(cost);
+        console.log(`Render ${genData.id}: level=${level}, cost=${cost}, coins=${gameState.coins}, canBuy=${canBuy}`);
 
         // Calculer les milestones atteints
         const milestonesReached = genData.milestones.filter(m => level >= m).length;
@@ -50,13 +51,20 @@ function renderGeneratorsList() {
             </div>
             <div class="item-action">
                 <div class="item-level">Lvl ${level}</div>
-                <button class="buy-btn" onclick="buyGenerator('${genData.id}')" ${!canBuy ? 'disabled' : ''}>
+                <button class="buy-btn" data-generator="${genData.id}" ${!canBuy ? 'disabled' : ''}>
                     ${formatNumber(cost)} coins
                 </button>
             </div>
         `;
 
         container.appendChild(genDiv);
+
+        // Attacher l'événement proprement (pas inline)
+        const buyBtn = genDiv.querySelector('.buy-btn');
+        buyBtn.addEventListener('click', () => {
+            console.log('Bouton cliqué pour:', genData.id);
+            buyGenerator(genData.id);
+        });
     });
 }
 
@@ -168,7 +176,9 @@ function buyGenerator(generatorId) {
     gameState.cps = calculateTotalCPS();
 
     // Rafraîchir l'affichage
+    console.log('Avant renderGeneratorsList - coins:', gameState.coins);
     renderGeneratorsList();
+    console.log('Après renderGeneratorsList - coins:', gameState.coins);
     updateMainStats();
 
     showNotification(`${genData.name} acheté !`, 'success');
