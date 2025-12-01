@@ -10,7 +10,7 @@
  */
 function unlockPet(petId) {
     if (GameState.pets.owned.includes(petId)) {
-        showNotification("Pet already owned!", "error");
+        showNotification("Pet déjà possédé !", "error");
         return false;
     }
 
@@ -21,10 +21,44 @@ function unlockPet(petId) {
 
     recalculateProduction();
     updatePetsUI();
+    updatePetShopUI();
     updateStatsUI();
 
     const pet = PETS.find(p => p.id === petId);
-    showNotification(`Unlocked ${pet.name}!`, "success");
+    showNotification(`${pet.name} débloqué !`, "success");
+    return true;
+}
+
+/**
+ * Achète un pet dans le shop
+ */
+function buyPet(petId) {
+    const pet = PETS.find(p => p.id === petId);
+    if (!pet) return false;
+
+    // Vérifier si pet déjà possédé
+    if (GameState.pets.owned.includes(petId)) {
+        showNotification("Pet déjà possédé !", "error");
+        return false;
+    }
+
+    // Vérifier si c'est un pet shop
+    if (pet.obtainType !== 'shop') {
+        showNotification("Ce pet ne peut pas être acheté !", "error");
+        return false;
+    }
+
+    // Vérifier le coût
+    const cost = new BigNumber(pet.cost);
+    if (GameState.shards.lessThan(cost)) {
+        showNotification("Pas assez de Shards !", "error");
+        return false;
+    }
+
+    // Acheter
+    GameState.shards = GameState.shards.subtract(cost);
+    unlockPet(petId);
+
     return true;
 }
 
@@ -119,6 +153,45 @@ function updatePetsUI() {
                 <button class="btn btn-ability" onclick="usePetAbility('${pet.id}')" ${onCooldown ? 'disabled' : ''}>
                     ${onCooldown ? `Cooldown: ${cooldownRemaining}s` : 'Use Ability'}
                 </button>
+            </div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+/**
+ * Met à jour l'UI du pet shop
+ */
+function updatePetShopUI() {
+    const container = document.getElementById('pet-shop-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // Filtrer les pets du shop
+    const shopPets = PETS.filter(p => p.obtainType === 'shop');
+
+    shopPets.forEach(pet => {
+        const owned = GameState.pets.owned.includes(pet.id);
+        const cost = new BigNumber(pet.cost);
+        const canAfford = GameState.shards.greaterThanOrEqual(cost);
+
+        const div = document.createElement('div');
+        div.className = 'pet-shop-item' + (owned ? ' pet-owned' : '') + (!canAfford && !owned ? ' disabled' : '');
+        div.innerHTML = `
+            <div class="pet-info">
+                <div class="pet-name">${pet.name} ${owned ? '✓' : ''}</div>
+                <div class="pet-rarity rarity-${pet.rarity}">${pet.rarity.toUpperCase()}</div>
+                <div class="pet-description">${pet.description}</div>
+                <div class="pet-cost">Coût: ${formatNumber(cost)} Shards</div>
+            </div>
+            <div class="pet-actions">
+                ${!owned ?
+                    `<button class="btn btn-buy" onclick="buyPet('${pet.id}')" ${!canAfford ? 'disabled' : ''}>
+                        ${canAfford ? 'Acheter' : 'Trop cher'}
+                    </button>`
+                    : '<span class="pet-status">Possédé</span>'}
             </div>
         `;
 

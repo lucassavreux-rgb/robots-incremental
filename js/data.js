@@ -463,38 +463,136 @@ const ARTEFACTS = [
 
 // ========== PETS ==========
 const PETS = [
+    // ===== BOSS DROP PETS (3) =====
     {
-        id: "pet_fox",
-        name: "Renard des Shards",
+        id: "pet_wolf",
+        name: "Loup Spectral",
+        obtainType: "boss_drop",
+        dropRate: 0.15, // 15% de drop
+        rarity: "rare",
         passiveBonusType: "cps_global",
-        passiveValue: 0.10,
+        passiveValue: 0.12,
+        activeBonusType: "cps_global",
+        activeMultiplier: 4,
+        activeDurationSeconds: 12,
+        cooldownSeconds: 150,
+        description: "Passif: +12% CPS | Actif: ×4 CPS pendant 12s"
+    },
+    {
+        id: "pet_tiger",
+        name: "Tigre Cosmique",
+        obtainType: "boss_drop",
+        dropRate: 0.08, // 8% de drop
+        rarity: "epic",
+        passiveBonusType: "cpc",
+        passiveValue: 0.25,
+        activeBonusType: "cpc",
+        activeMultiplier: 8,
+        activeDurationSeconds: 8,
+        cooldownSeconds: 200,
+        description: "Passif: +25% CPC | Actif: ×8 CPC pendant 8s"
+    },
+    {
+        id: "pet_leviathan",
+        name: "Léviathan des Abysses",
+        obtainType: "boss_drop",
+        dropRate: 0.03, // 3% de drop (très rare)
+        rarity: "legendary",
+        passiveBonusType: "global",
+        passiveValue: 0.30,
+        activeBonusType: "global",
+        activeMultiplier: 15,
+        activeDurationSeconds: 6,
+        cooldownSeconds: 400,
+        description: "Passif: +30% toute production | Actif: ×15 tout pendant 6s"
+    },
+
+    // ===== SHOP PETS (3) =====
+    {
+        id: "pet_cat",
+        name: "Chat Mystique",
+        obtainType: "shop",
+        cost: 1000000, // 1M Shards
+        rarity: "common",
+        passiveBonusType: "cpc",
+        passiveValue: 0.08,
+        activeBonusType: "cpc",
+        activeMultiplier: 3,
+        activeDurationSeconds: 15,
+        cooldownSeconds: 120,
+        description: "Passif: +8% CPC | Actif: ×3 CPC pendant 15s"
+    },
+    {
+        id: "pet_bear",
+        name: "Ours Céleste",
+        obtainType: "shop",
+        cost: 50000000, // 50M Shards
+        rarity: "epic",
+        passiveBonusType: "cps_global",
+        passiveValue: 0.20,
+        activeBonusType: "cps_global",
+        activeMultiplier: 6,
+        activeDurationSeconds: 10,
+        cooldownSeconds: 180,
+        description: "Passif: +20% CPS | Actif: ×6 CPS pendant 10s"
+    },
+    {
+        id: "pet_serpent",
+        name: "Serpent d'Or",
+        obtainType: "shop",
+        cost: 500000000, // 500M Shards
+        rarity: "legendary",
+        passiveBonusType: "global",
+        passiveValue: 0.25,
+        activeBonusType: "global",
+        activeMultiplier: 12,
+        activeDurationSeconds: 7,
+        cooldownSeconds: 300,
+        description: "Passif: +25% toute production | Actif: ×12 tout pendant 7s"
+    },
+
+    // ===== QUEST REWARD PETS (3) =====
+    {
+        id: "pet_owl",
+        name: "Hibou Sage",
+        obtainType: "quest_reward",
+        questId: "quest_pet_owl", // Associé à une quête
+        rarity: "rare",
+        passiveBonusType: "cps_global",
+        passiveValue: 0.15,
         activeBonusType: "cpc",
         activeMultiplier: 5,
         activeDurationSeconds: 10,
-        cooldownSeconds: 120,
-        description: "Passif: +10% CPS | Actif: ×5 CPC pendant 10s"
+        cooldownSeconds: 160,
+        description: "Passif: +15% CPS | Actif: ×5 CPC pendant 10s"
     },
     {
-        id: "pet_dragon",
-        name: "Dragon de Cristal",
-        passiveBonusType: "cpc",
-        passiveValue: 0.20,
-        activeBonusType: "cps_global",
-        activeMultiplier: 3,
-        activeDurationSeconds: 15,
-        cooldownSeconds: 180,
-        description: "Passif: +20% CPC | Actif: ×3 CPS pendant 15s"
-    },
-    {
-        id: "pet_phoenix",
-        name: "Phoenix Éternel",
+        id: "pet_turtle",
+        name: "Tortue Millénaire",
+        obtainType: "quest_reward",
+        questId: "quest_pet_turtle",
+        rarity: "epic",
         passiveBonusType: "global",
-        passiveValue: 0.15,
+        passiveValue: 0.18,
+        activeBonusType: "cps_global",
+        activeMultiplier: 7,
+        activeDurationSeconds: 12,
+        cooldownSeconds: 220,
+        description: "Passif: +18% toute production | Actif: ×7 CPS pendant 12s"
+    },
+    {
+        id: "pet_eagle",
+        name: "Aigle Doré",
+        obtainType: "quest_reward",
+        questId: "quest_pet_eagle",
+        rarity: "legendary",
+        passiveBonusType: "cpc",
+        passiveValue: 0.35,
         activeBonusType: "global",
         activeMultiplier: 10,
-        activeDurationSeconds: 5,
-        cooldownSeconds: 300,
-        description: "Passif: +15% toute production | Actif: ×10 tout pendant 5s"
+        activeDurationSeconds: 8,
+        cooldownSeconds: 250,
+        description: "Passif: +35% CPC | Actif: ×10 tout pendant 8s"
     }
 ];
 
@@ -539,6 +637,35 @@ const QUESTS = [
         targetValue: 10,
         rewardShards: 5000,
         rewardRP: 2
+    },
+
+    // ===== QUÊTES PETS =====
+    {
+        id: "quest_pet_owl",
+        description: "Tuer 5 boss",
+        targetType: "boss_killed",
+        targetValue: 5,
+        rewardShards: 100000,
+        rewardRP: 10,
+        rewardPet: "pet_owl"
+    },
+    {
+        id: "quest_pet_turtle",
+        description: "Gagner 1 000 000 000 Shards (1B)",
+        targetType: "shards_earned",
+        targetValue: 1000000000,
+        rewardShards: 0,
+        rewardRP: 20,
+        rewardPet: "pet_turtle"
+    },
+    {
+        id: "quest_pet_eagle",
+        description: "Effectuer 3 prestiges",
+        targetType: "prestige_done",
+        targetValue: 3,
+        rewardShards: 0,
+        rewardRP: 30,
+        rewardPet: "pet_eagle"
     }
 ];
 
