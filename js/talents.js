@@ -164,14 +164,22 @@ function upgradeTalent(branchName, talentId) {
     }
 
     // Recalculer tout
-    gameState.cpc = calculateTotalCPC();
-    gameState.cps = calculateTotalCPS();
+    try {
+        gameState.cpc = calculateTotalCPC();
+        gameState.cps = calculateTotalCPS();
+    } catch (error) {
+        console.error('Erreur calcul CPC/CPS:', error);
+    }
 
-    // Rafraîchir
+    // Rafraîchir (ne PAS re-render generators, juste update les boutons)
     renderTalentsList();
-    renderGeneratorsList();
+    if (typeof updateGeneratorsButtons === 'function') {
+        updateGeneratorsButtons();
+    }
     updateMainStats();
-    updatePrestigeDisplay();
+    if (typeof updatePrestigeDisplay === 'function') {
+        updatePrestigeDisplay();
+    }
 
     showNotification(`${talent.name} amélioré !`, 'success');
 }

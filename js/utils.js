@@ -269,14 +269,27 @@ function calculateGlobalMultiplier() {
 function calculateTalentBonus(type) {
     let bonus = 0;
 
-    Object.values(gameState.talents).forEach(talentList => {
-        talentList.forEach(talentProgress => {
-            const talent = findTalentById(talentProgress.id);
-            if (talent && talent.type === type) {
-                bonus += talent.effect * talentProgress.level;
-            }
+    try {
+        if (!gameState.talents || typeof gameState.talents !== 'object') {
+            return 0;
+        }
+
+        Object.values(gameState.talents).forEach(talentList => {
+            if (!Array.isArray(talentList)) return;
+
+            talentList.forEach(talentProgress => {
+                if (!talentProgress || !talentProgress.id) return;
+
+                const talent = findTalentById(talentProgress.id);
+                if (talent && talent.type === type && talent.effect && talentProgress.level) {
+                    bonus += talent.effect * talentProgress.level;
+                }
+            });
         });
-    });
+    } catch (error) {
+        console.error('Erreur calculateTalentBonus:', error);
+        return 0;
+    }
 
     return bonus;
 }
@@ -298,12 +311,23 @@ function findTalentById(id) {
 function calculatePetBonus(type) {
     let bonus = 0;
 
-    gameState.pets.forEach(petProgress => {
-        const petData = PETS_DATA.find(p => p.id === petProgress.id);
-        if (petData && petData.passiveEffect.type === type) {
-            bonus += petData.passiveEffect.baseValue * petProgress.level;
+    try {
+        if (!Array.isArray(gameState.pets)) {
+            return 0;
         }
-    });
+
+        gameState.pets.forEach(petProgress => {
+            if (!petProgress || !petProgress.id) return;
+
+            const petData = PETS_DATA.find(p => p.id === petProgress.id);
+            if (petData && petData.passiveEffect && petData.passiveEffect.type === type) {
+                bonus += petData.passiveEffect.baseValue * petProgress.level;
+            }
+        });
+    } catch (error) {
+        console.error('Erreur calculatePetBonus:', error);
+        return 0;
+    }
 
     return bonus;
 }
