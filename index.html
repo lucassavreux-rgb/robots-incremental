@@ -1,224 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Shard Clicker - Idle Incremental Game</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Days - Simulation d'Investisseur</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="notifications"></div>
+    <!-- En-tête avec résumé -->
+    <header class="summary-bar">
+        <div class="summary-item">
+            <span class="summary-label">Jour</span>
+            <span class="summary-value" id="current-day">1</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Cash Disponible</span>
+            <span class="summary-value" id="cash-available">10 000 €</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Valeur du Portefeuille</span>
+            <span class="summary-value" id="portfolio-value">0 €</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Valeur Nette Totale</span>
+            <span class="summary-value total" id="net-worth">10 000 €</span>
+        </div>
+        <div class="summary-item risk-indicator">
+            <span class="summary-label">Profil de Risque</span>
+            <div class="risk-bar">
+                <div class="risk-fill" id="risk-fill"></div>
+            </div>
+            <span class="summary-value" id="risk-profile">Prudent</span>
+        </div>
+    </header>
 
-    <div class="game-container">
-        <!-- Header -->
-        <header class="game-header">
-            <h1>⚡ Shard Clicker</h1>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <span class="stat-label">Shards:</span>
-                    <span id="shards-count" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">CPS:</span>
-                    <span id="cps-count" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">CPC:</span>
-                    <span id="cpc-count" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">RP:</span>
-                    <span id="current-rp" class="stat-value">0</span>
+    <!-- Zone principale -->
+    <main class="main-content">
+        <!-- Panneau gauche : Investissements disponibles -->
+        <section class="investment-panel">
+            <div class="panel-header">
+                <h2>📊 Investissements Disponibles</h2>
+                <div class="controls">
+                    <button id="pause-btn" class="btn btn-control">⏸️ Pause</button>
+                    <button id="fast-forward-btn" class="btn btn-control">⏩ +10 jours</button>
                 </div>
             </div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Left Panel: Click Zone -->
-            <div class="left-panel">
-                <div class="click-zone">
-                    <button id="main-click-button" class="main-click-btn">
-                        💎 CLICK
-                    </button>
-                    <div class="click-stats">
-                        <div>Crit Chance: <span id="crit-chance">5.0%</span></div>
-                        <div>Crit Multiplier: <span id="crit-multiplier">x3.0</span></div>
-                    </div>
-                </div>
-
-                <!-- Boss Section -->
-                <div id="boss-container" class="boss-section"></div>
-
-                <!-- Active Events -->
-                <div class="events-section">
-                    <h3>Active Events</h3>
-                    <div id="active-events"></div>
-                </div>
+            <div id="investments-list" class="investments-list">
+                <!-- Les cartes d'investissement seront générées dynamiquement -->
             </div>
+        </section>
 
-            <!-- Right Panel: Tabs -->
-            <div class="right-panel">
-                <!-- Tab Buttons -->
-                <div class="tab-buttons">
-                    <button class="tab-button active" data-tab="generators">Generators</button>
-                    <button class="tab-button" data-tab="upgrades">Upgrades</button>
-                    <button class="tab-button" data-tab="prestige">Prestige</button>
-                    <button class="tab-button" data-tab="talents">Talents</button>
-                    <button class="tab-button" data-tab="artefacts">Artefacts</button>
-                    <button class="tab-button" data-tab="pets">Pets</button>
-                    <button class="tab-button" data-tab="quests">Quests</button>
-                    <button class="tab-button" data-tab="stats">Stats</button>
-                    <button class="tab-button" data-tab="settings">Settings</button>
-                </div>
+        <!-- Panneau droit : Portefeuille -->
+        <section class="portfolio-panel">
+            <div class="panel-header">
+                <h2>💼 Mon Portefeuille</h2>
+                <button id="reset-btn" class="btn btn-danger">🔄 Nouvelle Partie</button>
+            </div>
+            <div id="portfolio-list" class="portfolio-list">
+                <p class="empty-state">Aucun investissement pour le moment</p>
+            </div>
+        </section>
+    </main>
 
-                <!-- Tab Contents -->
-                <div class="tab-content-container">
-                    <!-- Generators Tab -->
-                    <div id="tab-generators" class="tab-content active">
-                        <h2>Generators</h2>
-                        <div id="generators-list" class="item-list"></div>
-                    </div>
-
-                    <!-- Upgrades Tab -->
-                    <div id="tab-upgrades" class="tab-content">
-                        <h2>Upgrades</h2>
-                        <div id="upgrades-list" class="item-list"></div>
-                    </div>
-
-                    <!-- Prestige Tab -->
-                    <div id="tab-prestige" class="tab-content">
-                        <h2>Prestige / Renaissance</h2>
-                        <div class="prestige-info">
-                            <p>Prestige resets your Shards, generators, and upgrades, but grants you Renaissance Points (RP).</p>
-                            <p>RP provide permanent multipliers to CPC and CPS.</p>
-
-                            <div class="prestige-stats">
-                                <div>Current RP: <span id="current-rp">0</span></div>
-                                <div>Total RP: <span id="total-rp">0</span></div>
-                                <div>RP Multiplier: <span id="prestige-multiplier">x1.00</span></div>
-                                <div>RP on Prestige: <span id="rp-gain">0</span></div>
-                            </div>
-
-                            <button id="prestige-button" class="btn btn-prestige" onclick="doPrestige()">
-                                Prestige
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Talents Tab -->
-                    <div id="tab-talents" class="tab-content">
-                        <h2>Talent Tree</h2>
-                        <div class="talents-container">
-                            <div class="talent-branch">
-                                <h3>🎯 Click Branch</h3>
-                                <div id="talents-click-list" class="item-list"></div>
-                            </div>
-                            <div class="talent-branch">
-                                <h3>🏭 Generators Branch</h3>
-                                <div id="talents-generators-list" class="item-list"></div>
-                            </div>
-                            <div class="talent-branch">
-                                <h3>✨ Prestige Branch</h3>
-                                <div id="talents-prestige-list" class="item-list"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Artefacts Tab -->
-                    <div id="tab-artefacts" class="tab-content">
-                        <h2>Artefacts</h2>
-                        <p>Equip up to 3 artefacts for powerful bonuses.</p>
-                        <div id="artefacts-list" class="item-list"></div>
-                    </div>
-
-                    <!-- Pets Tab -->
-                    <div id="tab-pets" class="tab-content">
-                        <h2>Mes Pets</h2>
-                        <p>Les pets fournissent des bonus passifs et des capacités actives.</p>
-                        <div id="pets-list" class="item-list"></div>
-
-                        <hr style="margin: 30px 0;">
-
-                        <h2>🛒 Pet Shop</h2>
-                        <p>Achète des pets avec tes Shards !</p>
-                        <div id="pet-shop-list" class="item-list"></div>
-                    </div>
-
-                    <!-- Quests Tab -->
-                    <div id="tab-quests" class="tab-content">
-                        <h2>Daily Quests</h2>
-                        <button id="generate-quests-button" class="btn btn-generate">Generate New Quests</button>
-                        <div id="quests-list" class="item-list"></div>
-                    </div>
-
-                    <!-- Stats Tab -->
-                    <div id="tab-stats" class="tab-content">
-                        <h2>Statistics</h2>
-                        <div class="stats-container">
-                            <div class="stat-row">
-                                <span>Total Clicks:</span>
-                                <span id="total-clicks">0</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>Total Shards Earned:</span>
-                                <span id="total-shards">0</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>Play Time:</span>
-                                <span id="play-time">0h 0m 0s</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>Generators Bought:</span>
-                                <span id="generators-bought">0</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>Upgrades Bought:</span>
-                                <span id="upgrades-bought">0</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>Bosses Defeated:</span>
-                                <span id="bosses-defeated">0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Settings Tab -->
-                    <div id="tab-settings" class="tab-content">
-                        <h2>Settings</h2>
-                        <div class="settings-container">
-                            <button id="save-button" class="btn btn-save">💾 Save Now</button>
-                            <button id="export-button" class="btn btn-export">📤 Export Save</button>
-                            <button id="import-button" class="btn btn-import">📥 Import Save</button>
-                            <button id="reset-button" class="btn btn-reset">🗑️ Reset Game</button>
-                        </div>
-                    </div>
-                </div>
+    <!-- Section basse : Journal et graphique -->
+    <footer class="bottom-section">
+        <div class="journal-section">
+            <h3>📰 Journal des Événements</h3>
+            <div id="events-log" class="events-log">
+                <p class="log-entry">Jour 1 : Bienvenue ! Vous démarrez avec 10 000 €</p>
             </div>
         </div>
+        <div class="chart-section">
+            <h3>📈 Évolution de la Valeur Nette</h3>
+            <canvas id="chart-canvas" width="400" height="200"></canvas>
+        </div>
+    </footer>
 
-        <!-- Footer -->
-        <footer class="game-footer">
-            <p>Shard Clicker v1.0 | Auto-saves every 10 seconds</p>
-        </footer>
+    <!-- Modal d'investissement -->
+    <div id="invest-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Investir dans <span id="modal-asset-name"></span></h2>
+            <div class="modal-info">
+                <p><strong>Risque :</strong> <span id="modal-risk"></span></p>
+                <p><strong>Rendement moyen :</strong> <span id="modal-return"></span></p>
+                <p><strong>Montant minimum :</strong> <span id="modal-min"></span></p>
+            </div>
+            <div class="invest-form">
+                <label for="invest-amount">Montant à investir :</label>
+                <input type="number" id="invest-amount" placeholder="Entrez un montant">
+                <div class="quick-buttons">
+                    <button class="btn btn-quick" data-percent="25">25%</button>
+                    <button class="btn btn-quick" data-percent="50">50%</button>
+                    <button class="btn btn-quick" data-percent="100">100%</button>
+                </div>
+                <button id="confirm-invest-btn" class="btn btn-primary">Valider l'investissement</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Scripts - Load in correct order -->
-    <script src="js/numbers.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/state.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/generators.js"></script>
-    <script src="js/click.js"></script>
-    <script src="js/upgrades.js"></script>
-    <script src="js/prestige.js"></script>
-    <script src="js/talents.js"></script>
-    <script src="js/artefacts.js"></script>
-    <script src="js/pets.js"></script>
-    <script src="js/quests.js"></script>
-    <script src="js/bosses.js"></script>
-    <script src="js/events.js"></script>
-    <script src="js/save.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Modal de bilan -->
+    <div id="report-modal" class="modal">
+        <div class="modal-content report-modal">
+            <span class="close-btn">&times;</span>
+            <h2>🎉 Bilan après 365 jours !</h2>
+            <div class="report-content" id="report-content">
+                <!-- Contenu généré dynamiquement -->
+            </div>
+            <button id="continue-btn" class="btn btn-primary">Continuer à jouer</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,195 +1,207 @@
-# ⚡ Shard Clicker
+# 💰 Investor Days - Simulation d'Investisseur
 
-**Shard Clicker** is an advanced idle/incremental clicker game built with HTML, CSS, and vanilla JavaScript. Collect Shards, buy generators, unlock upgrades, prestige for Renaissance Points, and explore a deep progression system with talents, artefacts, pets, bosses, and quests!
+> Un jeu de gestion et simulation d'investissement où vous incarnez un investisseur qui fait fructifier son patrimoine au fil des jours.
 
-## 🎮 Features
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-### Core Mechanics
-- **Click System**: Click the main button to earn Shards (with critical hits!)
-- **Generators**: 8 automated generators producing Shards per second
-- **Upgrades**: 20+ permanent upgrades for click power and production
-- **Big Numbers**: Custom BigNumber system supporting values up to 10^308 without Infinity
+## 🎮 Description
 
-### Advanced Systems
-- **Prestige/Renaissance**: Reset your progress to gain Renaissance Points (RP) for permanent multipliers
-- **Talent Tree**: 3 branches (Click, Generators, Prestige) with 12+ talents
-- **Artefacts**: 6 rare artefacts with different rarities (Rare, Epic, Legendary)
-- **Pets**: 3 pets with passive bonuses and active abilities
-- **Boss Fights**: Challenge bosses every 5 minutes for rewards
-- **Daily Quests**: Complete quests for Shards and RP rewards
-- **Random Events**: Temporary boosts to production
+**Investor Days** est un jeu de simulation financière dans le navigateur où vous devez gérer vos investissements et faire croître votre capital sur plusieurs jours.
 
-### Quality of Life
-- **Auto-save**: Game saves every 10 seconds
-- **Offline Progress**: Earn Shards while you're away
-- **Export/Import**: Backup your save file
-- **Responsive Design**: Play on desktop or mobile
+### Objectifs
+- Faire fructifier votre capital de départ (10 000 €)
+- Diversifier vos investissements entre différents actifs
+- Gérer le risque et la volatilité
+- Survivre aux événements aléatoires (krach, boom, taxes...)
+- Atteindre la meilleure valeur nette possible après 365 jours
 
-## 📁 Project Structure
+## ✨ Fonctionnalités
+
+### 💼 Investissements disponibles
+- **Compte Sécurisé** 🏦 - Faible risque, 2% de rendement annuel
+- **Obligations** 📜 - Risque modéré, 4% de rendement, blocage 60 jours
+- **Indice Boursier (ETF)** 📊 - Risque moyen, 7% de rendement
+- **Immobilier** 🏠 - Risque moyen, 5% de rendement, blocage 90 jours
+- **Startup / Venture** 🚀 - Risque élevé, 15% de rendement, très volatile
+
+### ⚡ Événements aléatoires
+- Krach boursier
+- Boom économique
+- Taxe exceptionnelle
+- Opportunités spéciales
+- Rallye technologique
+- Crise immobilière
+
+### 📊 Interface complète
+- Suivi en temps réel de votre patrimoine
+- Graphique d'évolution de la valeur nette
+- Journal des événements
+- Profil de risque dynamique
+- Sauvegarde automatique dans le navigateur
+
+## 🚀 Comment jouer
+
+### En local
+1. Téléchargez les fichiers du projet
+2. Ouvrez `index.html` dans votre navigateur
+3. Le jeu se lance automatiquement !
+
+### En ligne (GitHub Pages)
+Rendez-vous sur : [Votre lien GitHub Pages]
+
+## 🎯 Règles du jeu
+
+### Temps
+- 1 seconde réelle = 1 jour dans le jeu
+- Le temps défile automatiquement
+- Possibilité de mettre en pause
+- Bouton "Avance rapide" pour sauter 10 jours
+
+### Investir
+1. Cliquez sur "Investir" sur un actif
+2. Choisissez le montant à investir
+3. Validez l'investissement
+4. Votre cash diminue, votre portefeuille augmente
+
+### Vendre
+- Cliquez sur "Vendre" dans votre portefeuille
+- Attention aux périodes de blocage !
+- Les pénalités s'appliquent si vous vendez trop tôt
+
+### Stratégie
+- Diversifiez vos investissements
+- Équilibrez risque et rendement
+- Gardez toujours du cash disponible
+- Surveillez les événements aléatoires
+
+## 📈 Calcul des rendements
+
+Les rendements sont calculés quotidiennement avec :
+- **Rendement moyen annuel** converti en rendement journalier
+- **Volatilité** qui crée des variations aléatoires
+- Les actifs à haut risque peuvent gagner ou perdre plus rapidement
+
+Formule : `Valeur du jour = Valeur précédente × (1 + rendement journalier + volatilité aléatoire)`
+
+## 💾 Sauvegarde
+
+Le jeu sauvegarde automatiquement votre progression dans le **localStorage** du navigateur :
+- Votre jour actuel
+- Votre cash et portefeuille
+- L'historique des 500 derniers jours
+- Le journal des événements
+
+Pour recommencer : cliquez sur "Nouvelle Partie"
+
+## 🏆 Bilan après 365 jours
+
+Au bout de 365 jours, un rapport s'affiche avec :
+- Votre valeur nette finale
+- Votre rendement total en %
+- Votre meilleur jour
+- Un commentaire sur votre performance
+
+Vous pouvez ensuite continuer à jouer en mode infini !
+
+## 🛠️ Technologies utilisées
+
+- **HTML5** - Structure
+- **CSS3** - Style avec variables CSS et animations
+- **JavaScript Vanilla** - Logique du jeu (aucun framework)
+- **Canvas API** - Graphique d'évolution
+
+## 📂 Structure du projet
 
 ```
-robots-incremental/
-├── index.html              # Main HTML file
-├── style.css               # Game styles
-├── README.md               # This file
-└── js/
-    ├── numbers.js          # BigNumber system
-    ├── data.js             # Game data constants
-    ├── state.js            # Game state management
-    ├── utils.js            # Utility functions & calculations
-    ├── generators.js       # Generator system
-    ├── click.js            # Click handling
-    ├── upgrades.js         # Upgrade system
-    ├── prestige.js         # Prestige/Renaissance system
-    ├── talents.js          # Talent tree
-    ├── artefacts.js        # Artefact system
-    ├── pets.js             # Pet system
-    ├── quests.js           # Quest system
-    ├── bosses.js           # Boss fight system
-    ├── events.js           # Random events
-    ├── save.js             # Save/load system
-    └── main.js             # Main game loop & UI
+investor-days/
+├── index.html      # Page principale
+├── styles.css      # Styles et design
+├── script.js       # Logique du jeu
+└── README.md       # Ce fichier
 ```
 
-## 🚀 How to Play
+## 🎨 Personnalisation
 
-### Local Development
-1. Clone this repository
-2. Open `index.html` in your web browser
-3. Start clicking and progressing!
+Le code est conçu pour être facilement modifiable :
 
-### Online (GitHub Pages)
-1. Fork this repository
-2. Go to Settings → Pages
-3. Select branch `main` and folder `/` (root)
-4. Click Save
-5. Visit `https://your-username.github.io/robots-incremental/`
-
-## 📊 Game Mechanics
-
-### Generators
-8 generators with exponential scaling:
-1. **Click Drone** - Cost: 50 Shards
-2. **Shard Mine** - Cost: 500 Shards
-3. **Nano Factory** - Cost: 5K Shards
-4. **Crystal Laboratory** - Cost: 50K Shards
-5. **Temporal Reactor** - Cost: 600K Shards
-6. **Dimensional Portal** - Cost: 7M Shards
-7. **Galactic Core** - Cost: 90M Shards
-8. **Quantum Singularity** - Cost: 1.2B Shards
-
-**Milestones**: Every 25 levels doubles production!
-
-### Prestige Formula
-```
-RP gained = floor(sqrt(totalShardsEarned / 1,000,000))
+### Modifier les constantes (dans `script.js`)
+```javascript
+const STARTING_CASH = 10000;        // Capital de départ
+const DAY_DURATION_MS = 1000;       // Durée d'un jour en ms
+const REPORT_DAY = 365;             // Jour du bilan
+const EVENT_PROBABILITY = 0.05;     // 5% de chance d'événement
 ```
 
-- At 1M Shards earned → 1 RP
-- At 100M Shards earned → 10 RP
-- At 1T Shards earned → 1,000 RP
+### Ajouter un nouvel actif
+Ajoutez un objet dans le tableau `ASSETS` :
+```javascript
+{
+    id: 'crypto',
+    name: 'Cryptomonnaie',
+    icon: '₿',
+    risk: 'high',
+    riskLabel: 'Très Élevé',
+    annualReturn: 0.20,
+    volatility: 0.15,
+    minInvestment: 100,
+    lockDays: 0,
+    earlyPenalty: 0,
+    description: 'Investissement ultra-volatile'
+}
+```
 
-**RP Multiplier**: `1 + (totalRP × 0.01)`
-- 100 RP = ×2 all production
-- 1000 RP = ×11 all production
+### Ajouter un événement
+Ajoutez un objet dans le tableau `EVENTS` :
+```javascript
+{
+    id: 'new-event',
+    name: 'Nom de l\'événement',
+    description: 'Description',
+    probability: 0.1,
+    effect: (gameState) => {
+        // Votre logique ici
+    }
+}
+```
 
-### Critical Hits
-- **Base Crit Chance**: 5%
-- **Base Crit Multiplier**: ×3
-- **Max Crit Chance**: 50% (via talents & upgrades)
-- **Max Crit Multiplier**: ×20 (via talents & upgrades)
+## 📱 Responsive
 
-### Boss Fights
-- Spawn every 5 minutes (cooldown)
-- 30 seconds to defeat
-- HP scales: `100K × (1.5 ^ bossesDefeated)`
-- Rewards: Shards, RP, and 20% chance for artefact drop
+Le jeu est optimisé pour :
+- 💻 Desktop
+- 📱 Tablettes
+- 📱 Mobile (version adaptée)
 
-## 🎯 Progression Tips
+## 🐛 Bugs connus
 
-1. **Early Game (0-1M Shards)**
-   - Focus on clicking and buying Click Drone
-   - Purchase click upgrades first
-   - Aim for your first prestige at 1M total Shards earned
+Aucun bug majeur connu pour le moment.
 
-2. **Mid Game (1-100 RP)**
-   - Invest RP in Click and Generator talents
-   - Unlock Shard Mine and Nano Factory
-   - Complete daily quests for extra RP
+Si vous trouvez un bug, ouvrez une issue sur GitHub !
 
-3. **Late Game (100+ RP)**
-   - Focus on Prestige talents for faster RP gain
-   - Equip powerful artefacts
-   - Unlock and upgrade pets
-   - Challenge bosses regularly
+## 🤝 Contribution
 
-4. **End Game (1000+ RP)**
-   - Max out talent trees
-   - Collect all artefacts
-   - Optimize generator combinations
-   - Push for highest Shard/s possible!
+Les contributions sont les bienvenues !
 
-## 🔧 Technical Details
+1. Fork le projet
+2. Créez une branche (`git checkout -b feature/amelioration`)
+3. Commit vos changements (`git commit -m 'Ajout d'une fonctionnalité'`)
+4. Push sur la branche (`git push origin feature/amelioration`)
+5. Ouvrez une Pull Request
 
-### BigNumber System
-The game uses a custom BigNumber implementation to handle extremely large numbers:
-- **Format**: Mantissa + Exponent
-- **Display**: K, M, B, T, Qa, Qi, Sx, Sp, Oc, No, Dc, Ud, Dd...
-- **Max**: Up to 10^308 (never shows Infinity)
-- **Precision**: Maintains accuracy for all calculations
+## 📜 Licence
 
-### Save Data
-- Stored in `localStorage` under key `shard_clicker_save`
-- Auto-saves every 10 seconds
-- Includes all progress: Shards, generators, upgrades, RP, talents, artefacts, pets, quests, stats
-- Offline progress calculated on load
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
-### Performance
-- Game loop runs at 60 FPS
-- Minimal DOM manipulation (selective updates)
-- Efficient BigNumber operations
-- No external dependencies
+## 👨‍💻 Auteur
 
-## 🐛 Troubleshooting
+Créé avec ❤️ pour les passionnés de finance et de jeux de gestion !
 
-**Game not loading?**
-- Clear browser cache
-- Make sure JavaScript is enabled
-- Check browser console for errors
+## 🌟 Remerciements
 
-**Save not working?**
-- Ensure localStorage is enabled
-- Check browser privacy settings
-- Try exporting/importing save manually
+Merci d'avoir joué à **Investor Days** !
 
-**Performance issues?**
-- Close other browser tabs
-- Disable browser extensions
-- Try a different browser (Chrome recommended)
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-- Report bugs
-- Suggest new features
-- Submit pull requests
-- Improve documentation
-
-## 🎨 Credits
-
-- **Design**: Modern gradient theme with glassmorphism
-- **Icons**: Unicode emojis
-- **Font**: Segoe UI (system default)
-- **Architecture**: Modular JavaScript with clean separation of concerns
-
-## 📧 Contact
-
-For questions, suggestions, or bug reports, please open an issue on GitHub.
+N'hésitez pas à laisser une ⭐ si vous avez aimé le jeu !
 
 ---
 
-**Have fun clicking! 💎⚡**
+**Bon investissement ! 💰📈**
