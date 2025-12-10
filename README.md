@@ -10,28 +10,38 @@
 **Investor Days** est un jeu de simulation financière dans le navigateur où vous devez gérer vos investissements et faire croître votre capital sur plusieurs jours.
 
 ### Objectifs
-- Faire fructifier votre capital de départ (10 000 €)
+- Faire fructifier votre capital de départ (**20 000 €** + **100 €/jour** de revenu)
 - Diversifier vos investissements entre différents actifs
 - Gérer le risque et la volatilité
-- Survivre aux événements aléatoires (krach, boom, taxes...)
+- Profiter d'événements rares (positifs et négatifs)
 - Atteindre la meilleure valeur nette possible après 365 jours
+
+### 🎯 Philosophie du jeu
+Ce jeu est conçu pour être **généreux et gratifiant** :
+- Capital de départ élevé (20 000 €)
+- Revenu passif journalier (100 €/jour)
+- Rendements attractifs sur tous les actifs
+- Événements aléatoires **RARES** (1% par jour seulement)
+- Événements négatifs moins violents
+- Plus d'événements positifs que négatifs
+- Progression naturellement positive si vous jouez intelligemment
 
 ## ✨ Fonctionnalités
 
-### 💼 Investissements disponibles
-- **Compte Sécurisé** 🏦 - Faible risque, 2% de rendement annuel
-- **Obligations** 📜 - Risque modéré, 4% de rendement, blocage 60 jours
-- **Indice Boursier (ETF)** 📊 - Risque moyen, 7% de rendement
-- **Immobilier** 🏠 - Risque moyen, 5% de rendement, blocage 90 jours
-- **Startup / Venture** 🚀 - Risque élevé, 15% de rendement, très volatile
+### 💼 Investissements disponibles (rendements généreux)
+- **Compte Sécurisé** 🏦 - Faible risque, 3.5% de rendement annuel
+- **Obligations** 📜 - Risque modéré, 5.5% de rendement, blocage 60 jours
+- **Indice Boursier (ETF)** 📊 - Risque moyen, 9% de rendement
+- **Immobilier** 🏠 - Risque moyen, 6.5% de rendement, blocage 90 jours
+- **Startup / Venture** 🚀 - Risque élevé, 19% de rendement, très volatile
 
-### ⚡ Événements aléatoires
-- Krach boursier
-- Boom économique
-- Taxe exceptionnelle
-- Opportunités spéciales
-- Rallye technologique
-- Crise immobilière
+### ⚡ Événements aléatoires (RARES - 1% par jour)
+- Mini-krach boursier (léger ralentissement)
+- Boom économique (+10% sur tout)
+- Petite taxe (0.5% du cash)
+- Opportunité exceptionnelle (+1000€)
+- Rallye technologique (startups/ETF +15%)
+- Boom immobilier (+8%)
 
 ### 📊 Interface complète
 - Suivi en temps réel de votre patrimoine
@@ -127,10 +137,11 @@ Le code est conçu pour être facilement modifiable :
 
 ### Modifier les constantes (dans `script.js`)
 ```javascript
-const STARTING_CASH = 10000;        // Capital de départ
+const STARTING_CASH = 20000;        // Capital de départ (généreux)
+const DAILY_INCOME = 100;           // Revenu journalier automatique
 const DAY_DURATION_MS = 1000;       // Durée d'un jour en ms
 const REPORT_DAY = 365;             // Jour du bilan
-const EVENT_PROBABILITY = 0.05;     // 5% de chance d'événement
+const EVENT_PROBABILITY = 0.01;     // 1% de chance d'événement (RARE)
 ```
 
 ### Ajouter un nouvel actif

@@ -6,10 +6,11 @@
  */
 
 // ===== CONSTANTES =====
-const STARTING_CASH = 10000;
+const STARTING_CASH = 20000; // Capital de départ généreux
+const DAILY_INCOME = 100; // Revenu fixe par jour (salaire/rente)
 const DAY_DURATION_MS = 1000; // 1 seconde = 1 jour
 const REPORT_DAY = 365; // Afficher un bilan après 365 jours
-const EVENT_PROBABILITY = 0.05; // 5% de chance d'événement par jour
+const EVENT_PROBABILITY = 0.01; // 1% de chance d'événement (RARE !)
 
 // ===== DÉFINITION DES ACTIFS =====
 const ASSETS = [
@@ -19,7 +20,7 @@ const ASSETS = [
         icon: '🏦',
         risk: 'low',
         riskLabel: 'Faible',
-        annualReturn: 0.02, // 2% par an
+        annualReturn: 0.035, // 3.5% par an (plus généreux)
         volatility: 0.001, // Quasi nulle
         minInvestment: 100,
         lockDays: 0, // Pas de blocage
@@ -32,11 +33,11 @@ const ASSETS = [
         icon: '📜',
         risk: 'low',
         riskLabel: 'Faible à Moyen',
-        annualReturn: 0.04, // 4% par an
+        annualReturn: 0.055, // 5.5% par an (plus généreux)
         volatility: 0.01,
         minInvestment: 500,
         lockDays: 60,
-        earlyPenalty: 0.01, // -1% si vente avant 60 jours
+        earlyPenalty: 0.005, // -0.5% si vente avant 60 jours (plus doux)
         description: 'Titres de créance avec rendement stable'
     },
     {
@@ -45,7 +46,7 @@ const ASSETS = [
         icon: '📊',
         risk: 'medium',
         riskLabel: 'Moyen',
-        annualReturn: 0.07, // 7% par an
+        annualReturn: 0.09, // 9% par an (plus généreux)
         volatility: 0.03,
         minInvestment: 1000,
         lockDays: 0,
@@ -58,7 +59,7 @@ const ASSETS = [
         icon: '🏠',
         risk: 'medium',
         riskLabel: 'Moyen',
-        annualReturn: 0.05, // 5% par an
+        annualReturn: 0.065, // 6.5% par an (plus généreux)
         volatility: 0.02,
         minInvestment: 5000,
         lockDays: 90,
@@ -71,7 +72,7 @@ const ASSETS = [
         icon: '🚀',
         risk: 'high',
         riskLabel: 'Élevé',
-        annualReturn: 0.15, // 15% par an
+        annualReturn: 0.19, // 19% par an (plus généreux)
         volatility: 0.08, // Très volatile
         minInvestment: 2000,
         lockDays: 0,
@@ -81,19 +82,20 @@ const ASSETS = [
 ];
 
 // ===== ÉVÉNEMENTS POSSIBLES =====
+// ATTENTION : Les événements sont RARES (1% par jour) et moins violents
 const EVENTS = [
     {
-        id: 'crash',
-        name: 'Krach Boursier',
-        description: 'Panique sur les marchés ! Les actifs risqués chutent.',
+        id: 'mini-crash',
+        name: 'Mini-Krach Boursier',
+        description: 'Léger ralentissement des marchés.',
         probability: 0.15,
         effect: (gameState) => {
             gameState.portfolio.forEach(position => {
                 const asset = ASSETS.find(a => a.id === position.assetId);
                 if (asset && asset.risk === 'high') {
-                    position.currentValue *= 0.85; // -15%
+                    position.currentValue *= 0.95; // -5% (plus doux)
                 } else if (asset && asset.risk === 'medium') {
-                    position.currentValue *= 0.92; // -8%
+                    position.currentValue *= 0.97; // -3% (plus doux)
                 }
             });
         }
@@ -101,57 +103,57 @@ const EVENTS = [
     {
         id: 'boom',
         name: 'Boom Économique',
-        description: 'L\'économie explose ! Tous les actifs progressent.',
-        probability: 0.2,
+        description: 'L\'économie progresse ! Tous les actifs montent.',
+        probability: 0.3, // Plus de chances d'événements positifs
         effect: (gameState) => {
             gameState.portfolio.forEach(position => {
-                position.currentValue *= 1.08; // +8%
+                position.currentValue *= 1.10; // +10% (plus généreux)
             });
         }
     },
     {
         id: 'tax',
-        name: 'Taxe Exceptionnelle',
-        description: 'Le gouvernement impose une taxe surprise.',
+        name: 'Petite Taxe',
+        description: 'Le gouvernement prélève une petite taxe.',
         probability: 0.1,
         effect: (gameState) => {
-            const tax = gameState.cash * 0.01; // 1% du cash
+            const tax = gameState.cash * 0.005; // 0.5% du cash (plus doux)
             gameState.cash = Math.max(0, gameState.cash - tax);
         }
     },
     {
         id: 'opportunity',
         name: 'Opportunité Exceptionnelle',
-        description: 'Un bonus inattendu de 500€ !',
-        probability: 0.15,
+        description: 'Un bonus inattendu de 1000€ !',
+        probability: 0.2, // Plus fréquent
         effect: (gameState) => {
-            gameState.cash += 500;
+            gameState.cash += 1000; // Plus généreux (1000 au lieu de 500)
         }
     },
     {
         id: 'tech-rally',
         name: 'Rallye Technologique',
         description: 'Les startups et ETF s\'envolent !',
-        probability: 0.2,
+        probability: 0.15,
         effect: (gameState) => {
             gameState.portfolio.forEach(position => {
                 const asset = ASSETS.find(a => a.id === position.assetId);
                 if (asset && (asset.id === 'startup' || asset.id === 'etf')) {
-                    position.currentValue *= 1.12; // +12%
+                    position.currentValue *= 1.15; // +15% (plus généreux)
                 }
             });
         }
     },
     {
-        id: 'real-estate-drop',
-        name: 'Crise Immobilière',
-        description: 'Le marché immobilier ralentit.',
-        probability: 0.2,
+        id: 'real-estate-boost',
+        name: 'Boom Immobilier',
+        description: 'Le marché immobilier est en plein essor !',
+        probability: 0.1,
         effect: (gameState) => {
             gameState.portfolio.forEach(position => {
                 const asset = ASSETS.find(a => a.id === position.assetId);
                 if (asset && asset.id === 'realestate') {
-                    position.currentValue *= 0.90; // -10%
+                    position.currentValue *= 1.08; // +8% (positif au lieu de négatif)
                 }
             });
         }
@@ -164,7 +166,7 @@ let gameState = {
     cash: STARTING_CASH,
     portfolio: [], // { id, assetId, amount, currentValue, dayPurchased }
     history: [{ day: 1, netWorth: STARTING_CASH }], // Pour le graphique
-    eventLog: ['Jour 1 : Bienvenue ! Vous démarrez avec ' + formatMoney(STARTING_CASH)],
+    eventLog: ['Jour 1 : Bienvenue ! Vous démarrez avec ' + formatMoney(STARTING_CASH) + ' + ' + formatMoney(DAILY_INCOME) + '/jour de revenu'],
     isPaused: false,
     reportShown: false
 };
@@ -190,10 +192,13 @@ function stopGame() {
 function advanceDay() {
     gameState.day++;
 
+    // Revenu journalier automatique (salaire/rente)
+    gameState.cash += DAILY_INCOME;
+
     // Mise à jour des investissements
     updatePortfolioValues();
 
-    // Événements aléatoires
+    // Événements aléatoires (RARES : 1% de chance)
     if (Math.random() < EVENT_PROBABILITY) {
         triggerRandomEvent();
     }
@@ -437,7 +442,7 @@ function resetGame() {
         cash: STARTING_CASH,
         portfolio: [],
         history: [{ day: 1, netWorth: STARTING_CASH }],
-        eventLog: ['Jour 1 : Bienvenue ! Vous démarrez avec ' + formatMoney(STARTING_CASH)],
+        eventLog: ['Jour 1 : Bienvenue ! Vous démarrez avec ' + formatMoney(STARTING_CASH) + ' + ' + formatMoney(DAILY_INCOME) + '/jour de revenu'],
         isPaused: false,
         reportShown: false
     };
