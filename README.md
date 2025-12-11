@@ -1,133 +1,147 @@
-# 💰 Investor Days - Simulation d'Investisseur
+# ⚔️ Guild Manager - Gestion de Guilde d'Aventuriers
 
-> Un jeu de gestion et simulation d'investissement où vous incarnez un investisseur qui fait fructifier son patrimoine au fil des jours.
+> Un jeu de gestion tour par tour où vous incarnez le maître d'une guilde d'aventuriers dans un univers heroic-fantasy.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## 🎮 Description
 
-**Investor Days** est un jeu de simulation financière dans le navigateur où vous devez gérer vos investissements et faire croître votre capital sur plusieurs jours.
+**Guild Manager** est un jeu de gestion stratégique au tour par tour. Vous devez recruter des héros, les envoyer en mission, gérer leurs équipements, améliorer votre guilde et faire croître votre réputation !
 
 ### Objectifs
-- Faire fructifier votre capital de départ (**20 000 €** + **100 €/jour** de revenu)
-- Diversifier vos investissements entre différents actifs
-- Gérer le risque et la volatilité
-- Profiter d'événements rares (positifs et négatifs)
-- Atteindre la meilleure valeur nette possible après 365 jours
-
-### 🎯 Philosophie du jeu
-Ce jeu est conçu pour être **généreux et gratifiant** :
-- Capital de départ élevé (20 000 €)
-- Revenu passif journalier (100 €/jour)
-- Rendements attractifs sur tous les actifs
-- Événements aléatoires **RARES** (1% par jour seulement)
-- Événements négatifs moins violents
-- Plus d'événements positifs que négatifs
-- Progression naturellement positive si vous jouez intelligemment
+- Recruter et gérer une équipe de héros de différentes classes
+- Envoyer vos héros en mission pour gagner de l'or et de la réputation
+- Faire progresser vos héros (niveaux, équipements, compétences)
+- Améliorer votre guilde avec de nouveaux bâtiments
+- Survivre aux risques (blessures, échecs de missions)
+- Devenir la guilde la plus prestigieuse du royaume !
 
 ## ✨ Fonctionnalités
 
-### 💼 Investissements disponibles (rendements généreux)
-- **Compte Sécurisé** 🏦 - Faible risque, 3.5% de rendement annuel
-- **Obligations** 📜 - Risque modéré, 5.5% de rendement, blocage 60 jours
-- **Indice Boursier (ETF)** 📊 - Risque moyen, 9% de rendement
-- **Immobilier** 🏠 - Risque moyen, 6.5% de rendement, blocage 90 jours
-- **Startup / Venture** 🚀 - Risque élevé, 19% de rendement, très volatile
+### 👥 Système de Héros
+- **5 classes jouables** : Guerrier, Mage, Voleur, Soigneur, Ranger
+- **Progression complète** : montée de niveau, gain d'XP
+- **Stats détaillées** : HP, Attaque, Défense, Vitesse
+- **Traits spéciaux** : Chanceux, Robuste, Leader, etc.
+- **Système d'équipement** : armes, armures, accessoires
+- **États** : Disponible, En mission, Blessé
 
-### ⚡ Événements aléatoires (RARES - 1% par jour)
-- Mini-krach boursier (léger ralentissement)
-- Boom économique (+10% sur tout)
-- Petite taxe (0.5% du cash)
-- Opportunité exceptionnelle (+1000€)
-- Rallye technologique (startups/ETF +15%)
-- Boom immobilier (+8%)
+### 📜 Missions Variées
+- **10 types de missions** différentes
+- **5 niveaux de difficulté**
+- Durées variables (1 à 5 jours)
+- **Risques** : échecs, blessures
+- **Récompenses** : or, réputation, XP
+- **Système de recommandations** : classes optimales par mission
+- **Calcul intelligent** : chances de succès basées sur les stats
 
-### 📊 Interface complète
-- Suivi en temps réel de votre patrimoine
-- Graphique d'évolution de la valeur nette
-- Journal des événements
-- Profil de risque dynamique
-- Sauvegarde automatique dans le navigateur
+### 🏰 Améliorations de Guilde
+- **Salle d'entraînement** : +XP pour les héros
+- **Forge** : réduction du coût des équipements
+- **Infirmerie** : récupération plus rapide
+- **Dortoirs** : plus de héros recrutables
+- **Taverne** : meilleure qualité des recrues
+
+### 🛒 Boutique d'Équipements
+- **9 équipements** disponibles
+- 3 catégories : Armes, Armures, Accessoires
+- Bonus de stats variés
+- Système de réduction (amélioration Forge)
+
+### 🎲 Mécaniques de Jeu
+- **Tour par tour** : bouton "Fin de journée"
+- **Gestion du temps** : missions qui progressent jour par jour
+- **Récupération** : héros blessés se soignent avec le temps
+- **Événements aléatoires** (rares)
+- **Système de réputation** : débloque de nouvelles missions
+- **Rangs de guilde** : Novice → Légendaire
 
 ## 🚀 Comment jouer
 
 ### En local
-1. Téléchargez les fichiers du projet
+1. Téléchargez les 3 fichiers : `index.html`, `styles.css`, `script.js`
 2. Ouvrez `index.html` dans votre navigateur
 3. Le jeu se lance automatiquement !
 
 ### En ligne (GitHub Pages)
 Rendez-vous sur : [Votre lien GitHub Pages]
 
-## 🎯 Règles du jeu
+## 🎯 Guide de jeu
 
-### Temps
-- 1 seconde réelle = 1 jour dans le jeu
-- Le temps défile automatiquement
-- Possibilité de mettre en pause
-- Bouton "Avance rapide" pour sauter 10 jours
+### Démarrage
+- Vous commencez avec **1000 or**, **0 réputation** et **3 héros** de niveau 1
+- Des missions sont disponibles immédiatement
 
-### Investir
-1. Cliquez sur "Investir" sur un actif
-2. Choisissez le montant à investir
-3. Validez l'investissement
-4. Votre cash diminue, votre portefeuille augmente
+### Recruter des héros
+- Coût : 200 or par héros
+- Héros générés aléatoirement (nom, classe)
+- Limite de héros augmentable avec l'amélioration "Dortoirs"
 
-### Vendre
-- Cliquez sur "Vendre" dans votre portefeuille
-- Attention aux périodes de blocage !
-- Les pénalités s'appliquent si vous vendez trop tôt
+### Lancer une mission
+1. Allez dans l'onglet **Missions**
+2. Cliquez sur une mission disponible
+3. Sélectionnez les héros à assigner
+4. Cliquez sur "Lancer la mission"
+5. La mission démarre et progresse jour par jour
 
-### Stratégie
-- Diversifiez vos investissements
-- Équilibrez risque et rendement
-- Gardez toujours du cash disponible
-- Surveillez les événements aléatoires
+### Fin de journée
+- Cliquez sur le bouton **"🌙 Fin de journée"**
+- Les missions en cours avancent d'un jour
+- Les héros blessés récupèrent
+- Les missions terminées donnent leurs récompenses
+- Nouvelles missions tous les 3 jours
 
-## 📈 Calcul des rendements
+### Gérer les équipements
+1. Achetez des équipements dans l'onglet **Boutique**
+2. Cliquez sur un héros pour voir ses détails
+3. Équipez les objets de votre inventaire
+4. Les stats du héros augmentent automatiquement
 
-Les rendements sont calculés quotidiennement avec :
-- **Rendement moyen annuel** converti en rendement journalier
-- **Volatilité** qui crée des variations aléatoires
-- Les actifs à haut risque peuvent gagner ou perdre plus rapidement
+### Améliorer la guilde
+- Dépensez votre or dans l'onglet **Guilde**
+- Chaque amélioration a 5 niveaux
+- Les effets sont permanents et cumulatifs
 
-Formule : `Valeur du jour = Valeur précédente × (1 + rendement journalier + volatilité aléatoire)`
+## 📊 Système de combat
+
+Les chances de succès d'une mission dépendent de :
+- **Niveau moyen** des héros vs niveau recommandé
+- **Stats totales** de l'équipe (Attaque + Défense + Vitesse)
+- **Classes recommandées** : bonus si la classe correspond
+- **Traits spéciaux** : bonus pour certains traits
+- **Nombre de héros** : plus de héros = plus de chances
+
+Formule : entre 10% et 95% de chances de succès
+
+### Conséquences
+- **Succès** : récompenses complètes, peu de risques
+- **Échec** : héros blessés, pas de récompenses
+- **Blessure** : héros indisponible pendant 2-4 jours
 
 ## 💾 Sauvegarde
 
-Le jeu sauvegarde automatiquement votre progression dans le **localStorage** du navigateur :
-- Votre jour actuel
-- Votre cash et portefeuille
-- L'historique des 500 derniers jours
-- Le journal des événements
+Le jeu sauvegarde automatiquement votre progression dans le navigateur (localStorage) :
+- À chaque fin de journée
+- Après chaque action importante
+- Chargement automatique au lancement
 
-Pour recommencer : cliquez sur "Nouvelle Partie"
+Bouton **"Nouvelle Partie"** pour recommencer à zéro.
 
-## 🏆 Bilan après 365 jours
-
-Au bout de 365 jours, un rapport s'affiche avec :
-- Votre valeur nette finale
-- Votre rendement total en %
-- Votre meilleur jour
-- Un commentaire sur votre performance
-
-Vous pouvez ensuite continuer à jouer en mode infini !
-
-## 🛠️ Technologies utilisées
+## 🛠️ Technologies
 
 - **HTML5** - Structure
-- **CSS3** - Style avec variables CSS et animations
+- **CSS3** - Design avec variables CSS et animations
 - **JavaScript Vanilla** - Logique du jeu (aucun framework)
-- **Canvas API** - Graphique d'évolution
+- Architecture orientée objet (classes Hero, Mission, Equipment, etc.)
 
 ## 📂 Structure du projet
 
 ```
-investor-days/
-├── index.html      # Page principale
-├── styles.css      # Styles et design
-├── script.js       # Logique du jeu
+guild-manager/
+├── index.html      # Page principale avec structure à onglets
+├── styles.css      # Design fantasy avec thème sombre
+├── script.js       # Logique complète du jeu
 └── README.md       # Ce fichier
 ```
 
@@ -135,53 +149,54 @@ investor-days/
 
 Le code est conçu pour être facilement modifiable :
 
-### Modifier les constantes (dans `script.js`)
-```javascript
-const STARTING_CASH = 20000;        // Capital de départ (généreux)
-const DAILY_INCOME = 100;           // Revenu journalier automatique
-const DAY_DURATION_MS = 1000;       // Durée d'un jour en ms
-const REPORT_DAY = 365;             // Jour du bilan
-const EVENT_PROBABILITY = 0.01;     // 1% de chance d'événement (RARE)
-```
-
-### Ajouter un nouvel actif
-Ajoutez un objet dans le tableau `ASSETS` :
+### Ajouter une nouvelle mission
+Dans `MISSION_TEMPLATES` (script.js), ajoutez :
 ```javascript
 {
-    id: 'crypto',
-    name: 'Cryptomonnaie',
-    icon: '₿',
-    risk: 'high',
-    riskLabel: 'Très Élevé',
-    annualReturn: 0.20,
-    volatility: 0.15,
-    minInvestment: 100,
-    lockDays: 0,
-    earlyPenalty: 0,
-    description: 'Investissement ultra-volatile'
+    name: 'Nom de la mission',
+    type: 'combat',
+    difficulty: 3,
+    duration: 2,
+    minLevel: 5,
+    recommendedClasses: ['warrior', 'mage'],
+    rewards: { gold: 500, reputation: 20, xp: 100 },
+    description: 'Description de la mission'
 }
 ```
 
-### Ajouter un événement
-Ajoutez un objet dans le tableau `EVENTS` :
+### Ajouter un nouvel équipement
+Dans `EQUIPMENT_TEMPLATES` :
 ```javascript
 {
-    id: 'new-event',
-    name: 'Nom de l\'événement',
-    description: 'Description',
-    probability: 0.1,
-    effect: (gameState) => {
-        // Votre logique ici
-    }
+    name: 'Épée légendaire',
+    type: 'weapon',
+    bonuses: { attack: 25, speed: 5 },
+    cost: 1500
 }
+```
+
+### Modifier les constantes
+```javascript
+const STARTING_GOLD = 1000;        // Or de départ
+const STARTING_REPUTATION = 0;     // Réputation de départ
+const MAX_HEROES_BASE = 10;        // Nombre max de héros
 ```
 
 ## 📱 Responsive
 
-Le jeu est optimisé pour :
-- 💻 Desktop
+Le jeu s'adapte aux différentes tailles d'écran :
+- 💻 Desktop (expérience optimale)
 - 📱 Tablettes
-- 📱 Mobile (version adaptée)
+- 📱 Mobile (interface adaptée)
+
+## 🎯 Conseils stratégiques
+
+1. **Diversifiez vos classes** : chaque classe a ses forces
+2. **Améliorez la salle d'entraînement tôt** : XP bonus permanent
+3. **Gérez vos héros blessés** : toujours avoir des remplaçants
+4. **Choisissez les bonnes missions** : classes recommandées = +chances
+5. **Investissez dans les équipements** : boost significatif
+6. **Montez votre réputation** : débloque missions plus rentables
 
 ## 🐛 Bugs connus
 
@@ -191,28 +206,28 @@ Si vous trouvez un bug, ouvrez une issue sur GitHub !
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues !
+Les contributions sont bienvenues !
 
 1. Fork le projet
 2. Créez une branche (`git checkout -b feature/amelioration`)
-3. Commit vos changements (`git commit -m 'Ajout d'une fonctionnalité'`)
+3. Commit vos changements (`git commit -m 'Ajout fonctionnalité'`)
 4. Push sur la branche (`git push origin feature/amelioration`)
 5. Ouvrez une Pull Request
 
 ## 📜 Licence
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+Ce projet est sous licence MIT.
 
 ## 👨‍💻 Auteur
 
-Créé avec ❤️ pour les passionnés de finance et de jeux de gestion !
+Créé avec ❤️ pour les amateurs de jeux de gestion et d'univers fantasy !
 
 ## 🌟 Remerciements
 
-Merci d'avoir joué à **Investor Days** !
+Merci d'avoir joué à **Guild Manager** !
 
 N'hésitez pas à laisser une ⭐ si vous avez aimé le jeu !
 
 ---
 
-**Bon investissement ! 💰📈**
+**Bonne gestion de guilde ! ⚔️🏰**

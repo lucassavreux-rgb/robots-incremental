@@ -3,113 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investor Days - Simulation d'Investisseur</title>
+    <title>Guild Manager - Gestion de Guilde d'Aventuriers</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- En-tête avec résumé -->
-    <header class="summary-bar">
-        <div class="summary-item">
-            <span class="summary-label">Jour</span>
-            <span class="summary-value" id="current-day">1</span>
+    <!-- En-tête avec statistiques -->
+    <header class="header">
+        <div class="guild-info">
+            <h1>⚔️ Guild Manager</h1>
+            <div class="guild-name" id="guild-name">Ma Guilde</div>
         </div>
-        <div class="summary-item">
-            <span class="summary-label">Cash Disponible</span>
-            <span class="summary-value" id="cash-available">20 000 €</span>
-        </div>
-        <div class="summary-item">
-            <span class="summary-label">Valeur du Portefeuille</span>
-            <span class="summary-value" id="portfolio-value">0 €</span>
-        </div>
-        <div class="summary-item">
-            <span class="summary-label">Valeur Nette Totale</span>
-            <span class="summary-value total" id="net-worth">20 000 €</span>
-        </div>
-        <div class="summary-item risk-indicator">
-            <span class="summary-label">Profil de Risque</span>
-            <div class="risk-bar">
-                <div class="risk-fill" id="risk-fill"></div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">Jour</span>
+                <span class="stat-value" id="current-day">1</span>
             </div>
-            <span class="summary-value" id="risk-profile">Prudent</span>
+            <div class="stat-item">
+                <span class="stat-label">💰 Or</span>
+                <span class="stat-value" id="gold">1000</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">⭐ Réputation</span>
+                <span class="stat-value" id="reputation">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">👥 Héros</span>
+                <span class="stat-value"><span id="hero-count">3</span> / <span id="hero-max">10</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Rang</span>
+                <span class="stat-value" id="guild-rank">Novice</span>
+            </div>
         </div>
     </header>
 
-    <!-- Zone principale -->
+    <!-- Navigation par onglets -->
+    <nav class="tabs">
+        <button class="tab-btn active" data-tab="heroes">👥 Héros</button>
+        <button class="tab-btn" data-tab="missions">📜 Missions</button>
+        <button class="tab-btn" data-tab="guild">🏰 Guilde</button>
+        <button class="tab-btn" data-tab="shop">🛒 Boutique</button>
+    </nav>
+
+    <!-- Zone principale avec les différents onglets -->
     <main class="main-content">
-        <!-- Panneau gauche : Investissements disponibles -->
-        <section class="investment-panel">
-            <div class="panel-header">
-                <h2>📊 Investissements Disponibles</h2>
-                <div class="controls">
-                    <button id="pause-btn" class="btn btn-control">⏸️ Pause</button>
-                    <button id="fast-forward-btn" class="btn btn-control">⏩ +10 jours</button>
-                </div>
+        <!-- Onglet Héros -->
+        <section id="tab-heroes" class="tab-content active">
+            <h2>Vos Héros</h2>
+            <div class="heroes-grid" id="heroes-list">
+                <!-- Les héros seront générés dynamiquement -->
             </div>
-            <div id="investments-list" class="investments-list">
-                <!-- Les cartes d'investissement seront générées dynamiquement -->
+            <button class="btn btn-primary" onclick="recruitHero()">🎲 Recruter un nouveau héros</button>
+        </section>
+
+        <!-- Onglet Missions -->
+        <section id="tab-missions" class="tab-content">
+            <h2>Missions Disponibles</h2>
+            <div class="missions-section">
+                <div class="missions-available">
+                    <h3>📋 À faire</h3>
+                    <div id="missions-available" class="missions-list">
+                        <!-- Missions disponibles -->
+                    </div>
+                </div>
+                <div class="missions-ongoing">
+                    <h3>⏳ En cours</h3>
+                    <div id="missions-ongoing" class="missions-list">
+                        <!-- Missions en cours -->
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Panneau droit : Portefeuille -->
-        <section class="portfolio-panel">
-            <div class="panel-header">
-                <h2>💼 Mon Portefeuille</h2>
-                <button id="reset-btn" class="btn btn-danger">🔄 Nouvelle Partie</button>
+        <!-- Onglet Guilde -->
+        <section id="tab-guild" class="tab-content">
+            <h2>Améliorations de la Guilde</h2>
+            <div class="upgrades-grid" id="upgrades-list">
+                <!-- Améliorations de la guilde -->
             </div>
-            <div id="portfolio-list" class="portfolio-list">
-                <p class="empty-state">Aucun investissement pour le moment</p>
+        </section>
+
+        <!-- Onglet Boutique -->
+        <section id="tab-shop" class="tab-content">
+            <h2>Boutique d'Équipements</h2>
+            <div class="shop-grid" id="shop-list">
+                <!-- Équipements à acheter -->
             </div>
         </section>
     </main>
 
-    <!-- Section basse : Journal et graphique -->
-    <footer class="bottom-section">
-        <div class="journal-section">
-            <h3>📰 Journal des Événements</h3>
-            <div id="events-log" class="events-log">
-                <p class="log-entry">Jour 1 : Bienvenue ! Vous démarrez avec 20 000 € + 100 €/jour de revenu</p>
-            </div>
+    <!-- Journal des événements -->
+    <footer class="log-section">
+        <div class="log-header">
+            <h3>📰 Journal</h3>
+            <button class="btn btn-primary btn-end-day" onclick="endDay()">🌙 Fin de journée</button>
         </div>
-        <div class="chart-section">
-            <h3>📈 Évolution de la Valeur Nette</h3>
-            <canvas id="chart-canvas" width="400" height="200"></canvas>
+        <div id="event-log" class="event-log">
+            <p class="log-entry">Jour 1 : Bienvenue dans votre nouvelle guilde d'aventuriers !</p>
         </div>
     </footer>
 
-    <!-- Modal d'investissement -->
-    <div id="invest-modal" class="modal">
+    <!-- Modal de détail de héros -->
+    <div id="hero-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Investir dans <span id="modal-asset-name"></span></h2>
-            <div class="modal-info">
-                <p><strong>Risque :</strong> <span id="modal-risk"></span></p>
-                <p><strong>Rendement moyen :</strong> <span id="modal-return"></span></p>
-                <p><strong>Montant minimum :</strong> <span id="modal-min"></span></p>
-            </div>
-            <div class="invest-form">
-                <label for="invest-amount">Montant à investir :</label>
-                <input type="number" id="invest-amount" placeholder="Entrez un montant">
-                <div class="quick-buttons">
-                    <button class="btn btn-quick" data-percent="25">25%</button>
-                    <button class="btn btn-quick" data-percent="50">50%</button>
-                    <button class="btn btn-quick" data-percent="100">100%</button>
-                </div>
-                <button id="confirm-invest-btn" class="btn btn-primary">Valider l'investissement</button>
+            <span class="close-btn" onclick="closeHeroModal()">&times;</span>
+            <div id="hero-detail">
+                <!-- Détail du héros -->
             </div>
         </div>
     </div>
 
-    <!-- Modal de bilan -->
-    <div id="report-modal" class="modal">
-        <div class="modal-content report-modal">
-            <span class="close-btn">&times;</span>
-            <h2>🎉 Bilan après 365 jours !</h2>
-            <div class="report-content" id="report-content">
-                <!-- Contenu généré dynamiquement -->
+    <!-- Modal d'assignation de mission -->
+    <div id="mission-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeMissionModal()">&times;</span>
+            <div id="mission-detail">
+                <!-- Détail de la mission et assignation des héros -->
             </div>
-            <button id="continue-btn" class="btn btn-primary">Continuer à jouer</button>
         </div>
     </div>
+
+    <!-- Bouton Reset -->
+    <button class="btn-reset" onclick="resetGame()">🔄 Nouvelle Partie</button>
 
     <script src="script.js"></script>
 </body>
