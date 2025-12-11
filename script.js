@@ -585,7 +585,8 @@ function generateMissions() {
     const count = Math.floor(Math.random() * 4) + 5;
     gameState.missions.available = [];
 
-    for (let i = 0; i < count && i < availableTemplates.length; i++) {
+    // Générer les missions (on peut avoir plusieurs fois le même type)
+    for (let i = 0; i < count; i++) {
         const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
         gameState.missions.available.push(new Mission(template));
     }
@@ -637,7 +638,7 @@ function buyEquipment(index) {
     const equipment = new Equipment(template.name, template.type, template.bonuses, cost);
     gameState.inventory.push(equipment);
 
-    addLog(`🛒 ${equipment.name} acheté !`, 'success');
+    addLog(`🛒 ${equipment.name} acheté ! → Allez dans "Héros" pour l'équiper`, 'success');
     saveGame();
     updateUI();
 }
@@ -886,6 +887,19 @@ function renderShop() {
     const container = document.getElementById('shop-list');
     container.innerHTML = '';
 
+    // Message d'aide
+    const helpMsg = document.createElement('div');
+    helpMsg.style.cssText = 'background: rgba(52, 152, 219, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--accent);';
+    helpMsg.innerHTML = `
+        <strong>💡 Comment équiper vos objets :</strong><br>
+        1️⃣ Achetez l'objet ici<br>
+        2️⃣ Allez dans l'onglet <strong>"Héros"</strong><br>
+        3️⃣ Cliquez sur un héros<br>
+        4️⃣ Cliquez sur <strong>"Équiper"</strong> dans l'inventaire<br>
+        ✅ Les stats du héros augmentent automatiquement !
+    `;
+    container.appendChild(helpMsg);
+
     EQUIPMENT_TEMPLATES.forEach((template, index) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
@@ -973,8 +987,9 @@ function renderHeroEquipment(hero) {
     let html = '';
     Object.entries(hero.equipment).forEach(([slot, eq]) => {
         if (eq) {
+            const bonusText = Object.entries(eq.bonuses).map(([stat, value]) => `+${value} ${stat}`).join(', ');
             html += `<div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 6px;">
-                <strong>${slot}:</strong> ${eq.name}
+                <strong>${slot}:</strong> ${eq.name} <span style="color: var(--success);">(${bonusText})</span>
                 <button class="btn btn-secondary" style="margin-left: 10px; padding: 5px 10px;" onclick="unequipItem(${hero.id}, '${slot}')">Déséquiper</button>
             </div>`;
         } else {
@@ -991,15 +1006,19 @@ function renderInventoryForHero(hero) {
     });
 
     if (available.length === 0) {
-        return '<p style="color: var(--text-secondary);">Aucun équipement disponible</p>';
+        return '<p style="color: var(--text-secondary);">Aucun équipement disponible. Achetez-en dans la Boutique !</p>';
     }
 
-    return available.map(eq => `
-        <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 6px;">
-            <strong>${eq.name}</strong> (${eq.type})
-            <button class="btn btn-success" style="margin-left: 10px; padding: 5px 10px;" onclick="equipItem(${hero.id}, ${eq.id})">Équiper</button>
-        </div>
-    `).join('');
+    return available.map(eq => {
+        const bonusText = Object.entries(eq.bonuses).map(([stat, value]) => `+${value} ${stat}`).join(', ');
+        return `
+            <div style="margin: 10px 0; padding: 10px; background: rgba(46, 204, 113, 0.15); border-radius: 6px; border: 2px solid rgba(46, 204, 113, 0.3);">
+                <strong>${eq.name}</strong> (${eq.type})<br>
+                <span style="color: var(--success); font-weight: bold;">📈 ${bonusText}</span>
+                <button class="btn btn-success" style="margin-left: 10px; padding: 5px 10px;" onclick="equipItem(${hero.id}, ${eq.id})">⚡ Équiper</button>
+            </div>
+        `;
+    }).join('');
 }
 
 function equipItem(heroId, equipmentId) {
