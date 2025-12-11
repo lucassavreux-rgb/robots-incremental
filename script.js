@@ -321,6 +321,10 @@ function slowLoop() {
         checkUnlocks();
     }
 
+    // Mettre à jour l'interface des upgrades/projets toutes les secondes
+    renderUpgrades();
+    renderProjects();
+
     // Sauvegarder toutes les 10 secondes
     if (gameState.tickCount % 10 === 0) {
         saveGame();
