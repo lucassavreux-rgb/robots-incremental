@@ -1,482 +1,503 @@
 // ===== ÉTAT DU JEU =====
 let gameState = {
+    // Ressources principales
     dna: 0,
-    dnaSold: 0,
     funds: 0,
-    totalRevenue: 0,
-    sellPrice: 0.05,
-    baseDemand: 0.5,
+    wire: 1000, // Matière première (comme Wire dans Paperclips)
 
     // Production
-    productionRate: 0,
-    autoSequencers: 0,
-    autoSynthesizers: 0,
+    dnaPrice: 0.25,
+    publicDemand: 50,
+    marketing: 0,
+    marketingLevel: 1,
+
+    // Statistiques
+    dnaCreated: 0,
+    dnaSold: 0,
+    unsoldInventory: 0,
+
+    // Automatisation
+    autoClippers: 0,
+    megaClippers: 0,
 
     // Computational
     processors: 0,
     memory: 0,
     operations: 0,
+    creativity: 0,
+    trust: 0,
 
-    // Upgrades achetés
-    upgrades: {},
-
-    // Projets débloqués
-    unlockedProjects: [],
+    // Projects
+    availableProjects: [],
     completedProjects: [],
 
-    // Phase du jeu
+    // Phase
     phase: 1,
 
-    // Stats
+    // Timers
+    lastSellTime: Date.now(),
     tickCount: 0
 };
 
-// ===== UPGRADES DISPONIBLES =====
-const UPGRADES = {
-    autoSequencer: {
-        name: 'Séquenceur Auto',
-        desc: 'Produit 1 ADN/sec',
-        baseCost: 5,
-        costMultiplier: 1.15,
-        count: 0,
-        effect: () => {
-            gameState.autoSequencers++;
-            updateProductionRate();
-        }
-    },
-    improvedSequencer: {
-        name: 'Séquenceur Amélioré',
-        desc: 'Les séquenceurs produisent 2x plus vite',
-        cost: 100,
-        unlocked: false,
-        bought: false,
-        requirement: () => gameState.autoSequencers >= 5,
-        effect: () => {
-            gameState.upgrades.improvedSequencer = true;
-            updateProductionRate();
-        }
-    },
-    autoSynthesizer: {
-        name: 'Synthétiseur Auto',
-        desc: 'Produit 5 ADN/sec',
-        baseCost: 50,
-        costMultiplier: 1.18,
-        count: 0,
-        requirement: () => gameState.autoSequencers >= 10,
-        effect: () => {
-            gameState.autoSynthesizers++;
-            updateProductionRate();
-        }
-    },
-    marketingCampaign: {
-        name: 'Campagne Marketing',
-        desc: 'Augmente la demande de +10%',
-        cost: 200,
-        unlocked: false,
-        bought: false,
-        requirement: () => gameState.dnaSold >= 100,
-        effect: () => {
-            gameState.baseDemand += 0.1;
-            gameState.upgrades.marketingCampaign = true;
-        }
-    },
-    bulkSelling: {
-        name: 'Vente en Gros',
-        desc: 'Vente automatique activée',
-        cost: 150,
-        unlocked: false,
-        bought: false,
-        requirement: () => gameState.dnaSold >= 50,
-        effect: () => {
-            gameState.upgrades.bulkSelling = true;
-            addLog('Vente automatique activée !', 'success');
-        }
-    },
-    quantumProcessor: {
-        name: 'Processeur Quantique',
-        desc: 'Débloque le calcul computationnel',
-        cost: 500,
-        unlocked: false,
-        bought: false,
-        requirement: () => gameState.totalRevenue >= 1000,
-        effect: () => {
-            gameState.upgrades.quantumProcessor = true;
-            document.getElementById('computation-section').style.display = 'block';
-            addLog('Calcul computationnel débloqué !', 'success');
-        }
-    }
-};
-
-// ===== PROJETS DE RECHERCHE =====
+// ===== PROJETS =====
 const PROJECTS = [
     {
-        id: 'expandedMemory',
-        name: 'Mémoire Étendue',
-        desc: 'Stockage d\'ADN augmenté',
-        cost: { funds: 1000 },
-        requirement: () => gameState.totalRevenue >= 500,
+        id: 'improvedAutoClippers',
+        name: 'Séquenceurs Améliorés',
+        desc: 'Les AutoClippers produisent 25% plus vite',
+        cost: { creativity: 100 },
+        trigger: () => gameState.autoClippers >= 5,
         effect: () => {
-            addLog('Capacité de stockage augmentée !', 'success');
+            addLog('AutoClippers améliorés !', 'success');
         }
     },
     {
-        id: 'neuralNetwork',
-        name: 'Réseau Neural',
-        desc: 'Optimise la production automatique',
-        cost: { funds: 2000, operations: 1000 },
-        requirement: () => gameState.processors >= 5,
+        id: 'evenBetterAutoClippers',
+        name: 'Séquenceurs Optimisés',
+        desc: 'Les AutoClippers produisent 50% plus vite',
+        cost: { creativity: 250 },
+        trigger: () => gameState.completedProjects.includes('improvedAutoClippers'),
         effect: () => {
-            gameState.productionRate *= 1.5;
-            addLog('Production optimisée par IA !', 'success');
+            addLog('AutoClippers optimisés !', 'success');
         }
     },
     {
-        id: 'globalExpansion',
-        name: 'Expansion Mondiale',
-        desc: 'Débloque de nouveaux marchés',
-        cost: { funds: 5000 },
-        requirement: () => gameState.dnaSold >= 10000,
+        id: 'optimizedMarketing',
+        name: 'Marketing Optimisé',
+        desc: 'Le marketing coûte 25% moins cher',
+        cost: { creativity: 150 },
+        trigger: () => gameState.marketing >= 5,
         effect: () => {
-            gameState.phase = 2;
-            addLog('Nouveaux marchés débloqués !', 'success');
+            addLog('Marketing optimisé !', 'success');
+        }
+    },
+    {
+        id: 'creativityUpgrade',
+        name: 'Créativité Améliorée',
+        desc: '+1 Créativité par opération',
+        cost: { creativity: 200 },
+        trigger: () => gameState.processors >= 5,
+        effect: () => {
+            addLog('Créativité augmentée !', 'success');
+        }
+    },
+    {
+        id: 'wireBuyer',
+        name: 'Acheteur de Wire Auto',
+        desc: 'Achète automatiquement du wire',
+        cost: { creativity: 300 },
+        trigger: () => gameState.funds >= 1000,
+        effect: () => {
+            addLog('Achat automatique de wire activé !', 'success');
+        }
+    },
+    {
+        id: 'megaClippers',
+        name: 'Méga Séquenceurs',
+        desc: 'Débloque les MegaClippers (5x plus rapide)',
+        cost: { creativity: 500 },
+        trigger: () => gameState.autoClippers >= 50,
+        effect: () => {
+            addLog('MegaClippers débloqués !', 'success');
         }
     }
 ];
 
 // ===== ÉLÉMENTS DOM =====
-const elements = {
-    dnaCount: document.getElementById('dna-count'),
-    makeDnaBtn: document.getElementById('make-dna'),
-    sellPrice: document.getElementById('sell-price'),
-    funds: document.getElementById('funds'),
-    dnaSold: document.getElementById('dna-sold'),
-    totalRevenue: document.getElementById('total-revenue'),
-    demand: document.getElementById('demand'),
-    productionRate: document.getElementById('production-rate'),
-    lowerPriceBtn: document.getElementById('lower-price'),
-    raisePriceBtn: document.getElementById('raise-price'),
-    sellDnaBtn: document.getElementById('sell-dna'),
-    upgradesList: document.getElementById('upgrades-list'),
-    projectsList: document.getElementById('projects-list'),
-    eventLog: document.getElementById('event-log'),
-    sequencerCount: document.getElementById('sequencer-count'),
-    synthesizerCount: document.getElementById('synthesizer-count'),
-    processorCount: document.getElementById('processor-count'),
-    memoryCount: document.getElementById('memory-count'),
-    operations: document.getElementById('operations')
-};
+const $ = id => document.getElementById(id);
 
 // ===== INITIALISATION =====
 function init() {
     loadGame();
 
     // Event listeners
-    elements.makeDnaBtn.addEventListener('click', makeDNA);
-    elements.lowerPriceBtn.addEventListener('click', () => adjustPrice(-0.01));
-    elements.raisePriceBtn.addEventListener('click', () => adjustPrice(0.01));
-    elements.sellDnaBtn.addEventListener('click', sellDNA);
+    $('make-dna-btn').addEventListener('click', makeDNA);
+    $('lower-price').addEventListener('click', () => adjustPrice(-0.01));
+    $('raise-price').addEventListener('click', () => adjustPrice(0.01));
+    $('buy-wire').addEventListener('click', buyWire);
+    $('buy-autoclipper').addEventListener('click', () => buyAutoClipper());
+    $('buy-marketing').addEventListener('click', () => buyMarketing());
 
-    // Game loop
-    setInterval(gameLoop, 100); // 10 FPS
-    setInterval(slowLoop, 1000); // 1 FPS pour certains calculs
+    // Loops
+    setInterval(gameLoop, 50); // 20 FPS
+    setInterval(slowLoop, 1000); // 1 FPS
 
     updateUI();
-    renderUpgrades();
-    renderProjects();
-
     addLog('🧬 Bienvenue dans DNA Factory !', 'info');
 }
 
-// ===== FONCTIONS PRINCIPALES =====
+// ===== PRODUCTION =====
 function makeDNA() {
+    if (gameState.wire < 1) {
+        addLog('⚠️ Pas assez de wire !', 'warning');
+        return;
+    }
+
+    gameState.wire--;
     gameState.dna++;
-    updateDisplay();
-    animateButton(elements.makeDnaBtn);
+    gameState.unsoldInventory++;
+    gameState.dnaCreated++;
+
+    // Créativité basée sur les opérations
+    if (gameState.processors > 0 && Math.random() < 0.1) {
+        gameState.creativity++;
+    }
+
+    updateUI();
 }
 
-function adjustPrice(amount) {
-    gameState.sellPrice = Math.max(0.01, Math.round((gameState.sellPrice + amount) * 100) / 100);
-    updateDisplay();
+function autoProduction() {
+    // AutoClippers
+    if (gameState.autoClippers > 0) {
+        let rate = gameState.autoClippers * 0.05; // 0.05 par tick (20 FPS)
+
+        // Bonus des upgrades
+        if (gameState.completedProjects.includes('improvedAutoClippers')) {
+            rate *= 1.25;
+        }
+        if (gameState.completedProjects.includes('evenBetterAutoClippers')) {
+            rate *= 1.5;
+        }
+
+        const toProduce = Math.min(rate, gameState.wire);
+        if (toProduce > 0) {
+            gameState.wire -= toProduce;
+            gameState.dna += toProduce;
+            gameState.unsoldInventory += toProduce;
+            gameState.dnaCreated += toProduce;
+        }
+    }
+
+    // MegaClippers
+    if (gameState.megaClippers > 0) {
+        let rate = gameState.megaClippers * 0.25; // 5x plus rapide
+
+        const toProduce = Math.min(rate, gameState.wire);
+        if (toProduce > 0) {
+            gameState.wire -= toProduce;
+            gameState.dna += toProduce;
+            gameState.unsoldInventory += toProduce;
+            gameState.dnaCreated += toProduce;
+        }
+    }
 }
 
-function sellDNA() {
+// ===== VENTE AUTOMATIQUE =====
+function autoSell() {
     if (gameState.dna <= 0) return;
 
     const demand = calculateDemand();
-    const amountToSell = Math.min(gameState.dna, Math.ceil(gameState.dna * demand));
+    const sellRate = 0.7; // Vend 70% par seconde
 
-    if (amountToSell > 0) {
-        gameState.dna -= amountToSell;
-        const revenue = amountToSell * gameState.sellPrice;
+    const toSell = Math.min(
+        gameState.dna,
+        Math.max(1, Math.floor(gameState.dna * demand * sellRate))
+    );
+
+    if (toSell > 0) {
+        gameState.dna -= toSell;
+        gameState.unsoldInventory -= toSell;
+        const revenue = toSell * gameState.dnaPrice;
         gameState.funds += revenue;
-        gameState.totalRevenue += revenue;
-        gameState.dnaSold += amountToSell;
-
-        updateDisplay();
-
-        if (amountToSell > 10) {
-            addLog(`Vendu ${amountToSell} brins pour $${revenue.toFixed(2)}`, 'success');
-        }
+        gameState.dnaSold += toSell;
     }
 }
 
 function calculateDemand() {
-    // La demande diminue avec le prix
-    const priceImpact = Math.max(0.1, 1 - (gameState.sellPrice - 0.05) * 2);
-    const demand = gameState.baseDemand * priceImpact;
-    return Math.min(1, Math.max(0.1, demand));
+    // Demande basée sur le prix et le marketing
+    const priceImpact = Math.max(0.1, 1 - (gameState.dnaPrice - 0.25) * 3);
+    const marketingBonus = 1 + (gameState.marketing * 0.15);
+    const publicDemandFactor = gameState.publicDemand / 100;
+
+    return Math.min(1, priceImpact * marketingBonus * publicDemandFactor);
 }
 
-function updateProductionRate() {
-    let rate = 0;
-
-    // Séquenceurs
-    let sequencerMultiplier = 1;
-    if (gameState.upgrades.improvedSequencer) sequencerMultiplier = 2;
-    rate += gameState.autoSequencers * sequencerMultiplier;
-
-    // Synthétiseurs
-    rate += gameState.autoSynthesizers * 5;
-
-    gameState.productionRate = rate;
+function adjustPrice(amount) {
+    gameState.dnaPrice = Math.max(0.01, Math.round((gameState.dnaPrice + amount) * 100) / 100);
+    updateUI();
 }
 
-function autoProduction(deltaTime) {
-    if (gameState.productionRate > 0) {
-        const produced = (gameState.productionRate * deltaTime) / 1000;
-        gameState.dna += produced;
-    }
-}
-
-function autoSell() {
-    if (gameState.upgrades.bulkSelling && gameState.dna >= 1) {
-        sellDNA();
-    }
-}
-
-function buyUpgrade(upgradeKey) {
-    const upgrade = UPGRADES[upgradeKey];
-    const cost = upgrade.baseCost ?
-        Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.count || 0)) :
-        upgrade.cost;
+// ===== ACHATS =====
+function buyWire() {
+    const cost = 15;
+    const amount = 1000;
 
     if (gameState.funds >= cost) {
         gameState.funds -= cost;
-
-        if (upgrade.count !== undefined) {
-            upgrade.count++;
-        } else {
-            upgrade.bought = true;
-        }
-
-        upgrade.effect();
-        updateDisplay();
-        renderUpgrades();
-
-        addLog(`Acheté: ${upgrade.name}`, 'success');
+        gameState.wire += amount;
+        updateUI();
     }
 }
 
-function buyProject(projectId) {
+function buyAutoClipper() {
+    const cost = 5 * Math.pow(1.1, gameState.autoClippers);
+
+    if (gameState.funds >= cost) {
+        gameState.funds -= cost;
+        gameState.autoClippers++;
+        updateUI();
+    }
+}
+
+function buyMarketing() {
+    let baseCost = 100 * Math.pow(1.5, gameState.marketing);
+
+    // Réduction avec upgrade
+    if (gameState.completedProjects.includes('optimizedMarketing')) {
+        baseCost *= 0.75;
+    }
+
+    if (gameState.funds >= baseCost) {
+        gameState.funds -= baseCost;
+        gameState.marketing++;
+        gameState.marketingLevel = gameState.marketing + 1;
+        updateUI();
+    }
+}
+
+function buyMegaClipper() {
+    const cost = 1000 * Math.pow(1.15, gameState.megaClippers);
+
+    if (gameState.funds >= cost && gameState.completedProjects.includes('megaClippers')) {
+        gameState.funds -= cost;
+        gameState.megaClippers++;
+        updateUI();
+    }
+}
+
+function buyProcessor() {
+    const cost = 50;
+
+    if (gameState.funds >= cost) {
+        gameState.funds -= cost;
+        gameState.processors++;
+        updateUI();
+    }
+}
+
+function completeProject(projectId) {
     const project = PROJECTS.find(p => p.id === projectId);
     if (!project) return;
 
     let canAfford = true;
     if (project.cost.funds && gameState.funds < project.cost.funds) canAfford = false;
+    if (project.cost.creativity && gameState.creativity < project.cost.creativity) canAfford = false;
     if (project.cost.operations && gameState.operations < project.cost.operations) canAfford = false;
 
     if (canAfford) {
         if (project.cost.funds) gameState.funds -= project.cost.funds;
+        if (project.cost.creativity) gameState.creativity -= project.cost.creativity;
         if (project.cost.operations) gameState.operations -= project.cost.operations;
 
         gameState.completedProjects.push(projectId);
+        gameState.availableProjects = gameState.availableProjects.filter(p => p !== projectId);
+
         project.effect();
-
-        updateDisplay();
-        renderProjects();
-
-        addLog(`Projet complété: ${project.name}`, 'success');
+        updateUI();
     }
 }
 
-// ===== BOUCLES DE JEU =====
+// ===== BOUCLES =====
 function gameLoop() {
-    autoProduction(100);
-    updateDisplay();
+    autoProduction();
+
+    // Génération d'opérations
+    if (gameState.processors > 0) {
+        gameState.operations += gameState.processors * 0.05;
+
+        // Créativité depuis opérations
+        if (gameState.completedProjects.includes('creativityUpgrade')) {
+            gameState.creativity += gameState.processors * 0.01;
+        }
+    }
+
+    updateUI();
 }
 
 function slowLoop() {
     gameState.tickCount++;
 
-    // Auto-sell toutes les secondes
+    // Vente automatique
     autoSell();
 
-    // Générer des opérations
-    if (gameState.processors > 0) {
-        gameState.operations += gameState.processors * 1;
+    // Fluctuation de la demande publique
+    const change = (Math.random() - 0.5) * 5;
+    gameState.publicDemand = Math.max(10, Math.min(100, gameState.publicDemand + change));
+
+    // Achat automatique de wire
+    if (gameState.completedProjects.includes('wireBuyer')) {
+        if (gameState.wire < 500 && gameState.funds >= 15) {
+            buyWire();
+        }
     }
 
-    // Vérifier les nouveaux upgrades/projets
-    if (gameState.tickCount % 5 === 0) {
-        checkUnlocks();
-    }
+    // Vérifier nouveaux projets
+    checkProjects();
 
-    // Mettre à jour l'interface des upgrades/projets toutes les secondes
-    renderUpgrades();
-    renderProjects();
-
-    // Sauvegarder toutes les 10 secondes
+    // Sauvegarde
     if (gameState.tickCount % 10 === 0) {
         saveGame();
     }
 
-    updateDisplay();
+    updateUI();
 }
 
-function checkUnlocks() {
-    // Vérifier les upgrades
-    for (const [key, upgrade] of Object.entries(UPGRADES)) {
-        if (!upgrade.unlocked && upgrade.requirement && upgrade.requirement()) {
-            upgrade.unlocked = true;
-            renderUpgrades();
-        }
-    }
-
-    // Vérifier les projets
-    let needsRender = false;
+function checkProjects() {
     PROJECTS.forEach(project => {
-        if (!gameState.unlockedProjects.includes(project.id) &&
-            !gameState.completedProjects.includes(project.id) &&
-            project.requirement()) {
-            gameState.unlockedProjects.push(project.id);
-            document.getElementById('projects-section').style.display = 'block';
-            needsRender = true;
+        if (!gameState.completedProjects.includes(project.id) &&
+            !gameState.availableProjects.includes(project.id) &&
+            project.trigger()) {
+            gameState.availableProjects.push(project.id);
         }
     });
-
-    if (needsRender) {
-        renderProjects();
-    }
 }
 
-// ===== AFFICHAGE =====
-function updateDisplay() {
-    elements.dnaCount.textContent = formatNumber(gameState.dna);
-    elements.sellPrice.textContent = '$' + gameState.sellPrice.toFixed(2);
-    elements.funds.textContent = '$' + formatNumber(gameState.funds);
-    elements.dnaSold.textContent = formatNumber(gameState.dnaSold);
-    elements.totalRevenue.textContent = '$' + formatNumber(gameState.totalRevenue);
-    elements.demand.textContent = Math.round(calculateDemand() * 100) + '%';
-    elements.productionRate.textContent = gameState.productionRate.toFixed(1);
-
-    if (elements.sequencerCount) {
-        elements.sequencerCount.textContent = gameState.autoSequencers;
-    }
-    if (elements.synthesizerCount) {
-        elements.synthesizerCount.textContent = gameState.autoSynthesizers;
-    }
-    if (elements.processorCount) {
-        elements.processorCount.textContent = gameState.processors;
-    }
-    if (elements.operations) {
-        elements.operations.textContent = formatNumber(gameState.operations);
-    }
-}
-
+// ===== UI =====
 function updateUI() {
-    updateDisplay();
+    // Stats principales
+    $('dna-count').textContent = formatNum(gameState.dna);
+    $('funds').textContent = '$' + formatNum(gameState.funds, 2);
+    $('wire').textContent = formatNum(gameState.wire);
+    $('dna-price').textContent = '$' + gameState.dnaPrice.toFixed(2);
+    $('unsold').textContent = formatNum(gameState.unsoldInventory);
+
+    // Demande
+    const demand = calculateDemand();
+    $('demand').textContent = Math.round(demand * 100) + '%';
+    $('public-demand').textContent = Math.round(gameState.publicDemand) + '%';
+
+    // Production
+    const prodRate = (gameState.autoClippers + gameState.megaClippers * 5);
+    $('production-rate').textContent = prodRate.toFixed(1) + '/sec';
+
+    // Counts
+    $('autoclipper-count').textContent = gameState.autoClippers;
+    $('megaclipper-count').textContent = gameState.megaClippers;
+    $('marketing-level').textContent = gameState.marketingLevel;
+
+    // Computational
+    $('processor-count').textContent = gameState.processors;
+    $('operations').textContent = formatNum(gameState.operations);
+    $('creativity').textContent = formatNum(gameState.creativity);
+
+    // Buttons
+    updateButtons();
+    renderProjects();
+
+    // Afficher sections
+    if (gameState.autoClippers > 0) {
+        $('automation-section').style.display = 'block';
+    }
+
+    if (gameState.processors > 0 || gameState.dnaSold > 2000) {
+        $('computation-section').style.display = 'block';
+    }
 }
 
-function renderUpgrades() {
-    elements.upgradesList.innerHTML = '';
+function updateButtons() {
+    // Wire
+    $('buy-wire').disabled = gameState.funds < 15;
+    $('buy-wire').textContent = gameState.funds >= 15 ? 'Acheter 1000 Wire ($15)' : 'Trop cher ($15)';
 
-    for (const [key, upgrade] of Object.entries(UPGRADES)) {
-        // Skip si pas encore débloqué
-        if (upgrade.unlocked === false && upgrade.requirement && !upgrade.requirement()) continue;
-        if (upgrade.bought) continue;
+    // AutoClipper
+    const clipperCost = 5 * Math.pow(1.1, gameState.autoClippers);
+    $('buy-autoclipper').disabled = gameState.funds < clipperCost;
+    $('buy-autoclipper').textContent = `Acheter AutoClipper ($${formatNum(clipperCost, 2)})`;
 
-        const cost = upgrade.baseCost ?
-            Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.count || 0)) :
-            upgrade.cost;
+    // Marketing
+    let marketingCost = 100 * Math.pow(1.5, gameState.marketing);
+    if (gameState.completedProjects.includes('optimizedMarketing')) {
+        marketingCost *= 0.75;
+    }
+    $('buy-marketing').disabled = gameState.funds < marketingCost;
+    $('buy-marketing').textContent = `Augmenter Marketing ($${formatNum(marketingCost, 2)})`;
 
-        const canAfford = gameState.funds >= cost;
+    // MegaClipper
+    if (gameState.completedProjects.includes('megaClippers')) {
+        $('megaclipper-section').style.display = 'block';
+        const megaCost = 1000 * Math.pow(1.15, gameState.megaClippers);
+        $('buy-megaclipper').disabled = gameState.funds < megaCost;
+        $('buy-megaclipper').textContent = `Acheter MegaClipper ($${formatNum(megaCost, 2)})`;
+        $('buy-megaclipper').onclick = buyMegaClipper;
+    }
 
-        const item = document.createElement('div');
-        item.className = 'upgrade-item';
-        item.innerHTML = `
-            <div class="upgrade-info">
-                <div class="upgrade-name">${upgrade.name}${upgrade.count !== undefined ? ` (${upgrade.count})` : ''}</div>
-                <div class="upgrade-desc">${upgrade.desc}</div>
-                <div class="upgrade-cost">Coût: $${formatNumber(cost)}</div>
-            </div>
-            <button class="buy-btn" ${!canAfford ? 'disabled' : ''}>Acheter</button>
-        `;
-
-        item.querySelector('.buy-btn').addEventListener('click', () => buyUpgrade(key));
-        elements.upgradesList.appendChild(item);
+    // Processor
+    if ($('buy-processor')) {
+        $('buy-processor').disabled = gameState.funds < 50;
+        $('buy-processor').textContent = gameState.funds >= 50 ? 'Acheter Processeur ($50)' : 'Trop cher ($50)';
+        $('buy-processor').onclick = buyProcessor;
     }
 }
 
 function renderProjects() {
-    elements.projectsList.innerHTML = '';
+    const container = $('projects-list');
+    if (!container) return;
 
-    PROJECTS.forEach(project => {
-        if (!gameState.unlockedProjects.includes(project.id)) return;
-        if (gameState.completedProjects.includes(project.id)) return;
+    container.innerHTML = '';
 
-        let canAfford = true;
+    if (gameState.availableProjects.length === 0) {
+        $('projects-section').style.display = 'none';
+        return;
+    }
+
+    $('projects-section').style.display = 'block';
+
+    gameState.availableProjects.forEach(projectId => {
+        const project = PROJECTS.find(p => p.id === projectId);
+        if (!project) return;
+
         let costText = '';
+        let canAfford = true;
 
         if (project.cost.funds) {
-            costText += `$${formatNumber(project.cost.funds)}`;
+            costText += `$${formatNum(project.cost.funds)}`;
             if (gameState.funds < project.cost.funds) canAfford = false;
+        }
+        if (project.cost.creativity) {
+            if (costText) costText += ' + ';
+            costText += `${formatNum(project.cost.creativity)} créativité`;
+            if (gameState.creativity < project.cost.creativity) canAfford = false;
         }
         if (project.cost.operations) {
             if (costText) costText += ' + ';
-            costText += `${formatNumber(project.cost.operations)} ops`;
+            costText += `${formatNum(project.cost.operations)} ops`;
             if (gameState.operations < project.cost.operations) canAfford = false;
         }
 
-        const item = document.createElement('div');
-        item.className = 'project-item';
-        item.innerHTML = `
+        const div = document.createElement('div');
+        div.className = 'project-item';
+        div.innerHTML = `
             <div class="project-info">
                 <div class="project-name">${project.name}</div>
                 <div class="project-desc">${project.desc}</div>
                 <div class="project-cost">Coût: ${costText}</div>
             </div>
-            <button class="buy-btn" ${!canAfford ? 'disabled' : ''}>Rechercher</button>
+            <button class="btn" ${!canAfford ? 'disabled' : ''}>Rechercher</button>
         `;
 
-        item.querySelector('.buy-btn').addEventListener('click', () => buyProject(project.id));
-        elements.projectsList.appendChild(item);
+        div.querySelector('.btn').onclick = () => completeProject(projectId);
+        container.appendChild(div);
     });
 }
 
 function addLog(message, type = 'info') {
+    const log = $('event-log');
     const entry = document.createElement('div');
     entry.className = `log-entry log-${type}`;
-    entry.textContent = `[Jour ${Math.floor(gameState.tickCount / 60)}] ${message}`;
+    entry.textContent = message;
 
-    elements.eventLog.insertBefore(entry, elements.eventLog.firstChild);
+    log.insertBefore(entry, log.firstChild);
 
-    // Garder max 20 entrées
-    while (elements.eventLog.children.length > 20) {
-        elements.eventLog.removeChild(elements.eventLog.lastChild);
+    while (log.children.length > 15) {
+        log.removeChild(log.lastChild);
     }
 }
 
-// ===== UTILITAIRES =====
-function formatNumber(num) {
-    if (num >= 1000000000) return (num / 1000000000).toFixed(2) + 'B';
-    if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(2) + 'K';
-    return Math.floor(num).toString();
-}
-
-function animateButton(btn) {
-    btn.classList.add('pulse');
-    setTimeout(() => btn.classList.remove('pulse'), 300);
+function formatNum(num, decimals = 0) {
+    if (num >= 1e9) return (num / 1e9).toFixed(decimals) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(decimals) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(decimals) + 'K';
+    return decimals > 0 ? num.toFixed(decimals) : Math.floor(num).toString();
 }
 
 // ===== SAUVEGARDE =====
@@ -487,19 +508,14 @@ function saveGame() {
 function loadGame() {
     const saved = localStorage.getItem('dnaFactorySave');
     if (saved) {
-        const loadedState = JSON.parse(saved);
-        Object.assign(gameState, loadedState);
-
-        // Recalculer les valeurs dérivées
-        updateProductionRate();
-
+        Object.assign(gameState, JSON.parse(saved));
         return true;
     }
     return false;
 }
 
 function resetGame() {
-    if (confirm('Voulez-vous vraiment réinitialiser votre partie ?')) {
+    if (confirm('Réinitialiser la partie ?')) {
         localStorage.removeItem('dnaFactorySave');
         location.reload();
     }
@@ -507,6 +523,4 @@ function resetGame() {
 
 // ===== DÉMARRAGE =====
 window.addEventListener('load', init);
-
-// Sauvegarder avant de quitter
 window.addEventListener('beforeunload', saveGame);
