@@ -484,6 +484,11 @@ let gameState = {
 function initGame() {
     // Charger la sauvegarde si elle existe
     if (loadGame()) {
+        // Vérifier si il y a des missions, sinon en générer
+        if (!gameState.missions.available || gameState.missions.available.length === 0) {
+            generateMissions();
+            addLog('📜 Missions disponibles générées !');
+        }
         updateUI();
         addLog('🎮 Partie chargée avec succès !');
         return;
@@ -564,10 +569,17 @@ function endDay() {
 
 function generateMissions() {
     // Filtrer missions selon réputation
+    // Les missions de difficulté 1 sont toujours disponibles
     const availableTemplates = MISSION_TEMPLATES.filter(t => {
-        const repRequirement = t.difficulty * 10;
+        const repRequirement = Math.max(0, (t.difficulty - 1) * 15); // Diff 1 = 0 rep, Diff 2 = 15 rep, etc.
         return gameState.reputation >= repRequirement;
     });
+
+    // S'assurer qu'il y a au moins quelques missions
+    if (availableTemplates.length === 0) {
+        // Forcer au moins les missions de difficulté 1
+        availableTemplates.push(...MISSION_TEMPLATES.filter(t => t.difficulty === 1));
+    }
 
     // Générer 3-5 missions
     const count = Math.floor(Math.random() * 3) + 3;
