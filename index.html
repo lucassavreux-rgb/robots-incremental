@@ -3,128 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guild Manager - Gestion de Guilde d'Aventuriers</title>
+    <title>DNA Factory</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- En-tête avec statistiques -->
-    <header class="header">
-        <div class="guild-info">
-            <h1>⚔️ Guild Manager</h1>
-            <div class="guild-name" id="guild-name">Ma Guilde</div>
-        </div>
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-label">Jour</span>
-                <span class="stat-value" id="current-day">1</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">💰 Or</span>
-                <span class="stat-value" id="gold">1000</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">⭐ Réputation</span>
-                <span class="stat-value" id="reputation">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">👥 Héros</span>
-                <span class="stat-value"><span id="hero-count">3</span> / <span id="hero-max">10</span></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Rang</span>
-                <span class="stat-value" id="guild-rank">Novice</span>
-            </div>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <h1>🧬 DNA FACTORY</h1>
+        </header>
 
-    <!-- Navigation par onglets -->
-    <nav class="tabs">
-        <button class="tab-btn active" data-tab="heroes">👥 Héros</button>
-        <button class="tab-btn" data-tab="missions">📜 Missions</button>
-        <button class="tab-btn" data-tab="guild">🏰 Guilde</button>
-        <button class="tab-btn" data-tab="shop">🛒 Boutique</button>
-    </nav>
-
-    <!-- Zone principale avec les différents onglets -->
-    <main class="main-content">
-        <!-- Onglet Héros -->
-        <section id="tab-heroes" class="tab-content active">
-            <h2>Vos Héros</h2>
-            <div class="heroes-grid" id="heroes-list">
-                <!-- Les héros seront générés dynamiquement -->
-            </div>
-            <button class="btn btn-primary" onclick="recruitHero()">🎲 Recruter un nouveau héros</button>
-        </section>
-
-        <!-- Onglet Missions -->
-        <section id="tab-missions" class="tab-content">
-            <h2>Missions Disponibles</h2>
-            <div class="missions-section">
-                <div class="missions-available">
-                    <h3>📋 À faire</h3>
-                    <div id="missions-available" class="missions-list">
-                        <!-- Missions disponibles -->
-                    </div>
+        <main>
+            <!-- Section principale de production -->
+            <section id="production-section">
+                <div class="stat-box">
+                    <h2>Brins d'ADN</h2>
+                    <div class="big-number" id="dna-count">0</div>
                 </div>
-                <div class="missions-ongoing">
-                    <h3>⏳ En cours</h3>
-                    <div id="missions-ongoing" class="missions-list">
-                        <!-- Missions en cours -->
-                    </div>
+
+                <button id="make-dna" class="big-button">Créer un brin d'ADN</button>
+
+                <div class="stats">
+                    <div class="stat">Prix de vente: <span id="sell-price">$0.05</span></div>
+                    <div class="stat">Fonds disponibles: <span id="funds">$0.00</span></div>
+                    <div class="stat">Brins vendus: <span id="dna-sold">0</span></div>
+                    <div class="stat">Revenu total: <span id="total-revenue">$0.00</span></div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Onglet Guilde -->
-        <section id="tab-guild" class="tab-content">
-            <h2>Améliorations de la Guilde</h2>
-            <div class="upgrades-grid" id="upgrades-list">
-                <!-- Améliorations de la guilde -->
-            </div>
-        </section>
+                <div class="controls">
+                    <button id="lower-price" class="control-btn">↓ Prix</button>
+                    <button id="raise-price" class="control-btn">↑ Prix</button>
+                    <button id="sell-dna" class="control-btn">Vendre ADN</button>
+                </div>
 
-        <!-- Onglet Boutique -->
-        <section id="tab-shop" class="tab-content">
-            <h2>Boutique d'Équipements</h2>
-            <div class="shop-grid" id="shop-list">
-                <!-- Équipements à acheter -->
-            </div>
-        </section>
-    </main>
+                <div class="info">
+                    <div>Demande du marché: <span id="demand">50%</span></div>
+                    <div>Production/sec: <span id="production-rate">0</span></div>
+                </div>
+            </section>
 
-    <!-- Journal des événements -->
-    <footer class="log-section">
-        <div class="log-header">
-            <h3>📰 Journal</h3>
-            <button class="btn btn-primary btn-end-day" onclick="endDay()">🌙 Fin de journée</button>
-        </div>
-        <div id="event-log" class="event-log">
-            <p class="log-entry">Jour 1 : Bienvenue dans votre nouvelle guilde d'aventuriers !</p>
-        </div>
-    </footer>
+            <!-- Section des améliorations -->
+            <section id="upgrades-section">
+                <h2>🔬 Améliorations</h2>
+                <div id="upgrades-list"></div>
+            </section>
 
-    <!-- Modal de détail de héros -->
-    <div id="hero-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeHeroModal()">&times;</span>
-            <div id="hero-detail">
-                <!-- Détail du héros -->
-            </div>
-        </div>
+            <!-- Section des projets -->
+            <section id="projects-section" style="display: none;">
+                <h2>🧪 Projets de Recherche</h2>
+                <div id="projects-list"></div>
+            </section>
+
+            <!-- Section automation (phase 2) -->
+            <section id="automation-section" style="display: none;">
+                <h2>🤖 Automatisation</h2>
+                <div class="stats">
+                    <div class="stat">Séquenceurs: <span id="sequencer-count">0</span></div>
+                    <div class="stat">Synthétiseurs: <span id="synthesizer-count">0</span></div>
+                </div>
+                <div id="automation-controls"></div>
+            </section>
+
+            <!-- Section computational -->
+            <section id="computation-section" style="display: none;">
+                <h2>💻 Calcul</h2>
+                <div class="stats">
+                    <div class="stat">Processeurs: <span id="processor-count">0</span></div>
+                    <div class="stat">Mémoire: <span id="memory-count">0</span></div>
+                    <div class="stat">Opérations: <span id="operations">0</span></div>
+                </div>
+                <div id="computation-controls"></div>
+            </section>
+
+            <!-- Log d'événements -->
+            <section id="log-section">
+                <h3>📋 Journal</h3>
+                <div id="event-log"></div>
+            </section>
+        </main>
     </div>
-
-    <!-- Modal d'assignation de mission -->
-    <div id="mission-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeMissionModal()">&times;</span>
-            <div id="mission-detail">
-                <!-- Détail de la mission et assignation des héros -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Bouton Reset -->
-    <button class="btn-reset" onclick="resetGame()">🔄 Nouvelle Partie</button>
 
     <script src="script.js"></script>
 </body>
