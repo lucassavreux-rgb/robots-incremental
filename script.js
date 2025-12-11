@@ -581,8 +581,8 @@ function generateMissions() {
         availableTemplates.push(...MISSION_TEMPLATES.filter(t => t.difficulty === 1));
     }
 
-    // Générer 3-5 missions
-    const count = Math.floor(Math.random() * 3) + 3;
+    // Générer 5-8 missions (plus de choix !)
+    const count = Math.floor(Math.random() * 4) + 5;
     gameState.missions.available = [];
 
     for (let i = 0; i < count && i < availableTemplates.length; i++) {
@@ -832,11 +832,15 @@ function createMissionCard(mission) {
             <div class="mission-name">${mission.name}</div>
             <div class="mission-difficulty diff-${mission.difficulty}">${diffNames[mission.difficulty - 1] || 'Normal'}</div>
         </div>
+        <div style="background: rgba(255,215,0,0.15); padding: 10px; border-radius: 6px; margin: 10px 0; text-align: center;">
+            <div style="color: var(--accent); font-weight: bold; font-size: 1.1rem;">
+                ⏱️ ${mission.status === 'ongoing' ? `${mission.daysRemaining}/${mission.duration}` : mission.duration} jours
+            </div>
+        </div>
         <div class="mission-info">
             ${mission.description}<br>
-            <strong>Durée:</strong> ${mission.status === 'ongoing' ? `${mission.daysRemaining}/${mission.duration}` : mission.duration} jours<br>
             <strong>Niveau min:</strong> ${mission.minLevel}<br>
-            ${mission.status === 'ongoing' ? `<strong>Héros assignés:</strong> ${mission.assignedHeroes.length}` : ''}
+            ${mission.status === 'ongoing' ? `<strong>👥 Héros assignés:</strong> ${mission.assignedHeroes.length}` : ''}
         </div>
         <div class="mission-rewards">
             <div class="reward">💰 ${mission.rewards.gold} or</div>
@@ -1047,33 +1051,39 @@ function showMissionDetail(missionId) {
     detail.innerHTML = `
         <h2>${mission.name}</h2>
         <p>${mission.description}</p>
-        <div style="margin: 20px 0;">
-            <strong>Difficulté:</strong> ${mission.difficulty}/5<br>
-            <strong>Durée:</strong> ${mission.duration} jours<br>
-            <strong>Niveau min recommandé:</strong> ${mission.minLevel}<br>
-            <strong>Classes recommandées:</strong> ${mission.recommendedClasses.join(', ') || 'Aucune'}<br>
+        <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+            <strong>⏱️ Durée:</strong> <span style="color: var(--accent); font-size: 1.2rem; font-weight: bold;">${mission.duration} jours</span><br>
+            <strong>📊 Difficulté:</strong> ${'⭐'.repeat(mission.difficulty)} (${mission.difficulty}/5)<br>
+            <strong>📈 Niveau min recommandé:</strong> ${mission.minLevel}<br>
+            <strong>🎯 Classes recommandées:</strong> ${mission.recommendedClasses.join(', ') || 'Aucune'}<br>
         </div>
         <div style="margin: 20px 0; padding: 15px; background: rgba(46, 204, 113, 0.2); border-radius: 8px;">
-            <h3>Récompenses</h3>
-            <div>💰 ${mission.rewards.gold} or</div>
-            <div>⭐ +${mission.rewards.reputation} réputation</div>
-            <div>📈 ${mission.rewards.xp} XP par héros</div>
+            <h3>💎 Récompenses</h3>
+            <div style="font-size: 1.1rem;">💰 ${mission.rewards.gold} or</div>
+            <div style="font-size: 1.1rem;">⭐ +${mission.rewards.reputation} réputation</div>
+            <div style="font-size: 1.1rem;">📈 ${mission.rewards.xp} XP par héros</div>
         </div>
-        <h3>Assigner des héros</h3>
+        <h3>👥 Assigner des héros</h3>
+        <p style="color: var(--accent); font-weight: bold; margin-bottom: 10px;">
+            ✅ Vous pouvez sélectionner PLUSIEURS héros pour cette mission !<br>
+            Plus de héros = plus de chances de succès
+        </p>
         <div id="hero-selection">
             ${availableHeroes.map(hero => `
-                <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="margin: 10px 0; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 2px solid transparent;" class="hero-select-item">
                     <div>
-                        <strong>${hero.name}</strong> - ${hero.class} Niv. ${hero.level}
-                        ${mission.recommendedClasses.includes(hero.class) ? '<span style="color: var(--success);"> ✓ Recommandé</span>' : ''}
+                        <strong style="font-size: 1.1rem;">${hero.name}</strong> - <span class="hero-class class-${hero.class}">${hero.class}</span> Niv. ${hero.level}
+                        ${mission.recommendedClasses.includes(hero.class) ? '<span style="color: var(--success); font-weight: bold;"> ✓ RECOMMANDÉ</span>' : ''}
+                        <br>
+                        <span style="font-size: 0.9rem; color: var(--text-secondary);">⚔️ ${hero.getTotalStats().attack} | 🛡️ ${hero.getTotalStats().defense} | ⚡ ${hero.getTotalStats().speed}</span>
                     </div>
-                    <input type="checkbox" id="hero-${hero.id}" style="width: 20px; height: 20px;">
+                    <input type="checkbox" id="hero-${hero.id}" style="width: 24px; height: 24px; cursor: pointer;">
                 </div>
             `).join('')}
         </div>
         ${availableHeroes.length === 0 ? '<p style="color: var(--warning);">Aucun héros disponible !</p>' : ''}
-        <button class="btn btn-primary" onclick="startMission(${mission.id})" style="margin-top: 20px;" ${availableHeroes.length === 0 ? 'disabled' : ''}>
-            Lancer la mission
+        <button class="btn btn-primary" onclick="startMission(${mission.id})" style="margin-top: 20px; font-size: 1.1rem; padding: 15px 30px;" ${availableHeroes.length === 0 ? 'disabled' : ''}>
+            🚀 Lancer la mission avec les héros sélectionnés
         </button>
     `;
 
