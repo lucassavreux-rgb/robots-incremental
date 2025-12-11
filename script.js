@@ -493,11 +493,9 @@ let gameState = {
 function initGame() {
     // Charger la sauvegarde si elle existe
     if (loadGame()) {
-        // Vérifier si il y a des missions, sinon en générer
-        if (!gameState.missions.available || gameState.missions.available.length === 0) {
-            generateMissions();
-            addLog('📜 Missions disponibles générées !');
-        }
+        // TOUJOURS régénérer les missions au chargement pour voir les nouvelles missions
+        generateMissions();
+        addLog('📜 Nouvelles missions générées !');
         updateUI();
         addLog('🎮 Partie chargée avec succès !');
         return;
