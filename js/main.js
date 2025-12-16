@@ -8,6 +8,7 @@ let accumulator = 0;
  */
 function init() {
     console.log('🔥 Forge Empire - Initialisation...');
+    alert('🔥 Initialisation du jeu...');
 
     // Debug: Vérifier que tous les modules sont chargés
     const modules = {
@@ -28,10 +29,11 @@ function init() {
         console.error('❌ ERREUR: Certains modules ne sont pas chargés!');
         const missing = Object.entries(modules).filter(([k, v]) => !v).map(([k]) => k);
         console.error('Modules manquants:', missing);
-        alert('ERREUR: Le jeu n\'a pas pu charger correctement. Modules manquants: ' + missing.join(', '));
+        alert('❌ ERREUR: Modules manquants: ' + missing.join(', '));
         return;
     }
     console.log('✅ Tous les modules sont chargés');
+    alert('✅ Modules chargés OK');
 
     // Charger sauvegarde
     const loaded = window.ForgeState.loadGame();
@@ -45,6 +47,7 @@ function init() {
     console.log('Initialisation de l\'UI...');
     window.ForgeUI.initUI();
     console.log('UI initialisée');
+    alert('✅ UI initialisée');
 
     // Appliquer le thème
     const state = window.ForgeState.getState();
@@ -54,6 +57,7 @@ function init() {
     gameLoop();
 
     console.log('✅ Forge Empire - Prêt !');
+    alert('✅ Jeu prêt ! Clique sur le bouton ⚡');
 }
 
 /**

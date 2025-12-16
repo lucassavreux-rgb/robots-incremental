@@ -28,18 +28,22 @@ function initUI() {
     if (clickBtn) {
         clickBtn.addEventListener('click', () => {
             console.log('👆 Clic sur bouton énergie');
+            alert('👆 CLIC DÉTECTÉ!');
             try {
                 window.ForgeGenerators.doClick();
                 const state = window.ForgeState.getState();
                 console.log('✅ Énergie après clic:', state.energy);
+                alert('✅ Énergie: ' + state.energy);
                 animateClick();
             } catch (e) {
                 console.error('❌ ERREUR lors du clic:', e);
+                alert('❌ ERREUR: ' + e.message);
             }
         });
         console.log('✅ Event listener attaché au bouton clic');
     } else {
         console.error('❌ Bouton clic non trouvé! Vérifiez l\'ID #click-btn');
+        alert('❌ Bouton clic non trouvé!');
     }
 
     // Buy mode buttons
@@ -80,6 +84,7 @@ function initUI() {
  */
 function switchTab(tab) {
     console.log('🔄 Changement onglet vers:', tab);
+    alert('🔄 Changement vers: ' + tab);
     currentTab = tab;
 
     // Update buttons
