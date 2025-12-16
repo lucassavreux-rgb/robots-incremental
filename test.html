@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST - Forge Empire</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #0a0e27;
+            color: #e0e6ed;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #1e2439;
+            border: 2px solid #2a3048;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #log {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Forge Empire</h1>
+
+    <div class="test-section">
+        <h2>Logs</h2>
+        <div id="log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Bouton Clic</h2>
+        <button id="test-click-btn">⚡ CLIQUE ICI</button>
+        <p>Énergie: <span id="test-energy">0</span></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Onglets</h2>
+        <button class="test-tab-btn" data-tab="a">Onglet A</button>
+        <button class="test-tab-btn" data-tab="b">Onglet B</button>
+        <button class="test-tab-btn" data-tab="c">Onglet C</button>
+        <div id="current-tab">Aucun onglet sélectionné</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/numbers.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/generators.js"></script>
+    <script src="js/upgrades.js"></script>
+    <script src="js/prestige.js"></script>
+    <script src="js/talents.js"></script>
+    <script src="js/utils.js"></script>
+
+    <script>
+        const logEl = document.getElementById('log');
+        function log(msg) {
+            console.log(msg);
+            logEl.innerHTML += msg + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        // Test de chargement des modules
+        log('🔥 Démarrage des tests...');
+        log('');
+        log('📦 Vérification des modules:');
+        log('- ForgeNumbers: ' + (window.ForgeNumbers ? '✅' : '❌'));
+        log('- ForgeState: ' + (window.ForgeState ? '✅' : '❌'));
+        log('- ForgeGenerators: ' + (window.ForgeGenerators ? '✅' : '❌'));
+        log('- ForgeUpgrades: ' + (window.ForgeUpgrades ? '✅' : '❌'));
+        log('- ForgePrestige: ' + (window.ForgePrestige ? '✅' : '❌'));
+        log('- ForgeTalents: ' + (window.ForgeTalents ? '✅' : '❌'));
+        log('- ForgeUtils: ' + (window.ForgeUtils ? '✅' : '❌'));
+        log('');
+
+        // Test bouton clic
+        const testClickBtn = document.getElementById('test-click-btn');
+        const testEnergyEl = document.getElementById('test-energy');
+
+        testClickBtn.addEventListener('click', () => {
+            log('👆 CLIC détecté!');
+            try {
+                window.ForgeGenerators.doClick();
+                const state = window.ForgeState.getState();
+                testEnergyEl.textContent = window.ForgeNumbers.formatNumber(state.energy);
+                log('✅ Énergie mise à jour: ' + state.energy);
+            } catch (e) {
+                log('❌ ERREUR: ' + e.message);
+                console.error(e);
+            }
+        });
+        log('✅ Event listener sur bouton test installé');
+        log('');
+
+        // Test onglets
+        const testTabBtns = document.querySelectorAll('.test-tab-btn');
+        const currentTabEl = document.getElementById('current-tab');
+
+        testTabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                log('📂 Changement vers onglet: ' + tab);
+                currentTabEl.textContent = 'Onglet actif: ' + tab;
+
+                testTabBtns.forEach(b => {
+                    b.style.backgroundColor = b === btn ? '#00d4ff' : '';
+                    b.style.color = b === btn ? 'white' : '';
+                });
+            });
+        });
+        log('✅ Event listeners sur onglets installés');
+        log('');
+        log('🎮 Tests prêts! Clique sur les boutons pour tester.');
+    </script>
+</body>
+</html>

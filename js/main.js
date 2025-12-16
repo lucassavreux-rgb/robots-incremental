@@ -10,7 +10,7 @@ function init() {
     console.log('🔥 Forge Empire - Initialisation...');
 
     // Debug: Vérifier que tous les modules sont chargés
-    console.log('Modules chargés:', {
+    const modules = {
         ForgeNumbers: !!window.ForgeNumbers,
         ForgeState: !!window.ForgeState,
         ForgeGenerators: !!window.ForgeGenerators,
@@ -19,7 +19,19 @@ function init() {
         ForgeTalents: !!window.ForgeTalents,
         ForgeUtils: !!window.ForgeUtils,
         ForgeUI: !!window.ForgeUI
-    });
+    };
+    console.log('📦 Modules chargés:', modules);
+
+    // Vérifier si tous les modules sont chargés
+    const allLoaded = Object.values(modules).every(v => v === true);
+    if (!allLoaded) {
+        console.error('❌ ERREUR: Certains modules ne sont pas chargés!');
+        const missing = Object.entries(modules).filter(([k, v]) => !v).map(([k]) => k);
+        console.error('Modules manquants:', missing);
+        alert('ERREUR: Le jeu n\'a pas pu charger correctement. Modules manquants: ' + missing.join(', '));
+        return;
+    }
+    console.log('✅ Tous les modules sont chargés');
 
     // Charger sauvegarde
     const loaded = window.ForgeState.loadGame();

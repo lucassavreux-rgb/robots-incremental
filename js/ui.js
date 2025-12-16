@@ -27,12 +27,19 @@ function initUI() {
     console.log('Bouton clic trouvé:', !!clickBtn);
     if (clickBtn) {
         clickBtn.addEventListener('click', () => {
-            console.log('Clic sur bouton énergie');
-            window.ForgeGenerators.doClick();
-            animateClick();
+            console.log('👆 Clic sur bouton énergie');
+            try {
+                window.ForgeGenerators.doClick();
+                const state = window.ForgeState.getState();
+                console.log('✅ Énergie après clic:', state.energy);
+                animateClick();
+            } catch (e) {
+                console.error('❌ ERREUR lors du clic:', e);
+            }
         });
+        console.log('✅ Event listener attaché au bouton clic');
     } else {
-        console.error('❌ Bouton clic non trouvé!');
+        console.error('❌ Bouton clic non trouvé! Vérifiez l\'ID #click-btn');
     }
 
     // Buy mode buttons
