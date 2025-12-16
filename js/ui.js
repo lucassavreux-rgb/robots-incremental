@@ -10,22 +10,42 @@ function $$(sel) { return document.querySelectorAll(sel); }
  * Initialise l'interface
  */
 function initUI() {
+    console.log('🎨 Initialisation UI...');
+
     // Event listeners onglets
-    $$('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    const tabBtns = $$('.tab-btn');
+    console.log('Onglets trouvés:', tabBtns.length);
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            console.log('Clic sur onglet:', btn.dataset.tab);
+            switchTab(btn.dataset.tab);
+        });
     });
 
     // Bouton clic manuel
     const clickBtn = $('#click-btn');
+    console.log('Bouton clic trouvé:', !!clickBtn);
     if (clickBtn) {
         clickBtn.addEventListener('click', () => {
-            window.ForgeGenerators.doClick();
-            animateClick();
+            console.log('👆 Clic sur bouton énergie');
+            try {
+                window.ForgeGenerators.doClick();
+                const state = window.ForgeState.getState();
+                console.log('✅ Énergie après clic:', state.energy);
+                animateClick();
+            } catch (e) {
+                console.error('❌ ERREUR lors du clic:', e);
+            }
         });
+        console.log('✅ Event listener attaché au bouton clic');
+    } else {
+        console.error('❌ Bouton clic non trouvé! Vérifiez l\'ID #click-btn');
     }
 
     // Buy mode buttons
-    $$('.buy-mode-btn').forEach(btn => {
+    const buyBtns = $$('.buy-mode-btn');
+    console.log('Boutons buy mode trouvés:', buyBtns.length);
+    buyBtns.forEach(btn => {
         btn.addEventListener('click', () => setBuyMode(btn.dataset.mode));
     });
 
@@ -46,8 +66,12 @@ function initUI() {
     if (resetBtn) resetBtn.addEventListener('click', resetGame);
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
+    console.log('✅ Event listeners attachés');
+
     // Initial render
+    console.log('🎨 Premier rendu...');
     render();
+    console.log('✅ UI initialisée');
 }
 
 /**
@@ -55,16 +79,25 @@ function initUI() {
  * @param {string} tab
  */
 function switchTab(tab) {
+    console.log('🔄 Changement onglet vers:', tab);
     currentTab = tab;
 
     // Update buttons
-    $$('.tab-btn').forEach(btn => {
+    const tabBtns = $$('.tab-btn');
+    console.log('Boutons onglets à mettre à jour:', tabBtns.length);
+    tabBtns.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tab);
     });
 
     // Update content
-    $$('.tab-content').forEach(content => {
-        content.classList.toggle('active', content.id === `tab-${tab}`);
+    const tabContents = $$('.tab-content');
+    console.log('Contenus onglets à mettre à jour:', tabContents.length);
+    tabContents.forEach(content => {
+        const isActive = content.id === `tab-${tab}`;
+        content.classList.toggle('active', isActive);
+        if (isActive) {
+            console.log('Onglet actif:', content.id);
+        }
     });
 
     render();
@@ -95,10 +128,12 @@ function render() {
         renderUpgrades();
     } else if (currentTab === 'prestige') {
         renderPrestige();
-    } else if (currentTab === 'talents') {
-        renderTalents();
     } else if (currentTab === 'stats') {
         renderStats();
+    } else if (currentTab === 'talents') {
+        renderTalents();
+    } else if (currentTab === 'options') {
+        // Options tab n'a pas besoin de render spécial
     }
 
     updateBuyModes();
