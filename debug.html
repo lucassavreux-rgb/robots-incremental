@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DEBUG - Forge Empire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #0a0e27;
+            color: white;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            background: #00d4ff;
+            border: none;
+            color: white;
+            border-radius: 8px;
+        }
+        button:hover {
+            background: #00a8cc;
+        }
+        .tab-btn.active {
+            background: #ff6b00;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #1e2439;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        #console-log {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            margin-top: 20px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            border: 2px solid #0f0;
+        }
+        h1 {
+            color: #00d4ff;
+        }
+        h2 {
+            color: #ff6b00;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 DEBUG - Forge Empire</h1>
+    <p>Cette page teste si les événements JavaScript fonctionnent</p>
+
+    <div id="console-log"></div>
+
+    <h2>Test 1: Bouton Simple</h2>
+    <button onclick="log('✅ onclick direct fonctionne!'); alert('onclick direct OK!')">
+        Test onclick direct
+    </button>
+
+    <h2>Test 2: Bouton avec addEventListener</h2>
+    <button id="test-btn">Test addEventListener</button>
+
+    <h2>Test 3: Onglets</h2>
+    <div>
+        <button class="tab-btn active" data-tab="tab1">Onglet 1</button>
+        <button class="tab-btn" data-tab="tab2">Onglet 2</button>
+        <button class="tab-btn" data-tab="tab3">Onglet 3</button>
+    </div>
+
+    <div id="tab-tab1" class="tab-content active">
+        <h3>Contenu Onglet 1</h3>
+        <p>Ceci est l'onglet 1</p>
+    </div>
+    <div id="tab-tab2" class="tab-content">
+        <h3>Contenu Onglet 2</h3>
+        <p>Ceci est l'onglet 2</p>
+    </div>
+    <div id="tab-tab3" class="tab-content">
+        <h3>Contenu Onglet 3</h3>
+        <p>Ceci est l'onglet 3</p>
+    </div>
+
+    <script>
+        const consoleLog = document.getElementById('console-log');
+
+        function log(msg) {
+            console.log(msg);
+            consoleLog.innerHTML += msg + '\n';
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        log('🔥 Page chargée');
+        log('');
+
+        // Test 2: addEventListener
+        const testBtn = document.getElementById('test-btn');
+        if (testBtn) {
+            log('✅ Bouton test trouvé');
+            testBtn.addEventListener('click', function() {
+                log('✅ addEventListener fonctionne!');
+                alert('addEventListener OK!');
+            });
+            log('✅ Event listener attaché');
+        } else {
+            log('❌ Bouton test non trouvé!');
+        }
+        log('');
+
+        // Test 3: Onglets
+        log('=== Test des onglets ===');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        log('Boutons trouvés: ' + tabBtns.length);
+
+        tabBtns.forEach(function(btn, index) {
+            log('- Bouton ' + index + ': tab=' + btn.dataset.tab);
+            btn.addEventListener('click', function() {
+                const tab = btn.dataset.tab;
+                log('👆 CLIC sur onglet: ' + tab);
+
+                // Mettre à jour les boutons
+                tabBtns.forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+
+                // Mettre à jour les contenus
+                const tabContents = document.querySelectorAll('.tab-content');
+                log('Contenus trouvés: ' + tabContents.length);
+
+                tabContents.forEach(function(content) {
+                    content.classList.remove('active');
+                    if (content.id === 'tab-' + tab) {
+                        content.classList.add('active');
+                        log('✅ Onglet activé: ' + content.id);
+                    }
+                });
+            });
+        });
+        log('✅ Tous les event listeners d\'onglets attachés');
+        log('');
+        log('🎮 Tests prêts! Essaye de cliquer sur les boutons.');
+    </script>
+</body>
+</html>

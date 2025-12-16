@@ -28,7 +28,7 @@ function init() {
         console.error('❌ ERREUR: Certains modules ne sont pas chargés!');
         const missing = Object.entries(modules).filter(([k, v]) => !v).map(([k]) => k);
         console.error('Modules manquants:', missing);
-        alert('ERREUR: Le jeu n\'a pas pu charger correctement. Modules manquants: ' + missing.join(', '));
+        alert('❌ ERREUR: Modules manquants: ' + missing.join(', '));
         return;
     }
     console.log('✅ Tous les modules sont chargés');
