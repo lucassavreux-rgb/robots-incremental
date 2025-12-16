@@ -3,85 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DNA Factory</title>
+    <title>⚡ Forge Empire</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🧬 DNA FACTORY</h1>
-        </header>
+<body class="theme-dark">
+    <!-- Event Banner -->
+    <div id="event-banner" class="event-banner" style="display: none;"></div>
 
-        <main>
-            <!-- Section principale de production -->
-            <section id="production-section">
-                <div class="stat-box">
-                    <h2>Brins d'ADN</h2>
-                    <div class="big-number" id="dna-count">0</div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>⚡ FORGE EMPIRE</h1>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Énergie:</span>
+                    <span class="stat-value" id="energy-display">0</span>
                 </div>
-
-                <button id="make-dna" class="big-button">Créer un brin d'ADN</button>
-
-                <div class="stats">
-                    <div class="stat">Prix de vente: <span id="sell-price">$0.05</span></div>
-                    <div class="stat">Fonds disponibles: <span id="funds">$0.00</span></div>
-                    <div class="stat">Brins vendus: <span id="dna-sold">0</span></div>
-                    <div class="stat">Revenu total: <span id="total-revenue">$0.00</span></div>
+                <div class="stat-item">
+                    <span class="stat-label">E/s:</span>
+                    <span class="stat-value" id="energy-per-sec">0/s</span>
                 </div>
-
-                <div class="controls">
-                    <button id="lower-price" class="control-btn">↓ Prix</button>
-                    <button id="raise-price" class="control-btn">↑ Prix</button>
-                    <button id="sell-dna" class="control-btn">Vendre ADN</button>
+                <div class="stat-item prestige">
+                    <span class="stat-label">⚛️ Noyaux:</span>
+                    <span class="stat-value" id="nuclei-display">0</span>
                 </div>
+                <div class="stat-item prestige">
+                    <span class="stat-label">💎 Fragments:</span>
+                    <span class="stat-value" id="fragments-display">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
 
-                <div class="info">
-                    <div>Demande du marché: <span id="demand">50%</span></div>
-                    <div>Production/sec: <span id="production-rate">0</span></div>
+    <!-- Navigation -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="production">Production</button>
+        <button class="tab-btn" data-tab="upgrades">Upgrades</button>
+        <button class="tab-btn" data-tab="prestige">Prestige</button>
+        <button class="tab-btn" data-tab="talents">Talents</button>
+        <button class="tab-btn" data-tab="stats">Stats</button>
+        <button class="tab-btn" data-tab="options">Options</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Production Tab -->
+        <div id="tab-production" class="tab-content active">
+            <!-- Click Section -->
+            <section class="click-section">
+                <button id="click-btn" class="click-btn">
+                    <span class="click-icon">⚡</span>
+                    <span class="click-text">Générer de l'Énergie</span>
+                </button>
+                <div class="click-info">
+                    <span>Par clic: <strong id="click-value">1</strong> E</span>
                 </div>
             </section>
 
-            <!-- Section des améliorations -->
-            <section id="upgrades-section">
-                <h2>🔬 Améliorations</h2>
-                <div id="upgrades-list"></div>
+            <!-- Buy Modes -->
+            <section class="buy-modes">
+                <span>Mode d'achat:</span>
+                <button class="buy-mode-btn active" data-mode="1">x1</button>
+                <button class="buy-mode-btn" data-mode="10" style="display: none;">x10</button>
+                <button class="buy-mode-btn" data-mode="25" style="display: none;">x25</button>
+                <button class="buy-mode-btn" data-mode="100" style="display: none;">x100</button>
+                <button class="buy-mode-btn" data-mode="max" style="display: none;">MAX</button>
             </section>
 
-            <!-- Section des projets -->
-            <section id="projects-section" style="display: none;">
-                <h2>🧪 Projets de Recherche</h2>
-                <div id="projects-list"></div>
+            <!-- Generators List -->
+            <section class="generators-section">
+                <h2>🏭 Générateurs</h2>
+                <div id="generators-list" class="generators-list"></div>
             </section>
+        </div>
 
-            <!-- Section automation (phase 2) -->
-            <section id="automation-section" style="display: none;">
-                <h2>🤖 Automatisation</h2>
-                <div class="stats">
-                    <div class="stat">Séquenceurs: <span id="sequencer-count">0</span></div>
-                    <div class="stat">Synthétiseurs: <span id="synthesizer-count">0</span></div>
+        <!-- Upgrades Tab -->
+        <div id="tab-upgrades" class="tab-content">
+            <h2>🔬 Améliorations</h2>
+            <div id="upgrades-list" class="upgrades-list"></div>
+        </div>
+
+        <!-- Prestige Tab -->
+        <div id="tab-prestige" class="tab-content">
+            <h2>✨ Prestige</h2>
+
+            <section class="prestige-section">
+                <h3>⚛️ Prestige 1 : Noyaux</h3>
+                <p class="prestige-desc">
+                    Réinitialise l'Énergie, les générateurs et les upgrades standards.<br>
+                    Conserve les Noyaux, Fragments, et upgrades QoL.
+                </p>
+                <div class="prestige-stats">
+                    <div>Gain estimé: <strong id="nuclei-gain">0</strong> Noyaux</div>
+                    <div>Multiplicateur actuel: <strong id="prestige1-mult">x1.00</strong></div>
+                    <div>Effet: +5% production par Noyau + bonus clic</div>
                 </div>
-                <div id="automation-controls"></div>
+                <button id="prestige1-btn" class="btn-prestige">
+                    Faire Prestige 1
+                </button>
             </section>
 
-            <!-- Section computational -->
-            <section id="computation-section" style="display: none;">
-                <h2>💻 Calcul</h2>
-                <div class="stats">
-                    <div class="stat">Processeurs: <span id="processor-count">0</span></div>
-                    <div class="stat">Mémoire: <span id="memory-count">0</span></div>
-                    <div class="stat">Opérations: <span id="operations">0</span></div>
+            <section class="prestige-section">
+                <h3>💎 Prestige 2 : Fragments</h3>
+                <p class="prestige-desc">
+                    Réinitialise TOUT (Énergie, générateurs, upgrades, Noyaux).<br>
+                    Conserve les Fragments et Points de Talents.
+                </p>
+                <div class="prestige-stats">
+                    <div>Gain estimé: <strong id="fragments-gain">0</strong> Fragments</div>
+                    <div>Multiplicateur actuel: <strong id="prestige2-mult">x1.00</strong></div>
+                    <div>Effet: x1.20 production par Fragment + 1 Point de Talent</div>
                 </div>
-                <div id="computation-controls"></div>
+                <button id="prestige2-btn" class="btn-prestige">
+                    Faire Prestige 2
+                </button>
             </section>
+        </div>
 
-            <!-- Log d'événements -->
-            <section id="log-section">
-                <h3>📋 Journal</h3>
-                <div id="event-log"></div>
-            </section>
-        </main>
-    </div>
+        <!-- Talents Tab -->
+        <div id="tab-talents" class="tab-content">
+            <h2>🌟 Talents</h2>
+            <div class="talent-points">
+                Points disponibles: <strong id="talent-points">0</strong>
+            </div>
+            <div id="talents-list" class="talents-list"></div>
+        </div>
 
-    <script src="script.js"></script>
+        <!-- Stats Tab -->
+        <div id="tab-stats" class="tab-content">
+            <h2>📊 Statistiques</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-label">Énergie totale générée</div>
+                    <div class="stat-card-value" id="stat-lifetime">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Meilleure run</div>
+                    <div class="stat-card-value" id="stat-bestrun">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Clics totaux</div>
+                    <div class="stat-card-value" id="stat-clicks">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Prestiges effectués</div>
+                    <div class="stat-card-value" id="stat-prestiges">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Temps joué</div>
+                    <div class="stat-card-value" id="stat-time">0s</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Options Tab -->
+        <div id="tab-options" class="tab-content">
+            <h2>⚙️ Options</h2>
+            <div class="options-section">
+                <button id="export-btn" class="btn-option">📤 Exporter Sauvegarde</button>
+                <button id="import-btn" class="btn-option">📥 Importer Sauvegarde</button>
+                <button id="theme-toggle" class="btn-option">🌙 Changer Thème</button>
+                <button id="reset-btn" class="btn-option danger">🗑️ Réinitialiser</button>
+            </div>
+            <div class="options-info">
+                <p>Sauvegarde automatique toutes les 10 secondes</p>
+                <p>Progression hors ligne : 8h maximum</p>
+                <p>Version: 1.0.0</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/numbers.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/generators.js"></script>
+    <script src="js/upgrades.js"></script>
+    <script src="js/prestige.js"></script>
+    <script src="js/talents.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
