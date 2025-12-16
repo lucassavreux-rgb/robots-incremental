@@ -9,6 +9,18 @@ let accumulator = 0;
 function init() {
     console.log('🔥 Forge Empire - Initialisation...');
 
+    // Debug: Vérifier que tous les modules sont chargés
+    console.log('Modules chargés:', {
+        ForgeNumbers: !!window.ForgeNumbers,
+        ForgeState: !!window.ForgeState,
+        ForgeGenerators: !!window.ForgeGenerators,
+        ForgeUpgrades: !!window.ForgeUpgrades,
+        ForgePrestige: !!window.ForgePrestige,
+        ForgeTalents: !!window.ForgeTalents,
+        ForgeUtils: !!window.ForgeUtils,
+        ForgeUI: !!window.ForgeUI
+    });
+
     // Charger sauvegarde
     const loaded = window.ForgeState.loadGame();
     if (loaded) {
@@ -18,7 +30,9 @@ function init() {
     }
 
     // Initialiser l'UI
+    console.log('Initialisation de l\'UI...');
     window.ForgeUI.initUI();
+    console.log('UI initialisée');
 
     // Appliquer le thème
     const state = window.ForgeState.getState();
