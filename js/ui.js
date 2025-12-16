@@ -1,9 +1,10 @@
 // ui.js - Interface utilisateur complète
 
-const { $, $$, createElement, formatTime } = window.ForgeUtils;
-const { formatNumber, formatInt } = window.ForgeNumbers;
-
 let currentTab = 'production';
+
+// Helper functions
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return document.querySelectorAll(sel); }
 
 /**
  * Initialise l'interface
@@ -15,10 +16,13 @@ function initUI() {
     });
 
     // Bouton clic manuel
-    $('#click-btn').addEventListener('click', () => {
-        window.ForgeGenerators.doClick();
-        animateClick();
-    });
+    const clickBtn = $('#click-btn');
+    if (clickBtn) {
+        clickBtn.addEventListener('click', () => {
+            window.ForgeGenerators.doClick();
+            animateClick();
+        });
+    }
 
     // Buy mode buttons
     $$('.buy-mode-btn').forEach(btn => {
@@ -26,14 +30,21 @@ function initUI() {
     });
 
     // Prestige buttons
-    $('#prestige1-btn').addEventListener('click', handlePrestige1);
-    $('#prestige2-btn').addEventListener('click', handlePrestige2);
+    const p1Btn = $('#prestige1-btn');
+    const p2Btn = $('#prestige2-btn');
+    if (p1Btn) p1Btn.addEventListener('click', handlePrestige1);
+    if (p2Btn) p2Btn.addEventListener('click', handlePrestige2);
 
     // Options buttons
-    $('#export-btn').addEventListener('click', exportSave);
-    $('#import-btn').addEventListener('click', importSave);
-    $('#reset-btn').addEventListener('click', resetGame);
-    $('#theme-toggle').addEventListener('click', toggleTheme);
+    const expBtn = $('#export-btn');
+    const impBtn = $('#import-btn');
+    const resetBtn = $('#reset-btn');
+    const themeBtn = $('#theme-toggle');
+
+    if (expBtn) expBtn.addEventListener('click', exportSave);
+    if (impBtn) impBtn.addEventListener('click', importSave);
+    if (resetBtn) resetBtn.addEventListener('click', resetGame);
+    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
     // Initial render
     render();
@@ -101,14 +112,20 @@ function updateHeader() {
     const state = window.ForgeState.getState();
     const prodPerSec = window.ForgeGenerators.getTotalProduction();
 
-    $('#energy-display').textContent = formatNumber(state.energy);
-    $('#energy-per-sec').textContent = `${formatNumber(prodPerSec)}/s`;
-    $('#nuclei-display').textContent = formatInt(state.nuclei);
-    $('#fragments-display').textContent = formatInt(state.fragments);
+    const energyEl = $('#energy-display');
+    const epsEl = $('#energy-per-sec');
+    const nucleiEl = $('#nuclei-display');
+    const fragEl = $('#fragments-display');
+    const clickEl = $('#click-value');
+
+    if (energyEl) energyEl.textContent = window.ForgeNumbers.formatNumber(state.energy);
+    if (epsEl) epsEl.textContent = `${window.ForgeNumbers.formatNumber(prodPerSec)}/s`;
+    if (nucleiEl) nucleiEl.textContent = window.ForgeNumbers.formatInt(state.nuclei);
+    if (fragEl) fragEl.textContent = window.ForgeNumbers.formatInt(state.fragments);
 
     // Clic value
     const clickValue = window.ForgeGenerators.getClickValue();
-    $('#click-value').textContent = formatNumber(clickValue);
+    if (clickEl) clickEl.textContent = window.ForgeNumbers.formatNumber(clickValue);
 }
 
 /**
@@ -116,6 +133,8 @@ function updateHeader() {
  */
 function renderProduction() {
     const container = $('#generators-list');
+    if (!container) return;
+
     container.innerHTML = '';
 
     const state = window.ForgeState.getState();
@@ -140,22 +159,22 @@ function renderProduction() {
             const maxAmount = window.ForgeGenerators.getMaxBuyable(i);
             if (maxAmount > 0) {
                 displayCost = window.ForgeGenerators.getBulkCost(i, maxAmount);
-                buttonText = `Acheter MAX (${formatInt(maxAmount)})`;
+                buttonText = `Acheter MAX (${window.ForgeNumbers.formatInt(maxAmount)})`;
             } else {
                 buttonText = 'MAX (0)';
             }
         }
 
-        const card = createElement('div', { className: 'generator-card' });
+        const card = window.ForgeUtils.createElement('div', { className: 'generator-card' });
 
         card.innerHTML = `
             <div class="gen-header">
                 <div class="gen-name">${gen.name}</div>
-                <div class="gen-count">${formatInt(owned)}</div>
+                <div class="gen-count">${window.ForgeNumbers.formatInt(owned)}</div>
             </div>
             <div class="gen-info">
-                <div class="gen-prod">Production: ${formatNumber(prod)}/s</div>
-                <div class="gen-cost">Coût: ${formatNumber(displayCost)} E</div>
+                <div class="gen-prod">Production: ${window.ForgeNumbers.formatNumber(prod)}/s</div>
+                <div class="gen-cost">Coût: ${window.ForgeNumbers.formatNumber(displayCost)} E</div>
             </div>
             <button class="btn-buy ${canAfford ? '' : 'disabled'}" data-gen="${i}">
                 ${buttonText}
@@ -188,6 +207,8 @@ function buyGeneratorHandler(index) {
  */
 function renderUpgrades() {
     const container = $('#upgrades-list');
+    if (!container) return;
+
     container.innerHTML = '';
 
     const state = window.ForgeState.getState();
@@ -205,17 +226,17 @@ function renderUpgrades() {
 
         if (available.length === 0) return;
 
-        const section = createElement('div', { className: 'upgrade-section' });
+        const section = window.ForgeUtils.createElement('div', { className: 'upgrade-section' });
         section.innerHTML = `<h3>${cat.name}</h3>`;
 
         available.forEach(upgrade => {
             const canAfford = window.ForgeUpgrades.canAffordUpgrade(upgrade.id);
 
-            const card = createElement('div', { className: 'upgrade-card' });
+            const card = window.ForgeUtils.createElement('div', { className: 'upgrade-card' });
             card.innerHTML = `
                 <div class="upgrade-name">${upgrade.name}</div>
                 <div class="upgrade-desc">${upgrade.description}</div>
-                <div class="upgrade-cost">Coût: ${formatNumber(upgrade.cost)} E</div>
+                <div class="upgrade-cost">Coût: ${window.ForgeNumbers.formatNumber(upgrade.cost)} E</div>
                 <button class="btn-buy ${canAfford ? '' : 'disabled'}" data-upgrade="${upgrade.id}">
                     Acheter
                 </button>
@@ -245,25 +266,34 @@ function renderPrestige() {
     const nucleiGain = window.ForgePrestige.calculateNucleiGain();
     const fragmentsGain = window.ForgePrestige.calculateFragmentsGain();
 
-    $('#nuclei-gain').textContent = formatInt(nucleiGain);
-    $('#fragments-gain').textContent = formatInt(fragmentsGain);
+    const nucleiGainEl = $('#nuclei-gain');
+    const fragmentsGainEl = $('#fragments-gain');
+    const p1MultEl = $('#prestige1-mult');
+    const p2MultEl = $('#prestige2-mult');
+
+    if (nucleiGainEl) nucleiGainEl.textContent = window.ForgeNumbers.formatInt(nucleiGain);
+    if (fragmentsGainEl) fragmentsGainEl.textContent = window.ForgeNumbers.formatInt(fragmentsGain);
 
     // Mult displays
     const p1Mult = window.ForgePrestige.getPrestige1Multiplier();
     const p2Mult = window.ForgePrestige.getPrestige2Multiplier();
 
-    $('#prestige1-mult').textContent = `x${p1Mult.toFixed(2)}`;
-    $('#prestige2-mult').textContent = `x${p2Mult.toFixed(2)}`;
+    if (p1MultEl) p1MultEl.textContent = `x${p1Mult.toFixed(2)}`;
+    if (p2MultEl) p2MultEl.textContent = `x${p2Mult.toFixed(2)}`;
 
     // Button states
     const p1Btn = $('#prestige1-btn');
     const p2Btn = $('#prestige2-btn');
 
-    p1Btn.disabled = nucleiGain <= 0;
-    p2Btn.disabled = fragmentsGain <= 0;
+    if (p1Btn) {
+        p1Btn.disabled = nucleiGain <= 0;
+        p1Btn.classList.toggle('recommended', window.ForgePrestige.isPrestige1Recommended());
+    }
 
-    p1Btn.classList.toggle('recommended', window.ForgePrestige.isPrestige1Recommended());
-    p2Btn.classList.toggle('recommended', window.ForgePrestige.isPrestige2Recommended());
+    if (p2Btn) {
+        p2Btn.disabled = fragmentsGain <= 0;
+        p2Btn.classList.toggle('recommended', window.ForgePrestige.isPrestige2Recommended());
+    }
 }
 
 /**
@@ -297,9 +327,12 @@ function handlePrestige2() {
 function renderTalents() {
     const state = window.ForgeState.getState();
     const container = $('#talents-list');
+    if (!container) return;
+
     container.innerHTML = '';
 
-    $('#talent-points').textContent = state.talentPoints;
+    const talentPointsEl = $('#talent-points');
+    if (talentPointsEl) talentPointsEl.textContent = state.talentPoints;
 
     const talents = window.ForgeTalents.getAllTalents();
 
@@ -307,7 +340,7 @@ function renderTalents() {
         const level = window.ForgeTalents.getTalentLevel(talent.id);
         const canUpgrade = window.ForgeTalents.canUpgradeTalent(talent.id);
 
-        const card = createElement('div', { className: 'talent-card' });
+        const card = window.ForgeUtils.createElement('div', { className: 'talent-card' });
         card.innerHTML = `
             <div class="talent-header">
                 <div class="talent-name">${talent.name}</div>
@@ -335,11 +368,17 @@ function renderTalents() {
 function renderStats() {
     const state = window.ForgeState.getState();
 
-    $('#stat-lifetime').textContent = formatNumber(state.lifetimeEnergy);
-    $('#stat-bestrun').textContent = formatNumber(state.bestRunEnergy);
-    $('#stat-clicks').textContent = formatInt(state.totalClicks);
-    $('#stat-prestiges').textContent = formatInt(state.totalPrestiges);
-    $('#stat-time').textContent = formatTime(state.timePlayed);
+    const lifetimeEl = $('#stat-lifetime');
+    const bestrunEl = $('#stat-bestrun');
+    const clicksEl = $('#stat-clicks');
+    const prestigesEl = $('#stat-prestiges');
+    const timeEl = $('#stat-time');
+
+    if (lifetimeEl) lifetimeEl.textContent = window.ForgeNumbers.formatNumber(state.lifetimeEnergy);
+    if (bestrunEl) bestrunEl.textContent = window.ForgeNumbers.formatNumber(state.bestRunEnergy);
+    if (clicksEl) clicksEl.textContent = window.ForgeNumbers.formatInt(state.totalClicks);
+    if (prestigesEl) prestigesEl.textContent = window.ForgeNumbers.formatInt(state.totalPrestiges);
+    if (timeEl) timeEl.textContent = window.ForgeUtils.formatTime(state.timePlayed);
 }
 
 /**
@@ -360,6 +399,8 @@ function updateBuyModes() {
 function renderEventBanner() {
     const event = window.ForgeUtils.getActiveEvent();
     const banner = $('#event-banner');
+
+    if (!banner) return;
 
     if (!event) {
         banner.style.display = 'none';
@@ -382,21 +423,24 @@ function renderEventBanner() {
  */
 function animateClick() {
     const btn = $('#click-btn');
+    if (!btn) return;
+
     btn.classList.add('clicked');
     setTimeout(() => btn.classList.remove('clicked'), 100);
 
     // Particule
-    const particle = createElement('div', {
+    const particle = window.ForgeUtils.createElement('div', {
         className: 'click-particle',
         style: {
             left: '50%',
             top: '50%'
         }
-    }, `+${formatNumber(window.ForgeGenerators.getClickValue())}`);
+    }, `+${window.ForgeNumbers.formatNumber(window.ForgeGenerators.getClickValue())}`);
 
-    btn.parentElement.appendChild(particle);
-
-    setTimeout(() => particle.remove(), 1000);
+    if (btn.parentElement) {
+        btn.parentElement.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+    }
 }
 
 /**
@@ -405,7 +449,7 @@ function animateClick() {
  * @param {string} type
  */
 function showNotification(message, type = 'info') {
-    const notif = createElement('div', {
+    const notif = window.ForgeUtils.createElement('div', {
         className: `notification ${type}`
     }, message);
 
@@ -465,7 +509,8 @@ function toggleTheme() {
     window.ForgeState.updateState({ theme: newTheme });
     document.body.className = `theme-${newTheme}`;
 
-    $('#theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    const themeBtn = $('#theme-toggle');
+    if (themeBtn) themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
 }
 
 // Export global
