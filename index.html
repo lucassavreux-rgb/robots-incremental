@@ -436,7 +436,7 @@
                     Reset tout sauf Rebirth, PT, et achats Prestige Shop
                 </p>
                 <p style="color: #94a3b8; font-size: 13px;">
-                    Condition: 1.00M Coins lifetime
+                    Coût: <strong class="yellow" id="prestige-cost">10.00K</strong> Coins
                 </p>
                 <div class="big-number green">
                     +<span id="prestige-gain">0</span> PT
@@ -742,13 +742,26 @@
         }
 
         // Prestige
+        function getPrestigeBaseCost() {
+            if (state.rebirthCount === 0) return 10000;
+            if (state.rebirthCount === 1) return 100000;
+            return 1000000; // rebirth 2+
+        }
+
+        function getPrestigeCost() {
+            const base = getPrestigeBaseCost();
+            return base * Math.pow(2, state.prestigesSinceRebirth);
+        }
+
         function canPrestige() {
-            return state.lifetimeCoins >= 1e6;
+            return state.coins >= getPrestigeCost();
         }
 
         function calculatePrestigeGain() {
             if (!canPrestige()) return 0;
-            return Math.max(1, Math.floor(Math.pow(state.lifetimeCoins / 1e6, 0.5)));
+            // Gain de PT basé sur le rebirth: 1 PT au rebirth 0, 2 PT au rebirth 1, 5 PT au rebirth 2+
+            const base = state.rebirthCount === 0 ? 1 : state.rebirthCount === 1 ? 2 : 5;
+            return base;
         }
 
         function getPShopClickCost() {
@@ -957,6 +970,7 @@
             }
 
             // Prestige
+            document.getElementById('prestige-cost').textContent = formatNumber(getPrestigeCost());
             document.getElementById('prestige-gain').textContent = formatNumber(calculatePrestigeGain());
             document.getElementById('pt-total').textContent = formatNumber(state.ptTotal);
             document.getElementById('pt-available').textContent = formatNumber(state.ptAvailable);
