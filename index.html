@@ -574,7 +574,7 @@
         const GENERATORS = [
             { id: 0, name: 'Curseur Bot', baseCost: 15, baseCPS: 0.1, unlock: 0 },
             { id: 1, name: 'Mine', baseCost: 100, baseCPS: 1, unlock: 0 },
-            { id: 2, name: 'Usine', baseCost: 1100, baseCPS: 8, unlock: 1 },
+            { id: 2, name: 'Usine', baseCost: 1100, baseCPS: 5, unlock: 1 },
             { id: 3, name: 'Laboratoire', baseCost: 12000, baseCPS: 47, unlock: 2 },
             { id: 4, name: 'Portail', baseCost: 130000, baseCPS: 260, unlock: 3 },
             { id: 5, name: 'Réacteur', baseCost: 1400000, baseCPS: 1400, unlock: 4 },
@@ -744,6 +744,10 @@
 
         function isGenUnlocked(genId) {
             const gen = GENERATORS[genId];
+            // G7+ (Planète IA et suivants) nécessitent au moins 1 rebirth
+            if (genId >= 6 && state.rebirthCount === 0) {
+                return false;
+            }
             return state.totalPrestiges >= gen.unlock;
         }
 
@@ -1023,12 +1027,20 @@
                 card.className = 'card';
 
                 if (!unlocked) {
+                    // Message différent selon la raison du blocage
+                    let lockMsg = '';
+                    if (gen.id >= 6 && state.rebirthCount === 0) {
+                        lockMsg = '🌟 Nécessite 1 Rebirth pour débloquer';
+                    } else {
+                        lockMsg = `Nécessite ${gen.unlock} prestige${gen.unlock > 1 ? 's' : ''}`;
+                    }
+
                     card.innerHTML = `
                         <div class="card-header">
                             <div class="card-title">${gen.name}</div>
                             <div class="card-count">🔒</div>
                         </div>
-                        <div class="locked-msg">Nécessite ${gen.unlock} prestige${gen.unlock > 1 ? 's' : ''}</div>
+                        <div class="locked-msg">${lockMsg}</div>
                     `;
                 } else {
                     card.innerHTML = `
