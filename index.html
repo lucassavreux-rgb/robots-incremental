@@ -501,6 +501,7 @@
                 <h3 style="margin-bottom: 10px;">ℹ️ Comment fonctionne le Rebirth ?</h3>
                 <ul style="font-size: 13px; color: #94a3b8; line-height: 1.8; padding-left: 20px;">
                     <li>Chaque Rebirth multiplie tous les gains par 2 (permanent)</li>
+                    <li>Chaque Rebirth ajoute +1h de gains hors ligne (1h → 2h → 3h...)</li>
                     <li>Nécessite 10 prestiges pour le 1er, puis double à chaque fois (20, 40, 80...)</li>
                     <li>Reset TOUT: Coins, Générateurs, Upgrades, PT, Shop Prestige, Prestiges</li>
                     <li>Conserve uniquement: Rebirth Count et Multiplicateur Rebirth</li>
@@ -527,6 +528,10 @@
                 <div class="stat-card">
                     <div class="stat-card-label">Temps Joué</div>
                     <div class="stat-card-value" id="stat-playtime">0s</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">🌙 Gains Offline Max</div>
+                    <div class="stat-card-value" id="stat-offline-time">1h</div>
                 </div>
             </div>
         </div>
@@ -1000,6 +1005,7 @@
             document.getElementById('stat-prestiges').textContent = state.totalPrestiges;
             document.getElementById('stat-rebirths').textContent = state.rebirthCount;
             document.getElementById('stat-playtime').textContent = formatTime(state.playtime);
+            document.getElementById('stat-offline-time').textContent = formatTime(getMaxOfflineTime());
         }
 
         function renderGenerators() {
@@ -1097,6 +1103,11 @@
             localStorage.setItem('infiniteClickerSave', JSON.stringify(state));
         }
 
+        function getMaxOfflineTime() {
+            // 1h de base + 1h par rebirth
+            return 3600 * (1 + state.rebirthCount);
+        }
+
         function loadGame() {
             const saved = localStorage.getItem('infiniteClickerSave');
             if (saved) {
@@ -1104,6 +1115,30 @@
                     const loaded = JSON.parse(saved);
                     // Merge loaded state with defaults (in case new properties added)
                     state = { ...state, ...loaded };
+
+                    // Calcul des gains offline
+                    const now = Date.now();
+                    const offlineTime = Math.floor((now - state.lastTick) / 1000); // en secondes
+
+                    if (offlineTime > 10) { // Si absent plus de 10 secondes
+                        const maxOfflineTime = getMaxOfflineTime();
+                        const actualOfflineTime = Math.min(offlineTime, maxOfflineTime);
+                        const cps = getTotalCPS();
+                        const offlineGain = cps * actualOfflineTime;
+
+                        if (offlineGain > 0) {
+                            state.coins += offlineGain;
+                            state.lifetimeCoins += offlineGain;
+
+                            // Message de bienvenue
+                            const timeStr = formatTime(actualOfflineTime);
+                            const cappedMsg = offlineTime > maxOfflineTime ? ` (limité à ${formatTime(maxOfflineTime)})` : '';
+                            setTimeout(() => {
+                                alert(`🌙 Gains hors ligne!\n\nTemps: ${timeStr}${cappedMsg}\nGains: ${formatNumber(offlineGain)} coins\n\n+${formatNumber(cps)}/s pendant votre absence`);
+                            }, 500);
+                        }
+                    }
+
                     state.lastTick = Date.now();
                 } catch (e) {
                     console.error('Failed to load save:', e);
