@@ -752,10 +752,17 @@
 
         function isGenUnlocked(genId) {
             const gen = GENERATORS[genId];
+
+            // G3 Usine: disponible immédiatement après le 1er rebirth
+            if (genId === 2 && state.rebirthCount >= 1) {
+                return true;
+            }
+
             // G7+ (Planète IA et suivants) nécessitent au moins 1 rebirth
             if (genId >= 6 && state.rebirthCount === 0) {
                 return false;
             }
+
             return state.totalPrestiges >= gen.unlock;
         }
 
