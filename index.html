@@ -501,8 +501,8 @@
                 <h3 style="margin-bottom: 10px;">ℹ️ Comment fonctionne le Rebirth ?</h3>
                 <ul style="font-size: 13px; color: #94a3b8; line-height: 1.8; padding-left: 20px;">
                     <li>Chaque Rebirth multiplie tous les gains par 2 (permanent)</li>
-                    <li>Chaque Rebirth ajoute +30min de gains hors ligne (30min → 1h → 1h30...)</li>
-                    <li>Gains offline à 50% du CPS normal</li>
+                    <li>Chaque Rebirth ajoute +15min de gains hors ligne (15min → 30min → 45min...)</li>
+                    <li>Gains offline à 15% du CPS normal</li>
                     <li>Nécessite 10 prestiges pour le 1er, puis double à chaque fois (20, 40, 80...)</li>
                     <li>Reset TOUT: Coins, Générateurs, Upgrades, PT, Shop Prestige, Prestiges</li>
                     <li>Conserve uniquement: Rebirth Count et Multiplicateur Rebirth</li>
@@ -1105,8 +1105,8 @@
         }
 
         function getMaxOfflineTime() {
-            // 30min de base + 30min par rebirth
-            return 1800 * (1 + state.rebirthCount);
+            // 15min de base + 15min par rebirth
+            return 900 * (1 + state.rebirthCount);
         }
 
         function loadGame() {
@@ -1125,7 +1125,7 @@
                         const maxOfflineTime = getMaxOfflineTime();
                         const actualOfflineTime = Math.min(offlineTime, maxOfflineTime);
                         const cps = getTotalCPS();
-                        const offlineGain = (cps * actualOfflineTime) * 0.5; // 50% des gains
+                        const offlineGain = (cps * actualOfflineTime) * 0.15; // 15% des gains
 
                         if (offlineGain > 0) {
                             state.coins += offlineGain;
@@ -1135,7 +1135,7 @@
                             const timeStr = formatTime(actualOfflineTime);
                             const cappedMsg = offlineTime > maxOfflineTime ? ` (limité à ${formatTime(maxOfflineTime)})` : '';
                             setTimeout(() => {
-                                alert(`🌙 Gains hors ligne!\n\nTemps: ${timeStr}${cappedMsg}\nGains: ${formatNumber(offlineGain)} coins\n\n50% du CPS pendant votre absence`);
+                                alert(`🌙 Gains hors ligne!\n\nTemps: ${timeStr}${cappedMsg}\nGains: ${formatNumber(offlineGain)} coins\n\n15% du CPS pendant votre absence`);
                             }, 500);
                         }
                     }
