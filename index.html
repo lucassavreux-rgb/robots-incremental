@@ -593,9 +593,14 @@
         // Upgrades par générateur (3 upgrades chacun : x2, x3, x5)
         const GENERATOR_UPGRADES = [];
         GENERATORS.forEach((gen, i) => {
+            // Prix custom pour certains upgrades x3
+            let costX3 = 250 * gen.baseCost;
+            if (i === 1) costX3 = 60000;  // Mine x3: 60k au lieu de 25k
+            if (i === 2) costX3 = 425000; // Usine x3: 425k au lieu de 275k
+
             GENERATOR_UPGRADES.push(
                 { id: `g${i}_u1`, genId: i, mult: 2, cost: 25 * gen.baseCost, name: `${gen.name} x2` },
-                { id: `g${i}_u2`, genId: i, mult: 3, cost: 250 * gen.baseCost, name: `${gen.name} x3` },
+                { id: `g${i}_u2`, genId: i, mult: 3, cost: costX3, name: `${gen.name} x3` },
                 { id: `g${i}_u3`, genId: i, mult: 5, cost: 2500 * gen.baseCost, name: `${gen.name} x5` }
             );
         });
