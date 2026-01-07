@@ -716,13 +716,16 @@
         }
 
         function getGenTypeMult(genId) {
-            let mult = 1;
+            let maxMult = 1;
             GENERATOR_UPGRADES.forEach(upg => {
                 if (upg.genId === genId && state.boughtUpgrades.includes(upg.id)) {
-                    mult *= upg.mult;
+                    // Garde seulement le plus grand multiplicateur
+                    if (upg.mult > maxMult) {
+                        maxMult = upg.mult;
+                    }
                 }
             });
-            return mult;
+            return maxMult;
         }
 
         function getGenCPS(genId) {
