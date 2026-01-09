@@ -607,6 +607,13 @@
 
         const GLOBAL_UPGRADE_COST = 1e7;
 
+        // Pets configuration
+        const PETS = [
+            { id: 0, name: 'Pet Dragon', baseCost: 3e8, baseBonus: 0.10, maxBonus: 0.30, maxLevel: 5, unlock: 1 }, // Rebirth 1
+            { id: 1, name: 'Pet Phoenix', baseCost: 1e9, baseBonus: 0.15, maxBonus: 0.40, maxLevel: 5, unlock: 2 }, // Rebirth 2
+            { id: 2, name: 'Pet Cosmic', baseCost: 3e11, baseBonus: 0.20, maxBonus: 0.50, maxLevel: 5, unlock: -1 } // Ascension
+        ];
+
         /* ==========================================
            GAME STATE
         ========================================== */
@@ -635,7 +642,13 @@
             pShopGenLevel: 0,
 
             // Rebirth
-            rebirthCount: 0
+            rebirthCount: 0,
+
+            // Ascension
+            ascensionCount: 0,
+
+            // Pets
+            petLevels: [0, 0, 0] // Niveau de chaque pet (0 = pas acheté)
         };
 
         /* ==========================================
@@ -691,7 +704,9 @@
         }
 
         function getRebirthMult() {
-            return Math.pow(2, state.rebirthCount);
+            const rebirthMult = Math.pow(2, state.rebirthCount);
+            const ascensionMult = getAscensionMult();
+            return rebirthMult * ascensionMult;
         }
 
         function getGlobalUpgradeMult() {
@@ -738,8 +753,9 @@
             const prestigeGlobal = getPrestigeGlobalMult();
             const rebirth = getRebirthMult();
             const global = getGlobalUpgradeMult();
+            const petBonus = 1 + getTotalPetBonus();
 
-            return owned * gen.baseCPS * typeMult * pShopGen * prestigeGlobal * rebirth * global;
+            return owned * gen.baseCPS * typeMult * pShopGen * prestigeGlobal * rebirth * global * petBonus;
         }
 
         function getTotalCPS() {
@@ -803,7 +819,55 @@
         }
 
         function canRebirth() {
+            // Max 3 rebirths
+            if (state.rebirthCount >= 3) return false;
             return state.prestigesSinceRebirth >= getRequiredPrestiges();
+        }
+
+        // Ascension
+        function getAscensionMult() {
+            return Math.pow(4, state.ascensionCount);
+        }
+
+        function canAscend() {
+            return state.rebirthCount >= 3;
+        }
+
+        // Pets
+        function isPetUnlocked(petId) {
+            const pet = PETS[petId];
+            if (pet.unlock === -1) {
+                // Pet Cosmic: nécessite au moins 1 ascension
+                return state.ascensionCount >= 1;
+            }
+            // Autres pets: débloqués selon le rebirth
+            return state.rebirthCount >= pet.unlock;
+        }
+
+        function getPetCost(petId) {
+            const pet = PETS[petId];
+            const currentLevel = state.petLevels[petId];
+            // Coût = baseCost * 10^currentLevel
+            return pet.baseCost * Math.pow(10, currentLevel);
+        }
+
+        function getPetBonus(petId) {
+            const pet = PETS[petId];
+            const level = state.petLevels[petId];
+            if (level === 0) return 0;
+
+            // Calcul du bonus par niveau
+            const bonusPerLevel = (pet.maxBonus - pet.baseBonus) / (pet.maxLevel - 1);
+            const bonus = pet.baseBonus + (bonusPerLevel * (level - 1));
+            return bonus;
+        }
+
+        function getTotalPetBonus() {
+            let total = 0;
+            for (let i = 0; i < PETS.length; i++) {
+                total += getPetBonus(i);
+            }
+            return total;
         }
 
         /* ==========================================
@@ -944,7 +1008,7 @@
 
             state.rebirthCount++;
 
-            // Reset TOUT sauf rebirth
+            // Reset TOUT sauf rebirth, ascension et pets
             state.coins = 0;
             state.lifetimeCoins = 0;
             state.generators = GENERATORS.map(() => 0);
@@ -960,6 +1024,48 @@
 
             updateUI();
             saveGame();
+        }
+
+        function doAscension() {
+            if (!canAscend()) return;
+
+            if (!confirm('🌟 ASCENSION? Cela va reset TOUT (même Rebirths!) mais vous gagnez x4 multiplicateur permanent!\n\nVos pets seront conservés.')) return;
+
+            state.ascensionCount++;
+
+            // Reset TOUT sauf ascension et pets
+            state.coins = 0;
+            state.lifetimeCoins = 0;
+            state.generators = GENERATORS.map(() => 0);
+            state.boughtUpgrades = [];
+            state.boughtGlobalUpgrade = false;
+            state.clickInfLevel = 0;
+            state.totalPrestiges = 0;
+            state.prestigesSinceRebirth = 0;
+            state.ptTotal = 0;
+            state.ptAvailable = 0;
+            state.pShopClickLevel = 0;
+            state.pShopGenLevel = 0;
+            state.rebirthCount = 0;
+
+            updateUI();
+            saveGame();
+        }
+
+        function buyPet(petId) {
+            const pet = PETS[petId];
+            if (!isPetUnlocked(petId)) return;
+
+            const currentLevel = state.petLevels[petId];
+            if (currentLevel >= pet.maxLevel) return;
+
+            const cost = getPetCost(petId);
+            if (state.coins >= cost) {
+                state.coins -= cost;
+                state.petLevels[petId]++;
+                updateUI();
+                saveGame();
+            }
         }
 
         /* ==========================================
