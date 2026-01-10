@@ -379,6 +379,7 @@
             <div class="stat">Click: <strong id="click-mult-display">x1</strong></div>
             <div class="stat">Prestige: <strong id="prestige-mult-display">x1</strong></div>
             <div class="stat">Rebirth: <strong id="rebirth-mult-display">x1</strong></div>
+            <div class="stat">Ascension: <strong id="ascension-mult-display">x1</strong></div>
         </div>
     </div>
 
@@ -503,6 +504,9 @@
                 <div style="margin: 15px 0; font-size: 14px; color: #94a3b8;">
                     Prestiges depuis Rebirth: <strong class="purple" id="prestiges-since-rebirth">0</strong> / <strong id="prestiges-required">10</strong>
                 </div>
+                <div style="margin: 10px 0; font-size: 14px; color: #94a3b8;">
+                    Coût en Coins: <strong class="purple" id="rebirth-cost">0</strong>
+                </div>
                 <button class="btn btn-warning" id="rebirth-btn" style="max-width: 300px; margin: 10px auto;">
                     REBIRTH (+x2)
                 </button>
@@ -539,6 +543,9 @@
                 </div>
                 <div style="margin: 15px 0; font-size: 14px; color: #94a3b8;">
                     Rebirth actuel: <strong class="gold" id="ascension-rebirth-count">0</strong> / 3
+                </div>
+                <div style="margin: 10px 0; font-size: 14px; color: #94a3b8;">
+                    Coût en Coins: <strong class="gold" id="ascension-cost">0</strong>
                 </div>
                 <button class="btn btn-warning" id="ascension-btn" style="max-width: 300px; margin: 10px auto;">
                     ASCENSION (+x4)
@@ -694,9 +701,11 @@
             ptAvailable: 0,
             pShopClickLevel: 0,
             pShopGenLevel: 0,
+            lastPrestigeCost: 0, // Coût du dernier prestige effectué
 
             // Rebirth
             rebirthCount: 0,
+            lastRebirthCost: 0, // Coût du dernier rebirth effectué
 
             // Ascension
             ascensionCount: 0,
@@ -828,8 +837,18 @@
                 return true;
             }
 
-            // G7+ (Planète IA et suivants) nécessitent au moins 1 rebirth
-            if (genId >= 6 && state.rebirthCount === 0) {
+            // G10-G14 (Nexus Temporel → Infinity Core) nécessitent rebirth 3
+            if (genId >= 10 && state.rebirthCount < 3) {
+                return false;
+            }
+
+            // G8-G9 (Matrice Quantique, Anneau Stellaire) nécessitent rebirth 2
+            if ((genId === 8 || genId === 9) && state.rebirthCount < 2) {
+                return false;
+            }
+
+            // G7 (Dyson Swarm) nécessite rebirth 1
+            if (genId === 7 && state.rebirthCount < 1) {
                 return false;
             }
 
@@ -872,10 +891,18 @@
             return 10 * Math.pow(2, state.rebirthCount);
         }
 
+        function getRebirthCost() {
+            // Coût en coins = dernier prestige × 100
+            return state.lastPrestigeCost * 100;
+        }
+
         function canRebirth() {
             // Max 3 rebirths
             if (state.rebirthCount >= 3) return false;
-            return state.prestigesSinceRebirth >= getRequiredPrestiges();
+            // Vérifier nombre de prestiges ET coins disponibles
+            if (state.prestigesSinceRebirth < getRequiredPrestiges()) return false;
+            if (state.lastPrestigeCost > 0 && state.coins < getRebirthCost()) return false;
+            return true;
         }
 
         // Ascension
@@ -883,8 +910,16 @@
             return Math.pow(4, state.ascensionCount);
         }
 
+        function getAscensionCost() {
+            // Coût en coins = dernier rebirth × 100
+            return state.lastRebirthCost * 100;
+        }
+
         function canAscend() {
-            return state.rebirthCount >= 3;
+            // Vérifier rebirth 3 ET coins disponibles
+            if (state.rebirthCount < 3) return false;
+            if (state.lastRebirthCost > 0 && state.coins < getAscensionCost()) return false;
+            return true;
         }
 
         // Pets
@@ -1014,6 +1049,9 @@
 
             if (!confirm('Prestige? Cela va reset vos Coins, Générateurs et Upgrades normaux.')) return;
 
+            // Sauvegarder le coût du prestige pour le calcul du coût de rebirth
+            state.lastPrestigeCost = getPrestigeCost();
+
             const gain = calculatePrestigeGain();
             state.ptTotal += gain;
             state.ptAvailable += gain;
@@ -1060,9 +1098,15 @@
 
             if (!confirm('REBIRTH? Cela va reset TOUT (même Prestige) mais vous gagnez x2 multiplicateur permanent!')) return;
 
+            // Sauvegarder le coût du rebirth pour le calcul du coût d'ascension
+            state.lastRebirthCost = getRebirthCost();
+
+            // Déduire les coins
+            state.coins -= getRebirthCost();
+
             state.rebirthCount++;
 
-            // Reset TOUT sauf rebirth, ascension et pets
+            // Reset TOUT sauf rebirth, ascension et pets (coins déjà déduits)
             state.coins = 0;
             state.lifetimeCoins = 0;
             state.generators = GENERATORS.map(() => 0);
@@ -1075,6 +1119,7 @@
             state.ptAvailable = 0;
             state.pShopClickLevel = 0;
             state.pShopGenLevel = 0;
+            state.lastPrestigeCost = 0; // Reset le coût du dernier prestige
 
             updateUI();
             saveGame();
@@ -1084,6 +1129,9 @@
             if (!canAscend()) return;
 
             if (!confirm('🌟 ASCENSION? Cela va reset TOUT (même Rebirths!) mais vous gagnez x4 multiplicateur permanent!\n\nVos pets seront conservés.')) return;
+
+            // Déduire les coins
+            state.coins -= getAscensionCost();
 
             state.ascensionCount++;
 
@@ -1101,6 +1149,8 @@
             state.pShopClickLevel = 0;
             state.pShopGenLevel = 0;
             state.rebirthCount = 0;
+            state.lastPrestigeCost = 0; // Reset
+            state.lastRebirthCost = 0; // Reset
 
             updateUI();
             saveGame();
@@ -1132,6 +1182,7 @@
             document.getElementById('click-mult-display').textContent = 'x' + formatNumber(getClickGain());
             document.getElementById('prestige-mult-display').textContent = 'x' + getPrestigeGlobalMult().toFixed(2);
             document.getElementById('rebirth-mult-display').textContent = 'x' + formatNumber(getRebirthMult());
+            document.getElementById('ascension-mult-display').textContent = 'x' + formatNumber(getAscensionMult());
 
             // Click section
             document.getElementById('per-click').textContent = formatNumber(getClickGain());
@@ -1180,12 +1231,14 @@
             document.getElementById('rebirth-current-mult').textContent = formatNumber(getRebirthMult());
             document.getElementById('prestiges-since-rebirth').textContent = state.prestigesSinceRebirth;
             document.getElementById('prestiges-required').textContent = getRequiredPrestiges();
+            document.getElementById('rebirth-cost').textContent = formatNumber(getRebirthCost());
             document.getElementById('rebirth-count').textContent = state.rebirthCount;
             document.getElementById('rebirth-btn').disabled = !canRebirth();
 
             // Ascension
             document.getElementById('ascension-current-mult').textContent = formatNumber(getAscensionMult());
             document.getElementById('ascension-rebirth-count').textContent = state.rebirthCount;
+            document.getElementById('ascension-cost').textContent = formatNumber(getAscensionCost());
             document.getElementById('ascension-count').textContent = state.ascensionCount;
             document.getElementById('ascension-btn').disabled = !canAscend();
 
@@ -1214,8 +1267,12 @@
                 if (!unlocked) {
                     // Message différent selon la raison du blocage
                     let lockMsg = '';
-                    if (gen.id >= 6 && state.rebirthCount === 0) {
-                        lockMsg = '🌟 Nécessite 1 Rebirth pour débloquer';
+                    if (gen.id >= 10) {
+                        lockMsg = '⭐ Nécessite Rebirth 3 pour débloquer';
+                    } else if (gen.id === 8 || gen.id === 9) {
+                        lockMsg = '🌟🌟 Nécessite Rebirth 2 pour débloquer';
+                    } else if (gen.id === 7) {
+                        lockMsg = '🌟 Nécessite Rebirth 1 pour débloquer';
                     } else {
                         lockMsg = `Nécessite ${gen.unlock} prestige${gen.unlock > 1 ? 's' : ''}`;
                     }
