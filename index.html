@@ -892,8 +892,8 @@
         }
 
         function getRebirthCost() {
-            // Coût en coins = dernier prestige × 100
-            return state.lastPrestigeCost * 100;
+            // Coût en coins = dernier prestige × 5
+            return state.lastPrestigeCost * 5;
         }
 
         function canRebirth() {
@@ -911,8 +911,8 @@
         }
 
         function getAscensionCost() {
-            // Coût en coins = dernier rebirth × 100
-            return state.lastRebirthCost * 100;
+            // Coût en coins = dernier rebirth × 5
+            return state.lastRebirthCost * 5;
         }
 
         function canAscend() {
