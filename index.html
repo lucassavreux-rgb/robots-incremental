@@ -1297,7 +1297,7 @@
             document.getElementById('buy-pshop-gen').disabled = state.ptAvailable < getPShopGenCost() || state.pShopGenLevel >= 25;
 
             // Rebirth
-            document.getElementById('rebirth-current-mult').textContent = formatNumber(getRebirthMult());
+            document.getElementById('rebirth-current-mult').textContent = formatNumber(Math.pow(2, state.rebirthCount));
             document.getElementById('prestiges-since-rebirth').textContent = state.prestigesSinceRebirth;
             document.getElementById('prestiges-required').textContent = getRequiredPrestiges();
             document.getElementById('rebirth-cost').textContent = formatNumber(getRebirthCost());
