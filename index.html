@@ -878,10 +878,19 @@
         }
 
         // Prestige
+        function getAscensionPriceMult() {
+            // À partir d'Ascension 2, prix × 100 par ascension
+            if (state.ascensionCount < 2) return 1;
+            return Math.pow(100, state.ascensionCount - 1);
+        }
+
         function getPrestigeBaseCost() {
-            if (state.rebirthCount === 0) return 10000;
-            if (state.rebirthCount === 1) return 100000;
-            return 1000000; // rebirth 2+
+            let base = 0;
+            if (state.rebirthCount === 0) base = 10000;
+            else if (state.rebirthCount === 1) base = 100000;
+            else base = 1000000; // rebirth 2+
+
+            return base * getAscensionPriceMult();
         }
 
         function getPrestigeCost() {
