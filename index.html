@@ -616,6 +616,20 @@
             </div>
 
             <div class="card">
+                <h3 style="margin-bottom: 15px;">🔧 Debug</h3>
+                <p style="font-size: 13px; color: #94a3b8; margin-bottom: 10px;">
+                    Ascension Count actuel: <strong id="debug-ascension-count">0</strong>
+                </p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="debug-asc-minus">-1</button>
+                    <button class="btn btn-primary" id="debug-asc-plus">+1</button>
+                </div>
+                <p style="margin-top: 10px; font-size: 11px; color: #ef4444;">
+                    ⚠️ Utilisez uniquement pour corriger un bug de sauvegarde
+                </p>
+            </div>
+
+            <div class="card">
                 <h3 style="margin-bottom: 10px;">ℹ️ À propos</h3>
                 <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
                     <strong>Infinite Clicker</strong> v1.0<br>
@@ -1021,6 +1035,25 @@
             }
         }
 
+        function isUpgradeUnlocked(upg) {
+            // u1 (x2) est toujours disponible
+            if (upg.id.endsWith('_u1')) return true;
+
+            // u2 (x5) nécessite u1 (x2)
+            if (upg.id.endsWith('_u2')) {
+                const u1Id = upg.id.replace('_u2', '_u1');
+                return state.boughtUpgrades.includes(u1Id);
+            }
+
+            // u3 (x10) nécessite u2 (x5)
+            if (upg.id.endsWith('_u3')) {
+                const u2Id = upg.id.replace('_u3', '_u2');
+                return state.boughtUpgrades.includes(u2Id);
+            }
+
+            return true;
+        }
+
         function buyUpgrade(upgradeId) {
             const upg = GENERATOR_UPGRADES.find(u => u.id === upgradeId);
             if (!upg || state.boughtUpgrades.includes(upgradeId)) return;
@@ -1249,6 +1282,9 @@
             document.getElementById('stat-ascensions').textContent = state.ascensionCount;
             document.getElementById('stat-playtime').textContent = formatTime(state.playtime);
             document.getElementById('stat-offline-time').textContent = formatTime(getMaxOfflineTime());
+
+            // Debug
+            document.getElementById('debug-ascension-count').textContent = state.ascensionCount;
         }
 
         function renderGenerators() {
@@ -1321,7 +1357,7 @@
             container.innerHTML = '';
 
             const availableUpgrades = GENERATOR_UPGRADES.filter(upg => {
-                return !state.boughtUpgrades.includes(upg.id) && isGenUnlocked(upg.genId);
+                return !state.boughtUpgrades.includes(upg.id) && isGenUnlocked(upg.genId) && isUpgradeUnlocked(upg);
             });
 
             if (availableUpgrades.length === 0) {
@@ -1539,6 +1575,21 @@
         document.getElementById('export-btn').addEventListener('click', exportSave);
         document.getElementById('import-btn').addEventListener('click', importSave);
         document.getElementById('hard-reset-btn').addEventListener('click', hardReset);
+
+        // Debug buttons
+        document.getElementById('debug-asc-plus').addEventListener('click', () => {
+            state.ascensionCount++;
+            updateUI();
+            saveGame();
+        });
+
+        document.getElementById('debug-asc-minus').addEventListener('click', () => {
+            if (state.ascensionCount > 0) {
+                state.ascensionCount--;
+                updateUI();
+                saveGame();
+            }
+        });
 
         // Prevent double-tap zoom on click button
         document.getElementById('click-btn').addEventListener('touchend', (e) => {
