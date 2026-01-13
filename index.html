@@ -542,7 +542,7 @@
                     Multiplicateur: x<span id="ascension-current-mult">1</span>
                 </div>
                 <div style="margin: 15px 0; font-size: 14px; color: #94a3b8;">
-                    Rebirth actuel: <strong class="gold" id="ascension-rebirth-count">0</strong> / 3
+                    Rebirth actuel: <strong class="gold" id="ascension-rebirth-count">0</strong> / <strong class="gold" id="ascension-rebirth-max">∞</strong>
                 </div>
                 <div style="margin: 10px 0; font-size: 14px; color: #94a3b8;">
                     Coût en Coins: <strong class="gold" id="ascension-cost">0</strong>
@@ -559,10 +559,11 @@
                 <h3 style="margin-bottom: 10px;">ℹ️ Comment fonctionne l'Ascension ?</h3>
                 <ul style="font-size: 13px; color: #94a3b8; line-height: 1.8; padding-left: 20px;">
                     <li>Chaque Ascension multiplie tous les gains par 4 (permanent)</li>
-                    <li>Nécessite d'avoir atteint Rebirth 3 (maximum)</li>
+                    <li>Nécessite d'avoir atteint Rebirth 3 minimum</li>
+                    <li>Maximum 3 Ascensions possibles</li>
+                    <li>Chaque Ascension augmente la limite de Rebirths (Asc 1: 10, Asc 2: 20, Asc 3: 40)</li>
                     <li>Reset ABSOLU: Tout est reset, même les Rebirths (retour à Rebirth 0)</li>
                     <li>Conserve: Ascension Count, Multiplicateur Ascension, et vos Pets</li>
-                    <li>Les Pets sont conservés et restent actifs après Ascension!</li>
                 </ul>
             </div>
         </div>
@@ -663,7 +664,7 @@
             { id: 5, name: 'Réacteur', baseCost: 1400000, baseCPS: 1400, unlock: 4 },
             { id: 6, name: 'Planète IA', baseCost: 20000000, baseCPS: 7800, unlock: 5 },
             { id: 7, name: 'Dyson Swarm', baseCost: 330000000, baseCPS: 44000, unlock: 6 },
-            // G9-G15 inventés pour late game
+            // G8-G14 inventés pour late game
             { id: 8, name: 'Matrice Quantique', baseCost: 5.1e9, baseCPS: 260000, unlock: 7 },
             { id: 9, name: 'Anneau Stellaire', baseCost: 7.5e10, baseCPS: 1600000, unlock: 8 },
             { id: 10, name: 'Nexus Temporel', baseCost: 1e12, baseCPS: 10000000, unlock: 9 },
@@ -918,6 +919,15 @@
         }
 
         // Rebirth
+        function getMaxRebirths() {
+            // Ascension 0: infini, Ascension 1: 10, Ascension 2: 20, Ascension 3: 40
+            if (state.ascensionCount === 0) return Infinity;
+            if (state.ascensionCount === 1) return 10;
+            if (state.ascensionCount === 2) return 20;
+            if (state.ascensionCount >= 3) return 40;
+            return Infinity;
+        }
+
         function getRequiredPrestiges() {
             return 10 * Math.pow(2, state.rebirthCount);
         }
@@ -928,6 +938,8 @@
         }
 
         function canRebirth() {
+            // Vérifier la limite de rebirths selon l'ascension
+            if (state.rebirthCount >= getMaxRebirths()) return false;
             // Vérifier nombre de prestiges ET coins disponibles
             if (state.prestigesSinceRebirth < getRequiredPrestiges()) return false;
             if (state.lastPrestigeCost > 0 && state.coins < getRebirthCost()) return false;
@@ -945,6 +957,8 @@
         }
 
         function canAscend() {
+            // Max 3 ascensions
+            if (state.ascensionCount >= 3) return false;
             // Vérifier rebirth 3 ET coins disponibles
             if (state.rebirthCount < 3) return false;
             if (state.lastRebirthCost > 0 && state.coins < getAscensionCost()) return false;
@@ -1011,9 +1025,13 @@
         function buyGenerator(genId, amount = 1) {
             if (!isGenUnlocked(genId)) return;
 
+            const gen = GENERATORS[genId];
+            const owned = state.generators[genId];
             let totalCost = 0;
+
+            // Calcul correct: chaque achat augmente le coût
             for (let i = 0; i < amount; i++) {
-                totalCost += getGenCost(genId) * Math.pow(1.15, i);
+                totalCost += Math.floor(gen.baseCost * Math.pow(1.15, owned + i));
             }
 
             if (state.coins >= totalCost) {
@@ -1027,12 +1045,15 @@
         function buyGeneratorMax(genId) {
             if (!isGenUnlocked(genId)) return;
 
+            const gen = GENERATORS[genId];
+            const owned = state.generators[genId];
             let amount = 0;
             let cost = 0;
             let testCoins = state.coins;
 
+            // Calcul correct: chaque achat augmente le coût
             while (amount < 100) {
-                const nextCost = getGenCost(genId) * Math.pow(1.15, amount);
+                const nextCost = Math.floor(gen.baseCost * Math.pow(1.15, owned + amount));
                 if (testCoins >= nextCost) {
                     testCoins -= nextCost;
                     cost += nextCost;
@@ -1286,6 +1307,8 @@
             // Ascension
             document.getElementById('ascension-current-mult').textContent = formatNumber(getAscensionMult());
             document.getElementById('ascension-rebirth-count').textContent = state.rebirthCount;
+            const maxRebirths = getMaxRebirths();
+            document.getElementById('ascension-rebirth-max').textContent = maxRebirths === Infinity ? '∞' : maxRebirths;
             document.getElementById('ascension-cost').textContent = formatNumber(getAscensionCost());
             document.getElementById('ascension-count').textContent = state.ascensionCount;
             document.getElementById('ascension-btn').disabled = !canAscend();
@@ -1580,7 +1603,7 @@
         /* ==========================================
            EVENT HANDLERS
         ========================================== */
-        document.getElementById('click-btn').addEventListener('click', doClick);
+        // Click button handled separately below to prevent double-tap on mobile
         document.getElementById('buy-click-inf').addEventListener('click', buyClickInf);
         document.getElementById('buy-global-upgrade').addEventListener('click', buyGlobalUpgrade);
         document.getElementById('prestige-btn').addEventListener('click', doPrestige);
@@ -1594,9 +1617,11 @@
 
         // Debug buttons
         document.getElementById('debug-asc-plus').addEventListener('click', () => {
-            state.ascensionCount++;
-            updateUI();
-            saveGame();
+            if (state.ascensionCount < 3) {
+                state.ascensionCount++;
+                updateUI();
+                saveGame();
+            }
         });
 
         document.getElementById('debug-asc-minus').addEventListener('click', () => {
@@ -1608,9 +1633,12 @@
         });
 
         document.getElementById('debug-reb-plus').addEventListener('click', () => {
-            state.rebirthCount++;
-            updateUI();
-            saveGame();
+            const max = getMaxRebirths();
+            if (state.rebirthCount < max) {
+                state.rebirthCount++;
+                updateUI();
+                saveGame();
+            }
         });
 
         document.getElementById('debug-reb-minus').addEventListener('click', () => {
@@ -1621,8 +1649,8 @@
             }
         });
 
-        // Prevent double-tap zoom on click button
-        document.getElementById('click-btn').addEventListener('touchend', (e) => {
+        // Click button: use pointerup to work on both mobile and desktop, prevents double-tap
+        document.getElementById('click-btn').addEventListener('pointerup', (e) => {
             e.preventDefault();
             doClick();
         });
