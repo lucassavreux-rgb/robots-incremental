@@ -928,8 +928,6 @@
         }
 
         function canRebirth() {
-            // Max 3 rebirths
-            if (state.rebirthCount >= 3) return false;
             // Vérifier nombre de prestiges ET coins disponibles
             if (state.prestigesSinceRebirth < getRequiredPrestiges()) return false;
             if (state.lastPrestigeCost > 0 && state.coins < getRebirthCost()) return false;
@@ -1610,11 +1608,9 @@
         });
 
         document.getElementById('debug-reb-plus').addEventListener('click', () => {
-            if (state.rebirthCount < 3) {
-                state.rebirthCount++;
-                updateUI();
-                saveGame();
-            }
+            state.rebirthCount++;
+            updateUI();
+            saveGame();
         });
 
         document.getElementById('debug-reb-minus').addEventListener('click', () => {
