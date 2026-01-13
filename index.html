@@ -624,6 +624,14 @@
                     <button class="btn btn-primary" id="debug-asc-minus">-1</button>
                     <button class="btn btn-primary" id="debug-asc-plus">+1</button>
                 </div>
+                <hr style="margin: 15px 0; border: 1px solid #334155;">
+                <p style="font-size: 13px; color: #94a3b8; margin-bottom: 10px;">
+                    Rebirth Count actuel: <strong id="debug-rebirth-count">0</strong>
+                </p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="debug-reb-minus">-1</button>
+                    <button class="btn btn-primary" id="debug-reb-plus">+1</button>
+                </div>
                 <p style="margin-top: 10px; font-size: 11px; color: #ef4444;">
                     ⚠️ Utilisez uniquement pour corriger un bug de sauvegarde
                 </p>
@@ -1285,6 +1293,7 @@
 
             // Debug
             document.getElementById('debug-ascension-count').textContent = state.ascensionCount;
+            document.getElementById('debug-rebirth-count').textContent = state.rebirthCount;
         }
 
         function renderGenerators() {
@@ -1586,6 +1595,22 @@
         document.getElementById('debug-asc-minus').addEventListener('click', () => {
             if (state.ascensionCount > 0) {
                 state.ascensionCount--;
+                updateUI();
+                saveGame();
+            }
+        });
+
+        document.getElementById('debug-reb-plus').addEventListener('click', () => {
+            if (state.rebirthCount < 3) {
+                state.rebirthCount++;
+                updateUI();
+                saveGame();
+            }
+        });
+
+        document.getElementById('debug-reb-minus').addEventListener('click', () => {
+            if (state.rebirthCount > 0) {
+                state.rebirthCount--;
                 updateUI();
                 saveGame();
             }
