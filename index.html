@@ -860,13 +860,13 @@
                 return true;
             }
 
-            // G10-G14 (Nexus Temporel → Infinity Core) nécessitent rebirth 3
-            if (genId >= 10 && state.rebirthCount < 3) {
+            // G12-G14 (Singularité Noire → Infinity Core) nécessitent rebirth 3
+            if (genId >= 12 && state.rebirthCount < 3) {
                 return false;
             }
 
-            // G8-G9 (Matrice Quantique, Anneau Stellaire) nécessitent rebirth 2
-            if ((genId === 8 || genId === 9) && state.rebirthCount < 2) {
+            // G8-G11 (Matrice Quantique → Forge Cosmique) nécessitent rebirth 2
+            if (genId >= 8 && genId <= 11 && state.rebirthCount < 2) {
                 return false;
             }
 
